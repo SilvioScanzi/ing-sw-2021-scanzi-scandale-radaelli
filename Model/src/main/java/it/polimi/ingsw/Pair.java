@@ -3,11 +3,23 @@ package it.polimi.ingsw;
 import java.util.Objects;
 
 public class Pair<A, B> {
-    public final A key;
-    public final B value;
+    public A key;
+    public B value;
 
     public Pair(A key, B value) {
         this.key = key;
+        this.value = value;
+    }
+
+    public void setPair(A key, B value){
+        this.key=key;
+        this.value=value;
+    }
+    public void setKey(A key) {
+        this.key = key;
+    }
+
+    public void setValue(B value) {
         this.value = value;
     }
 

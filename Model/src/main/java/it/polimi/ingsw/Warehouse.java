@@ -2,75 +2,102 @@ package it.polimi.ingsw;
 import java.util.*;
 
 public class Warehouse {
-    private Game.Resources depot1;
-    private Game.Resources[] depot2;
-    private Game.Resources[] depot3;
-    //Che schifo
+    private  Pair<Optional<Game.Resources>,Integer> depot1;
+    private  Pair<Optional<Game.Resources>,Integer> depot2;
+    private  Pair<Optional<Game.Resources>,Integer> depot3;
 
-    public Warehouse() {
-        depot1 = Game.Resources.Nothing;
-        depot2 = new Game.Resources[2];
-        depot2[0] = Game.Resources.Nothing;
-        depot2[1] = Game.Resources.Nothing;
-        depot3 = new Game.Resources[3];
-        depot3[0] = Game.Resources.Nothing;
-        depot3[1] = Game.Resources.Nothing;
-        depot3[2] = Game.Resources.Nothing;
+    public Warehouse(){
+        depot1 = new Pair<>(Optional.empty(),0);
+        depot2 = new Pair<>(Optional.empty(),0);
+        depot3 = new Pair<>(Optional.empty(),0);
     }
 
-    public Pair<Game.Resources,Integer> getDepot(int number) throws IllegalArgumentException{
+    public Pair<Optional<Game.Resources>,Integer> getDepot(int depotNumber) throws IllegalArgumentException{
+        if(depotNumber==1)
+            return depot1;
+        else if(depotNumber==2)
+            return depot2;
+        else if(depotNumber==3)
+            return depot3;
+        else
+            throw new IllegalArgumentException("Invalid depot number");
+    }
 
-        if(number==1) {
-            if (depot1.equals(Game.Resources.Nothing))
-                return new Pair(Game.Resources.Nothing,0);
-            else{
-                return new Pair(depot1,1);
+    public void addDepot(int depotNumber, Game.Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException{
+        if(depotNumber==1){
+            if(quantity>1 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if(!(depot1.getKey().isPresent())){
+                depot1.setPair(Optional.of(resource),quantity);
             }
+            else throw new ResourceErrorException("Depot already full");
         }
-
-        else if (number==2) {
-            if (depot2[0].equals(Game.Resources.Nothing))
-                return new Pair(Game.Resources.Nothing,0);
-            else if(depot2[1].equals(Game.Resources.Nothing))
-                return new Pair(depot2,1);
-            else
-                return new Pair(depot2,2);
+        else if(depotNumber==2) {
+            if (quantity>2 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if(!(depot2.getKey().isPresent())){
+                depot2.setPair(Optional.of(resource),quantity);
+            }
+            else if (depot2.getKey().get().equals(resource) && (depot2.getValue() + quantity <= 2)){
+                depot2.setValue(depot2.getValue() + quantity);
+            }
+            else if(!(depot2.getKey().get().equals(resource))) throw new IllegalArgumentException("Wrong Resource");
+            else throw new ResourceErrorException("Depot not big enough");
         }
-
-        else if (number==3) {
-            if (depot3[0].equals(Game.Resources.Nothing))
-                return new Pair(Game.Resources.Nothing,0);
-            else if(depot3[1].equals(Game.Resources.Nothing))
-                return new Pair(depot3,1);
-            else if(depot3[2].equals(Game.Resources.Nothing))
-                return new Pair(depot3,2);
-            else
-                return new Pair(depot3,3);
+        else if(depotNumber==3){
+            if (quantity>3 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if(!(depot3.getKey().isPresent())){
+                depot3.setPair(Optional.of(resource),quantity);
+            }
+            else if (depot3.getKey().get().equals(resource) && (depot3.getValue() + quantity <= 3)){
+                depot3.setValue(depot3.getValue() + quantity);
+            }
+            else if(!(depot3.getKey().get().equals(resource))) throw new IllegalArgumentException("Wrong Resource");
+            else throw new ResourceErrorException("Depot not big enough");
         }
-
-        else    throw new IllegalArgumentException("Invalid depot number");
+        else
+            throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public void addDepot (int number, Game.Resources res, int quantity) throws IllegalArgumentException, InvalidPlacementException {
-        if (quantity<0)
-            throw new IllegalArgumentException("Invalid Quantity");
-        if(quantity>number)
-            throw new InvalidPlacementException("Excessive amount of resources");
-        if (number==1){
-            if(depot1.equals(Game.Resources.Nothing))
-                depot1=res;
-            else
-                throw new InvalidPlacementException("Depot already full");
+    public Pair<Optional<Game.Resources>,Integer> subDepot(int depotNumber, int quantity) throws IllegalArgumentException, ResourceErrorException {
+         Pair<Optional<Game.Resources>,Integer> tmp;
+        if(depotNumber==1){
+            if(quantity>1 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if((depot1.getKey().isPresent())){
+                    tmp = new Pair<>(Optional.of(depot1.getKey().get()),quantity);
+                    depot1.setPair(Optional.empty(),0);
+                    return tmp;
+            }
+            else throw new ResourceErrorException("Not enough resources");
         }
-        if(number==2){
-            if(depot2[0].equals(Game.Resources.Nothing))
-                for(int i=0;i<quantity;i++){
-                    depot2[i]=res;
+        else if(depotNumber==2){
+            if(quantity>2 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if((depot2.getKey().isPresent()) && (depot2.getValue() >= quantity)){
+                tmp = new Pair<>(Optional.of(depot2.getKey().get()),quantity);
+                if(depot2.getValue() == quantity) {
+                    depot2.setPair(Optional.empty(), 0);
                 }
-            else if (!(depot2[0].equals(res)))  throw new InvalidPlacementException("Depot occupied by another resource");
+                else{
+                    depot2.setValue(depot2.getValue() - quantity);
+                }
+                return tmp;
+            }
+            else throw new ResourceErrorException("Not enough resources");
         }
+        else if(depotNumber==3){
+            if(quantity>3 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if((depot3.getKey().isPresent()) && (depot3.getValue() >= quantity)){
+                tmp = new Pair<>(Optional.of(depot3.getKey().get()),quantity);
+                if(depot3.getValue() == quantity) {
+                    depot3.setPair(Optional.empty(), 0);
+                }
+                else{
+                    depot3.setValue(depot3.getValue() - quantity);
+                }
+                return tmp;
+            }
+            else throw new ResourceErrorException("Not enough resources");
+        }
+        else throw new IllegalArgumentException("Invalid depot number");
     }
-
 }
 
 
