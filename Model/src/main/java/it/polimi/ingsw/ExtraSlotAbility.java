@@ -1,14 +1,7 @@
 package it.polimi.ingsw;
 
-public class ExtraSlot implements Ability{
-    private Game.Resources restype;
+public class ExtraSlotAbility extends Ability{
     private int capacity = 0;
-
-
-
-    public Game.Resources getResource() {
-        return restype;
-    }
 
     public int getCapacity() {
         return capacity;

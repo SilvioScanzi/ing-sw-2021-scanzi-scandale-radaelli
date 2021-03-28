@@ -2,16 +2,23 @@ package it.polimi.ingsw;
 import java.util.*;
 
 public class Board {
-    private String nickname;
-    private FaithTrack faithtrack;
-    private Warehouse warehouse;
-    private Strongbox strongbox;
-    private Slot[] slots;
-    private LeaderCard[] leadercards;
+    private final String nickname;
+    private final FaithTrack faithtrack;
+    private final Warehouse warehouse;
+    private final Strongbox strongbox;
+    private final Slot[] slots;
+    private final ArrayList<LeaderCard> leadercards;
 
-    public Board(String nickname) {
+    public Board(String nickname, ArrayList<LeaderCard> leadercards) {
         this.nickname = nickname;
-        //da aggiungere l'inizializzazione della board
+        faithtrack = new FaithTrack();
+        warehouse = new Warehouse();
+        strongbox = new Strongbox();
+        slots = new Slot[3];
+        for(int i=0;i<3;i++){
+            slots[i] = new Slot();
+        }
+        this.leadercards = new ArrayList<LeaderCard> (leadercards);
     }
 
     public String getNickname() {
@@ -34,31 +41,7 @@ public class Board {
         return slots;
     }
 
-    public LeaderCard[] getLeadercards() {
+    public ArrayList<LeaderCard> getLeadercards() {
         return leadercards;
-    }
-
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void setFaithtrack(FaithTrack faithtrack) {
-        this.faithtrack = faithtrack;
-    }
-
-    public void setWarehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
-    }
-
-    public void setStrongbox(Strongbox strongbox) {
-        this.strongbox = strongbox;
-    }
-
-    public void setSlots(Slot[] slots) {
-        this.slots = slots;
-    }
-
-    public void setLeadercards(LeaderCard[] leadercards) {
-        this.leadercards = leadercards;
     }
 }

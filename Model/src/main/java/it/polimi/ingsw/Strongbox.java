@@ -15,14 +15,10 @@ public class Strongbox {
         return storage.get(r);
     }
 
-    public boolean updateResource(Game.Resources r, int amount){
+    public void updateResource(Game.Resources r, int amount) throws ResourceErrorException{
         int curr = storage.get(r);
         if(amount + curr < 0)
-            return false;
+            throw new ResourceErrorException("Not enough resources");
         storage.put(r,amount+curr);
-        return true;
     }
-
-
-
 }

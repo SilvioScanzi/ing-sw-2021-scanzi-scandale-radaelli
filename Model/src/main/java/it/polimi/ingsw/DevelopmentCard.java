@@ -4,14 +4,21 @@ import java.util.*;
 public class DevelopmentCard {
     private int level;
     private Game.Colours colour;
-    private int victorypoints;
-    private Map<Game.Resources,Integer> cost;
-    private Map<Game.Resources,Integer> requiredresources;
-    private Map<Game.Resources,Integer> producedresources;
-    private int producedfaith;
+    private int victoryPoints;
+    private Map<Game.Resources,Integer> cost;               //Resources required to buy the card
+    private Map<Game.Resources,Integer> requiredResources;  //Resources required to activate production power
+    private Map<Game.Resources,Integer> producedResources;  //Resources produced during the activation
+    private int producedFaith;                              //Faith produced during the activation
 
-    public DevelopmentCard() {
-        //Da implementare con generazione a monte
+    public DevelopmentCard(int level, Game.Colours colour, int victoryPoints, Map<Game.Resources, Integer> cost, 
+                           Map<Game.Resources, Integer> requiredResources, Map<Game.Resources, Integer> producedResources, int producedFaith) {
+        this.level = level;
+        this.colour = colour;
+        this.victoryPoints = victoryPoints;
+        this.cost = cost;
+        this.requiredResources = requiredResources;
+        this.producedResources = producedResources;
+        this.producedFaith = producedFaith;
     }
 
     public int getLevel() {
@@ -22,24 +29,24 @@ public class DevelopmentCard {
         return colour;
     }
 
-    public int getVictorypoints() {
-        return victorypoints;
+    public int getvictoryPoints() {
+        return victoryPoints;
     }
 
     public Map<Game.Resources, Integer> getCost() {
         return cost;
     }
 
-    public Map<Game.Resources, Integer> getRequiredresources() {
-        return requiredresources;
+    public Map<Game.Resources, Integer> getrequiredResources() {
+        return requiredResources;
     }
 
-    public Map<Game.Resources, Integer> getProducedresources() {
-        return producedresources;
+    public Map<Game.Resources, Integer> getproducedResources() {
+        return producedResources;
     }
 
-    public int getProducedfaith() {
-        return producedfaith;
+    public int getproducedFaith() {
+        return producedFaith;
     }
 
     public void setLevel(int level) {
@@ -50,23 +57,23 @@ public class DevelopmentCard {
         this.colour = colour;
     }
 
-    public void setVictorypoints(int victorypoints) {
-        this.victorypoints = victorypoints;
+    public void setvictoryPoints(int victoryPoints) {
+        this.victoryPoints = victoryPoints;
     }
 
     public void setCost(Map<Game.Resources, Integer> cost) {
         this.cost = cost;
     }
 
-    public void setRequiredresources(Map<Game.Resources, Integer> requiredresources) {
-        this.requiredresources = requiredresources;
+    public void setrequiredResources(Map<Game.Resources, Integer> requiredResources) {
+        this.requiredResources = requiredResources;
     }
 
-    public void setProducedresources(Map<Game.Resources, Integer> producedresources) {
-        this.producedresources = producedresources;
+    public void setproducedResources(Map<Game.Resources, Integer> producedResources) {
+        this.producedResources = producedResources;
     }
 
-    public void setProducedfaith(int producedfaith) {
-        this.producedfaith = producedfaith;
+    public void setproducedFaith(int producedFaith) {
+        this.producedFaith = producedFaith;
     }
 }
