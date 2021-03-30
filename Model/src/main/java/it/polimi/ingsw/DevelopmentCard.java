@@ -9,6 +9,7 @@ public class DevelopmentCard {
     private Map<Game.Resources,Integer> requiredResources;  //Resources required to activate production power
     private Map<Game.Resources,Integer> producedResources;  //Resources produced during the activation
     private int producedFaith;                              //Faith produced during the activation
+    private boolean activated;
 
     public DevelopmentCard(int level, Game.Colours colour, int victoryPoints, Map<Game.Resources, Integer> cost, 
                            Map<Game.Resources, Integer> requiredResources, Map<Game.Resources, Integer> producedResources, int producedFaith) {
@@ -19,6 +20,7 @@ public class DevelopmentCard {
         this.requiredResources = requiredResources;
         this.producedResources = producedResources;
         this.producedFaith = producedFaith;
+        activated = false;
     }
 
     public int getLevel() {

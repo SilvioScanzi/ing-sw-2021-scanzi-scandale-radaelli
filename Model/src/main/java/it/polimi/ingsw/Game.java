@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 import java.util.*;
 
-public class Game {
+public class Game extends Observable implements Observer{
     public enum Marbles {Grey,Purple,Red,Blue,Yellow,White}
     public enum Resources {Coins,Stones,Servants,Shields}
     public enum Colours {Purple,Yellow,Green,Blue}
@@ -14,9 +14,10 @@ public class Game {
     private Market market;
     private DevelopmentCardMarket developmentcardmarket;
     private boolean[] vaticanReport;
-    private LorenzoTrack Lorenzo;
+    private leaderCardDeck leadercarddeck;
 
-    private ArrayList<LeaderCard> leaderCards;
+    private LorenzoTrack Lorenzo;
+    private ActionStack actionStack;
 
     public Game() {
         inkwell = 0;
@@ -26,12 +27,17 @@ public class Game {
         market = new Market();
         developmentcardmarket = new DevelopmentCardMarket();
         vaticanReport = new boolean[] {false,false,false};
+        leadercarddeck = new leaderCardDeck();
         Lorenzo = new LorenzoTrack();
-        leaderCards = new ArrayList<>(); //da inizializzare
+        actionStack = new ActionStack();
     }
 
     public void setup(int n,String[] names){
         //distribuzione randomica
+    }
+
+    public void update(Observable a, Object b){
+
     }
 
     public boolean checkwin(){

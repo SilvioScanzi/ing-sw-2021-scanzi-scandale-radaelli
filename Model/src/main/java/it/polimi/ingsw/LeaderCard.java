@@ -9,13 +9,6 @@ public class LeaderCard {
     private Map<Game.Resources,Integer> requiredResources;
     private Ability ability;
 
-    /*attributes for ability
-    public enum Ability{ExtraSlot,Discount,ProductionPower,WhiteMarble}
-    private Game.Resources abilityRes;
-    private boolean activated;
-    private Ability abilityType;
-    private int capacity=0;*/
-
 
     public LeaderCard(boolean played, boolean discarded, int victoryPoints, Map<Game.Colours,
             Pair<Integer, Integer>> requiredColours, Map<Game.Resources, Integer> requiredResources, Ability ability) {
@@ -24,6 +17,7 @@ public class LeaderCard {
         this.victoryPoints = victoryPoints;
         this.requiredColours = requiredColours;
         this.requiredResources = requiredResources;
+        this.ability = ability;
     }
 
     public void setPlayed(boolean played) {
