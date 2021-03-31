@@ -2,13 +2,13 @@ package it.polimi.ingsw;
 import java.util.*;
 
 public class DevelopmentCard {
-    private int level;
-    private Game.Colours colour;
-    private int victoryPoints;
-    private Map<Game.Resources,Integer> cost;               //Resources required to buy the card
-    private Map<Game.Resources,Integer> requiredResources;  //Resources required to activate production power
-    private Map<Game.Resources,Integer> producedResources;  //Resources produced during the activation
-    private int producedFaith;                              //Faith produced during the activation
+    private final int level;
+    private final Game.Colours colour;
+    private final int victoryPoints;
+    private final Map<Game.Resources,Integer> cost;               //Resources required to buy the card
+    private final Map<Game.Resources,Integer> requiredResources;  //Resources required to activate production power
+    private final Map<Game.Resources,Integer> producedResources;  //Resources produced during the activation
+    private final int producedFaith;                              //Faith produced during the activation
     private boolean activated;
 
     public DevelopmentCard(int level, Game.Colours colour, int victoryPoints, Map<Game.Resources, Integer> cost, 
@@ -51,31 +51,7 @@ public class DevelopmentCard {
         return producedFaith;
     }
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public void setColour(Game.Colours colour) {
-        this.colour = colour;
-    }
-
-    public void setvictoryPoints(int victoryPoints) {
-        this.victoryPoints = victoryPoints;
-    }
-
-    public void setCost(Map<Game.Resources, Integer> cost) {
-        this.cost = cost;
-    }
-
-    public void setrequiredResources(Map<Game.Resources, Integer> requiredResources) {
-        this.requiredResources = requiredResources;
-    }
-
-    public void setproducedResources(Map<Game.Resources, Integer> producedResources) {
-        this.producedResources = producedResources;
-    }
-
-    public void setproducedFaith(int producedFaith) {
-        this.producedFaith = producedFaith;
+    public void setActivated(boolean activated) {
+        this.activated = activated;
     }
 }

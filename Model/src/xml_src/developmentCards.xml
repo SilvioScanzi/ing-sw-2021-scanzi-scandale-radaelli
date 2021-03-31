@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<developmentcards>
+    <developmentcard>
+        <level>1</level>
+        <colour>Green</colour>
+        <victorypoints>3</victorypoints>
+        <cost>Shields-1</cost>
+        <requiredresources>Coins-2</requiredresources>
+        <producedresources>Servants-1-Shields-1-Stones-1</producedresources>
+        <producedfaith>0</producedfaith>
+    </developmentcard>
+    <developmentcard>
+        <level>1</level>
+        <colour>Green</colour>
+        <victorypoints>3</victorypoints>
+        <cost>Coins-3</cost>
+        <requiredresources>Stones-1</requiredresources>
+        <producedresources>NULL-0</producedresources>
+        <producedfaith>1</producedfaith>
+    </developmentcard>
+
+
+</developmentcards>
