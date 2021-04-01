@@ -6,48 +6,59 @@ import java.util.*;
 
 
 public class DevelopmentCardMarket {
-    private Map<Pair<Game.Colours,Integer>,Stack<DevelopmentCard>> cardMarket;
+    private final Map<Pair<Game.Colours,Integer>,Stack<DevelopmentCard>> cardMarket;
 
     public DevelopmentCardMarket(){
-        cardMarket = new HashMap<Pair<Game.Colours,Integer>,Stack<DevelopmentCard>>();
-        cardMarket.put(new Pair<>(Game.Colours.Green,1),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Green,2),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Green,3),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Yellow,1),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Yellow,2),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Yellow,3),new Stack<>());
+        //Instantiating one stack for every card deck (One for every combination of Color-Level)
+        cardMarket = new HashMap<>();
         cardMarket.put(new Pair<>(Game.Colours.Blue,1),new Stack<>());
         cardMarket.put(new Pair<>(Game.Colours.Blue,2),new Stack<>());
         cardMarket.put(new Pair<>(Game.Colours.Blue,3),new Stack<>());
+        cardMarket.put(new Pair<>(Game.Colours.Green,1),new Stack<>());
+        cardMarket.put(new Pair<>(Game.Colours.Green,2),new Stack<>());
+        cardMarket.put(new Pair<>(Game.Colours.Green,3),new Stack<>());
         cardMarket.put(new Pair<>(Game.Colours.Purple,1),new Stack<>());
         cardMarket.put(new Pair<>(Game.Colours.Purple,2),new Stack<>());
         cardMarket.put(new Pair<>(Game.Colours.Purple,3),new Stack<>());
+        cardMarket.put(new Pair<>(Game.Colours.Yellow,1),new Stack<>());
+        cardMarket.put(new Pair<>(Game.Colours.Yellow,2),new Stack<>());
+        cardMarket.put(new Pair<>(Game.Colours.Yellow,3),new Stack<>());
+
+        //XML file Parsing
         try{
             ArrayList<DevelopmentCard> tmp = new ArrayList<>();
 
+            //Instantiating objects for the XML file parsing
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
+
+            /*Getting the XML file via path. For future updates: pathname is a String, it could be used another String
+              given to the Constructor, eventually resorting to the default one
+              Especially useful for parameter editor*/
             Document document = builder.parse(new File("Model\\src\\xml_src\\developmentCards.xml"));
             document.getDocumentElement().normalize();
-            Element root = document.getDocumentElement();
-            NodeList developmentcardList = document.getElementsByTagName("developmentcard");
 
-            for (int i=0; i<developmentcardList.getLength(); i++) {
-                Node DCnode = developmentcardList.item(i);
-                if (DCnode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) DCnode;
-                    int level = Integer.parseInt(eElement.getElementsByTagName("level").item(0).getTextContent());
-                    Game.Colours colour = Game.Colours.valueOf(eElement.getElementsByTagName("colour").item(0).getTextContent());
-                    int victorypoints = Integer.parseInt(eElement.getElementsByTagName("victorypoints").item(0).getTextContent());
+            /* Only used for testing to identify if the DOM parser worked as intended
+            Element root = document.getDocumentElement(); */
+
+            NodeList developmentcards = document.getElementsByTagName("developmentcard");
+            //Iterating on the nodelist previously got, single node for every DCCard
+            for (int i=0; i<developmentcards.getLength(); i++) {
+                Node developmentcardnode = developmentcards.item(i);
+                if (developmentcardnode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element developmentcardElement = (Element) developmentcardnode;
+                    int level = Integer.parseInt(developmentcardElement.getElementsByTagName("level").item(0).getTextContent());
+                    Game.Colours colour = Game.Colours.valueOf(developmentcardElement.getElementsByTagName("colour").item(0).getTextContent());
+                    int victorypoints = Integer.parseInt(developmentcardElement.getElementsByTagName("victorypoints").item(0).getTextContent());
 
                     //Getting the cost String, splitting it into multiple strings
-                    String[] costString = (eElement.getElementsByTagName("cost").item(0).getTextContent()).split("-");
+                    String[] costString = (developmentcardElement.getElementsByTagName("cost").item(0).getTextContent()).split("-");
                     //Getting the requiredresources String, splitting it into multiple strings
-                    String[] requiredresourcesString = (eElement.getElementsByTagName("requiredresources").item(0).getTextContent()).split("-");
+                    String[] requiredresourcesString = (developmentcardElement.getElementsByTagName("requiredresources").item(0).getTextContent()).split("-");
                     //Getting the producedresources String, splitting it into multiple strings
-                    String[] producedresourcesString = (eElement.getElementsByTagName("producedresources").item(0).getTextContent()).split("-");
+                    String[] producedresourcesString = (developmentcardElement.getElementsByTagName("producedresources").item(0).getTextContent()).split("-");
 
-                    int producedfaith = Integer.parseInt(eElement.getElementsByTagName("producedfaith").item(0).getTextContent());
+                    int producedfaith = Integer.parseInt(developmentcardElement.getElementsByTagName("producedfaith").item(0).getTextContent());
 
                     //Generating the HashMap from costString
                     HashMap<Game.Resources,Integer> cost = new HashMap<>();
@@ -69,366 +80,21 @@ public class DevelopmentCardMarket {
                         }
                     }
 
+                    //Generating a new DCCard with the previously calculated attributes
                     DevelopmentCard DC = new DevelopmentCard(level,colour,victorypoints,cost,requiredresources,producedresources,producedfaith);
                     tmp.add(DC);
                 }
             }
 
-            // For testing: until every card is implemented, substitute 48 with the actual number of cards implemented
+            //Getting the 48 cards from the arrayList tmp, inserting them into the cardMarket in a random order for every stack
             for(int i=0;i<48;i++){
                 int index;
                 index = (int) (Math.random() * (48-i));
                 cardMarket.get(new Pair<>(tmp.get(index).getColour(),tmp.get(index).getLevel())).push(tmp.remove(index));
             }
         }
+        //For future updates: if a path should be specified, exceptions must be handled differently
         catch(Exception e) {e.printStackTrace();}
-
-
-
-
-        /*ArrayList<DevelopmentCard> tmp = new ArrayList<>();
-        Pair<Game.Colours,Integer> tmp1 = new Pair<>(Game.Colours.Green,1);
-
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp1 = new Pair<> (Game.Colours.Green,2);
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp1 = new Pair<> (Game.Colours.Green,2);
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp1 = new Pair<> (Game.Colours.Green,2);
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp1 = new Pair<> (Game.Colours.Green,2);
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp1 = new Pair<> (Game.Colours.Green,2);
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }
-
-        tmp1 = new Pair<> (Game.Colours.Green,2);
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-        tmp.add(new DevelopmentCard(1, Game.Colours.Green,1,
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Shields,2);}},
-                new HashMap<Game.Resources,Integer>() {{put(Game.Resources.Coins,1);}},
-                new HashMap<Game.Resources,Integer>(),
-                1));
-
-        cardMarket.put(tmp1,new Stack<DevelopmentCard>());
-        for(int i=0; i<4; i++){
-            int index;
-            index = (int) (Math.random() * (3-i));
-            cardMarket.get(tmp1).push(tmp.remove(index));
-        }*/
     }
 
     public DevelopmentCard peekFirstCard(Game.Colours colour, int level) throws IllegalArgumentException{
