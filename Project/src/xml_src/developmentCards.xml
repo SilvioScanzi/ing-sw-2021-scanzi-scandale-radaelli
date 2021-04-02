@@ -337,7 +337,7 @@
         <level>1</level>
         <colour>Yellow</colour>
         <victorypoints>2</victorypoints>
-        <cost>Coins-1-Shields-1-Stones-1</cost>
+        <cost>Shields-1-Stones-1-Coins-1</cost>
         <requiredresources>Shields-1</requiredresources>
         <producedresources>Coins-1</producedresources>
         <producedfaith>0</producedfaith>
@@ -374,7 +374,7 @@
         <colour>Yellow</colour>
         <victorypoints>6</victorypoints>
         <cost>Stones-3-Shields-2</cost>
-        <requiredresources>Shields-1-Stones-1</requiredresources>
+        <requiredresources>Stones-1-Shields-1</requiredresources>
         <producedresources>Coins-3</producedresources>
         <producedfaith>0</producedfaith>
     </developmentcard>
@@ -391,7 +391,7 @@
         <level>2</level>
         <colour>Yellow</colour>
         <victorypoints>8</victorypoints>
-        <cost>Servants-3-Stones-3</cost>
+        <cost>Stones-3-Servants-3</cost>
         <requiredresources>Shields-1</requiredresources>
         <producedresources>Coins-2</producedresources>
         <producedfaith>1</producedfaith>
@@ -409,7 +409,7 @@
         <level>3</level>
         <colour>Yellow</colour>
         <victorypoints>10</victorypoints>
-        <cost>Servants-2-Stones-5</cost>
+        <cost>Stones-5-Servants-2</cost>
         <requiredresources>Stones-1-Servants-1</requiredresources>
         <producedresources>Coins-2-Shields-2</producedresources>
         <producedfaith>1</producedfaith>
@@ -427,7 +427,7 @@
         <level>3</level>
         <colour>Yellow</colour>
         <victorypoints>12</victorypoints>
-        <cost>Servants-4-Stones-4</cost>
+        <cost>Stones-4-Servants-4</cost>
         <requiredresources>Shields-1</requiredresources>
         <producedresources>Stones-1-Servants-3</producedresources>
         <producedfaith>0</producedfaith>
