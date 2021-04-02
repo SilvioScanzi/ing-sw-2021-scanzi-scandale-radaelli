@@ -1,4 +1,7 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.exceptions.IncompatibleResourceException;
+import it.polimi.ingsw.exceptions.ResourceErrorException;
+
 import java.util.*;
 
 public class Warehouse implements Cloneable {
@@ -32,35 +35,35 @@ public class Warehouse implements Cloneable {
             throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException{
+    public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException {
         if(depotNumber==1){
-            if(quantity>1 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 can't contain these resources",resource,quantity);
             if(!(depot1.getKey().isPresent())){
                 depot1.setPair(Optional.of(resource),quantity);
             }
-            else throw new ResourceErrorException("Depot already full");
+            else throw new ResourceErrorException("Depot 1 is already full",resource,quantity);
         }
         else if(depotNumber==2) {
-            if (quantity>2 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if (quantity>2 || quantity<0) throw new ResourceErrorException("Depot 2 can't contain these resources",resource,quantity);
             if(!(depot2.getKey().isPresent())){
                 depot2.setPair(Optional.of(resource),quantity);
             }
             else if (depot2.getKey().get().equals(resource) && (depot2.getValue() + quantity <= 2)){
                 depot2.setValue(depot2.getValue() + quantity);
             }
-            else if(!(depot2.getKey().get().equals(resource))) throw new IllegalArgumentException("Wrong Resource");
-            else throw new ResourceErrorException("Depot not big enough");
+            else if(!(depot2.getKey().get().equals(resource))) throw new IncompatibleResourceException("Incompatible resources",resource,depot2.getKey().get());
+            else throw new ResourceErrorException("Depot 2 is already full",resource,quantity-(2-depot2.getValue()));
         }
         else if(depotNumber==3){
-            if (quantity>3 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if (quantity>3 || quantity<0) throw new ResourceErrorException("Depot 3 can't contain these resources",resource,quantity);
             if(!(depot3.getKey().isPresent())){
                 depot3.setPair(Optional.of(resource),quantity);
             }
             else if (depot3.getKey().get().equals(resource) && (depot3.getValue() + quantity <= 3)){
                 depot3.setValue(depot3.getValue() + quantity);
             }
-            else if(!(depot3.getKey().get().equals(resource))) throw new IllegalArgumentException("Wrong Resource");
-            else throw new ResourceErrorException("Depot not big enough");
+            else if(!(depot3.getKey().get().equals(resource))) throw new IncompatibleResourceException("Incompatible resources",resource,depot3.getKey().get());
+            else throw new ResourceErrorException("Depot 3 is already full",resource,quantity-(3-depot3.getValue()));
         }
         else
             throw new IllegalArgumentException("Invalid depot number");
@@ -69,16 +72,16 @@ public class Warehouse implements Cloneable {
     public Pair<Resources,Integer> subDepot(int depotNumber, int quantity) throws IllegalArgumentException, ResourceErrorException {
         Pair<Resources,Integer> tmp;
         if(depotNumber==1){
-            if(quantity>1 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 doesn't have this many resources",(depot1.getKey().isPresent())?depot1.getKey().get():null,-quantity);
             if((depot1.getKey().isPresent())){
                     tmp = new Pair<>(depot1.getKey().get(),quantity);
                     depot1.setPair(Optional.empty(),0);
                     return tmp;
             }
-            else throw new ResourceErrorException("Not enough resources");
+            else throw new ResourceErrorException("Depot 1 is empty",null,-quantity);
         }
         else if(depotNumber==2){
-            if(quantity>2 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if(quantity>2 || quantity<0) throw new ResourceErrorException("Depot 2 doesn't have this many resources",(depot2.getKey().isPresent())?depot2.getKey().get():null,-quantity);
             if((depot2.getKey().isPresent()) && (depot2.getValue() >= quantity)){
                 tmp = new Pair<>(depot2.getKey().get(),quantity);
                 if(depot2.getValue() == quantity) {
@@ -89,10 +92,10 @@ public class Warehouse implements Cloneable {
                 }
                 return tmp;
             }
-            else throw new ResourceErrorException("Not enough resources");
+            else throw new ResourceErrorException("Depot 2 doesn't have this many resources",(depot2.getKey().isPresent())?depot2.getKey().get():null,-quantity);
         }
         else if(depotNumber==3){
-            if(quantity>3 || quantity<0) throw new ResourceErrorException("Wrong placement");
+            if(quantity>3 || quantity<0) throw new ResourceErrorException("Depot 3 doesn't have this many resources",(depot3.getKey().isPresent())?depot3.getKey().get():null,-quantity);
             if((depot3.getKey().isPresent()) && (depot3.getValue() >= quantity)){
                 tmp = new Pair<>(depot3.getKey().get(),quantity);
                 if(depot3.getValue() == quantity) {
@@ -103,7 +106,7 @@ public class Warehouse implements Cloneable {
                 }
                 return tmp;
             }
-            else throw new ResourceErrorException("Not enough resources");
+            else throw new ResourceErrorException("Depot 3 doesn't have this many resources",(depot3.getKey().isPresent())?depot3.getKey().get():null,-quantity);
         }
         else throw new IllegalArgumentException("Invalid depot number");
     }

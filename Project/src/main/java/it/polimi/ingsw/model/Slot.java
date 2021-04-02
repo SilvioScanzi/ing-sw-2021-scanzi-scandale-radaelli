@@ -1,4 +1,6 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.exceptions.InvalidPlacementException;
+
 import java.util.*;
 
 public class Slot {
@@ -19,7 +21,7 @@ public class Slot {
         return developmentcards;
     }
 
-    public void addCard(DevelopmentCard DC) throws InvalidPlacementException{
+    public void addCard(DevelopmentCard DC) throws InvalidPlacementException {
         if(developmentcards.empty()){
             if(DC.getLevel()==1)  developmentcards.push(DC);
             else throw new InvalidPlacementException("Not level 1 card");
