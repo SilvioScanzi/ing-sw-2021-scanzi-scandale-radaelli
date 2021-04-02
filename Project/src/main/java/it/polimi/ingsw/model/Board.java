@@ -7,7 +7,8 @@ public class Board {
     private Warehouse warehouse;
     private Strongbox strongbox;
     private final Slot[] slots;
-    private final ArrayList<LeaderCard> leadercards;
+    private final ArrayList<LeaderCard> leadercardshand;
+    private final ArrayList<LeaderCard> leadercardsplayed;
 
     public Board(String nickname, ArrayList<LeaderCard> leadercards) {
         faithtrack = new FaithTrack();
@@ -17,15 +18,8 @@ public class Board {
         for(int i=0;i<3;i++){
             slots[i] = new Slot();
         }
-        this.leadercards = new ArrayList<LeaderCard> (leadercards);
-    }
-
-    public Board(Board newBoard) {
-        this.faithtrack = newBoard.faithtrack;
-        this.warehouse = newBoard.warehouse;
-        this.strongbox = newBoard.strongbox;
-        this.slots = newBoard.slots;
-        this.leadercards = newBoard.leadercards;
+        leadercardshand = new ArrayList<LeaderCard> (leadercards);
+        leadercardsplayed = new ArrayList<LeaderCard>();
     }
 
     public FaithTrack getFaithtrack() {
@@ -50,7 +44,7 @@ public class Board {
     }
 
     public ArrayList<LeaderCard> getLeadercards() {
-        return leadercards;
+        return leadercardshand;
     }
 
     public void setWarehouse(Warehouse warehouse) {

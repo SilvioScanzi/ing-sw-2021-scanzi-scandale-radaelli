@@ -1,16 +1,14 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.Game;
-
 public class Ability {
     public enum AbilityType {DiscountAbility,ExtraSlotAbility,ProductionPowerAbility,WhiteMarbleAbility}
 
     private AbilityType type;
-    private Game.Resources restype;
+    private Resources restype;
     private int capacity;           //only for ExtraSlot
     private boolean activated;      //only for ProductionPower
 
-    public Ability(AbilityType type,Game.Resources restype) {
+    public Ability(AbilityType type,Resources restype) {
         this.type = type;
         this.restype = restype;
         if(this.type.equals(AbilityType.ExtraSlotAbility)){
@@ -26,7 +24,7 @@ public class Ability {
         return type;
     }
 
-    public Game.Resources getRestype() {
+    public Resources getRestype() {
         return restype;
     }
 
@@ -38,7 +36,7 @@ public class Ability {
         return activated;
     }
 
-    public Pair<Game.Resources,Integer> updateCapacity(Game.Resources resource, int amount) throws IllegalArgumentException, ResourceErrorException {
+    public Pair<Resources,Integer> updateCapacity(Resources resource, int amount) throws IllegalArgumentException, ResourceErrorException {
         if(!(resource.equals(restype))) throw new IllegalArgumentException("Not compatible resource");
         if(amount + capacity > 2){
             throw new ResourceErrorException("Too many resources");
@@ -51,14 +49,14 @@ public class Ability {
         else return new Pair<>(resource,0);
     }
 
-    public void activate(Game.Resources resUsed) throws IllegalArgumentException{
-        if(!(type.equals(AbilityType.ProductionPowerAbility))) throw new IllegalArgumentException("Not activatable");
+    public void activate(Resources resUsed) throws IllegalArgumentException{
+        if(!(type.equals(AbilityType.ProductionPowerAbility))) throw new IllegalArgumentException("Not activable");
         if(!(resUsed.equals(restype))) throw new IllegalArgumentException("Wrong resource");
         activated = true;
     }
 
     public void deActivate(){
-        if(!(type.equals(AbilityType.ProductionPowerAbility))) throw new IllegalArgumentException("Not activatable");
+        if(!(type.equals(AbilityType.ProductionPowerAbility))) throw new IllegalArgumentException("Not activable");
         activated = false;
     }
 }

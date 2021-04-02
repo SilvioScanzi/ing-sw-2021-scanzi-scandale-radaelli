@@ -1,21 +1,19 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.Game;
-
 import java.util.*;
 
 public class DevelopmentCard {
     private final int level;
-    private final Game.Colours colour;
+    private final Colours colour;
     private final int victoryPoints;
-    private final HashMap<Game.Resources,Integer> cost;               //Resources required to buy the card
-    private final HashMap<Game.Resources,Integer> requiredResources;  //Resources required to activate production power
-    private final HashMap<Game.Resources,Integer> producedResources;  //Resources produced during the activation
+    private final HashMap<Resources,Integer> cost;               //Resources required to buy the card
+    private final HashMap<Resources,Integer> requiredResources;  //Resources required to activate production power
+    private final HashMap<Resources,Integer> producedResources;  //Resources produced during the activation
     private final int producedFaith;                              //Faith produced during the activation
     private boolean activated;
 
-    public DevelopmentCard(int level, Game.Colours colour, int victoryPoints, HashMap<Game.Resources, Integer> cost,
-                           HashMap<Game.Resources, Integer> requiredResources, HashMap<Game.Resources, Integer> producedResources, int producedFaith) {
+    public DevelopmentCard(int level, Colours colour, int victoryPoints, HashMap<Resources, Integer> cost,
+                           HashMap<Resources, Integer> requiredResources, HashMap<Resources, Integer> producedResources, int producedFaith) {
         this.level = level;
         this.colour = colour;
         this.victoryPoints = victoryPoints;
@@ -30,7 +28,7 @@ public class DevelopmentCard {
         return level;
     }
 
-    public Game.Colours getColour() {
+    public Colours getColour() {
         return colour;
     }
 
@@ -38,15 +36,15 @@ public class DevelopmentCard {
         return victoryPoints;
     }
 
-    public HashMap<Game.Resources, Integer> getCost() {
+    public HashMap<Resources, Integer> getCost() {
         return cost;
     }
 
-    public HashMap<Game.Resources, Integer> getrequiredResources() {
+    public HashMap<Resources, Integer> getrequiredResources() {
         return requiredResources;
     }
 
-    public HashMap<Game.Resources, Integer> getproducedResources() {
+    public HashMap<Resources, Integer> getproducedResources() {
         return producedResources;
     }
 

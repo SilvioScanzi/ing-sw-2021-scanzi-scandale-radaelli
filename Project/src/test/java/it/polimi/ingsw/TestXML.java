@@ -1,13 +1,12 @@
 package it.polimi.ingsw;
-import it.polimi.ingsw.model.DevelopmentCard;
-import it.polimi.ingsw.model.DevelopmentCardMarket;
+import it.polimi.ingsw.model.*;
 
 public class TestXML {
     public static void main(String[] args){
         DevelopmentCardMarket DC = new DevelopmentCardMarket();
-        DevelopmentCard D = DC.getFirstCard(Game.Colours.Green,1);
+        DevelopmentCard D = DC.getFirstCard(Colours.Green,1);
         System.out.println("livello: " + D.getLevel());
-        if(D.getColour().equals(Game.Colours.Green)) System.out.println("Colore: verde");
+        if(D.getColour().equals(Colours.Green)) System.out.println("Colore: verde");
         else System.out.println("Colore: Blu");
         System.out.println("COSTO:");
         D.getCost().entrySet().forEach(entry -> {
@@ -23,9 +22,9 @@ public class TestXML {
         });
         System.out.println("Fede:" + D.getproducedFaith() + "\n");
 
-        D = DC.getFirstCard(Game.Colours.Green,1);
+        D = DC.getFirstCard(Colours.Green,1);
         System.out.println("livello: " + D.getLevel());
-        if(D.getColour().equals(Game.Colours.Green)) System.out.println("Colore: verde");
+        if(D.getColour().equals(Colours.Green)) System.out.println("Colore: verde");
         else System.out.println("Colore: Blu");
         System.out.println("COSTO:");
         D.getCost().entrySet().forEach(entry -> {

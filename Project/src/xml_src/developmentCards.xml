@@ -216,10 +216,6 @@
         <producedresources>Coins-1-Shields-3</producedresources>
         <producedfaith>0</producedfaith>
     </developmentcard>
-
-    <!--Da qui in poi da implementare. Risorse e costi da inserire -!In Ordine!- come compaiono sulla carta (Es vedi la carta di livello 3 blu da 12 punti-> 1 coin, 3 shields)-->
-    <!--N.B. Tutte le carte per ogni livello hanno lo stesso template, puoi modificare direttamente solo il colore, il costo e le risorse richieste e prodotte, le quantità sono corrette!-->
-
     <developmentcard>
         <level>1</level>
         <colour>Purple</colour>

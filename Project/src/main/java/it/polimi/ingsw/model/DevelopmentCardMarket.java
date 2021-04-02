@@ -1,5 +1,4 @@
 package it.polimi.ingsw.model;
-import it.polimi.ingsw.Game;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -7,23 +6,23 @@ import java.util.*;
 
 
 public class DevelopmentCardMarket {
-    private final Map<Pair<Game.Colours,Integer>,Stack<DevelopmentCard>> cardMarket;
+    private final Map<Pair<Colours,Integer>,Stack<DevelopmentCard>> cardMarket;
 
     public DevelopmentCardMarket(){
         //Instantiating one stack for every card deck (One for every combination of Color-Level)
         cardMarket = new HashMap<>();
-        cardMarket.put(new Pair<>(Game.Colours.Blue,1),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Blue,2),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Blue,3),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Green,1),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Green,2),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Green,3),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Purple,1),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Purple,2),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Purple,3),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Yellow,1),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Yellow,2),new Stack<>());
-        cardMarket.put(new Pair<>(Game.Colours.Yellow,3),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Blue,1),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Blue,2),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Blue,3),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Green,1),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Green,2),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Green,3),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Purple,1),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Purple,2),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Purple,3),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Yellow,1),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Yellow,2),new Stack<>());
+        cardMarket.put(new Pair<>(Colours.Yellow,3),new Stack<>());
 
         //XML file Parsing
         try{
@@ -49,7 +48,7 @@ public class DevelopmentCardMarket {
                 if (developmentcardnode.getNodeType() == Node.ELEMENT_NODE) {
                     Element developmentcardElement = (Element) developmentcardnode;
                     int level = Integer.parseInt(developmentcardElement.getElementsByTagName("level").item(0).getTextContent());
-                    Game.Colours colour = Game.Colours.valueOf(developmentcardElement.getElementsByTagName("colour").item(0).getTextContent());
+                    Colours colour = Colours.valueOf(developmentcardElement.getElementsByTagName("colour").item(0).getTextContent());
                     int victorypoints = Integer.parseInt(developmentcardElement.getElementsByTagName("victorypoints").item(0).getTextContent());
 
                     //Getting the cost String, splitting it into multiple strings
@@ -62,22 +61,22 @@ public class DevelopmentCardMarket {
                     int producedfaith = Integer.parseInt(developmentcardElement.getElementsByTagName("producedfaith").item(0).getTextContent());
 
                     //Generating the HashMap from costString
-                    HashMap<Game.Resources,Integer> cost = new HashMap<>();
+                    HashMap<Resources,Integer> cost = new HashMap<>();
                     for(int j=0; j< costString.length; j=j+2) {
-                        cost.put(Game.Resources.valueOf(costString[j]),Integer.parseInt(costString[j+1]));
+                        cost.put(Resources.valueOf(costString[j]),Integer.parseInt(costString[j+1]));
                     }
 
                     //Generating the HashMap from requiredresourcesString
-                    HashMap<Game.Resources,Integer> requiredresources = new HashMap<>();
+                    HashMap<Resources,Integer> requiredresources = new HashMap<>();
                     for(int j=0; j< requiredresourcesString.length; j=j+2) {
-                        requiredresources.put(Game.Resources.valueOf(requiredresourcesString[j]),Integer.parseInt(requiredresourcesString[j+1]));
+                        requiredresources.put(Resources.valueOf(requiredresourcesString[j]),Integer.parseInt(requiredresourcesString[j+1]));
                     }
 
                     //Generating the HashMap from producedresourcesString
-                    HashMap<Game.Resources,Integer> producedresources = new HashMap<>();
+                    HashMap<Resources,Integer> producedresources = new HashMap<>();
                     if(!(producedresourcesString[0].equals("NULL"))){
                         for(int j=0; j<producedresourcesString.length; j=j+2) {
-                            producedresources.put(Game.Resources.valueOf(producedresourcesString[j]),Integer.parseInt(producedresourcesString[j+1]));
+                            producedresources.put(Resources.valueOf(producedresourcesString[j]),Integer.parseInt(producedresourcesString[j+1]));
                         }
                     }
 
@@ -98,14 +97,14 @@ public class DevelopmentCardMarket {
         catch(Exception e) {e.printStackTrace();}
     }
 
-    public DevelopmentCard peekFirstCard(Game.Colours colour, int level) throws IllegalArgumentException{
-        Pair<Game.Colours,Integer> tmp1 = new Pair<>(colour,level);
+    public DevelopmentCard peekFirstCard(Colours colour, int level) throws IllegalArgumentException{
+        Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
         if(cardMarket.get(tmp1).empty()) throw new IllegalArgumentException("There's no card on the stack");
         return cardMarket.get(tmp1).peek();
     }
 
-    public DevelopmentCard getFirstCard(Game.Colours colour, int level) throws IllegalArgumentException{
-        Pair<Game.Colours,Integer> tmp1 = new Pair<>(colour,level);
+    public DevelopmentCard getFirstCard(Colours colour, int level) throws IllegalArgumentException{
+        Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
         if(cardMarket.get(tmp1).empty()) throw new IllegalArgumentException("There's no card on the stack");
         return cardMarket.get(tmp1).pop();
     }

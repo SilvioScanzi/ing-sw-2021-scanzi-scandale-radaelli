@@ -1,13 +1,10 @@
 package it.polimi.ingsw.model;
-
-import it.polimi.ingsw.Game;
-
 import java.util.*;
 
 public class Warehouse implements Cloneable {
-    private  Pair<Optional<Game.Resources>,Integer> depot1;
-    private  Pair<Optional<Game.Resources>,Integer> depot2;
-    private  Pair<Optional<Game.Resources>,Integer> depot3;
+    private  Pair<Optional<Resources>,Integer> depot1;
+    private  Pair<Optional<Resources>,Integer> depot2;
+    private  Pair<Optional<Resources>,Integer> depot3;
 
     public Warehouse(){
         depot1 = new Pair<>(Optional.empty(),0);
@@ -24,7 +21,7 @@ public class Warehouse implements Cloneable {
         return tmp;
     }
 
-    public Pair<Optional<Game.Resources>,Integer> getDepot(int depotNumber) throws IllegalArgumentException{
+    public Pair<Optional<Resources>,Integer> getDepot(int depotNumber) throws IllegalArgumentException{
         if(depotNumber==1)
             return depot1;
         else if(depotNumber==2)
@@ -35,7 +32,7 @@ public class Warehouse implements Cloneable {
             throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public void addDepot(int depotNumber, Game.Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException{
+    public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException{
         if(depotNumber==1){
             if(quantity>1 || quantity<0) throw new ResourceErrorException("Wrong placement");
             if(!(depot1.getKey().isPresent())){
@@ -69,12 +66,12 @@ public class Warehouse implements Cloneable {
             throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public Pair<Optional<Game.Resources>,Integer> subDepot(int depotNumber, int quantity) throws IllegalArgumentException, ResourceErrorException {
-         Pair<Optional<Game.Resources>,Integer> tmp;
+    public Pair<Resources,Integer> subDepot(int depotNumber, int quantity) throws IllegalArgumentException, ResourceErrorException {
+        Pair<Resources,Integer> tmp;
         if(depotNumber==1){
             if(quantity>1 || quantity<0) throw new ResourceErrorException("Wrong placement");
             if((depot1.getKey().isPresent())){
-                    tmp = new Pair<>(Optional.of(depot1.getKey().get()),quantity);
+                    tmp = new Pair<>(depot1.getKey().get(),quantity);
                     depot1.setPair(Optional.empty(),0);
                     return tmp;
             }
@@ -83,7 +80,7 @@ public class Warehouse implements Cloneable {
         else if(depotNumber==2){
             if(quantity>2 || quantity<0) throw new ResourceErrorException("Wrong placement");
             if((depot2.getKey().isPresent()) && (depot2.getValue() >= quantity)){
-                tmp = new Pair<>(Optional.of(depot2.getKey().get()),quantity);
+                tmp = new Pair<>(depot2.getKey().get(),quantity);
                 if(depot2.getValue() == quantity) {
                     depot2.setPair(Optional.empty(), 0);
                 }
@@ -97,7 +94,7 @@ public class Warehouse implements Cloneable {
         else if(depotNumber==3){
             if(quantity>3 || quantity<0) throw new ResourceErrorException("Wrong placement");
             if((depot3.getKey().isPresent()) && (depot3.getValue() >= quantity)){
-                tmp = new Pair<>(Optional.of(depot3.getKey().get()),quantity);
+                tmp = new Pair<>(depot3.getKey().get(),quantity);
                 if(depot3.getValue() == quantity) {
                     depot3.setPair(Optional.empty(), 0);
                 }

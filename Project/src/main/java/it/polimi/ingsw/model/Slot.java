@@ -1,8 +1,8 @@
 package it.polimi.ingsw.model;
-
 import java.util.*;
 
 public class Slot {
+    //Non va bene come Stack! bisogna poter "leggere" le carte sottostanti per i leader.
     private Stack<DevelopmentCard> developmentcards;
 
     public Slot() {

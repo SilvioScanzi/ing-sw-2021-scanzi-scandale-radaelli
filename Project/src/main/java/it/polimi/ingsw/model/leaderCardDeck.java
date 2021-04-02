@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.Game;
-
 import java.util.*;
 
 public class leaderCardDeck {
@@ -11,9 +9,9 @@ public class leaderCardDeck {
         ArrayList<LeaderCard> tmp = new ArrayList<>();
 
         tmp.add(new LeaderCard(false,false,4,
-                    new HashMap<Game.Colours,Pair<Integer,Integer>>() {{put(Game.Colours.Green,new Pair<>(2,1));}},
-                    new HashMap<Game.Resources,Integer>(),
-                        new Ability(Ability.AbilityType.DiscountAbility,Game.Resources.Coins))
+                    new HashMap<Colours,Pair<Integer,Integer>>() {{put(Colours.Green,new Pair<>(2,1));}},
+                    new HashMap<Resources,Integer>(),
+                        new Ability(Ability.AbilityType.DiscountAbility,Resources.Coins))
         );
 
         //fare un xml per tutte le carte

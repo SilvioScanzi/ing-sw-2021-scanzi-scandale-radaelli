@@ -1,30 +1,28 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.Game;
-
 import java.util.*;
 
 public class Market {
-    private final Game.Marbles[][] grid;
-    private Game.Marbles remainingMarble;
+    private final Marbles[][] grid;
+    private Marbles remainingMarble;
 
     public Market(){
-        ArrayList<Game.Marbles> tmp = new ArrayList<>();
-        tmp.add(Game.Marbles.Red);
-        tmp.add(Game.Marbles.Blue);
-        tmp.add(Game.Marbles.Blue);
-        tmp.add(Game.Marbles.Grey);
-        tmp.add(Game.Marbles.Grey);
-        tmp.add(Game.Marbles.White);
-        tmp.add(Game.Marbles.White);
-        tmp.add(Game.Marbles.White);
-        tmp.add(Game.Marbles.White);
-        tmp.add(Game.Marbles.Yellow);
-        tmp.add(Game.Marbles.Yellow);
-        tmp.add(Game.Marbles.Purple);
-        tmp.add(Game.Marbles.Purple);
+        ArrayList<Marbles> tmp = new ArrayList<>();
+        tmp.add(Marbles.Red);
+        tmp.add(Marbles.Blue);
+        tmp.add(Marbles.Blue);
+        tmp.add(Marbles.Grey);
+        tmp.add(Marbles.Grey);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.Yellow);
+        tmp.add(Marbles.Yellow);
+        tmp.add(Marbles.Purple);
+        tmp.add(Marbles.Purple);
 
-        grid = new Game.Marbles[3][4];
+        grid = new Marbles[3][4];
         int k=0;
         for(int i=0;i<3;i++){
             for(int j=0;j<4;j++){
@@ -37,29 +35,29 @@ public class Market {
         remainingMarble = tmp.remove(0);
     }
 
-    public Game.Marbles[][] getGrid() {
+    public Marbles[][] getGrid() {
         return grid;
     }
 
-    public Game.Marbles getRemainingMarble() {
+    public Marbles getRemainingMarble() {
         return remainingMarble;
     }
 
-    public void setRemainingMarble(Game.Marbles remainingMarble) {
+    public void setRemainingMarble(Marbles remainingMarble) {
         this.remainingMarble = remainingMarble;
     }
 
-    public ArrayList<Game.Marbles> updateMarket(boolean row, int i) throws IllegalArgumentException{
+    public ArrayList<Marbles> updateMarket(boolean row, int i) throws IllegalArgumentException{
         if(row){
             if (i>3 || i<1) throw new IllegalArgumentException("Row doesn't exist");
-            ArrayList<Game.Marbles> tmp = new ArrayList<Game.Marbles>();
+            ArrayList<Marbles> tmp = new ArrayList<Marbles>();
             for(int k=0;k<4;k++) tmp.add(grid[i-1][k]);
             update(row,i-1);
             return tmp;
         }
         else{
             if(i>4 || i<1) throw new IllegalArgumentException("Column doesn't exist");
-            ArrayList<Game.Marbles> tmp = new ArrayList<Game.Marbles>();
+            ArrayList<Marbles> tmp = new ArrayList<Marbles>();
             for(int k=0;k<3;k++) tmp.add(grid[k][i-1]);
             update(row,i-1);
             return tmp;
@@ -68,7 +66,7 @@ public class Market {
 
     private void update(boolean row, int i){
         if(row){
-            Game.Marbles tmp = grid[i][0];
+            Marbles tmp = grid[i][0];
             for(int j=0;j<3;j++){
                 grid[i][j]=grid[i][j+1];
             }
@@ -76,7 +74,7 @@ public class Market {
             remainingMarble=tmp;
         }
         else {
-            Game.Marbles tmp = grid[0][i];
+            Marbles tmp = grid[0][i];
             for(int j=0;j<2;j++){
                 grid[j][i]=grid[j+1][i];
             }

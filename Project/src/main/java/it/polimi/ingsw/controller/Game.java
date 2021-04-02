@@ -1,16 +1,8 @@
-package it.polimi.ingsw;
+package it.polimi.ingsw.controller;
 import it.polimi.ingsw.model.*;
-
-import javax.swing.text.html.Option;
 import java.util.*;
 
 public class Game {
-    //da mettere nella classe enumerations
-    public enum Marbles {Grey,Purple,Red,Blue,Yellow,White}
-    public enum Resources {Coins,Stones,Servants,Shields}
-    public enum Colours {Purple,Yellow,Green,Blue}
-    public enum ActionToken {Advance2,AdvanceAndRefresh,DeleteGreen,DeleteYellow,DeletePurple,DeleteBlue}
-
     private int inkwell;
     private int nplayer;
     private ArrayList<Pair<String,Board>> players;
@@ -41,12 +33,11 @@ public class Game {
         for(int i=0;i<nplayer;i++){
             players.add(new Pair<String,Board>(names[i],new Board(names[i],leadercarddeck.getLeaderCards())));
         }
-
     }
 
     //MANCA: controllo sugli sconti delle leader cards
     //Player (nickname) selects colour and level; method checks for costs and adds to the board
-    public void getDevelopmentCard(Colours c, int level,int player, int slotNumber){
+    public void getDevelopmentCard(Colours c, int level, int player, int slotNumber){
         DevelopmentCard DC = developmentcardmarket.peekFirstCard(c,level);
         HashMap<Resources, Integer> cost = new HashMap<>(DC.getCost());
 
@@ -54,9 +45,9 @@ public class Game {
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
-        //warehouse check and reduce rerources in cost, to show how many are still required in strongbox
+        //warehouse check and reduce resources in cost, to show how many are still required in strongbox
         for(int i=1;i<=3;i++){
-            Pair<Optional<Game.Resources>,Integer> tmp = wr.getDepot(i);
+            Pair<Optional<Resources>,Integer> tmp = wr.getDepot(i);
             if(tmp.getKey().isPresent()){
                 if(cost.get(tmp.getKey().get()) != null){
                     if(cost.get(tmp.getKey().get()) <= tmp.getValue()) {    //have enough resources
@@ -85,7 +76,7 @@ public class Game {
                 if(sb.getResource(r) - cost.get(r) < 0) check = false;  //not enough resources
                 else {
                     try{
-                        sb.updateResource(r,-cost.get(r));
+                        sb.subResource(r,cost.get(r));
                     }catch (Exception e){
                         e.printStackTrace();
                     }
