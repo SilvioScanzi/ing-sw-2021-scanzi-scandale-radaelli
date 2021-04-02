@@ -222,112 +222,114 @@
 
     <developmentcard>
         <level>1</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>1</victorypoints>
-        <cost>Shields-2</cost>
-        <requiredresources>Coins-1</requiredresources>
+        <cost>Servants-2</cost>
+        <requiredresources>Stones-1</requiredresources>
         <producedresources>NULL-0</producedresources>
         <producedfaith>1</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>1</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>2</victorypoints>
         <cost>Shields-1-Servants-1-Stones-1</cost>
-        <requiredresources>Stones-1</requiredresources>
-        <producedresources>Servants-1</producedresources>
+        <requiredresources>Coins-1</requiredresources>
+        <producedresources>Shields-1</producedresources>
         <producedfaith>0</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>1</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>3</victorypoints>
-        <cost>Shields-3</cost>
-        <requiredresources>Servants-2</requiredresources>
-        <producedresources>Coins-1-Shields-1-Stones-1</producedresources>
+        <cost>Servants-3</cost>
+        <requiredresources>Coins-2</requiredresources>
+        <producedresources>Servants-1-Shields-1-Stones-1</producedresources>
         <producedfaith>0</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>1</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>4</victorypoints>
-        <cost>Shields-2-Coins-2</cost>
-        <requiredresources>Stones-1-Servants-1</requiredresources>
-        <producedresources>Coins-2</producedresources>
+        <cost>Servants-2-Stones-2</cost>
+        <requiredresources>Coins-1-Shields-1</requiredresources>
+        <producedresources>Stones-2</producedresources>
         <producedfaith>1</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>2</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>5</victorypoints>
-        <cost>Shields-4</cost>
-        <requiredresources>Stones-1</requiredresources>
+        <cost>Servants-4</cost>
+        <requiredresources>Coins-1</requiredresources>
         <producedresources>NULL-0</producedresources>
         <producedfaith>2</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>2</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>6</victorypoints>
-        <cost>Shields-3-Servants-2</cost>
-        <requiredresources>Shields-1-Servants-1</requiredresources>
-        <producedresources>Stones-3</producedresources>
+        <cost>Servants-3-Coins-2</cost>
+        <requiredresources>Coins-1-Servants-1</requiredresources>
+        <producedresources>shields-3</producedresources>
         <producedfaith>0</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>2</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>7</victorypoints>
-        <cost>Shields-5</cost>
-        <requiredresources>Coins-2</requiredresources>
-        <producedresources>Stones-2</producedresources>
+        <cost>Servants-5</cost>
+        <requiredresources>Stones-2</requiredresources>
+        <producedresources>Coins-2</producedresources>
         <producedfaith>2</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>2</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>8</victorypoints>
-        <cost>Shields-3-Coins-3</cost>
-        <requiredresources>Coins-1</requiredresources>
-        <producedresources>Shields-2</producedresources>
+        <cost>Servants-3-Shields-3</cost>
+        <requiredresources>Stones-1</requiredresources>
+        <producedresources>Servants-2</producedresources>
         <producedfaith>1</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>3</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>9</victorypoints>
-        <cost>Shields-6</cost>
-        <requiredresources>Servants-2</requiredresources>
-        <producedresources>Stones-3</producedresources>
+        <cost>Servants-6</cost>
+        <requiredresources>Stones-2</requiredresources>
+        <producedresources>Coins-3</producedresources>
         <producedfaith>2</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>3</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>10</victorypoints>
-        <cost>Shields-5-Servants-2</cost>
-        <requiredresources>Coins-1-Servants-1</requiredresources>
-        <producedresources>Coins-2-Stones-2</producedresources>
+        <cost>Servants-5-Coins-2</cost>
+        <requiredresources>Stones-1-Shields-1</requiredresources>
+        <producedresources>Coins-2-Servants-2</producedresources>
         <producedfaith>1</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>3</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>11</victorypoints>
-        <cost>Shields-7</cost>
-        <requiredresources>Servants-1</requiredresources>
-        <producedresources>Coins-1</producedresources>
+        <cost>Servants-7</cost>
+        <requiredresources>Coins-1</requiredresources>
+        <producedresources>Stones-1</producedresources>
         <producedfaith>3</producedfaith>
     </developmentcard>
     <developmentcard>
         <level>3</level>
-        <colour>Green</colour>
+        <colour>Purple</colour>
         <victorypoints>12</victorypoints>
-        <cost>Shields-4-Coins-4</cost>
-        <requiredresources>Stones-1</requiredresources>
-        <producedresources>Coins-3-Shields-1</producedresources>
+        <cost>Servants-4-Shields-4</cost>
+        <requiredresources>Coins-1</requiredresources>
+        <producedresources>Stones-3-Shields-1</producedresources>
         <producedfaith>0</producedfaith>
     </developmentcard>
+
+    //Da qui in poi yellow
     <developmentcard>
         <level>1</level>
         <colour>Blue</colour>
