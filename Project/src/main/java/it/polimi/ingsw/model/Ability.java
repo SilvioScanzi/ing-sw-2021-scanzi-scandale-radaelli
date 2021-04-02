@@ -1,4 +1,5 @@
 package it.polimi.ingsw.model;
+
 import it.polimi.ingsw.Game;
 
 public class Ability {

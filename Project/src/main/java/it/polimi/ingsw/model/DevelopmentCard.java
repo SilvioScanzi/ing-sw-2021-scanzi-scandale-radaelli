@@ -1,4 +1,5 @@
 package it.polimi.ingsw.model;
+
 import it.polimi.ingsw.Game;
 
 import java.util.*;
@@ -7,14 +8,14 @@ public class DevelopmentCard {
     private final int level;
     private final Game.Colours colour;
     private final int victoryPoints;
-    private final Map<Game.Resources,Integer> cost;               //Resources required to buy the card
-    private final Map<Game.Resources,Integer> requiredResources;  //Resources required to activate production power
-    private final Map<Game.Resources,Integer> producedResources;  //Resources produced during the activation
+    private final HashMap<Game.Resources,Integer> cost;               //Resources required to buy the card
+    private final HashMap<Game.Resources,Integer> requiredResources;  //Resources required to activate production power
+    private final HashMap<Game.Resources,Integer> producedResources;  //Resources produced during the activation
     private final int producedFaith;                              //Faith produced during the activation
     private boolean activated;
 
-    public DevelopmentCard(int level, Game.Colours colour, int victoryPoints, Map<Game.Resources, Integer> cost, 
-                           Map<Game.Resources, Integer> requiredResources, Map<Game.Resources, Integer> producedResources, int producedFaith) {
+    public DevelopmentCard(int level, Game.Colours colour, int victoryPoints, HashMap<Game.Resources, Integer> cost,
+                           HashMap<Game.Resources, Integer> requiredResources, HashMap<Game.Resources, Integer> producedResources, int producedFaith) {
         this.level = level;
         this.colour = colour;
         this.victoryPoints = victoryPoints;
@@ -37,15 +38,15 @@ public class DevelopmentCard {
         return victoryPoints;
     }
 
-    public Map<Game.Resources, Integer> getCost() {
+    public HashMap<Game.Resources, Integer> getCost() {
         return cost;
     }
 
-    public Map<Game.Resources, Integer> getrequiredResources() {
+    public HashMap<Game.Resources, Integer> getrequiredResources() {
         return requiredResources;
     }
 
-    public Map<Game.Resources, Integer> getproducedResources() {
+    public HashMap<Game.Resources, Integer> getproducedResources() {
         return producedResources;
     }
 

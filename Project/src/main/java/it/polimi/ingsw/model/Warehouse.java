@@ -1,9 +1,10 @@
 package it.polimi.ingsw.model;
+
 import it.polimi.ingsw.Game;
 
 import java.util.*;
 
-public class Warehouse {
+public class Warehouse implements Cloneable {
     private  Pair<Optional<Game.Resources>,Integer> depot1;
     private  Pair<Optional<Game.Resources>,Integer> depot2;
     private  Pair<Optional<Game.Resources>,Integer> depot3;
@@ -12,6 +13,15 @@ public class Warehouse {
         depot1 = new Pair<>(Optional.empty(),0);
         depot2 = new Pair<>(Optional.empty(),0);
         depot3 = new Pair<>(Optional.empty(),0);
+    }
+
+    @Override
+    public Warehouse clone() {
+        Warehouse tmp = new Warehouse();
+        tmp.depot1 = new Pair<>(this.depot1.getKey(),this.depot1.getValue());
+        tmp.depot2 = new Pair<>(this.depot2.getKey(),this.depot2.getValue());
+        tmp.depot3 = new Pair<>(this.depot3.getKey(),this.depot3.getValue());
+        return tmp;
     }
 
     public Pair<Optional<Game.Resources>,Integer> getDepot(int depotNumber) throws IllegalArgumentException{

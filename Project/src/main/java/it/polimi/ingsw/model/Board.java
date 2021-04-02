@@ -3,15 +3,13 @@ package it.polimi.ingsw.model;
 import java.util.*;
 
 public class Board {
-    private final String nickname;
     private final FaithTrack faithtrack;
-    private final Warehouse warehouse;
-    private final Strongbox strongbox;
+    private Warehouse warehouse;
+    private Strongbox strongbox;
     private final Slot[] slots;
     private final ArrayList<LeaderCard> leadercards;
 
     public Board(String nickname, ArrayList<LeaderCard> leadercards) {
-        this.nickname = nickname;
         faithtrack = new FaithTrack();
         warehouse = new Warehouse();
         strongbox = new Strongbox();
@@ -22,8 +20,12 @@ public class Board {
         this.leadercards = new ArrayList<LeaderCard> (leadercards);
     }
 
-    public String getNickname() {
-        return nickname;
+    public Board(Board newBoard) {
+        this.faithtrack = newBoard.faithtrack;
+        this.warehouse = newBoard.warehouse;
+        this.strongbox = newBoard.strongbox;
+        this.slots = newBoard.slots;
+        this.leadercards = newBoard.leadercards;
     }
 
     public FaithTrack getFaithtrack() {
@@ -42,7 +44,20 @@ public class Board {
         return slots;
     }
 
+    public Slot getSlot(int index) throws IllegalArgumentException{
+        if(index < 1 || index > 3) throw new IllegalArgumentException("Invalid slot: index must be between 1 and 3");
+        return slots[index-1];
+    }
+
     public ArrayList<LeaderCard> getLeadercards() {
         return leadercards;
+    }
+
+    public void setWarehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
+    }
+
+    public void setStrongbox(Strongbox strongbox) {
+        this.strongbox = strongbox;
     }
 }

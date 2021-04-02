@@ -103,6 +103,7 @@ public class DevelopmentCardMarket {
         if(cardMarket.get(tmp1).empty()) throw new IllegalArgumentException("There's no card on the stack");
         return cardMarket.get(tmp1).peek();
     }
+
     public DevelopmentCard getFirstCard(Game.Colours colour, int level) throws IllegalArgumentException{
         Pair<Game.Colours,Integer> tmp1 = new Pair<>(colour,level);
         if(cardMarket.get(tmp1).empty()) throw new IllegalArgumentException("There's no card on the stack");
