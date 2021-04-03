@@ -90,6 +90,7 @@ public class Game {
                 requestedSlot.addCard(DC);      //TESTING: si modifica anche nell board reale?
                 playerBoard.setWarehouse(wr);
                 playerBoard.setStrongbox(sb);
+                developmentcardmarket.getFirstCard(c,level);
             }catch (Exception e){
                 e.printStackTrace();
             }
