@@ -9,6 +9,9 @@ public class Board {
     private final Slot[] slots;
     private final ArrayList<LeaderCard> leadercardshand;
     private final ArrayList<LeaderCard> leadercardsplayed;
+    private ArrayList<Resources> hand;
+    private boolean flagIncompatibleResources;
+    private boolean flagResourceError;
 
     public Board(String nickname, ArrayList<LeaderCard> leadercards) {
         faithtrack = new FaithTrack();
@@ -20,6 +23,33 @@ public class Board {
         }
         leadercardshand = new ArrayList<LeaderCard> (leadercards);
         leadercardsplayed = new ArrayList<LeaderCard>();
+        hand = new ArrayList<>();
+        flagIncompatibleResources = false;
+        flagResourceError = false;
+    }
+
+    public void setFlagIncompatibleResources(boolean flagIncompatibleResources) {
+        this.flagIncompatibleResources = flagIncompatibleResources;
+    }
+
+    public void setFlagResourceError(boolean flagResourceError) {
+        this.flagResourceError = flagResourceError;
+    }
+
+    public void clearWarehouse(){
+        hand.addAll(warehouse.clear());
+    }
+
+    public ArrayList<Resources> getHand() {
+        return hand;
+    }
+
+    public ArrayList<LeaderCard> getLeadercardsplayed() {
+        return leadercardsplayed;
+    }
+
+    public void setHand(ArrayList<Resources> hand) {
+        this.hand = hand;
     }
 
     public FaithTrack getFaithtrack() {

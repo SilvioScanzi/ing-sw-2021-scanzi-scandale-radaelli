@@ -5,28 +5,27 @@ import java.util.*;
 
 public class Slot {
     //Non va bene come Stack! bisogna poter "leggere" le carte sottostanti per i leader.
-    private Stack<DevelopmentCard> developmentcards;
+    private ArrayList<DevelopmentCard> developmentcards;
 
     public Slot() {
-        developmentcards = new Stack<DevelopmentCard>();
+        developmentcards = new ArrayList<>();
     }
 
     public Optional<DevelopmentCard> getFirstCard(){
-        if(developmentcards.empty())
-            return Optional.empty();
-        return Optional.of(developmentcards.peek());
+        if(developmentcards.size()==0) return Optional.empty();
+        else return Optional.of(developmentcards.get(developmentcards.size()-1));
     }
 
-    public Stack<DevelopmentCard> getDevelopmentcards() {
+    public ArrayList<DevelopmentCard> getDevelopmentcards() {
         return developmentcards;
     }
 
     public void addCard(DevelopmentCard DC) throws InvalidPlacementException {
-        if(developmentcards.empty()){
-            if(DC.getLevel()==1)  developmentcards.push(DC);
+        if(developmentcards.size()==0){
+            if(DC.getLevel()==1)  developmentcards.add(DC);
             else throw new InvalidPlacementException("Not level 1 card");
         }
-        else if(developmentcards.peek().getLevel() == DC.getLevel() - 1)  developmentcards.push(DC);
+        else if(developmentcards.get(developmentcards.size()-1).getLevel() == DC.getLevel() - 1)  developmentcards.add(DC);
         else throw new InvalidPlacementException("Not correct card level");
     }
 }

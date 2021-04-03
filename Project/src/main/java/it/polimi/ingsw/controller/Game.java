@@ -1,4 +1,5 @@
 package it.polimi.ingsw.controller;
+import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import java.util.*;
 
@@ -31,11 +32,81 @@ public class Game {
         nplayer = names.length;
         inkwell = (int)(Math.random() * nplayer);
         for(int i=0;i<nplayer;i++){
-            players.add(new Pair<String,Board>(names[i],new Board(names[i],leadercarddeck.getLeaderCards())));
+            players.add(new Pair<>(names[i],new Board(names[i],leadercarddeck.getLeaderCards())));
         }
     }
 
+    public void popeEvent(int index){
+        if(!(vaticanReport[index-1])) {
+           for(int i=0;i<nplayer;i++){
+               players.get(i).getValue().getFaithtrack().setPopeFavor(index);
+           }
+           vaticanReport[index-1] = true;
+        }
+    }
+
+    public void getMarketResources(int player, boolean row, int i){
+        Board playerBoard = players.get(player).getValue();
+        ArrayList<Marbles> marbles = market.updateMarket(row,i);
+        playerBoard.getHand().addAll(conversion(marbles,playerBoard));
+        playerBoard.clearWarehouse();
+    }
+
+    //MANCA: controllo sulle leader cards
+    private ArrayList<Resources> conversion(ArrayList<Marbles> marbles, Board playerBoard){
+        ArrayList<LeaderCard> leadercardsplayed = playerBoard.getLeadercardsplayed();
+        ArrayList<Resources> tmp = new ArrayList<>();
+        for(Marbles m : marbles){
+            switch(m){
+                case Blue: tmp.add(Resources.Shields);
+                case Grey: tmp.add(Resources.Stones);
+                case Purple: tmp.add(Resources.Servants);
+                case Yellow: tmp.add(Resources.Coins);
+                case Red: {
+                    playerBoard.getFaithtrack().advanceTrack();
+                    if(playerBoard.getFaithtrack().checkPopeFavor()!=-1) popeEvent(playerBoard.getFaithtrack().checkPopeFavor());
+                }
+                //case White:;
+            }
+        }
+        return tmp;
+    }
+
+    public void setResources(int player, Resources r, int depot){
+        Board playerBoard = players.get(player).getValue();
+        try{
+            playerBoard.getWarehouse().addDepot(depot,r,1);
+        }
+        catch(IllegalArgumentException e){
+            e.printStackTrace();
+        }
+        catch(ResourceErrorException e){
+            playerBoard.setFlagResourceError(true);
+        }
+        catch(IncompatibleResourceException e){
+            playerBoard.setFlagIncompatibleResources(true);
+        }
+    }
+
+    public void discardRemainingResources(int player){
+        Board playerBoard = players.get(player).getValue();
+        for(Resources r : playerBoard.getHand()){
+            for(int i=0;i<nplayer;i++){
+                if(i!=player){
+                    players.get(i).getValue().getFaithtrack().advanceTrack();
+                }
+            }
+            int cell=-1;
+            for(int i=0;i<nplayer;i++){
+                cell = Math.max(players.get(i).getValue().getFaithtrack().checkPopeFavor(),cell);
+            }
+            if(cell!=-1) popeEvent(cell);
+        }
+        playerBoard.setHand(new ArrayList<>());
+    }
+
     //MANCA: controllo sugli sconti delle leader cards
+    //MANCA: controllo sulle risorse delle leader cards
     //Player (nickname) selects colour and level; method checks for costs and adds to the board
     public void getDevelopmentCard(Colours c, int level, int player, int slotNumber){
         DevelopmentCard DC = developmentcardmarket.peekFirstCard(c,level);

@@ -50,14 +50,14 @@ public class Market {
     public ArrayList<Marbles> updateMarket(boolean row, int i) throws IllegalArgumentException{
         if(row){
             if (i>3 || i<1) throw new IllegalArgumentException("Row doesn't exist");
-            ArrayList<Marbles> tmp = new ArrayList<Marbles>();
+            ArrayList<Marbles> tmp = new ArrayList<>();
             for(int k=0;k<4;k++) tmp.add(grid[i-1][k]);
             update(row,i-1);
             return tmp;
         }
         else{
             if(i>4 || i<1) throw new IllegalArgumentException("Column doesn't exist");
-            ArrayList<Marbles> tmp = new ArrayList<Marbles>();
+            ArrayList<Marbles> tmp = new ArrayList<>();
             for(int k=0;k<3;k++) tmp.add(grid[k][i-1]);
             update(row,i-1);
             return tmp;
