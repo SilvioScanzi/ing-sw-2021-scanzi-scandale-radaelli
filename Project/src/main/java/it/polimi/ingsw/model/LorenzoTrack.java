@@ -7,6 +7,11 @@ public class LorenzoTrack {
         blackCross=0;
     }
 
+    @Override
+    public String toString(){
+        return "Lorenzo è nella posizione: "+blackCross;
+    }
+
     public int getBlackCross() {
         return blackCross;
     }

@@ -35,6 +35,19 @@ public class Market {
         remainingMarble = tmp.remove(0);
     }
 
+    @Override
+    public String toString(){
+        String tmp = "Mercato delle risorse:\n";
+        for(int i=0;i<3;i++){
+            for(int j=0;j<4;j++){
+                tmp=tmp.concat(grid[i][j].abbreviation() + " ");
+            }
+            tmp=tmp.concat("\n");
+        }
+        tmp=tmp.concat("La biglia rimanente è: "+remainingMarble.toString());
+        return tmp;
+    }
+
     public Marbles[][] getGrid() {
         return grid;
     }

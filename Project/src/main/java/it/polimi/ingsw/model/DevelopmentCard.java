@@ -1,5 +1,4 @@
 package it.polimi.ingsw.model;
-
 import java.util.*;
 
 public class DevelopmentCard {
@@ -22,6 +21,24 @@ public class DevelopmentCard {
         this.producedResources = producedResources;
         this.producedFaith = producedFaith;
         activated = false;
+    }
+
+    @Override
+    public String toString(){
+        String tmp = new String("Livello: "+this.level+"\nColore: "+this.colour.toString()+"\nPunti vittoria: "+this.victoryPoints+"\nCosto:");
+        for(Resources r:cost.keySet()){
+            tmp = tmp.concat("\nRisorsa: "+r.toString()+" Quantità: "+cost.get(r));
+        }
+        tmp=tmp.concat("\nRisorse richieste nella produzione:");
+        for(Resources r:requiredResources.keySet()){
+            tmp = tmp.concat("\nRisorsa: "+r.toString()+" Quantità: "+requiredResources.get(r));
+        }
+        tmp=tmp.concat("\nRisorse prodotte nella produzione:");
+        for(Resources r:producedResources.keySet()){
+            tmp = tmp.concat("\nRisorsa: "+r.toString()+" Quantità: "+producedResources.get(r));
+        }
+        tmp=tmp.concat("\nFede prodotta: "+this.producedFaith);
+        return tmp;
     }
 
     public int getLevel() {

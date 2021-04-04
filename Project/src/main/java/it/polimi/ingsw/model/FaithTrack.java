@@ -9,6 +9,20 @@ public class FaithTrack {
         PopeFavor = new boolean[] {false,false,false};
     }
 
+    @Override
+    public String toString(){
+        String tmp = new String("Il segnalino fede è sullo spazio numero: "+FaithMarker);
+        boolean flag=false;
+        for(int i=0;i<3;i++){
+            if(PopeFavor[i]) tmp=tmp.concat("\nHai ottenuto il segnalino papale numero: "+i);
+            flag=true;
+        }
+        if(!flag){
+            tmp=tmp.concat("\nNon hai ottenuto nessun segnalino favore papale");
+        }
+        return tmp;
+    }
+
     public int getFaithMarker() {
         return FaithMarker;
     }

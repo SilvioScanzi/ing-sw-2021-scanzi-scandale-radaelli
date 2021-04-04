@@ -23,6 +23,11 @@ public class ActionStack {
         }
     }
 
+    @Override
+    public String toString(){
+        return "La pila ha: "+stack.size()+" segnalini azione";
+    }
+
     public ActionToken Draw(){
         return stack.pop();
     }
