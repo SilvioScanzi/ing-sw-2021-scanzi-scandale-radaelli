@@ -59,6 +59,8 @@ public class Warehouse implements Cloneable {
     public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException {
         if(depotNumber==1){
             if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 can't contain these resources",resource,quantity);
+            if(depot2.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 2 has already got this resource");
+            if(depot3.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 3 has already got this resource");
             if(!(depot1.getKey().isPresent())){
                 depot1.setPair(Optional.of(resource),quantity);
             }
@@ -66,6 +68,8 @@ public class Warehouse implements Cloneable {
         }
         else if(depotNumber==2) {
             if (quantity>2 || quantity<0) throw new ResourceErrorException("Depot 2 can't contain these resources",resource,quantity);
+            if(depot1.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 1 has already got this resource");
+            if(depot3.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 3 has already got this resource");
             if(!(depot2.getKey().isPresent())){
                 depot2.setPair(Optional.of(resource),quantity);
             }
@@ -77,6 +81,8 @@ public class Warehouse implements Cloneable {
         }
         else if(depotNumber==3){
             if (quantity>3 || quantity<0) throw new ResourceErrorException("Depot 3 can't contain these resources",resource,quantity);
+            if(depot1.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 1 has already got this resource");
+            if(depot2.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 2 has already got this resource");
             if(!(depot3.getKey().isPresent())){
                 depot3.setPair(Optional.of(resource),quantity);
             }

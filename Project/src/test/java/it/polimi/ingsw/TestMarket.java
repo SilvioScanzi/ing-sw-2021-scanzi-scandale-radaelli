@@ -16,9 +16,13 @@ public class TestMarket {
         Warehouse w = new Warehouse();
         try{w.addDepot(1,Resources.Coins,1);}
         catch(Exception e) {e.printStackTrace();}
-        try{w.addDepot(2,Resources.Shields,0);}
+        try{w.addDepot(2,Resources.Stones,2);}
         catch(Exception e) {e.printStackTrace();}
-        try{w.addDepot(3,Resources.Stones,3);}
+        try{w.addDepot(3,Resources.Coins,3);}
+        catch(Exception e) {e.printStackTrace();}
+        try{w.addDepot(3,Resources.Shields,1);}
+        catch(Exception e) {e.printStackTrace();}
+        try{w.addDepot(3,Resources.Shields,1);}
         catch(Exception e) {e.printStackTrace();}
         System.out.println("\n"+w.toString());
 
