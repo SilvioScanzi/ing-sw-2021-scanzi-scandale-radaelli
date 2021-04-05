@@ -17,6 +17,13 @@ public class LorenzoTrack {
     }
 
     public void advanceBlackCross(){
-        blackCross = blackCross+1;
+        if(blackCross<24) blackCross = blackCross+1;
+    }
+
+    public int checkPopeFavor(){
+        if(blackCross == 8 || blackCross == 16 || blackCross == 24){
+            return blackCross/8;
+        }
+        else return -1;
     }
 }

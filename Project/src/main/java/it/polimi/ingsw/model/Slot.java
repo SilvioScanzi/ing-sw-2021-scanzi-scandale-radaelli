@@ -14,7 +14,7 @@ public class Slot {
 
     public Optional<DevelopmentCard> getFirstCard(){
         if(developmentcards.size()==0) return Optional.empty();
-        else return Optional.of(developmentcards.get(developmentcards.size()-1));
+        else return Optional.ofNullable(developmentcards.get(developmentcards.size()-1));
     }
 
     public ArrayList<DevelopmentCard> getDevelopmentcards() {

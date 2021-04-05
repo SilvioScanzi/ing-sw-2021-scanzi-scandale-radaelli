@@ -89,41 +89,70 @@ public class Board {
         this.strongbox = strongbox;
     }
 
-    public void baseProduction(ArrayList<Resources> usedResources, Resources gotResource) throws IllegalArgumentException{
-        ArrayList<Pair<Integer,Resources>> depotResource = new ArrayList<>();   //1,2,3 for depots; 4 for strongbox
+    public void production(ArrayList<Resources> usedResources, ArrayList<Resources> gotResource) throws IllegalArgumentException{
+        int count = 0;
+        Warehouse wr = warehouse.clone();
+        Strongbox sb = strongbox.clone();
 
         for(Resources res : usedResources){
-            if(warehouse.checkResourcePresent(1,res)) {
-                depotResource.add(new Pair<>(1,res));
-                usedResources.remove(res);
+            if(wr.checkResourcePresent(1,res)) {
+                try{
+                    wr.subDepot(1,1);
+                    count++;
+                }catch(Exception e){e.printStackTrace();}
             }
-            else if(warehouse.checkResourcePresent(2,res)) {
-                depotResource.add(new Pair<>(2,res));
-                usedResources.remove(res);
+            else if(wr.checkResourcePresent(2,res)) {
+                try{
+                    wr.subDepot(2,1);
+                    count++;
+                }catch(Exception e){e.printStackTrace();}
             }
-            else if(warehouse.checkResourcePresent(3,res)) {
-                depotResource.add(new Pair<>(3,res));
-                usedResources.remove(res);
+            else if(wr.checkResourcePresent(3,res)) {
+                try{
+                    wr.subDepot(3,1);
+                    count++;
+                }catch(Exception e){e.printStackTrace();}
             }
         }
 
         for(Resources res : usedResources){
-           if(strongbox.getResource(res) > 0 ){
-               depotResource.add(new Pair<>(4,res));
-               usedResources.remove(res);
+           if(sb.getResource(res) > 0 ){
+               try{
+                   sb.subResource(res,1);
+                   count++;
+               }catch(Exception e){e.printStackTrace();}
            }
         }
 
-        if(depotResource.size()==2){
-            try{
-                for(int i=0; i<2; i++){
-                    if(0<=depotResource.get(i).getKey() && depotResource.get(i).getKey() <=3)
-                        warehouse.subDepot(depotResource.get(i).getKey(),1);
-                    else strongbox.subResource(depotResource.get(i).getValue(),1);
-                    hand.add(depotResource.get(i).getValue());
-                }
-            }catch(Exception e){ e.printStackTrace(); }
+        if(count==usedResources.size()){
+            hand.addAll(gotResource);
+            setWarehouse(wr);
+            setStrongbox(sb);
         }
         else throw new IllegalArgumentException("Not enough resources");
+    }
+
+    public int slotProduction(int slotNumber) throws IllegalArgumentException{
+        if(!slots[slotNumber-1].getFirstCard().isPresent()) throw new IllegalArgumentException("Wrong slot");
+        DevelopmentCard DC = slots[slotNumber-1].getFirstCard().get();
+
+        ArrayList<Resources> reqRes = new ArrayList<>();
+        ArrayList<Resources> prodRes = new ArrayList<>();
+
+        for(Resources r : DC.getrequiredResources().keySet()){
+            for(int i=0; i<DC.getrequiredResources().get(r); i++) {
+                reqRes.add(r);}
+        }
+
+        for(Resources r : DC.getproducedResources().keySet()){
+            for(int i=0; i<DC.getproducedResources().get(r); i++) {
+                prodRes.add(r);}
+        }
+
+        try{
+            production(reqRes,prodRes);
+        }catch (Exception e) { throw e;}
+
+        return DC.getproducedFaith();
     }
 }

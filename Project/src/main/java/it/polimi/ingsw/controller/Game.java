@@ -10,9 +10,9 @@ public class Game {
     private Market market;
     private DevelopmentCardMarket developmentcardmarket;
     private boolean[] vaticanReport;
-    private leaderCardDeck leadercarddeck;
+    private LeaderCardDeck leadercarddeck;
 
-    private LorenzoTrack Lorenzo;
+    private LorenzoTrack lorenzo;
     private ActionStack actionStack;
 
     public Game() {
@@ -22,8 +22,8 @@ public class Game {
         market = new Market();
         developmentcardmarket = new DevelopmentCardMarket();
         vaticanReport = new boolean[] {false,false,false};
-        leadercarddeck = new leaderCardDeck();
-        Lorenzo = new LorenzoTrack();
+        leadercarddeck = new LeaderCardDeck();
+        lorenzo = new LorenzoTrack();
         actionStack = new ActionStack();
     }
 
@@ -170,13 +170,67 @@ public class Game {
 
     public void activateBaseProduction(int player, ArrayList<Resources> usedResources, Resources gotResources){
         try{
-            players.get(player).getValue().baseProduction(usedResources,gotResources);
+            players.get(player).getValue().production(usedResources,new ArrayList<Resources>() {{add(gotResources);}}); //TESTING MASSIVO
         }catch (IllegalArgumentException e){
             e.printStackTrace();
         }
     }
 
-    public boolean checkWin(){
+    //slots number goes from 1 to 3
+    public void activateDevelopmentCardProduction(int player, int slot){
+        try{
+            int faith = players.get(player).getValue().slotProduction(slot);
+            for(int i=0; i<faith; i++){
+                players.get(player).getValue().getFaithtrack().advanceTrack();
+                int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
+                if(tmp!=-1) popeEvent(tmp);
+            }
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+    }
+
+    public boolean checkEndGame(int player){
+        if(vaticanReport[2]) return true;
+        else{
+            Board playerBoard = players.get(player).getValue();
+            int count = 0;
+            for(int i=0;i<3;i++){
+                count += playerBoard.getSlot(i+1).getDevelopmentcards().size();
+            }
+            if(count == 7) return true;
+        }
+        return false;
+    }
+
+
+
+    //ONLY FOR SINGLE PLAYER
+    public void activatedToken(){
+        ActionToken AT = actionStack.draw();
+        switch(AT){
+            case Advance2: {
+                for(int i=0;i<2;i++){
+                    lorenzo.advanceBlackCross();
+                    if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
+                }
+            }
+            case AdvanceAndRefresh: {
+                lorenzo.advanceBlackCross();
+                if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
+                actionStack = new ActionStack();
+            }
+            case DeleteBlue: developmentcardmarket.deleteCards(Colours.Blue);
+            case DeleteGreen: developmentcardmarket.deleteCards(Colours.Green);
+            case DeletePurple: developmentcardmarket.deleteCards(Colours.Purple);
+            case DeleteYellow: developmentcardmarket.deleteCards(Colours.Yellow);
+            default: ;
+        }
+    }
+
+    public boolean checkLorenzoWin(){
+        if(lorenzo.getBlackCross() == 24) return true;
+        if(developmentcardmarket.lorenzoWin()) return true;
         return false;
     }
 }

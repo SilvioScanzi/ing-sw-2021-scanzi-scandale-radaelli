@@ -2,7 +2,7 @@ package it.polimi.ingsw.model;
 import java.util.*;
 
 public class DevelopmentCard {
-    private final int level;
+    private final int level;        //level between 1 and 3
     private final Colours colour;
     private final int victoryPoints;
     private final HashMap<Resources,Integer> cost;               //Resources required to buy the card

@@ -6,7 +6,7 @@ import java.util.*;
 
 
 public class DevelopmentCardMarket {
-    private final Map<Pair<Colours,Integer>,Stack<DevelopmentCard>> cardMarket;
+    private final Map<Pair<Colours,Integer>,Stack<DevelopmentCard>> cardMarket; //attributes: colour, level, cards
 
     public DevelopmentCardMarket(){
         //Instantiating one stack for every card deck (One for every combination of Color-Level)
@@ -107,5 +107,26 @@ public class DevelopmentCardMarket {
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
         if(cardMarket.get(tmp1).empty()) throw new IllegalArgumentException("There's no card on the stack");
         return cardMarket.get(tmp1).pop();
+    }
+
+
+
+    //ONLY FOR SINGLE PLAYER
+    public void deleteCards(Colours colour){
+        int count = 2;  //cards to be deleted
+
+        for(int i=0; i<3 && count>0; i++){
+            if(cardMarket.get(new Pair<>(colour,i+1)).size() > 0){
+                cardMarket.get(new Pair<>(colour,i+1)).pop();
+                count--;
+            }
+        }
+    }
+
+    public boolean lorenzoWin(){
+        for(Colours c : Colours.values()){
+            if(cardMarket.get(new Pair<>(c,3)).size()==0) return true;
+        }
+        return false;
     }
 }

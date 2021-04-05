@@ -2,10 +2,10 @@ package it.polimi.ingsw.model;
 
 import java.util.*;
 
-public class leaderCardDeck {
+public class LeaderCardDeck {
     private Stack<LeaderCard> deck;
 
-    public leaderCardDeck(){
+    public LeaderCardDeck(){
         ArrayList<LeaderCard> tmp = new ArrayList<>();
 
         tmp.add(new LeaderCard(false,false,4,

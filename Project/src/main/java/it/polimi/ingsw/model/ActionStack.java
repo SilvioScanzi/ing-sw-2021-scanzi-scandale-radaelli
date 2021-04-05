@@ -28,7 +28,7 @@ public class ActionStack {
         return "La pila ha: "+stack.size()+" segnalini azione";
     }
 
-    public ActionToken Draw(){
+    public ActionToken draw(){
         return stack.pop();
     }
 }

@@ -32,9 +32,10 @@ public class FaithTrack {
     }
 
     public void advanceTrack(){
-        FaithMarker = FaithMarker+1;
+        if(FaithMarker<24) FaithMarker = FaithMarker+1;
     }
 
+    //checks if anyone reached the pope event
     public int checkPopeFavor(){
         if(FaithMarker == 8 || FaithMarker == 16 || FaithMarker == 24){
             return FaithMarker/8;
