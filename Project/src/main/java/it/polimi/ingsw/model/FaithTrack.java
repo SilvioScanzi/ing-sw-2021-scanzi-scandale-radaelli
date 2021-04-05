@@ -35,17 +35,17 @@ public class FaithTrack {
         FaithMarker = FaithMarker+1;
     }
 
-    public void setPopeFavor(int index){
-        //index is the progressive number of the pope favor event, 1 at cell 8, 2 at cell 16, 3 at cell 24
-        if(index==1 && (FaithMarker>=5 && FaithMarker<=8)) PopeFavor[0]=true;
-        else if(index==2 && (FaithMarker>=12 && FaithMarker<=16)) PopeFavor[1]=true;
-        else if(index==3 && (FaithMarker>=19 && FaithMarker<=24)) PopeFavor[2]=true;
-    }
-
     public int checkPopeFavor(){
         if(FaithMarker == 8 || FaithMarker == 16 || FaithMarker == 24){
             return FaithMarker/8;
         }
         else return -1;
+    }
+
+    public void setPopeFavor(int index){
+        //index is the progressive number of the pope favor event, 1 at cell 8, 2 at cell 16, 3 at cell 24
+        if(index==1 && (FaithMarker>=5 && FaithMarker<=8)) PopeFavor[0]=true;
+        else if(index==2 && (FaithMarker>=12 && FaithMarker<=16)) PopeFavor[1]=true;
+        else if(index==3 && (FaithMarker>=19 && FaithMarker<=24)) PopeFavor[2]=true;
     }
 }

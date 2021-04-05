@@ -37,7 +37,9 @@ public class Board {
     }
 
     public void clearWarehouse(){
-        hand.addAll(warehouse.clear());
+        for(int i=1;i<4;i++) {
+            hand.addAll(warehouse.clear(i));
+        }
     }
 
     public ArrayList<Resources> getHand() {

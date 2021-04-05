@@ -138,23 +138,29 @@ public class Warehouse implements Cloneable {
         else throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public ArrayList<Resources> clear(){
+    public ArrayList<Resources> clear(int depot){
         ArrayList<Resources> tmp = new ArrayList<>();
-        if(depot1.getKey().isPresent()){
-            tmp.add(depot1.getKey().get());
-            depot1.setPair(Optional.empty(), 0);
-        }
-        if(depot2.getKey().isPresent()){
-            for(int i=0;i<depot2.getValue();i++){
-                tmp.add(depot2.getKey().get());
+        if(depot==1){
+            if(depot1.getKey().isPresent()){
+                tmp.add(depot1.getKey().get());
+                depot1.setPair(Optional.empty(), 0);
             }
-            depot2.setPair(Optional.empty(), 0);
         }
-        if(depot3.getKey().isPresent()){
-            for(int i=0;i<depot3.getValue();i++){
-                tmp.add(depot3.getKey().get());
+        else if(depot==2){
+            if(depot2.getKey().isPresent()){
+                for(int i=0;i<depot2.getValue();i++){
+                    tmp.add(depot2.getKey().get());
+                }
+                depot2.setPair(Optional.empty(), 0);
             }
-            depot3.setPair(Optional.empty(), 0);
+        }
+        else if(depot==3){
+            if(depot3.getKey().isPresent()){
+                for(int i=0;i<depot3.getValue();i++){
+                    tmp.add(depot3.getKey().get());
+                }
+                depot3.setPair(Optional.empty(), 0);
+            }
         }
         return tmp;
     }

@@ -36,20 +36,11 @@ public class Game {
         }
     }
 
-    public void popeEvent(int index){
-        if(!(vaticanReport[index-1])) {
-           for(int i=0;i<nplayer;i++){
-               players.get(i).getValue().getFaithtrack().setPopeFavor(index);
-           }
-           vaticanReport[index-1] = true;
-        }
-    }
-
     public void getMarketResources(int player, boolean row, int i){
         Board playerBoard = players.get(player).getValue();
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
         playerBoard.getHand().addAll(conversion(marbles,playerBoard));
-        playerBoard.clearWarehouse();
+        //playerBoard.clearWarehouse();
     }
 
     //MANCA: controllo sulle leader cards
@@ -70,6 +61,15 @@ public class Game {
             }
         }
         return tmp;
+    }
+
+    private void popeEvent(int index){
+        if(!(vaticanReport[index-1])) {
+            for(int i=0;i<nplayer;i++){
+                players.get(i).getValue().getFaithtrack().setPopeFavor(index);
+            }
+            vaticanReport[index-1] = true;
+        }
     }
 
     public void setResources(int player, Resources r, int depot){
@@ -102,7 +102,7 @@ public class Game {
             }
             if(cell!=-1) popeEvent(cell);
         }
-        playerBoard.setHand(new ArrayList<>());
+        playerBoard.getHand().clear();
     }
 
     //MANCA: controllo sugli sconti delle leader cards
