@@ -9,7 +9,6 @@ public class DevelopmentCard {
     private final HashMap<Resources,Integer> requiredResources;  //Resources required to activate production power
     private final HashMap<Resources,Integer> producedResources;  //Resources produced during the activation
     private final int producedFaith;                              //Faith produced during the activation
-    private boolean activated;
 
     public DevelopmentCard(int level, Colours colour, int victoryPoints, HashMap<Resources, Integer> cost,
                            HashMap<Resources, Integer> requiredResources, HashMap<Resources, Integer> producedResources, int producedFaith) {
@@ -20,7 +19,6 @@ public class DevelopmentCard {
         this.requiredResources = requiredResources;
         this.producedResources = producedResources;
         this.producedFaith = producedFaith;
-        activated = false;
     }
 
     @Override
@@ -67,9 +65,5 @@ public class DevelopmentCard {
 
     public int getproducedFaith() {
         return producedFaith;
-    }
-
-    public void setActivated(boolean activated) {
-        this.activated = activated;
     }
 }

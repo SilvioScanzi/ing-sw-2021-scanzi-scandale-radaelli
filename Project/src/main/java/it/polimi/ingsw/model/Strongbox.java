@@ -38,21 +38,13 @@ public class Strongbox implements Cloneable {
         return storage.get(r);
     }
 
-    /*public void updateResource(Resources r, int amount) throws ResourceErrorException{
-        int curr = storage.get(r);
-        if(amount + curr < 0)
-            throw new ResourceErrorException("Not enough resources");
-        storage.put(r,amount+curr);
-    }*/
-
     public void addResource(Resources r, int amount){
         storage.put(r,amount+storage.get(r));
     }
 
-    public Pair<Resources,Integer> subResource(Resources r, int amount) throws ResourceErrorException {
+    public void subResource(Resources r, int amount) throws ResourceErrorException {
         int curr = storage.get(r);
         if(amount > curr) throw new ResourceErrorException("Not enough resources",r,curr-amount);
         storage.put(r,curr-amount);
-        return new Pair<>(r,amount);
     }
 }

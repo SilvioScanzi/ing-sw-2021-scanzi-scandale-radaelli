@@ -12,6 +12,7 @@ public class Board {
     private ArrayList<Resources> hand;
     private boolean flagIncompatibleResources;
     private boolean flagResourceError;
+    private boolean baseProductionActivated;
 
     public Board(String nickname, ArrayList<LeaderCard> leadercards) {
         faithtrack = new FaithTrack();
@@ -26,6 +27,7 @@ public class Board {
         hand = new ArrayList<>();
         flagIncompatibleResources = false;
         flagResourceError = false;
+        baseProductionActivated = false;
     }
 
     public void setFlagIncompatibleResources(boolean flagIncompatibleResources) {
@@ -50,8 +52,8 @@ public class Board {
         return leadercardsplayed;
     }
 
-    public void setHand(ArrayList<Resources> hand) {
-        this.hand = hand;
+    public void setHand(ArrayList<Resources> resources) {
+        hand.addAll(resources);
     }
 
     public FaithTrack getFaithtrack() {
@@ -85,5 +87,43 @@ public class Board {
 
     public void setStrongbox(Strongbox strongbox) {
         this.strongbox = strongbox;
+    }
+
+    public void baseProduction(ArrayList<Resources> usedResources, Resources gotResource) throws IllegalArgumentException{
+        ArrayList<Pair<Integer,Resources>> depotResource = new ArrayList<>();   //1,2,3 for depots; 4 for strongbox
+
+        for(Resources res : usedResources){
+            if(warehouse.checkResourcePresent(1,res)) {
+                depotResource.add(new Pair<>(1,res));
+                usedResources.remove(res);
+            }
+            else if(warehouse.checkResourcePresent(2,res)) {
+                depotResource.add(new Pair<>(2,res));
+                usedResources.remove(res);
+            }
+            else if(warehouse.checkResourcePresent(3,res)) {
+                depotResource.add(new Pair<>(3,res));
+                usedResources.remove(res);
+            }
+        }
+
+        for(Resources res : usedResources){
+           if(strongbox.getResource(res) > 0 ){
+               depotResource.add(new Pair<>(4,res));
+               usedResources.remove(res);
+           }
+        }
+
+        if(depotResource.size()==2){
+            try{
+                for(int i=0; i<2; i++){
+                    if(0<=depotResource.get(i).getKey() && depotResource.get(i).getKey() <=3)
+                        warehouse.subDepot(depotResource.get(i).getKey(),1);
+                    else strongbox.subResource(depotResource.get(i).getValue(),1);
+                    hand.add(depotResource.get(i).getValue());
+                }
+            }catch(Exception e){ e.printStackTrace(); }
+        }
+        else throw new IllegalArgumentException("Not enough resources");
     }
 }

@@ -96,42 +96,35 @@ public class Warehouse implements Cloneable {
             throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public Pair<Resources,Integer> subDepot(int depotNumber, int quantity) throws IllegalArgumentException, ResourceErrorException {
-        Pair<Resources,Integer> tmp;
+    public void subDepot(int depotNumber, int quantity) throws IllegalArgumentException, ResourceErrorException {
         if(depotNumber==1){
             if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 doesn't have this many resources",(depot1.getKey().isPresent())?depot1.getKey().get():null,-quantity);
             if((depot1.getKey().isPresent())){
-                    tmp = new Pair<>(depot1.getKey().get(),quantity);
                     depot1.setPair(Optional.empty(),0);
-                    return tmp;
             }
             else throw new ResourceErrorException("Depot 1 is empty",null,-quantity);
         }
         else if(depotNumber==2){
             if(quantity>2 || quantity<0) throw new ResourceErrorException("Depot 2 doesn't have this many resources",(depot2.getKey().isPresent())?depot2.getKey().get():null,-quantity);
             if((depot2.getKey().isPresent()) && (depot2.getValue() >= quantity)){
-                tmp = new Pair<>(depot2.getKey().get(),quantity);
                 if(depot2.getValue() == quantity) {
                     depot2.setPair(Optional.empty(), 0);
                 }
                 else{
                     depot2.setValue(depot2.getValue() - quantity);
                 }
-                return tmp;
             }
             else throw new ResourceErrorException("Depot 2 doesn't have this many resources",(depot2.getKey().isPresent())?depot2.getKey().get():null,-quantity);
         }
         else if(depotNumber==3){
             if(quantity>3 || quantity<0) throw new ResourceErrorException("Depot 3 doesn't have this many resources",(depot3.getKey().isPresent())?depot3.getKey().get():null,-quantity);
             if((depot3.getKey().isPresent()) && (depot3.getValue() >= quantity)){
-                tmp = new Pair<>(depot3.getKey().get(),quantity);
                 if(depot3.getValue() == quantity) {
                     depot3.setPair(Optional.empty(), 0);
                 }
                 else{
                     depot3.setValue(depot3.getValue() - quantity);
                 }
-                return tmp;
             }
             else throw new ResourceErrorException("Depot 3 doesn't have this many resources",(depot3.getKey().isPresent())?depot3.getKey().get():null,-quantity);
         }
@@ -163,6 +156,10 @@ public class Warehouse implements Cloneable {
             }
         }
         return tmp;
+    }
+
+    public boolean checkResourcePresent(int depot, Resources resource){
+        return resource.equals(getDepot(depot).getKey().get());
     }
 }
 

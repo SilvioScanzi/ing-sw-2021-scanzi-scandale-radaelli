@@ -168,7 +168,15 @@ public class Game {
         }
     }
 
-    public boolean checkwin(){
+    public void activateBaseProduction(int player, ArrayList<Resources> usedResources, Resources gotResources){
+        try{
+            players.get(player).getValue().baseProduction(usedResources,gotResources);
+        }catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
+    }
+
+    public boolean checkWin(){
         return false;
     }
 }

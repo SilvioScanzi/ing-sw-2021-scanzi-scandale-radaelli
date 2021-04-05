@@ -4,11 +4,12 @@ import it.polimi.ingsw.exceptions.InvalidPlacementException;
 import java.util.*;
 
 public class Slot {
-    //Non va bene come Stack! bisogna poter "leggere" le carte sottostanti per i leader.
     private ArrayList<DevelopmentCard> developmentcards;
+    private boolean activatedProduction;
 
     public Slot() {
         developmentcards = new ArrayList<>();
+        activatedProduction = false;
     }
 
     public Optional<DevelopmentCard> getFirstCard(){
