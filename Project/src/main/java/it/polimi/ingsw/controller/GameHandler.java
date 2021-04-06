@@ -88,7 +88,7 @@ public class GameHandler{
                 System.out.println("4 - Sposta le risorse dal magazzino");
                 System.out.println("5 - Gioca una carta leader");
                 System.out.println("6 - Scarta una carta leader");
-                System.out.println("7 - Fine turno");
+                System.out.println("0 - Fine turno");
                 String choice = scanner.nextLine();
                 int c = Integer.parseInt(choice);
                 if (1 <= c && c <= 3) {
@@ -103,7 +103,7 @@ public class GameHandler{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (c == 7) {
+                } else if (c == 0) {
                     turnDone = true;
                 } else {
                     System.out.println("Inserisci una scelta valida!");
@@ -212,7 +212,7 @@ public class GameHandler{
             else if(choice == 7){
                 playerBoard.clearWarehouse();
             }
-            else if(choice == 8){
+            else if(choice == 0){
                 done = true;
             }
             else System.out.println("Inserisci un valore valido");

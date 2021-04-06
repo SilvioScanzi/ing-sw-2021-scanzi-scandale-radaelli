@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!--REQUIREDCOLOURS: Colore-numero di carte richiesto di quel colore-livello richiesto(se non specificato, 0) Se non specificato NULL-0-0-->
-<!--REQUIREDRESOURCES: Se non specificato, NULL-0-->
-<!-- Capacity -1 per discount, 0 per tutto il resto-->
 <leadercards>
     <leadercard>
         <victorypoints>2</victorypoints>
@@ -37,7 +34,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
-        <requiredcolours>NULL-0-0-NULL-0-0</requiredcolours>
+        <requiredcolours>NULL-0-0</requiredcolours>
         <requiredresources>Coins-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Stones</restype>
@@ -45,7 +42,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
-        <requiredcolours>NULL-0-0-NULL-0-0</requiredcolours>
+        <requiredcolours>NULL-0-0</requiredcolours>
         <requiredresources>Stones-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Servants</restype>
@@ -53,7 +50,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
-        <requiredcolours>NULL-0-0-NULL-0-0</requiredcolours>
+        <requiredcolours>NULL-0-0</requiredcolours>
         <requiredresources>Servants-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Shields</restype>
@@ -61,7 +58,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
-        <requiredcolours>NULL-0-0-NULL-0-0</requiredcolours>
+        <requiredcolours>NULL-0-0</requiredcolours>
         <requiredresources>Shields-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Coins</restype>
@@ -69,7 +66,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>4</victorypoints>
-        <requiredcolours>Yellow-1-2-NULL-0-0</requiredcolours>
+        <requiredcolours>Yellow-1-2</requiredcolours>
         <requiredresources>NULL-0</requiredresources>
         <abilitytype>ProductionPowerAbility</abilitytype>
         <restype>Shields</restype>
@@ -77,7 +74,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>4</victorypoints>
-        <requiredcolours>Blue-1-2-NULL-0-0</requiredcolours>
+        <requiredcolours>Blue-1-2</requiredcolours>
         <requiredresources>NULL-0</requiredresources>
         <abilitytype>ProductionPowerAbility</abilitytype>
         <restype>Servants</restype>
@@ -85,7 +82,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>4</victorypoints>
-        <requiredcolours>Purple-1-2-NULL-0-0</requiredcolours>
+        <requiredcolours>Purple-1-2</requiredcolours>
         <requiredresources>NULL-0</requiredresources>
         <abilitytype>ProductionPowerAbility</abilitytype>
         <restype>Stones</restype>
@@ -93,7 +90,7 @@
     </leadercard>
     <leadercard>
         <victorypoints>4</victorypoints>
-        <requiredcolours>Green-1-2-NULL-0-0</requiredcolours>
+        <requiredcolours>Green-1-2</requiredcolours>
         <requiredresources>NULL-0</requiredresources>
         <abilitytype>ProductionPowerAbility</abilitytype>
         <restype>Coins</restype>
