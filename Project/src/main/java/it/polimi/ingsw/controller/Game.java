@@ -40,16 +40,25 @@ public class Game {
         return inkwell;
     }
 
+    public Market getMarket() {
+        return market;
+    }
+
+    public DevelopmentCardMarket getDevelopmentcardmarket() {
+        return developmentcardmarket;
+    }
+
     public String getPlayers(int i) {
         return players.get(i).getKey();
     }
+
+    public Board getBoard(int i){return players.get(i).getValue();}
 
     //Adds the resources from the market to the hand, ignoring white marbles
     public void getMarketResources(int player, boolean row, int i){
         Board playerBoard = players.get(player).getValue();
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
-        //playerBoard.clearWarehouse();
     }
 
     //Converts Marbles to resources
@@ -136,7 +145,7 @@ public class Game {
     }
 
     //Player (nickname) selects colour and level; method checks for costs and adds to the board
-    public void getDevelopmentCard(Colours c, int level, int player, int slotNumber){
+    public void getDevelopmentCard(Colours c, int level, int player, int slotNumber) throws Exception{
         DevelopmentCard DC = developmentcardmarket.peekFirstCard(c,level);
         HashMap<Resources, Integer> cost = new HashMap<>(DC.getCost());
 
@@ -149,7 +158,7 @@ public class Game {
             if(LC.getAbility().getType().equals(Ability.AbilityType.DiscountAbility)){
                 for(Resources r : cost.keySet()){
                     if(r.equals(LC.getAbility().getRestype())){
-                        cost.put(r,cost.get(r) - LC.getAbility().getCapacity());
+                        cost.put(r,cost.get(r) + LC.getAbility().getCapacity());
                     }
                 }
             }
@@ -227,7 +236,7 @@ public class Game {
                 }
                 developmentcardmarket.getFirstCard(c,level);
             }catch (Exception e){
-                e.printStackTrace();
+                throw e;
             }
         }
     }
@@ -296,7 +305,7 @@ public class Game {
 
 
     //ONLY FOR SINGLE PLAYER
-    public void activatedToken(){
+    public ActionToken activatedToken(){
         ActionToken AT = actionStack.draw();
         switch(AT){
             case Advance2: {
@@ -315,6 +324,7 @@ public class Game {
             case DeletePurple: developmentcardmarket.deleteCards(Colours.Purple);
             case DeleteYellow: developmentcardmarket.deleteCards(Colours.Yellow);
         }
+        return AT;
     }
 
     public boolean checkLorenzoWin(){

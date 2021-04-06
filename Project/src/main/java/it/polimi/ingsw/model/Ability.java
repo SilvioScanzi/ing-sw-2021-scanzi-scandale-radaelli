@@ -10,19 +10,12 @@ public class Ability {
     private boolean activated;      //only for ProductionPower
 
 
-    public Ability(AbilityType type,Resources restype) {
+    public Ability(AbilityType type,Resources restype, int capacity) {
         this.type = type;
         this.restype = restype;
-        if(this.type.equals(AbilityType.ExtraSlotAbility)){
-            capacity = 0;
-        }
-        else{
-            capacity = -1;
-        }
+        this.capacity = capacity;
         activated = false;
     }
-
-
 
     public AbilityType getType() {
         return type;

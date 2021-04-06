@@ -9,8 +9,7 @@ public class LeaderCard {
     private Ability ability;
 
 
-    public LeaderCard(boolean played, boolean discarded, int victoryPoints, Map<Colours,
-            Pair<Integer, Integer>> requiredColours, Map<Resources, Integer> requiredResources, Ability ability) {
+    public LeaderCard(int victoryPoints, Map<Colours,Pair<Integer, Integer>> requiredColours, Map<Resources,Integer> requiredResources, Ability ability) {
         this.victoryPoints = victoryPoints;
         this.requiredColours = requiredColours;
         this.requiredResources = requiredResources;

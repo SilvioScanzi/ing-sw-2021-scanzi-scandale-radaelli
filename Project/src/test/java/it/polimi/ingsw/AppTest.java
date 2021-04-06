@@ -1,20 +1,11 @@
 package it.polimi.ingsw;
+import it.polimi.ingsw.*;
+import it.polimi.ingsw.controller.GameHandler;
 
-import static org.junit.Assert.assertTrue;
-
-import org.junit.Test;
-
-/**
- * Unit test for simple App.
- */
 public class AppTest 
 {
-    /**
-     * Rigorous Test :-)
-     */
-    @Test
-    public void shouldAnswerWithTrue()
-    {
-        assertTrue( true );
+    public static void main(String[] args) {
+        GameHandler GH = new GameHandler();
+        GH.init();
     }
 }

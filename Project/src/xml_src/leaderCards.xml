@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--REQUIREDCOLOURS: Colore-numero di carte richiesto di quel colore-livello richiesto(se non specificato, 0) Se non specificato NULL-0-0-->
+<!--REQUIREDRESOURCES: Se non specificato, NULL-0-->
+<!-- Capacity -1 per discount, 0 per tutto il resto-->
+<leadercards>
+    <leadercard>
+        <victorypoints>1</victorypoints>
+        <requiredcolours>Green-1-0-Blue-2-0</requiredcolours>
+        <requiredresources>NULL-0</requiredresources>
+        <abilitytype>ProductionPowerAbility</abilitytype>
+        <restype>Shields</restype>
+        <capacity>-1</capacity>
+    </leadercard>
+</leadercards>

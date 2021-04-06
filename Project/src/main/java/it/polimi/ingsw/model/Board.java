@@ -30,6 +30,14 @@ public class Board {
         baseProductionActivated = false;
     }
 
+    public String handtoString(){
+        String s = "";
+        for(Resources r : hand){
+            s=s.concat(r.abbreviation() + " ");
+        }
+        return s;
+    }
+
     public void setFlagIncompatibleResources(boolean flagIncompatibleResources) {
         this.flagIncompatibleResources = flagIncompatibleResources;
     }
@@ -42,6 +50,10 @@ public class Board {
         for(int i=1;i<4;i++) {
             hand.addAll(warehouse.clear(i));
         }
+    }
+
+    public void clearDepot(int i){
+        hand.addAll(warehouse.clear(i));
     }
 
     public ArrayList<Resources> getHand() {
@@ -114,7 +126,7 @@ public class Board {
                 }
             }
         }
-        //Manca il controllo sulle risorse
+        //MANCA: CONTROLLO SULLE RISORSE
         if(requiredColours.isEmpty() && requiredResources.isEmpty())
             leadercardsplayed.add(leadercardshand.remove(i-1));
         else

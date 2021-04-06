@@ -48,6 +48,17 @@ public class Market {
         return tmp;
     }
 
+    public int getWhiteMarbles(boolean row, int i){
+        int n=0;
+        if(row){
+            for(int k=0;k<4;k++) n = n + (((grid[i-1][k]).equals(Marbles.White))?1:0);
+        }
+        else{
+            for(int k=0;k<3;k++) n = n + (((grid[k][i-1]).equals(Marbles.White))?1:0);
+        }
+        return n;
+    }
+
     public Marbles[][] getGrid() {
         return grid;
     }
