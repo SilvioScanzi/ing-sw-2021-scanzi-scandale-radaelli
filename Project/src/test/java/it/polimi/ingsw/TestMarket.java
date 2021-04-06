@@ -31,5 +31,10 @@ public class TestMarket {
         s.addResource(Resources.Shields,3);
         s.addResource(Resources.Servants,2);
         System.out.println("\n"+s.toString());
+
+        ActionStack A = new ActionStack();
+        System.out.println(A.toString());
+        System.out.println(A.draw().toString());
+        System.out.println(A.toString());
     }
 }

@@ -89,6 +89,45 @@ public class Board {
         this.strongbox = strongbox;
     }
 
+    public void discardLeaderCard(int i){
+        leadercardshand.remove(i-1);
+    }
+
+    public void playLeaderCard(int i) throws IllegalArgumentException{
+        LeaderCard LC = leadercardshand.get(i-1);
+        Map<Colours,Pair<Integer,Integer>> requiredColours = new HashMap<>(LC.getRequiredColours());
+        Map<Resources,Integer> requiredResources = new HashMap<>(LC.getRequiredResources());
+        ArrayList<Pair<Colours,Integer>> tmp = new ArrayList<>();
+        for(int j=0;j<3;j++){
+            tmp.addAll(slots[j].getList());
+        }
+        //Checking level and number of requested card
+        for(int j=0;j<tmp.size();j++){
+            if(requiredColours.get(tmp.get(j).getKey())!=null){
+                if(tmp.get(j).getValue() >= requiredColours.get(tmp.get(j).getKey()).getValue()){
+                    if(requiredColours.get(tmp.get(j).getKey()).getKey()-1<=0){
+                        requiredColours.remove(tmp.get(j).getKey());
+                    }
+                    else{
+                        requiredColours.put(tmp.get(j).getKey(), new Pair<>(requiredColours.get(tmp.get(j).getKey()).getKey()-1,requiredColours.get(tmp.get(j).getKey()).getValue()));
+                    }
+                }
+            }
+        }
+        //Manca il controllo sulle risorse
+        if(requiredColours.isEmpty() && requiredResources.isEmpty())
+            leadercardsplayed.add(leadercardshand.remove(i-1));
+        else
+            throw new IllegalArgumentException("Requirements not met");
+    }
+
+    public void dumpHandIntoStrongbox(){
+        for(Resources R: hand){
+            strongbox.addResource(R,1);
+        }
+        hand.clear();
+    }
+
     public void production(ArrayList<Resources> usedResources, ArrayList<Resources> gotResource) throws IllegalArgumentException{
         int count = 0;
         Warehouse wr = warehouse.clone();
@@ -154,5 +193,17 @@ public class Board {
         }catch (Exception e) { throw e;}
 
         return DC.getproducedFaith();
+    }
+
+    public void leaderProduction(int leadercardnumber, Resources R) throws IllegalArgumentException{
+        if(leadercardsplayed.get(leadercardnumber-1)==null) throw new IllegalArgumentException("Wrong LC number");
+        if(!leadercardsplayed.get(leadercardnumber-1).getAbility().getType().equals(Ability.AbilityType.ProductionPowerAbility)) throw new IllegalArgumentException("Wrong LC");
+        ArrayList<Resources> usedResources = new ArrayList<>();
+        usedResources.add(leadercardsplayed.get(leadercardnumber-1).getAbility().getRestype());
+        ArrayList<Resources> gotResources = new ArrayList<>();
+        gotResources.add(R);
+        try{
+            production(usedResources,gotResources);
+        }catch (Exception e) { throw e;}
     }
 }

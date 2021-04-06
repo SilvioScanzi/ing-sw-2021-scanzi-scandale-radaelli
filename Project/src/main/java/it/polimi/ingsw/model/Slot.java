@@ -12,6 +12,14 @@ public class Slot {
         activatedProduction = false;
     }
 
+    public ArrayList<Pair<Colours,Integer>> getList(){
+        ArrayList<Pair<Colours,Integer>> tmp = new ArrayList<>();
+        for(DevelopmentCard DC : developmentcards){
+            tmp.add(new Pair<>(DC.getColour(), DC.getLevel()));
+        }
+        return tmp;
+    }
+
     public Optional<DevelopmentCard> getFirstCard(){
         if(developmentcards.size()==0) return Optional.empty();
         else return Optional.ofNullable(developmentcards.get(developmentcards.size()-1));

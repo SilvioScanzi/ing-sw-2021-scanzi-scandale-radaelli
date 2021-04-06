@@ -28,23 +28,32 @@ public class Game {
     }
 
     //Initializes variables and boards, assigning nicknames
-    public void setup(String[] names){
-        nplayer = names.length;
+    public void setup(ArrayList<String> names){
+        nplayer = names.size();
         inkwell = (int)(Math.random() * nplayer);
         for(int i=0;i<nplayer;i++){
-            players.add(new Pair<>(names[i],new Board(names[i],leadercarddeck.getLeaderCards())));
+            players.add(new Pair<>(names.get(i),new Board(names.get(i),leadercarddeck.getLeaderCards())));
         }
     }
 
+    public int getInkwell() {
+        return inkwell;
+    }
+
+    public String getPlayers(int i) {
+        return players.get(i).getKey();
+    }
+
+    //Adds the resources from the market to the hand, ignoring white marbles
     public void getMarketResources(int player, boolean row, int i){
         Board playerBoard = players.get(player).getValue();
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
-        playerBoard.getHand().addAll(conversion(marbles,playerBoard));
+        playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
         //playerBoard.clearWarehouse();
     }
 
-    //MANCA: controllo sulle leader cards
-    private ArrayList<Resources> conversion(ArrayList<Marbles> marbles, Board playerBoard){
+    //Converts Marbles to resources
+    private ArrayList<Resources> standardConversion(ArrayList<Marbles> marbles, Board playerBoard){
         ArrayList<LeaderCard> leadercardsplayed = playerBoard.getLeadercardsplayed();
         ArrayList<Resources> tmp = new ArrayList<>();
         for(Marbles m : marbles){
@@ -57,10 +66,19 @@ public class Game {
                     playerBoard.getFaithtrack().advanceTrack();
                     if(playerBoard.getFaithtrack().checkPopeFavor()!=-1) popeEvent(playerBoard.getFaithtrack().checkPopeFavor());
                 }
-                //case White:;
+                default:
             }
         }
         return tmp;
+    }
+
+    //Checks if LC provided can convert white marbles to resources, if so, gives them to the hand
+    public void leaderCardConversion(int player, LeaderCard LC) throws IllegalArgumentException{
+        Board playerBoard = players.get(player).getValue();
+        if(LC.getAbility().equals(Ability.AbilityType.WhiteMarbleAbility)){
+            playerBoard.getHand().add(LC.getAbility().getRestype());
+        }
+        else throw new IllegalArgumentException("Leader card has a different ability");
     }
 
     private void popeEvent(int index){
@@ -72,7 +90,8 @@ public class Game {
         }
     }
 
-    public void setResources(int player, Resources r, int depot){
+    //Stash resources into depots
+    public void setResourcesToDepot(int player, Resources r, int depot){
         Board playerBoard = players.get(player).getValue();
         try{
             playerBoard.getWarehouse().addDepot(depot,r,1);
@@ -88,6 +107,17 @@ public class Game {
         }
     }
 
+    //Stash resources into leadercards
+    public void setResourcesToLeaderCard(int player, Resources r, int amount, LeaderCard LC){
+        Board playerBoard = players.get(player).getValue();
+        try{
+            LC.getAbility().updateCapacity(r,amount);
+        }
+        catch(IllegalArgumentException e) {e.printStackTrace();}
+        catch(ResourceErrorException e) {e.printStackTrace();}
+    }
+
+    //Discard resources and advance other players
     public void discardRemainingResources(int player){
         Board playerBoard = players.get(player).getValue();
         for(Resources r : playerBoard.getHand()){
@@ -105,8 +135,6 @@ public class Game {
         playerBoard.getHand().clear();
     }
 
-    //MANCA: controllo sugli sconti delle leader cards
-    //MANCA: controllo sulle risorse delle leader cards
     //Player (nickname) selects colour and level; method checks for costs and adds to the board
     public void getDevelopmentCard(Colours c, int level, int player, int slotNumber){
         DevelopmentCard DC = developmentcardmarket.peekFirstCard(c,level);
@@ -115,6 +143,17 @@ public class Game {
         Board playerBoard = players.get(player).getValue();
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
+
+        //Check if LC played give some discount
+        for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+            if(LC.getAbility().getType().equals(Ability.AbilityType.DiscountAbility)){
+                for(Resources r : cost.keySet()){
+                    if(r.equals(LC.getAbility().getRestype())){
+                        cost.put(r,cost.get(r) - LC.getAbility().getCapacity());
+                    }
+                }
+            }
+        }
 
         //warehouse check and reduce resources in cost, to show how many are still required in strongbox
         for(int i=1;i<=3;i++){
@@ -140,6 +179,26 @@ public class Game {
                 }
             }
         }
+
+        //leadercard abilities check (extra resource storage)
+        HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
+        for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+            if(LC.getAbility().getType().equals(Ability.AbilityType.ExtraSlotAbility)){
+                for(Resources r : cost.keySet()){
+                    if(r.equals(LC.getAbility().getRestype())){
+                        if(cost.get(r)>LC.getAbility().getCapacity()){
+                            cost.put(r,cost.get(r) - LC.getAbility().getCapacity());
+                            LCCapacity.put(LC,-LC.getAbility().getCapacity());
+                        }
+                        else{
+                            LCCapacity.put(LC,-cost.get(r));
+                            cost.remove(r);
+                        }
+                    }
+                }
+            }
+        }
+
         //pool strongbox and warehouse resources
         boolean check = true;
         if(!cost.isEmpty()){
@@ -161,6 +220,11 @@ public class Game {
                 requestedSlot.addCard(DC);      //TESTING: si modifica anche nell board reale?
                 playerBoard.setWarehouse(wr);
                 playerBoard.setStrongbox(sb);
+                for(LeaderCard L : playerBoard.getLeadercardsplayed()){
+                    if(LCCapacity.get(L)!=null){
+                        L.getAbility().updateCapacity(L.getAbility().getRestype(),LCCapacity.get(L));
+                    }
+                }
                 developmentcardmarket.getFirstCard(c,level);
             }catch (Exception e){
                 e.printStackTrace();
@@ -188,6 +252,32 @@ public class Game {
         }catch (IllegalArgumentException e){
             e.printStackTrace();
         }
+    }
+
+    public void activateLeaderCardProduction(int player, int leaderCardIndex, Resources R){
+        try{
+            players.get(player).getValue().leaderProduction(leaderCardIndex,R);
+            players.get(player).getValue().getFaithtrack().advanceTrack();
+            int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
+            if(tmp!=-1) popeEvent(tmp);
+        }
+        catch(IllegalArgumentException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void discardLeaderCard(int player, int leaderCardIndex){
+        players.get(player).getValue().discardLeaderCard(leaderCardIndex);
+        players.get(player).getValue().getFaithtrack().advanceTrack();
+        int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
+        if(tmp!=-1) popeEvent(tmp);
+    }
+
+    public void playLeaderCard(int player, int leaderCardIndex){
+        try {
+            players.get(player).getValue().playLeaderCard(leaderCardIndex);
+        }
+        catch(Exception e) {e.printStackTrace();}
     }
 
     public boolean checkEndGame(int player){
@@ -224,7 +314,6 @@ public class Game {
             case DeleteGreen: developmentcardmarket.deleteCards(Colours.Green);
             case DeletePurple: developmentcardmarket.deleteCards(Colours.Purple);
             case DeleteYellow: developmentcardmarket.deleteCards(Colours.Yellow);
-            default: ;
         }
     }
 

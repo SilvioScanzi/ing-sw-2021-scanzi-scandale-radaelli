@@ -4,4 +4,5 @@ import it.polimi.ingsw.model.*;
 import java.util.*;
 
 public class GameHandlerSingle {
+
 }

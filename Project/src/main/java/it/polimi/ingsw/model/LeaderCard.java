@@ -4,7 +4,7 @@ import java.util.*;
 
 public class LeaderCard {
     private int victoryPoints;
-    private Map<Colours,Pair<Integer,Integer>> requiredColours;
+    private Map<Colours,Pair<Integer,Integer>> requiredColours; //Key = Colour of the required Card, Value: Pair. First element is the number of cards required, second element is the level of the cards required
     private Map<Resources,Integer> requiredResources;
     private Ability ability;
 
@@ -15,6 +15,10 @@ public class LeaderCard {
         this.requiredColours = requiredColours;
         this.requiredResources = requiredResources;
         this.ability = ability;
+    }
+
+    public Ability getAbility() {
+        return ability;
     }
 
     public void setVictoryPoints(int victoryPoints) {

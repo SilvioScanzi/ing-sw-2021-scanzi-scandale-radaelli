@@ -1,5 +1,4 @@
 package it.polimi.ingsw.model;
-
 import it.polimi.ingsw.exceptions.ResourceErrorException;
 
 public class Ability {
@@ -7,8 +6,9 @@ public class Ability {
 
     private AbilityType type;
     private Resources restype;
-    private int capacity;           //only for ExtraSlot
+    private int capacity;           //only for ExtraSlot and DiscountAbility (gives the discount amount)
     private boolean activated;      //only for ProductionPower
+
 
     public Ability(AbilityType type,Resources restype) {
         this.type = type;
@@ -21,6 +21,8 @@ public class Ability {
         }
         activated = false;
     }
+
+
 
     public AbilityType getType() {
         return type;
