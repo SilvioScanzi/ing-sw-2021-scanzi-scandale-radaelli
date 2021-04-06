@@ -9,7 +9,7 @@ public class Board {
     private final Slot[] slots;
     private final ArrayList<LeaderCard> leadercardshand;
     private final ArrayList<LeaderCard> leadercardsplayed;
-    private ArrayList<Resources> hand;
+    private final ArrayList<Resources> hand;
     private boolean flagIncompatibleResources;
     private boolean flagResourceError;
     private boolean baseProductionActivated;

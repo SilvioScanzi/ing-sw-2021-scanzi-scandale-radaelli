@@ -43,27 +43,28 @@ public class GameHandler{
                 System.out.println("4 - Sposta le risorse dal magazzino");
                 System.out.println("5 - Gioca una carta leader");
                 System.out.println("6 - Scarta una carta leader");
-                System.out.println("7 - Fine turno");
+                System.out.println("0 - Fine turno");
                 String choice = scanner.nextLine();
                 int c = Integer.parseInt(choice);
-                if(1<=c && c<=3){
-                    try{
-                        choiceMenu(c,i,actionDone);
-                        actionDone=true;
-                    }
-                    catch(Exception e){
+                if (1 <= c && c <= 3 && !actionDone) {
+                    try {
+                        actionDone = choiceMenu(c, 0);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
+                }
+                else if(1 <= c && c <= 3 && actionDone){
+                    System.out.println("Hai già effettuato un'azione per questo turno!");
                 }
                 else if(4<=c && c<=6){
                     try{
-                        choiceMenu(c,i,actionDone);
+                        choiceMenu(c,i);
                     }
                     catch(Exception e){
                         e.printStackTrace();
                     }
                 }
-                else if(c==7){
+                else if(c==0){
                     turnDone=true;
                 }
                 else{
@@ -91,15 +92,19 @@ public class GameHandler{
                 System.out.println("0 - Fine turno");
                 String choice = scanner.nextLine();
                 int c = Integer.parseInt(choice);
-                if (1 <= c && c <= 3) {
+                if (1 <= c && c <= 3 && !actionDone) {
                     try {
-                        actionDone = choiceMenu(c, 0, actionDone);
+                        actionDone = choiceMenu(c, 0);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (4 <= c && c <= 6) {
+                }
+                else if(1 <= c && c <= 3 && actionDone){
+                    System.out.println("Hai già effettuato un'azione per questo turno!");
+                }
+                else if (4 <= c && c <= 6) {
                     try {
-                        choiceMenu(c, 0, actionDone);
+                        choiceMenu(c, 0);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -116,14 +121,14 @@ public class GameHandler{
     }
 
 
-    private boolean choiceMenu(int c, int player, boolean actionDone) {
+    private boolean choiceMenu(int c, int player) {
         switch (c) {
-            case 1:  marketAction(player);
+            case 1:  marketAction(player); break;
             case 2:  return buyDevelopmentAction(player);
-            case 3:  productionAction(player);
-            case 4:  moveAction(player);
-            case 5:  playLeaderCardAction(player);
-            case 6:  discardLeaderCardAction(player);
+            case 3:  productionAction(player); break;
+            case 4:  moveAction(player); return false;
+            case 5:  playLeaderCardAction(player); return false;
+            case 6:  discardLeaderCardAction(player); return false;
         }
         return true;
     }

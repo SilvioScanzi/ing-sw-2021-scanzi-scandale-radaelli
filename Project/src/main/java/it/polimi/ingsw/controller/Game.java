@@ -58,24 +58,25 @@ public class Game {
     public void getMarketResources(int player, boolean row, int i){
         Board playerBoard = players.get(player).getValue();
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
+        ArrayList<Resources> a = standardConversion(marbles,playerBoard);
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
     }
 
     //Converts Marbles to resources
     private ArrayList<Resources> standardConversion(ArrayList<Marbles> marbles, Board playerBoard){
-        ArrayList<LeaderCard> leadercardsplayed = playerBoard.getLeadercardsplayed();
         ArrayList<Resources> tmp = new ArrayList<>();
         for(Marbles m : marbles){
             switch(m){
-                case Blue: tmp.add(Resources.Shields);
-                case Grey: tmp.add(Resources.Stones);
-                case Purple: tmp.add(Resources.Servants);
-                case Yellow: tmp.add(Resources.Coins);
+                case Blue: tmp.add(Resources.Shields); break;
+                case Grey: tmp.add(Resources.Stones); break;
+                case Purple: tmp.add(Resources.Servants); break;
+                case Yellow: tmp.add(Resources.Coins); break;
                 case Red: {
                     playerBoard.getFaithtrack().advanceTrack();
                     if(playerBoard.getFaithtrack().checkPopeFavor()!=-1) popeEvent(playerBoard.getFaithtrack().checkPopeFavor());
+                    break;
                 }
-                default:
+                default: break;
             }
         }
         return tmp;
