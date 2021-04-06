@@ -9,7 +9,7 @@ public class GameHandler{
 
     public void init(){
         game = new Game();
-        System.out.println("Benvenuti al gioco 'Maestri del rinascimento' ");
+        System.out.println("Benvenuti nel gioco 'Maestri del rinascimento' ");
         System.out.println("Inserisci i nomi dei giocatori: ");
         System.out.println("Scrivi DONE per terminare l'inserimento");
         String tmp = "";
@@ -48,7 +48,7 @@ public class GameHandler{
                 int c = Integer.parseInt(choice);
                 if (1 <= c && c <= 3 && !actionDone) {
                     try {
-                        actionDone = choiceMenu(c, 0);
+                        actionDone = choiceMenu(c, i);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
