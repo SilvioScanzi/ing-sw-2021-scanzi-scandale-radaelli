@@ -20,6 +20,22 @@ public class GameHandler{
         }
         s.remove("DONE");
         game.setup(s);
+
+        for(int i=0;i<s.size();i++){
+            for(int k=0;k<2;k++) {
+                System.out.println("Queste sono le carte leader del giocatore: "+game.getPlayers(i)+"\n");
+                for(int j=0;j<4-k;j++){
+                    System.out.println((j+1) +" - "+game.getBoard(i).getLeadercards().get(j));
+                }
+                int index;
+                System.out.println("Scegli una carte da scartare, tra 1 e " + (4-k));
+                do {
+                    index=Integer.parseInt(scanner.nextLine());
+                } while (index<0 || index>(4-k));
+            game.getBoard(i).discardLeaderCard(index);
+            }
+        }
+
         if(s.size()==1){
             playingSolo();
         }
@@ -63,6 +79,9 @@ public class GameHandler{
                     catch(Exception e){
                         e.printStackTrace();
                     }
+                }
+                else if(c==0 && !actionDone){
+                    System.out.println("Devi prima fare un'azione!");
                 }
                 else if(c==0){
                     turnDone=true;
@@ -119,7 +138,6 @@ public class GameHandler{
             System.out.println(AT.toString());
         }
     }
-
 
     private boolean choiceMenu(int c, int player) {
         switch (c) {

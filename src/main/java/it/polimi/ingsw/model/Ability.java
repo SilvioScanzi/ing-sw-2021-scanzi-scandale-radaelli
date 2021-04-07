@@ -2,19 +2,46 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.exceptions.ResourceErrorException;
 
 public class Ability {
-    public enum AbilityType {DiscountAbility,ExtraSlotAbility,ProductionPowerAbility,WhiteMarbleAbility}
+    public enum AbilityType {
+        DiscountAbility,
+        ExtraSlotAbility,
+        ProductionPowerAbility,
+        WhiteMarbleAbility;
+
+        @Override
+        public String toString() {
+            switch (this) {
+                case DiscountAbility:
+                    return "Sconto";
+                case ExtraSlotAbility:
+                    return "Deposito aggiuntivo";
+                case ProductionPowerAbility:
+                    return "Potere di produzione";
+                case WhiteMarbleAbility:
+                    return "Conversione della biglia bianca";
+                default:
+                    return "Error";
+            }
+        }
+    }
 
     private AbilityType type;
     private Resources restype;
     private int capacity;           //only for ExtraSlot and DiscountAbility (gives the discount amount)
     private boolean activated;      //only for ProductionPower
 
-
     public Ability(AbilityType type,Resources restype, int capacity) {
         this.type = type;
         this.restype = restype;
         this.capacity = capacity;
         activated = false;
+    }
+
+    @Override
+    public String toString(){
+        String tmp = type.toString();
+        tmp=tmp.concat(": "+restype.toString()+"; "+(type.equals(AbilityType.ExtraSlotAbility)?"Risorse presenti "+capacity:""));
+        return tmp;
     }
 
     public AbilityType getType() {
