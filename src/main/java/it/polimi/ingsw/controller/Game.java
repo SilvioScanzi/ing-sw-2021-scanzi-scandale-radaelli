@@ -102,19 +102,13 @@ public class Game {
     }
 
     //Stash resources into depots
-    public void setResourcesToDepot(int player, Resources r, int depot){
+    public void setResourcesToDepot(int player, Resources r, int depot) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException{
         Board playerBoard = players.get(player).getValue();
         try{
             playerBoard.getWarehouse().addDepot(depot,r,1);
         }
-        catch(IllegalArgumentException e){
-            e.printStackTrace();
-        }
-        catch(ResourceErrorException e){
-            playerBoard.setFlagResourceError(true);
-        }
-        catch(IncompatibleResourceException e){
-            playerBoard.setFlagIncompatibleResources(true);
+        catch(Exception e){
+            throw e;
         }
     }
 
