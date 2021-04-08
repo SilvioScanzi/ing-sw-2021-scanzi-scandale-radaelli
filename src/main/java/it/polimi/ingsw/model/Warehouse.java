@@ -1,4 +1,5 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.exceptions.IncompatibleResourceException;
 import it.polimi.ingsw.exceptions.ResourceErrorException;
 
@@ -56,7 +57,7 @@ public class Warehouse implements Cloneable {
             throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException {
+    public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException{
         if(depotNumber==1){
             if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 can't contain these resources",resource,quantity);
             if(depot2.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 2 has already got this resource");
