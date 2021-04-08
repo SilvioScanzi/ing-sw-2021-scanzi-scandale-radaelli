@@ -42,9 +42,7 @@ public class Strongbox implements Cloneable {
         storage.put(r,amount+storage.get(r));
     }
 
-    public void subResource(Resources r, int amount) throws ResourceErrorException {
-        int curr = storage.get(r);
-        if(amount > curr) throw new ResourceErrorException("Not enough resources",r,curr-amount);
-        storage.put(r,curr-amount);
+    public void subResource(Resources r, int amount) {
+        storage.put(r,storage.get(r)-amount);
     }
 }

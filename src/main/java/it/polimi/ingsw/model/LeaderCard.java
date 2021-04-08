@@ -32,18 +32,6 @@ public class LeaderCard {
         return ability;
     }
 
-    public void setVictoryPoints(int victoryPoints) {
-        this.victoryPoints = victoryPoints;
-    }
-
-    public void setRequiredColours(Map<Colours, Pair<Integer, Integer>> requiredColours) {
-        this.requiredColours = requiredColours;
-    }
-
-    public void setRequiredResources(Map<Resources, Integer> requiredResources) {
-        this.requiredResources = requiredResources;
-    }
-
     public int getVictoryPoints() {
         return victoryPoints;
     }

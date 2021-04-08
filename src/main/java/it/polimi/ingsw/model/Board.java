@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.EmptyDeckException;
+
 import java.util.*;
 
 public class Board {
@@ -34,10 +36,10 @@ public class Board {
         String s = "";
         for(int i=0;i<3;i++){
             Slot slot = slots[i];
-            if(slot.getFirstCard().isPresent()){
-                s=s.concat("Slot numero "+(i+1)+":\n"+slot.getFirstCard().get().toString());
-            }
-            else{
+            try{
+                slot.getFirstCard();
+                s=s.concat("Slot numero "+(i+1)+":\n"+slot.getFirstCard().toString());
+            }catch(EmptyDeckException e) {
                 s=s.concat("Lo slot numero "+(i+1)+" è vuoto\n");
             }
         }
@@ -182,10 +184,8 @@ public class Board {
 
         for(Resources res : usedResources){
             if(sb.getResource(res) > 0 ){
-                try{
                     sb.subResource(res,1);
                     count++;
-                }catch(Exception e){e.printStackTrace();}
             }
         }
 
@@ -197,9 +197,11 @@ public class Board {
         else throw new IllegalArgumentException("Not enough resources");
     }
 
-    public int slotProduction(int slotNumber) throws IllegalArgumentException{
-        if(!slots[slotNumber-1].getFirstCard().isPresent()) throw new IllegalArgumentException("Wrong slot");
-        DevelopmentCard DC = slots[slotNumber-1].getFirstCard().get();
+    public int slotProduction(int slotNumber) throws EmptyDeckException{
+        DevelopmentCard DC;
+        try{
+           DC = slots[slotNumber-1].getFirstCard();
+        }catch(EmptyDeckException e){throw e;}
 
         ArrayList<Resources> reqRes = new ArrayList<>();
         ArrayList<Resources> prodRes = new ArrayList<>();

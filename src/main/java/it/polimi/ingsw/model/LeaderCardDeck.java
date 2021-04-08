@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.EmptyDeckException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -84,9 +85,8 @@ public class LeaderCardDeck {
         catch(Exception e) {e.printStackTrace();}
     }
 
-    private LeaderCard getFirstCard() throws IllegalArgumentException{
-        if(!(deck.isEmpty())) return deck.pop();
-        else throw new IllegalArgumentException("No more leader cards");
+    private LeaderCard getFirstCard(){
+        return deck.pop();
     }
 
     public ArrayList<LeaderCard> getLeaderCards(){

@@ -59,31 +59,17 @@ public class Market {
         return n;
     }
 
-    public Marbles[][] getGrid() {
-        return grid;
-    }
-
-    public Marbles getRemainingMarble() {
-        return remainingMarble;
-    }
-
-    public void setRemainingMarble(Marbles remainingMarble) {
-        this.remainingMarble = remainingMarble;
-    }
-
-    public ArrayList<Marbles> updateMarket(boolean row, int i) throws IllegalArgumentException{
+    public ArrayList<Marbles> updateMarket(boolean row, int i){
+        ArrayList<Marbles> tmp = new ArrayList<>();
         if(row){
-            if (i>3 || i<1) throw new IllegalArgumentException("Row doesn't exist");
-            ArrayList<Marbles> tmp = new ArrayList<>();
             for(int k=0;k<4;k++) tmp.add(grid[i-1][k]);
-            update(row,i-1);
+            update(true,i-1);
             return tmp;
         }
         else{
-            if(i>4 || i<1) throw new IllegalArgumentException("Column doesn't exist");
-            ArrayList<Marbles> tmp = new ArrayList<>();
+
             for(int k=0;k<3;k++) tmp.add(grid[k][i-1]);
-            update(row,i-1);
+            update(false,i-1);
             return tmp;
         }
     }

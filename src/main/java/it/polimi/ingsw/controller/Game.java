@@ -249,7 +249,7 @@ public class Game {
     }
 
     //slots number goes from 1 to 3
-    public void activateDevelopmentCardProduction(int player, int slot){
+    public void activateDevelopmentCardProduction(int player, int slot) throws EmptyDeckException{
         try{
             int faith = players.get(player).getValue().slotProduction(slot);
             for(int i=0; i<faith; i++){
@@ -257,8 +257,8 @@ public class Game {
                 int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
                 if(tmp!=-1) popeEvent(tmp);
             }
-        }catch (IllegalArgumentException e){
-            e.printStackTrace();
+        }catch (EmptyDeckException e){
+            throw e;
         }
     }
 

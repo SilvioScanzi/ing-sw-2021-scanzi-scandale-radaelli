@@ -1,4 +1,5 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.exceptions.EmptyDeckException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -102,24 +103,25 @@ public class DevelopmentCardMarket {
         String tmp = "Mercato delle carte:\n";
         for(int i=1;i<=3;i++){
             for(Colours c : Colours.values()){
-                tmp=tmp.concat(peekFirstCard(c,i).toString()+"\n\n");
+                try {
+                    tmp = tmp.concat(peekFirstCard(c, i).toString() + "\n\n");
+                }
+                catch(EmptyDeckException e){tmp = tmp.concat("Le carte di livello "+i+" e colore "+c.toString()+" sono finite");}
             }
         }
         return tmp;
     }
 
-    public DevelopmentCard peekFirstCard(Colours colour, int level) throws IllegalArgumentException{
+    public DevelopmentCard peekFirstCard(Colours colour, int level) throws EmptyDeckException {
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
-        if(cardMarket.get(tmp1).empty()) throw new IllegalArgumentException("There's no card on the stack");
+        if(cardMarket.get(tmp1).empty()) throw new EmptyDeckException("D");
         return cardMarket.get(tmp1).peek();
     }
 
-    public DevelopmentCard getFirstCard(Colours colour, int level) throws IllegalArgumentException{
+    public DevelopmentCard getFirstCard(Colours colour, int level){
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
-        if(cardMarket.get(tmp1).empty()) throw new IllegalArgumentException("There's no card on the stack");
         return cardMarket.get(tmp1).pop();
     }
-
 
 
     //ONLY FOR SINGLE PLAYER
