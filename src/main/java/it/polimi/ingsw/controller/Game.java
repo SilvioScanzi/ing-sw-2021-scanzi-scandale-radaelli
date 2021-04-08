@@ -28,6 +28,18 @@ public class Game {
         actionStack = new ActionStack();
     }
 
+    public Game(int Arandom){
+        inkwell = 0;
+        nplayer = 0;
+        players = new ArrayList<>();
+        market = new Market(Arandom);
+        developmentcardmarket = new DevelopmentCardMarket(Arandom);
+        vaticanReport = new boolean[] {false,false,false};
+        leadercarddeck = new LeaderCardDeck(Arandom);
+        lorenzo = new LorenzoTrack();
+        actionStack = new ActionStack(Arandom);
+    }
+
     //Initializes variables and boards, assigning nicknames
     public void setup(ArrayList<String> names){
         nplayer = names.size();
@@ -167,19 +179,22 @@ public class Game {
                 if(cost.get(tmp.getKey().get()) != null){
                     if(cost.get(tmp.getKey().get()) <= tmp.getValue()) {    //have enough resources
                         try{
+                            Resources r = tmp.getKey().get();
                             wr.subDepot(i,cost.get(tmp.getKey().get()));
+                            cost.remove(r);
                         } catch(Exception e){
                             e.printStackTrace();
                         }
-                        cost.remove(tmp.getKey().get());
                     }
                     else {    //not enough resources, modify the remaining value in cost
                         try{
+                            Resources r = tmp.getKey().get();
+                            int amount = tmp.getValue();
                             wr.subDepot(i,tmp.getValue());
+                            cost.put(r, cost.get(r) - amount);
                         } catch(Exception e){
                             e.printStackTrace();
                         }
-                        cost.put(tmp.getKey().get(), cost.get(tmp.getKey().get()) - tmp.getValue());
                     }
                 }
             }

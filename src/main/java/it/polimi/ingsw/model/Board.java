@@ -38,7 +38,7 @@ public class Board {
             Slot slot = slots[i];
             try{
                 slot.getFirstCard();
-                s=s.concat("Slot numero "+(i+1)+":\n"+slot.getFirstCard().toString());
+                s=s.concat("Slot numero "+(i+1)+":\n"+slot.getFirstCard().toString()+"\n");
             }catch(EmptyDeckException e) {
                 s=s.concat("Lo slot numero "+(i+1)+" è vuoto\n");
             }
