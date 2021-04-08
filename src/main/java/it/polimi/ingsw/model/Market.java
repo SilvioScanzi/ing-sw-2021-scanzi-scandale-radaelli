@@ -35,6 +35,33 @@ public class Market {
         remainingMarble = tmp.remove(0);
     }
 
+    public Market(int Arandom){
+        ArrayList<Marbles> tmp = new ArrayList<>();
+        tmp.add(Marbles.Red);
+        tmp.add(Marbles.Blue);
+        tmp.add(Marbles.Blue);
+        tmp.add(Marbles.Grey);
+        tmp.add(Marbles.Grey);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.Yellow);
+        tmp.add(Marbles.Yellow);
+        tmp.add(Marbles.Purple);
+        tmp.add(Marbles.Purple);
+
+        grid = new Marbles[3][4];
+        int k=0;
+        for(int i=0;i<3;i++){
+            for(int j=0;j<4;j++){
+                grid[i][j] = tmp.remove(0);
+                k++;
+            }
+        }
+        remainingMarble = tmp.remove(0);
+    }
+
     @Override
     public String toString(){
         String tmp = "Mercato delle risorse:\n";
