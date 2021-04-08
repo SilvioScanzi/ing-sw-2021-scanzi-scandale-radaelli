@@ -235,6 +235,9 @@ public class Game {
                 throw e;
             }
         }
+        else{
+            throw new IllegalArgumentException("You don't have enough resources to buy the card");
+        }
     }
 
     public void activateBaseProduction(int player, ArrayList<Resources> usedResources, Resources gotResources){

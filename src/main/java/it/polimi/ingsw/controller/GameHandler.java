@@ -207,6 +207,7 @@ public class GameHandler{
     private boolean buyDevelopmentAction(int player) {
         while(true){
             System.out.println(game.getDevelopmentcardmarket().toString());
+            System.out.println(game.getBoard(player).slottoString());
             System.out.println("Se non puoi comprare nessuna carta o hai sbagliato a scegliere, digita N");
             String s = scanner.nextLine();
             if(s.equals("N")) return false;
@@ -221,16 +222,17 @@ public class GameHandler{
                 ok = true;
                 switch (c) {
                     case "BL":
-                        colour = Colours.Blue;
+                        colour = Colours.Blue; break;
                     case "VE":
-                        colour = Colours.Green;
+                        colour = Colours.Green; break;
                     case "GI":
-                        colour = Colours.Yellow;
+                        colour = Colours.Yellow; break;
                     case "VI":
-                        colour = Colours.Purple;
+                        colour = Colours.Purple; break;
                     default: {
                         System.out.println("Colore non valido");
                         ok = false;
+                        break;
                     }
                 }
             } while (!ok);
@@ -255,10 +257,10 @@ public class GameHandler{
 
             try {
                 game.getDevelopmentCard(colour, level, player, slot);
+                System.out.println(game.getBoard(player).slottoString());
                 return true;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (InvalidPlacementException e){ System.out.println("Hai abbastanza risorse, ma non puoi mettere la carta su questo slot!");}
+            catch (Exception e) { System.out.println("Non hai abbastanza risorse per comprare la carta!"); }
         }
     }
 

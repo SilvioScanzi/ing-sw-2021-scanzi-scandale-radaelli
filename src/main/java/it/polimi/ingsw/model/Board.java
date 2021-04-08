@@ -30,6 +30,20 @@ public class Board {
         baseProductionActivated = false;
     }
 
+    public String slottoString(){
+        String s = "";
+        for(int i=0;i<3;i++){
+            Slot slot = slots[i];
+            if(slot.getFirstCard().isPresent()){
+                s=s.concat("Slot numero "+(i+1)+":\n"+slot.getFirstCard().get().toString());
+            }
+            else{
+                s=s.concat("Lo slot numero "+(i+1)+" è vuoto\n");
+            }
+        }
+        return s;
+    }
+
     public String handtoString(){
         String s = "";
         for(Resources r : hand){
