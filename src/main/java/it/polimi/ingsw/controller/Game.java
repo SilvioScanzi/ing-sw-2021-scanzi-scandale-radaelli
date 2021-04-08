@@ -281,11 +281,11 @@ public class Game {
         if(tmp!=-1) popeEvent(tmp);
     }
 
-    public void playLeaderCard(int player, int leaderCardIndex){
+    public void playLeaderCard(int player, int leaderCardIndex)throws IllegalArgumentException{
         try {
             players.get(player).getValue().playLeaderCard(leaderCardIndex);
         }
-        catch(Exception e) {e.printStackTrace();}
+        catch(Exception e) {throw e;}
     }
 
     public boolean checkEndGame(int player){

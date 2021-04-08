@@ -127,9 +127,13 @@ public class GameHandler{
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                } else if (c == 0) {
-                    turnDone = true;
-                } else {
+                } else if(c==0 && !actionDone){
+                    System.out.println("Devi prima fare un'azione!");
+                }
+                else if(c==0){
+                    turnDone=true;
+                }
+                else{
                     System.out.println("Inserisci una scelta valida!");
                 }
             }
@@ -306,14 +310,49 @@ public class GameHandler{
     }
 
     private void playLeaderCardAction(int player){
-
+        Board playerBoard = game.getBoard(player);
+        if(playerBoard.getLeadercards().isEmpty()){
+            System.out.println("Non hai nessuna carta leader da giocare");
+            return;
+        }
+        System.out.println("Queste sono le tue carte leader:\n");
+        for(int i=0;i<playerBoard.getLeadercards().size();i++){
+            System.out.println((i+1)+":\n"+playerBoard.getLeadercards().get(i).toString());
+        }
+        int index;
+        do {
+            System.out.println("Quale carta vuoi giocare?");
+            index = Integer.parseInt(scanner.nextLine());
+            if(index<1 || index>(playerBoard.getLeadercards().size())) System.out.println("Indice non valido");
+        }while(index<1 || index>(playerBoard.getLeadercards().size()));
+        try {
+            game.playLeaderCard(player,index);
+        }catch (Exception E) {System.out.println("Non soddisfi i requisiti");}
     }
 
-    private void discardLeaderCardAction(int player){
-
+    private void discardLeaderCardAction(int player) {
+        Board playerBoard = game.getBoard(player);
+        if(playerBoard.getLeadercards().isEmpty()){
+            System.out.println("Non hai nessuna carta leader da scartare");
+            return;
+        }
+        int i;
+        System.out.println("Queste sono le tue carte leader:\n");
+        for(i=0;i<playerBoard.getLeadercards().size();i++){
+            System.out.println((i+1)+":\n"+playerBoard.getLeadercards().get(i).toString());
+        }
+        int index;
+        do {
+            System.out.println("Quale carta vuoi scartare?");
+            index = Integer.parseInt(scanner.nextLine());
+            if(index<1 || index>(playerBoard.getLeadercards().size())) System.out.println("Indice non valido");
+        }while(index<1 || index>(playerBoard.getLeadercards().size()));
+            game.discardLeaderCard(player,index);
     }
 
-    private void countVictoryPoints(int player){
-
+    private int countVictoryPoints(int player){
+        int VP = 0;
+        Board playerBoard = game.getBoard(player);
+        return VP;
     }
 }
