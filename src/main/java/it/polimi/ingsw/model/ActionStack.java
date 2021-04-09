@@ -23,6 +23,7 @@ public class ActionStack {
         }
     }
 
+    //costruttore per testing
     public ActionStack(int Arandom){
         ArrayList<ActionToken> tmp = new ArrayList<>();
         tmp.add(ActionToken.Advance2);

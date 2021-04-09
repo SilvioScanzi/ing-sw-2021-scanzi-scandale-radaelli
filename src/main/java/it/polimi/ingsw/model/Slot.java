@@ -6,11 +6,9 @@ import java.util.*;
 
 public class Slot {
     private ArrayList<DevelopmentCard> developmentcards;
-    private boolean activatedProduction;
 
     public Slot() {
         developmentcards = new ArrayList<>();
-        activatedProduction = false;
     }
 
     public ArrayList<Pair<Colours,Integer>> getList(){

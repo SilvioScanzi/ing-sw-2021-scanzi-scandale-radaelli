@@ -15,6 +15,7 @@ public class Pair<A, B> {
         this.key=key;
         this.value=value;
     }
+
     public void setKey(A key) {
         this.key = key;
     }

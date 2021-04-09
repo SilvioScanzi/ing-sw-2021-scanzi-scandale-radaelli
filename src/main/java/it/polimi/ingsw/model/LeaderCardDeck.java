@@ -1,6 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.EmptyDeckException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -85,6 +84,7 @@ public class LeaderCardDeck {
         catch(Exception e) {e.printStackTrace();}
     }
 
+    //costruttore per mettere le carte in ordine (testing)
     public LeaderCardDeck(int Arandom){
         deck = new Stack<>();
         try{

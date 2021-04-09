@@ -269,7 +269,112 @@ public class GameHandler{
     }
 
     private void productionAction(int player){
-        //MANCA: CONTROLLO SULL'ATTIVAZIONE DI RISORSE GIA' ATTIVATE
+        Board playerBoard = game.getBoard(player);
+        System.out.println("Hai scelto di attivare un potere di produzione.");
+        System.out.println("Carte disponibili negli slot: ");
+        System.out.println(playerBoard.slottoString());   //prints available slots
+        System.out.println("\nLeader card con potere di produzione: "); //printing only the ones with correct production power
+        for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+            if(LC.getAbility().getType().equals(Ability.AbilityType.ProductionPowerAbility))
+                System.out.println(LC);
+        }
+
+        boolean[] pProductions = new boolean[] {false,false,false,false,false,false};
+        int tmp = -1;
+        while(tmp!=0){
+            System.out.println("\nSeleziona la carta che desideri; per chiudere la selezione digita 0");
+            System.out.println("1, 2, 3 - Carte sviluppo negli slot");
+            System.out.println("4 - Potere di base");
+            System.out.println("5, 6 - Carte leader");  //needs update: show only for leader cards actually available
+            tmp = Integer.parseInt(scanner.nextLine());
+            if(tmp>0 && tmp<6){
+                if(pProductions[tmp-1]) {
+                    System.out.println("Devi selezionare un potere di produzione valido.");
+                }
+                else{
+                    if(1<=tmp && tmp<=3){
+                        //check if card exists is done in Board
+                        try{
+                            game.activateDevelopmentCardProduction(player,tmp);
+                            pProductions[tmp-1] = true;
+                        }catch(Exception e){ e.printStackTrace(); }
+                    }
+                    else if(tmp==4){
+                        System.out.println("Hai selezionato il potere di produzione di base.\nEcco il magazzino e il forziere: ");
+                        System.out.println(playerBoard.getWarehouse().toString());
+                        System.out.println(playerBoard.getStrongbox().toString());
+                        System.out.println("Che risorse vuoi usare? (Due risorse)");
+                        ArrayList<Resources> usedResources = new ArrayList<>();
+                        Resources gotResources = null;  //PROF: sappiamo che il valore lo trova, però a 339 fa errori di compilazione se non
+                        //lo inizializzo. Brutta pratica?
+
+                        //asking for required resources
+                        while(usedResources.size()<2){
+                            System.out.println("MO - Monete");
+                            System.out.println("PI - Pietre");
+                            System.out.println("SC - Scudi");
+                            System.out.println("SE - Servitori");
+                            try{
+                                usedResources.add(Resources.getResourceFromString(scanner.nextLine())); //PROF: meglio un metodo così static o solito switch case?
+                            }catch(IllegalArgumentException e){
+                                System.out.println("Inserisci una risorsa valida");
+                            }
+                        }
+
+                        //asking for produced resources
+                        boolean flag = true;
+                        while(flag){
+                            System.out.println("Che risorse vuoi ricevere? (Una risorsa)");
+                            System.out.println("MO - Monete");
+                            System.out.println("PI - Pietre");
+                            System.out.println("SC - Scudi");
+                            System.out.println("SE - Servitori");
+                            try{
+                                gotResources = (Resources.getResourceFromString(scanner.nextLine()));
+                                flag = false;
+                            }catch (IllegalArgumentException e) {
+                                System.out.println("Inserisci una risorsa valida");
+                            }
+                        }
+
+                        try{
+                            game.activateBaseProduction(player, usedResources, gotResources);
+                            pProductions[tmp-1] = true;
+                        }catch (IllegalArgumentException e) {
+                            System.out.println("Hai già attivato il potere di produzione");
+                        }
+                    }
+                    else {
+                        //already checks in Board if leader cards have the right ability
+                        boolean flag = true;
+                        Resources gotResource = null;
+                        while(flag){
+                            System.out.println("Che risorse vuoi ricevere? (Una risorsa)");
+                            System.out.println("MO - Monete");
+                            System.out.println("PI - Pietre");
+                            System.out.println("SC - Scudi");
+                            System.out.println("SE - Servitori");
+                            try{
+                                gotResource = (Resources.getResourceFromString(scanner.nextLine()));
+                                flag = false;
+                            }catch (IllegalArgumentException e) {
+                                System.out.println("Inserisci una risorsa valida");
+                            }
+                        }
+                        try{
+                            game.activateLeaderCardProduction(player,tmp-4,gotResource);
+                            pProductions[tmp-1] = true;
+                        }catch(IllegalArgumentException e){
+                            System.out.println("Non è andato a buon fine, rifai.");
+                        }
+                    }
+                }
+            }
+            else if(tmp==0) ;
+            else System.out.println("Selezione non valida.");
+        }
+
+        playerBoard.dumpHandIntoStrongbox();
     }
 
     private void moveAction(int player){
@@ -319,7 +424,7 @@ public class GameHandler{
         for(int i=0;i<playerBoard.getLeadercards().size();i++){
             System.out.println((i+1)+":\n"+playerBoard.getLeadercards().get(i).toString());
         }
-        int index;
+        int index = 0;
         do {
             System.out.println("Quale carta vuoi giocare?");
             index = Integer.parseInt(scanner.nextLine());
@@ -350,6 +455,7 @@ public class GameHandler{
             game.discardLeaderCard(player,index);
     }
 
+    //MANCA
     private int countVictoryPoints(int player){
         int VP = 0;
         Board playerBoard = game.getBoard(player);

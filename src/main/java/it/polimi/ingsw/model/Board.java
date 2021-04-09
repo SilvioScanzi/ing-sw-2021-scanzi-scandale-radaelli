@@ -12,11 +12,8 @@ public class Board {
     private final ArrayList<LeaderCard> leadercardshand;
     private final ArrayList<LeaderCard> leadercardsplayed;
     private final ArrayList<Resources> hand;
-    private boolean flagIncompatibleResources;
-    private boolean flagResourceError;
-    private boolean baseProductionActivated;
 
-    public Board(String nickname, ArrayList<LeaderCard> leadercards) {
+    public Board(ArrayList<LeaderCard> leadercards) {
         faithtrack = new FaithTrack();
         warehouse = new Warehouse();
         strongbox = new Strongbox();
@@ -27,9 +24,6 @@ public class Board {
         leadercardshand = new ArrayList<LeaderCard> (leadercards);
         leadercardsplayed = new ArrayList<LeaderCard>();
         hand = new ArrayList<>();
-        flagIncompatibleResources = false;
-        flagResourceError = false;
-        baseProductionActivated = false;
     }
 
     public String slottoString(){
@@ -54,14 +48,6 @@ public class Board {
         return s;
     }
 
-    public void setFlagIncompatibleResources(boolean flagIncompatibleResources) {
-        this.flagIncompatibleResources = flagIncompatibleResources;
-    }
-
-    public void setFlagResourceError(boolean flagResourceError) {
-        this.flagResourceError = flagResourceError;
-    }
-
     public void clearWarehouse(){
         for(int i=1;i<4;i++) {
             hand.addAll(warehouse.clear(i));
@@ -80,10 +66,6 @@ public class Board {
         return leadercardsplayed;
     }
 
-    public void setHand(ArrayList<Resources> resources) {
-        hand.addAll(resources);
-    }
-
     public FaithTrack getFaithtrack() {
         return faithtrack;
     }
@@ -94,10 +76,6 @@ public class Board {
 
     public Strongbox getStrongbox() {
         return strongbox;
-    }
-
-    public Slot[] getSlots() {
-        return slots;
     }
 
     public Slot getSlot(int index) throws IllegalArgumentException{

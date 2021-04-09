@@ -1,5 +1,4 @@
 package it.polimi.ingsw.model;
-import it.polimi.ingsw.exceptions.EmptyDeckException;
 import it.polimi.ingsw.exceptions.IncompatibleResourceException;
 import it.polimi.ingsw.exceptions.ResourceErrorException;
 

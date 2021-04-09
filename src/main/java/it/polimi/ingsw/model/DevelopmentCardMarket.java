@@ -98,6 +98,7 @@ public class DevelopmentCardMarket {
         catch(Exception e) {e.printStackTrace();}
     }
 
+    //costruttore per testing
     public DevelopmentCardMarket(int Arandom){
         cardMarket = new HashMap<>();
         cardMarket.put(new Pair<>(Colours.Blue,1),new Stack<>());

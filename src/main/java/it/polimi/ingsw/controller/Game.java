@@ -28,6 +28,7 @@ public class Game {
         actionStack = new ActionStack();
     }
 
+    //costruttore per il testing non randomico
     public Game(int Arandom){
         inkwell = 0;
         nplayer = 0;
@@ -45,7 +46,7 @@ public class Game {
         nplayer = names.size();
         inkwell = (int)(Math.random() * nplayer);
         for(int i=0;i<nplayer;i++){
-            players.add(new Pair<>(names.get(i),new Board(names.get(i),leadercarddeck.getLeaderCards())));
+            players.add(new Pair<>(names.get(i),new Board(leadercarddeck.getLeaderCards())));
         }
     }
 
@@ -255,11 +256,11 @@ public class Game {
         }
     }
 
-    public void activateBaseProduction(int player, ArrayList<Resources> usedResources, Resources gotResources){
+    public void activateBaseProduction(int player, ArrayList<Resources> usedResources, Resources gotResources) throws IllegalArgumentException{
         try{
             players.get(player).getValue().production(usedResources,new ArrayList<Resources>() {{add(gotResources);}}); //TESTING MASSIVO
         }catch (IllegalArgumentException e){
-            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -277,15 +278,15 @@ public class Game {
         }
     }
 
-    public void activateLeaderCardProduction(int player, int leaderCardIndex, Resources R){
+    public void activateLeaderCardProduction(int player, int leaderCardIndex, Resources gotResource) throws IllegalArgumentException{
         try{
-            players.get(player).getValue().leaderProduction(leaderCardIndex,R);
+            players.get(player).getValue().leaderProduction(leaderCardIndex,gotResource);
             players.get(player).getValue().getFaithtrack().advanceTrack();
             int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
             if(tmp!=-1) popeEvent(tmp);
         }
         catch(IllegalArgumentException e){
-            e.printStackTrace();
+            throw e;
         }
     }
 
@@ -296,7 +297,7 @@ public class Game {
         if(tmp!=-1) popeEvent(tmp);
     }
 
-    public void playLeaderCard(int player, int leaderCardIndex)throws IllegalArgumentException{
+    public void playLeaderCard(int player, int leaderCardIndex) throws IllegalArgumentException{
         try {
             players.get(player).getValue().playLeaderCard(leaderCardIndex);
         }

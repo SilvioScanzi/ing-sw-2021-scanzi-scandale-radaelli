@@ -1,7 +1,5 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.ResourceErrorException;
-
 import java.util.*;
 
 public class Strongbox implements Cloneable {

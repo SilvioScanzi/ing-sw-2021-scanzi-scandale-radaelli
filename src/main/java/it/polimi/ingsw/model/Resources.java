@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+
 public enum Resources {
     Coins,
     Stones,
@@ -24,6 +25,16 @@ public enum Resources {
             case Shields: return "SC";
             case Servants: return "SE";
             default: return "Error";
+        }
+    }
+
+    public static Resources getResourceFromString(String string) throws IllegalArgumentException {
+        switch(string){
+            case "MO" : return Coins;
+            case "PI" : return Stones;
+            case "SC" : return Shields;
+            case "SE" : return Servants;
+            default : throw new IllegalArgumentException();
         }
     }
 }
