@@ -238,7 +238,7 @@ public class Game {
         if(check){
             try{
                 Slot requestedSlot = playerBoard.getSlot(slotNumber);
-                requestedSlot.addCard(DC);      //TESTING: si modifica anche nell board reale?
+                requestedSlot.addCard(DC);
                 playerBoard.setWarehouse(wr);
                 playerBoard.setStrongbox(sb);
                 for(LeaderCard L : playerBoard.getLeadercardsplayed()){
