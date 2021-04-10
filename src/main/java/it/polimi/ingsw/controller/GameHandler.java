@@ -188,7 +188,7 @@ public class GameHandler{
         }while(!ok);
 
         Board playerBoard = game.getBoard(player);
-        if(playerBoard.getLeadercardsplayed().stream().anyMatch(LC -> LC.getAbility().getType().equals(Ability.AbilityType.WhiteMarbleAbility))){
+        if(playerBoard.getLeadercardsplayed().stream().filter(LC -> LC.getAbility().doConvert()==true).count() > 0){
             for(int i=0;i<game.getMarket().getWhiteMarbles(r,n);i++){
                 boolean okConversion = false;
                 do {
@@ -275,7 +275,7 @@ public class GameHandler{
         System.out.println(playerBoard.slottoString());   //prints available slots
         System.out.println("\nLeader card con potere di produzione: "); //printing only the ones with correct production power
         for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
-            if(LC.getAbility().getType().equals(Ability.AbilityType.ProductionPowerAbility))
+            if(LC.getAbility().doActivate())
                 System.out.println(LC);
         }
 

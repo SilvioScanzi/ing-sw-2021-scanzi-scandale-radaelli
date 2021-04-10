@@ -45,7 +45,7 @@ public class LeaderCardDeck {
                     //Getting the requiredresources String, splitting it into multiple strings
                     String[] requiredresourcesString = (leadercardElement.getElementsByTagName("requiredresources").item(0).getTextContent()).split("-");
                     //Getting the ability type
-                    Ability.AbilityType abilitytype = Ability.AbilityType.valueOf(leadercardElement.getElementsByTagName("abilitytype").item(0).getTextContent());
+                    String type = leadercardElement.getElementsByTagName("abilitytype").item(0).getTextContent();
                     //Getting the resource type
                     Resources restype = Resources.valueOf(leadercardElement.getElementsByTagName("restype").item(0).getTextContent());
                     //Getting the initial capacity
@@ -69,7 +69,7 @@ public class LeaderCardDeck {
                     }
 
                     //Generating a new LCCard with the previously calculated attributes
-                    LeaderCard LC = new LeaderCard(victorypoints,requiredcolours,requiredresources,new Ability(abilitytype,restype,capacity));
+                    LeaderCard LC = new LeaderCard(victorypoints,requiredcolours,requiredresources,type,restype,capacity);
                     tmp.add(LC);
                 }
             }
@@ -117,7 +117,7 @@ public class LeaderCardDeck {
                     //Getting the requiredresources String, splitting it into multiple strings
                     String[] requiredresourcesString = (leadercardElement.getElementsByTagName("requiredresources").item(0).getTextContent()).split("-");
                     //Getting the ability type
-                    Ability.AbilityType abilitytype = Ability.AbilityType.valueOf(leadercardElement.getElementsByTagName("abilitytype").item(0).getTextContent());
+                    String type = leadercardElement.getElementsByTagName("abilitytype").item(0).getTextContent();
                     //Getting the resource type
                     Resources restype = Resources.valueOf(leadercardElement.getElementsByTagName("restype").item(0).getTextContent());
                     //Getting the initial capacity
@@ -141,7 +141,7 @@ public class LeaderCardDeck {
                     }
 
                     //Generating a new LCCard with the previously calculated attributes
-                    LeaderCard LC = new LeaderCard(victorypoints,requiredcolours,requiredresources,new Ability(abilitytype,restype,capacity));
+                    LeaderCard LC = new LeaderCard(victorypoints,requiredcolours,requiredresources,type,restype,capacity);
                     tmp.add(LC);
                 }
             }

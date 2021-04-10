@@ -99,7 +99,7 @@ public class Game {
     //Checks if LC provided can convert white marbles to resources, if so, gives them to the hand
     public void leaderCardConversion(int player, LeaderCard LC) throws IllegalArgumentException{
         Board playerBoard = players.get(player).getValue();
-        if(LC.getAbility().equals(Ability.AbilityType.WhiteMarbleAbility)){
+        if(LC.getAbility().doConvert()){
             playerBoard.getHand().add(LC.getAbility().getRestype());
         }
         else throw new IllegalArgumentException("Leader card has a different ability");
@@ -126,13 +126,10 @@ public class Game {
     }
 
     //Stash resources into leadercards
-    public void setResourcesToLeaderCard(int player, Resources r, int amount, LeaderCard LC){
+    public void setResourcesToLeaderCard(int player, Resources r, int amount, LeaderCard LC) throws IllegalArgumentException{
         Board playerBoard = players.get(player).getValue();
-        try{
-            LC.getAbility().updateCapacity(r,amount);
-        }
-        catch(IllegalArgumentException e) {e.printStackTrace();}
-        catch(ResourceErrorException e) {e.printStackTrace();}
+        if(!LC.getAbility().doUpdateSlot(r,amount));
+        throw new IllegalArgumentException("Action went wrong");
     }
 
     //Discard resources and advance other players
@@ -164,13 +161,7 @@ public class Game {
 
         //Check if LC played give some discount
         for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
-            if(LC.getAbility().getType().equals(Ability.AbilityType.DiscountAbility)){
-                for(Resources r : cost.keySet()){
-                    if(r.equals(LC.getAbility().getRestype())){
-                        cost.put(r,cost.get(r) + LC.getAbility().getCapacity());
-                    }
-                }
-            }
+            cost = LC.getAbility().doDiscount(cost);
         }
 
         //warehouse check and reduce resources in cost, to show how many are still required in strongbox
@@ -203,18 +194,15 @@ public class Game {
 
         //leadercard abilities check (extra resource storage)
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
-        for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
-            if(LC.getAbility().getType().equals(Ability.AbilityType.ExtraSlotAbility)){
-                for(Resources r : cost.keySet()){
-                    if(r.equals(LC.getAbility().getRestype())){
-                        if(cost.get(r)>LC.getAbility().getCapacity()){
-                            cost.put(r,cost.get(r) - LC.getAbility().getCapacity());
-                            LCCapacity.put(LC,-LC.getAbility().getCapacity());
-                        }
-                        else{
-                            LCCapacity.put(LC,-cost.get(r));
-                            cost.remove(r);
-                        }
+        for(LeaderCard LC : playerBoard.getLeadercardsplayed()) {
+            for (Resources r : cost.keySet()) {
+                if (r.equals(LC.getAbility().getRestype())) {
+                    if (cost.get(r) > LC.getAbility().getCapacity()) {
+                        cost.put(r, cost.get(r) - LC.getAbility().getCapacity());
+                        LCCapacity.put(LC, -LC.getAbility().getCapacity());
+                    } else {
+                        LCCapacity.put(LC, -cost.get(r));
+                        cost.remove(r);
                     }
                 }
             }
@@ -243,7 +231,7 @@ public class Game {
                 playerBoard.setStrongbox(sb);
                 for(LeaderCard L : playerBoard.getLeadercardsplayed()){
                     if(LCCapacity.get(L)!=null){
-                        L.getAbility().updateCapacity(L.getAbility().getRestype(),LCCapacity.get(L));
+                        L.getAbility().doUpdateSlot(L.getAbility().getRestype(),LCCapacity.get(L));
                     }
                 }
                 developmentcardmarket.getFirstCard(c,level);

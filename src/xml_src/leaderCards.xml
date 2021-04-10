@@ -38,7 +38,7 @@
         <requiredresources>Coins-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Stones</restype>
-        <capacity>0</capacity>
+        <capacity>2</capacity>
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
@@ -46,7 +46,7 @@
         <requiredresources>Stones-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Servants</restype>
-        <capacity>0</capacity>
+        <capacity>2</capacity>
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
@@ -54,7 +54,7 @@
         <requiredresources>Servants-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Shields</restype>
-        <capacity>0</capacity>
+        <capacity>2</capacity>
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
@@ -62,7 +62,7 @@
         <requiredresources>Shields-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Coins</restype>
-        <capacity>0</capacity>
+        <capacity>2</capacity>
     </leadercard>
     <leadercard>
         <victorypoints>4</victorypoints>

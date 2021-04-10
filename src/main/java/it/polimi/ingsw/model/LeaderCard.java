@@ -21,11 +21,22 @@ public class LeaderCard {
         return tmp;
     }
 
-    public LeaderCard(int victoryPoints, Map<Colours,Pair<Integer, Integer>> requiredColours, Map<Resources,Integer> requiredResources, Ability ability) {
+    public LeaderCard(int victoryPoints, Map<Colours,Pair<Integer, Integer>> requiredColours, Map<Resources,Integer> requiredResources, String type, Resources restype, int cap) {
         this.victoryPoints = victoryPoints;
         this.requiredColours = requiredColours;
         this.requiredResources = requiredResources;
-        this.ability = ability;
+        if(type.equals("DiscountAbility")){
+            ability = new DiscountAbility(restype,cap);
+        }
+        else if(type.equals("ExtraSlotAbility")){
+            ability = new ExtraSlotAbility(restype,cap);
+        }
+        else if(type.equals("ProductionPowerAbility")){
+            ability = new ProductionPowerAbility(restype);
+        }
+        else if(type.equals("WhiteMarbleAbility")){
+            ability = new ProductionPowerAbility(restype);
+        }
     }
 
     public Ability getAbility() {

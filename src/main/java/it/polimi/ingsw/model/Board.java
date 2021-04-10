@@ -203,7 +203,7 @@ public class Board {
 
     public void leaderProduction(int leadercardnumber, Resources R) throws IllegalArgumentException{
         if(leadercardsplayed.get(leadercardnumber-1)==null) throw new IllegalArgumentException("Wrong LC number");
-        if(!leadercardsplayed.get(leadercardnumber-1).getAbility().getType().equals(Ability.AbilityType.ProductionPowerAbility)) throw new IllegalArgumentException("Wrong LC");
+        if(!leadercardsplayed.get(leadercardnumber-1).getAbility().doActivate()) throw new IllegalArgumentException("Wrong LC");
         ArrayList<Resources> usedResources = new ArrayList<>();
         usedResources.add(leadercardsplayed.get(leadercardnumber-1).getAbility().getRestype());
         ArrayList<Resources> gotResources = new ArrayList<>();
