@@ -11,6 +11,11 @@ public class Pair<A, B> {
         this.value = value;
     }
 
+    public Pair(Pair<A, B> pair){
+        this.key = pair.getKey();
+        this.value = pair.getValue();
+    }
+
     public void setPair(A key, B value){
         this.key=key;
         this.value=value;

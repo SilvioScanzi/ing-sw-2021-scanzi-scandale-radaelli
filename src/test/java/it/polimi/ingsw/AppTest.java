@@ -1,6 +1,5 @@
 package it.polimi.ingsw;
-import it.polimi.ingsw.*;
-import it.polimi.ingsw.controller.GameHandler;
+import it.polimi.ingsw.view.GameHandler;
 
 public class AppTest
 {

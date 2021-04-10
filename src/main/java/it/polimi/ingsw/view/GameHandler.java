@@ -1,12 +1,16 @@
-package it.polimi.ingsw.controller;
+package it.polimi.ingsw.view;
+import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
+
+import java.lang.reflect.Array;
 import java.util.*;
 
 public class GameHandler{
     private Game game;
     private Scanner scanner = new Scanner(System.in);
 
+    //tecnicamente da fare in rete, tramite gestione delle lobby
     public void init(){
         game = new Game();
         System.out.println("Benvenuti nel gioco 'Maestri del rinascimento' ");
@@ -21,6 +25,8 @@ public class GameHandler{
         s.remove("DONE");
         game.setup(s);
 
+        //stampa le leader card di ogni giocatore
+        int[] discardedLC = new int[2];
         for(int i=0;i<s.size();i++){
             for(int k=0;k<2;k++) {
                 System.out.println("Queste sono le carte leader del giocatore: "+game.getPlayers(i)+"\n");
@@ -32,8 +38,9 @@ public class GameHandler{
                 do {
                     index=Integer.parseInt(scanner.nextLine());
                 } while (index<0 || index>(4-k));
-            game.getBoard(i).discardLeaderCard(index);
+                discardedLC[k] = index;
             }
+            game.discardSelectedLC(i,discardedLC);
         }
 
         if(s.size()==1){
@@ -44,9 +51,12 @@ public class GameHandler{
         }
     }
 
+    //TODO: need to check actionDone in controller, in view is not totally accountable
     private void playing(int players){
         boolean endGame=false;
+        int person = 0;
         for(int i=game.getInkwell();!endGame;i=(i+1)%players){
+            person = i; //saves the last player; used when finishin the game
             boolean actionDone = false;
             boolean turnDone = false;
             while(!turnDone) {
@@ -92,8 +102,11 @@ public class GameHandler{
             }
             endGame=game.checkEndGame(i);
         }
+        //TODO: ritorna tutti i victory points e vede chi ha vinto. Prima va però finito il giro dei turni
+        //person...
     }
 
+    //TODO: check next time
     private void playingSolo(){
         while(!game.checkLorenzoWin() && !game.checkEndGame(0)) {
             boolean actionDone = false;
@@ -137,7 +150,7 @@ public class GameHandler{
                     System.out.println("Inserisci una scelta valida!");
                 }
             }
-            System.out.println("E' il turno di LorEnZoTHEMagNifICenT");
+            System.out.println("E' il turno di Lorenzo il Magnifico.");
             ActionToken AT = game.activatedToken();
             System.out.println(AT.toString());
         }
@@ -145,7 +158,7 @@ public class GameHandler{
 
     private boolean choiceMenu(int c, int player) {
         switch (c) {
-            case 1:  marketAction(player); break;
+            case 1:  marketAction(player); break;  //sarebbe un messaggio da mandare al controller
             case 2:  return buyDevelopmentAction(player);
             case 3:  productionAction(player); break;
             case 4:  moveAction(player); return false;
@@ -155,9 +168,10 @@ public class GameHandler{
         return true;
     }
 
+    //da finire (commentini alla fine)
     private void marketAction(int player) {
         System.out.println("Hai scelto di comprare le risorse dal mercato");
-        System.out.println(game.getMarket().toString());
+        System.out.println(game.getMarket().toString());        //tecnicamente nun se po fa
         System.out.println("Riga o colonna? R per riga e C per colonna");
         String RC;
         boolean r=false;
@@ -171,6 +185,7 @@ public class GameHandler{
                 System.out.println("Inserisci un valore valido");
             }
         }while(!RC.equals("R") && !RC.equals("C"));
+
         System.out.println("Indica il numero di " + ((RC.equals("R"))?"riga" : "colonna"));
         String num;
         boolean ok = false;
@@ -187,27 +202,37 @@ public class GameHandler{
             }
         }while(!ok);
 
+        //hypothetically already having a client-side (mini) model with market, board and leader cards
+        ArrayList<Integer> requestedWMConversion = new ArrayList<>();
         Board playerBoard = game.getBoard(player);
-        if(playerBoard.getLeadercardsplayed().stream().filter(LC -> LC.getAbility().doConvert()==true).count() > 0){
+        if(playerBoard.getLeadercardsplayed().stream().filter(LC -> LC.getAbility().doConvert()).count() > 0){
             for(int i=0;i<game.getMarket().getWhiteMarbles(r,n);i++){
                 boolean okConversion = false;
                 do {
                     System.out.println("Quale leader vuoi utilizzare per convertire la biglia bianca?");
                     int l = Integer.parseInt(scanner.nextLine());
-                    try {
+                    if(1==l || l==2){
+                        requestedWMConversion.add(l);
+                        okConversion = true;
+                    }
+                    else System.out.println("Inserisci un indice valido (1 o 2)");
+                    /*try {
                         game.leaderCardConversion(player, game.getBoard(player).getLeadercardsplayed().get(l - 1));
+                        requestedWMConversion.add(l);
                         okConversion = true;
                     } catch (Exception E) {
                         System.out.println("La carta scelta non è del tipo corretto");
-                    }
+                    }*/
                 }while(!okConversion);
             }
         }
-        game.getMarketResources(player,r,n);
-        moveAction(player);
-        game.discardRemainingResources(player);
+
+        game.getMarketResources(player,r,n,requestedWMConversion);
+        moveAction(player); //TODO
+        game.discardRemainingResources(player); //fattibile magari all'interno di un metodo moveAction nel game
     }
 
+    //view checking ok
     private boolean buyDevelopmentAction(int player) {
         while(true){
             System.out.println(game.getDevelopmentcardmarket().toString());
@@ -216,7 +241,7 @@ public class GameHandler{
             String s = scanner.nextLine();
             if(s.equals("N")) return false;
 
-            Colours colour = Colours.Purple; //Otherwise compiler breaks the balls
+            Colours colour = Colours.Purple;
             boolean ok;
             do {
                 System.out.println("Quale carta vuoi prendere?");
@@ -261,7 +286,7 @@ public class GameHandler{
 
             try {
                 game.getDevelopmentCard(colour, level, player, slot);
-                System.out.println(game.getBoard(player).slottoString());
+                System.out.println(game.getBoard(player).slottoString());   //tecnicamente nun se po fa
                 return true;
             } catch (InvalidPlacementException e){ System.out.println("Hai abbastanza risorse, ma non puoi mettere la carta su questo slot!");}
             catch (Exception e) { System.out.println("Non hai abbastanza risorse per comprare la carta!"); }
@@ -453,12 +478,5 @@ public class GameHandler{
             if(index<1 || index>(playerBoard.getLeadercards().size())) System.out.println("Indice non valido");
         }while(index<1 || index>(playerBoard.getLeadercards().size()));
             game.discardLeaderCard(player,index);
-    }
-
-    //MANCA
-    private int countVictoryPoints(int player){
-        int VP = 0;
-        Board playerBoard = game.getBoard(player);
-        return VP;
     }
 }

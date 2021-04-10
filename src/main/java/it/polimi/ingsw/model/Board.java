@@ -12,6 +12,8 @@ public class Board {
     private final ArrayList<LeaderCard> leadercardshand;
     private final ArrayList<LeaderCard> leadercardsplayed;
     private final ArrayList<Resources> hand;
+    private boolean actionDone;
+    private int victoryPoints;
 
     public Board(ArrayList<LeaderCard> leadercards) {
         faithtrack = new FaithTrack();
@@ -24,6 +26,8 @@ public class Board {
         leadercardshand = new ArrayList<LeaderCard> (leadercards);
         leadercardsplayed = new ArrayList<LeaderCard>();
         hand = new ArrayList<>();
+        actionDone = false;
+        victoryPoints = 0;
     }
 
     public String slottoString(){
@@ -87,12 +91,25 @@ public class Board {
         return leadercardshand;
     }
 
+    public boolean getActionDone() {
+        return actionDone;
+    }
+
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
     }
 
     public void setStrongbox(Strongbox strongbox) {
         this.strongbox = strongbox;
+    }
+
+    //TODO
+    public void setActionDone(boolean actionDone) {
+        this.actionDone = actionDone;
+    }
+
+    public void setVictoryPoints(int victoryPoints) {
+        this.victoryPoints = victoryPoints;
     }
 
     public void discardLeaderCard(int i){
@@ -103,28 +120,60 @@ public class Board {
         LeaderCard LC = leadercardshand.get(i-1);
         Map<Colours,Pair<Integer,Integer>> requiredColours = new HashMap<>(LC.getRequiredColours());
         Map<Resources,Integer> requiredResources = new HashMap<>(LC.getRequiredResources());
-        ArrayList<Pair<Colours,Integer>> tmp = new ArrayList<>();
+        ArrayList<Pair<Colours,Integer>> tmp1 = new ArrayList<>();
+        Map<Resources,Integer> tmp2 = new HashMap<>();
+
         for(int j=0;j<3;j++){
-            tmp.addAll(slots[j].getList());
+            tmp1.addAll(slots[j].getList());
         }
         //Checking level and number of requested card
-        for(int j=0;j<tmp.size();j++){
-            if(requiredColours.get(tmp.get(j).getKey())!=null){
-                if(tmp.get(j).getValue() >= requiredColours.get(tmp.get(j).getKey()).getValue()){
-                    if(requiredColours.get(tmp.get(j).getKey()).getKey()-1<=0){
-                        requiredColours.remove(tmp.get(j).getKey());
+        for(int j=0;j<tmp1.size();j++){
+            if(requiredColours.get(tmp1.get(j).getKey())!=null){
+                if(tmp1.get(j).getValue() >= requiredColours.get(tmp1.get(j).getKey()).getValue()){
+                    if(requiredColours.get(tmp1.get(j).getKey()).getKey()-1<=0){
+                        requiredColours.remove(tmp1.get(j).getKey());
                     }
                     else{
-                        requiredColours.put(tmp.get(j).getKey(), new Pair<>(requiredColours.get(tmp.get(j).getKey()).getKey()-1,requiredColours.get(tmp.get(j).getKey()).getValue()));
+                        requiredColours.put(tmp1.get(j).getKey(),
+                                new Pair<>(requiredColours.get(tmp1.get(j).getKey()).getKey()-1,
+                                        requiredColours.get(tmp1.get(j).getKey()).getValue()));
                     }
                 }
             }
         }
-        //MANCA: CONTROLLO SULLE RISORSE
+
+        //Checking resources and number of requested card
+        tmp2.putAll(getAllResources());
+        for(Resources r : requiredResources.keySet()){
+            if(requiredResources.get(r) < tmp2.get(r)) requiredResources.remove(r);
+        }
+
         if(requiredColours.isEmpty() && requiredResources.isEmpty())
             leadercardsplayed.add(leadercardshand.remove(i-1));
         else
             throw new IllegalArgumentException("Requirements not met");
+    }
+
+    private HashMap<Resources,Integer> getAllResources(){
+        HashMap<Resources,Integer> tmp = new HashMap<>();
+
+        //adds strongbox resources
+        for(Resources r : Resources.values()){
+            tmp.put(r,strongbox.getResource(r));
+        }
+
+        //adds warehouse resources
+        for(int i=1;i<=3;i++){
+            Pair<Optional<Resources>,Integer> whtmp = new Pair<>(warehouse.getDepot(i));
+            if(whtmp.getKey().isPresent()) tmp.put(whtmp.getKey().get(), tmp.get(whtmp.getKey().get())+whtmp.getValue());
+        }
+
+        //adds leader cards resources
+        for(LeaderCard LC : leadercardsplayed){
+            tmp.put(LC.getAbility().getRestype(), tmp.get(LC.getAbility().getRestype())+LC.getAbility().getCapacity());
+        }
+
+        return tmp;
     }
 
     public void dumpHandIntoStrongbox(){

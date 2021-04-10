@@ -35,8 +35,9 @@ public class ExtraSlotAbility implements Ability{
         return restype;
     }
 
+    //other abilities return 0; here returns the number of stored resources
     public int getCapacity(){
-        return capacity;
+        return stashedResources;
     }
 
     public String toString(){

@@ -41,6 +41,7 @@ public class Game {
         actionStack = new ActionStack(Arandom);
     }
 
+    //TODO: TABELLA A PAGINA 3 (IN BASSO) DEL REGOLAMENTO
     //Initializes variables and boards, assigning nicknames
     public void setup(ArrayList<String> names){
         nplayer = names.size();
@@ -69,11 +70,40 @@ public class Game {
     public Board getBoard(int i){return players.get(i).getValue();}
 
     //Adds the resources from the market to the hand, ignoring white marbles
-    public void getMarketResources(int player, boolean row, int i){
+    public void getMarketResources(int player, boolean row, int i, ArrayList<Integer> requestedWMConversion) throws IllegalArgumentException {
         Board playerBoard = players.get(player).getValue();
+        ArrayList<Resources> tmp = new ArrayList<>();
+
+        if(market.getWhiteMarbles(row, i) == requestedWMConversion.size()){ //checking white marbles in market equals requested conversions
+            for(int j=0;j<requestedWMConversion.size() && playerBoard.getLeadercardsplayed().size()>0;j++){ //checking LC presence and if there are conversions
+                if(requestedWMConversion.get(j)>0 && requestedWMConversion.get(j)<=playerBoard.getLeadercardsplayed().size()){ //checking index of LC
+                    try{
+                        tmp.add(leaderCardConversion(player,playerBoard.getLeadercardsplayed().get(requestedWMConversion.get(j))));
+                    }catch(IllegalArgumentException e) {throw e;}
+                }
+            }
+        }
+
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
-        ArrayList<Resources> a = standardConversion(marbles,playerBoard);
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
+        playerBoard.getHand().addAll(tmp);
+    }
+
+    public void discardSelectedLC(int player, int[] discardedLC) throws IllegalArgumentException {
+        if(discardedLC.length!=2) throw new IllegalArgumentException("Errore nelle LC da eliminare");
+
+        //sorting in descending order the index
+        if(discardedLC[0]<discardedLC[1]){
+            int tmp = discardedLC[0];
+            discardedLC[0] = discardedLC[1];
+            discardedLC[1] = tmp;
+        }
+
+        for(int i=0;i<discardedLC.length;i++){
+            if(1<=discardedLC[i] && discardedLC[i]<=4-i) players.get(player).getValue().discardLeaderCard(i);
+            else throw new IllegalArgumentException("Indice non risolvibile");
+        }
+
     }
 
     //Converts Marbles to resources
@@ -97,12 +127,15 @@ public class Game {
     }
 
     //Checks if LC provided can convert white marbles to resources, if so, gives them to the hand
-    public void leaderCardConversion(int player, LeaderCard LC) throws IllegalArgumentException{
+    public Resources leaderCardConversion(int player, LeaderCard LC) throws IllegalArgumentException{
         Board playerBoard = players.get(player).getValue();
+        Resources tmp;
         if(LC.getAbility().doConvert()){
-            playerBoard.getHand().add(LC.getAbility().getRestype());
+            tmp = LC.getAbility().getRestype();
         }
         else throw new IllegalArgumentException("Leader card has a different ability");
+
+        return tmp;
     }
 
     private void popeEvent(int index){
@@ -300,9 +333,62 @@ public class Game {
             for(int i=0;i<3;i++){
                 count += playerBoard.getSlot(i+1).getDevelopmentcards().size();
             }
-            if(count == 7) return true;
+            if(count == 7) {
+                countVictoryPoints();
+                return true;
+            }
         }
         return false;
+    }
+
+    private void countVictoryPoints(){
+        int tmp;
+        for(int i=0;i<nplayer;i++){
+            Board playerBoard = players.get(i).getValue();
+            tmp=0;
+
+            //faithTrack points
+            int faithMarker = playerBoard.getFaithtrack().getFaithMarker();
+            if(3<=faithMarker && faithMarker<=5) tmp+=1;
+            else if(faithMarker<=8) tmp+=2;
+            else if(faithMarker<=11) tmp+=4;
+            else if(faithMarker<=14) tmp+=6;
+            else if(faithMarker<=17) tmp+=9;
+            else if(faithMarker<=20) tmp+=12;
+            else if(faithMarker<=23) tmp+=16;
+            else if(faithMarker==24) tmp+=20;
+
+            for(int j=0;j<3;j++){
+                if(playerBoard.getFaithtrack().getPopeFavor()[j]) tmp+=2+j;
+            }
+
+            //leadercard points
+            for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+                tmp += LC.getVictoryPoints();
+            }
+
+            //development card points
+            for(int j=1;j<=3;j++){
+                for(DevelopmentCard DC : playerBoard.getSlot(j).getDevelopmentcards()){
+                    tmp+=DC.getvictoryPoints();
+                }
+            }
+
+            //resource points
+            int amount = 0;
+            for(int j=1;j<=3;j++){
+                amount+=playerBoard.getWarehouse().getDepot(j).getValue();
+            }
+            for(Resources r : Resources.values()){
+                amount+=playerBoard.getStrongbox().getResource(r);
+            }
+            for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+                amount+=LC.getAbility().getCapacity();
+            }
+            tmp+=(amount-amount%5)/5;
+
+            playerBoard.setVictoryPoints(tmp);
+        }
     }
 
 
