@@ -12,7 +12,7 @@ public class Board {
     private final ArrayList<LeaderCard> leadercardshand;
     private final ArrayList<LeaderCard> leadercardsplayed;
     private final ArrayList<Resources> hand;
-    private boolean actionDone;
+    private boolean actionDone; //TODO
     private int victoryPoints;
 
     public Board(ArrayList<LeaderCard> leadercards) {
@@ -181,84 +181,5 @@ public class Board {
             strongbox.addResource(R,1);
         }
         hand.clear();
-    }
-
-    public void production(ArrayList<Resources> usedResources, ArrayList<Resources> gotResource) throws IllegalArgumentException{
-        int count = 0;
-        Warehouse wr = warehouse.clone();
-        Strongbox sb = strongbox.clone();
-
-        for(Resources res : usedResources){
-            if(wr.checkResourcePresent(1,res)) {
-                try{
-                    wr.subDepot(1,1);
-                    count++;
-                }catch(Exception e){e.printStackTrace();}
-            }
-            else if(wr.checkResourcePresent(2,res)) {
-                try{
-                    wr.subDepot(2,1);
-                    count++;
-                }catch(Exception e){e.printStackTrace();}
-            }
-            else if(wr.checkResourcePresent(3,res)) {
-                try{
-                    wr.subDepot(3,1);
-                    count++;
-                }catch(Exception e){e.printStackTrace();}
-            }
-        }
-
-        for(Resources res : usedResources){
-            if(sb.getResource(res) > 0 ){
-                    sb.subResource(res,1);
-                    count++;
-            }
-        }
-
-        if(count==usedResources.size()){
-            hand.addAll(gotResource);
-            setWarehouse(wr);
-            setStrongbox(sb);
-        }
-        else throw new IllegalArgumentException("Not enough resources");
-    }
-
-    public int slotProduction(int slotNumber) throws EmptyDeckException{
-        DevelopmentCard DC;
-        try{
-           DC = slots[slotNumber-1].getFirstCard();
-        }catch(EmptyDeckException e){throw e;}
-
-        ArrayList<Resources> reqRes = new ArrayList<>();
-        ArrayList<Resources> prodRes = new ArrayList<>();
-
-        for(Resources r : DC.getrequiredResources().keySet()){
-            for(int i=0; i<DC.getrequiredResources().get(r); i++) {
-                reqRes.add(r);}
-        }
-
-        for(Resources r : DC.getproducedResources().keySet()){
-            for(int i=0; i<DC.getproducedResources().get(r); i++) {
-                prodRes.add(r);}
-        }
-
-        try{
-            production(reqRes,prodRes);
-        }catch (Exception e) { throw e;}
-
-        return DC.getproducedFaith();
-    }
-
-    public void leaderProduction(int leadercardnumber, Resources R) throws IllegalArgumentException{
-        if(leadercardsplayed.get(leadercardnumber-1)==null) throw new IllegalArgumentException("Wrong LC number");
-        if(!leadercardsplayed.get(leadercardnumber-1).getAbility().doActivate()) throw new IllegalArgumentException("Wrong LC");
-        ArrayList<Resources> usedResources = new ArrayList<>();
-        usedResources.add(leadercardsplayed.get(leadercardnumber-1).getAbility().getRestype());
-        ArrayList<Resources> gotResources = new ArrayList<>();
-        gotResources.add(R);
-        try{
-            production(usedResources,gotResources);
-        }catch (Exception e) { throw e;}
     }
 }

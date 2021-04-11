@@ -2,10 +2,15 @@ package it.polimi.ingsw.model;
 
 
 public enum Resources {
-    Coins,
-    Stones,
-    Servants,
-    Shields;
+    Coins("MO"),
+    Stones("PI"),
+    Servants("SE"),
+    Shields("SC");
+
+    public final String label;
+    private Resources(String label) {
+        this.label = label;
+    }
 
     @Override
     public String toString(){

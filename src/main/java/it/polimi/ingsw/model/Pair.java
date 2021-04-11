@@ -3,8 +3,8 @@ package it.polimi.ingsw.model;
 import java.util.Objects;
 
 public class Pair<A, B> {
-    public A key;
-    public B value;
+    private A key;
+    private B value;
 
     public Pair(A key, B value) {
         this.key = key;

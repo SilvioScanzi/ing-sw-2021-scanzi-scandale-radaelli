@@ -2,6 +2,8 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
+import jdk.internal.loader.Resource;
+
 import java.util.*;
 
 public class Game {
@@ -183,131 +185,153 @@ public class Game {
         playerBoard.getHand().clear();
     }
 
+    private void consumeResources (Board playerBoard, Strongbox sb, Warehouse wr, HashMap<Resources, Integer> cost,
+                                   HashMap<LeaderCard,Integer> LCCapacity, ArrayList<Pair<String,Integer>> userChoice)
+                                    throws IllegalArgumentException{
+        HashMap<Resources, Integer> selectedResources = new HashMap<>();
+        for(Resources r: Resources.values()){
+            selectedResources.put(r,0);
+        }
+        for(Pair<String,Integer> p: userChoice){
+            Resources r;
+            try{
+                r = Resources.getResourceFromString(p.getKey());
+            } catch (Exception e) {throw e;}
+
+            if(1<=p.getValue() && p.getValue()<=3) {
+                try {
+                    if(wr.checkResourcePresent(p.getValue(),r)){
+                        wr.subDepot(p.getValue(),1);
+                        selectedResources.put(r,selectedResources.get(r)+1);
+                    } else throw new IllegalArgumentException("Non hai la risorsa nel depot");
+                }catch (Exception e) {e.printStackTrace();}
+            } else if (p.getValue()==4 || p.getValue()==5){
+                LeaderCard LC;
+                try{
+                    LC = playerBoard.getLeadercardsplayed().get(p.getValue()-3);
+                }catch (Exception e) {throw e;}
+                if(LCCapacity.get(LC)>0 && LC.getAbility().getRestype().equals(r)){
+                    LCCapacity.put(LC,LCCapacity.get(LC)-1);
+                    selectedResources.put(r, (1+selectedResources.get(r)));
+                } else throw new IllegalArgumentException("Non hai leader card valide");
+            } else if (p.getValue()==6){
+                if(sb.getResource(r)>0){
+                    sb.subResource(r,1);
+                    selectedResources.put(r, (1+selectedResources.get(r)));
+                }else throw new IllegalArgumentException("Non hai la risorsa nello strongbox");
+            } else throw new IllegalArgumentException("Selezione scorretta");
+        }
+        if(!cost.equals(selectedResources)) throw new IllegalArgumentException("You don't have enough resources to buy the card");
+    }
+
     //Player (nickname) selects colour and level; method checks for costs and adds to the board
-    public void getDevelopmentCard(Colours c, int level, int player, int slotNumber) throws Exception{
+    public void getDevelopmentCard(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice) throws Exception{
         DevelopmentCard DC = developmentcardmarket.peekFirstCard(c,level);
         HashMap<Resources, Integer> cost = new HashMap<>(DC.getCost());
+        HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
 
         Board playerBoard = players.get(player).getValue();
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
+        for(LeaderCard LC: playerBoard.getLeadercardsplayed()){
+            LCCapacity.put(LC,LC.getAbility().getCapacity());
+        }
         //Check if LC played give some discount
         for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
             cost = LC.getAbility().doDiscount(cost);
         }
-
-        //warehouse check and reduce resources in cost, to show how many are still required in strongbox
-        for(int i=1;i<=3;i++){
-            Pair<Optional<Resources>,Integer> tmp = wr.getDepot(i);
-            if(tmp.getKey().isPresent()){
-                if(cost.get(tmp.getKey().get()) != null){
-                    if(cost.get(tmp.getKey().get()) <= tmp.getValue()) {    //have enough resources
-                        try{
-                            Resources r = tmp.getKey().get();
-                            wr.subDepot(i,cost.get(tmp.getKey().get()));
-                            cost.remove(r);
-                        } catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                    else {    //not enough resources, modify the remaining value in cost
-                        try{
-                            Resources r = tmp.getKey().get();
-                            int amount = tmp.getValue();
-                            wr.subDepot(i,tmp.getValue());
-                            cost.put(r, cost.get(r) - amount);
-                        } catch(Exception e){
-                            e.printStackTrace();
-                        }
-                    }
-                }
+        try{
+            consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice);
+            Slot requestedSlot = playerBoard.getSlot(slotNumber);
+            requestedSlot.addCard(DC);
+            playerBoard.setWarehouse(wr);
+            playerBoard.setStrongbox(sb);
+            for (LeaderCard L : playerBoard.getLeadercardsplayed()) {
+                L.getAbility().doUpdateSlot(L.getAbility().getRestype(),
+                        LCCapacity.get(L)-L.getAbility().getCapacity());
             }
+            developmentcardmarket.getFirstCard(c, level);
+        }catch(Exception e) {
+            throw e;
+        }
+    }
+
+    //if player chooses to activate a leader card or the base production, the last position of the ArrayList
+    // contained in userChoice is the to-be-produced resource
+    public void activateProduction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice) throws IllegalArgumentException{
+        boolean[] activated = new boolean[] {false,false,false,false,false,false};
+
+        for(Integer i: userChoice.keySet()){
+            if(activated[i-1])throw new IllegalArgumentException("Non puoi attivare due volte le produzioni");
+            activated[i-1]=true;
         }
 
-        //leadercard abilities check (extra resource storage)
+        HashMap<Resources, Integer> cost;
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
-        for(LeaderCard LC : playerBoard.getLeadercardsplayed()) {
-            for (Resources r : cost.keySet()) {
-                if (r.equals(LC.getAbility().getRestype())) {
-                    if (cost.get(r) > LC.getAbility().getCapacity()) {
-                        cost.put(r, cost.get(r) - LC.getAbility().getCapacity());
-                        LCCapacity.put(LC, -LC.getAbility().getCapacity());
-                    } else {
-                        LCCapacity.put(LC, -cost.get(r));
-                        cost.remove(r);
-                    }
-                }
-            }
-        }
 
-        //pool strongbox and warehouse resources
-        boolean check = true;
-        if(!cost.isEmpty()){
-            for(Resources r : cost.keySet()){
-                if(sb.getResource(r) - cost.get(r) < 0) check = false;  //not enough resources
-                else {
-                    try{
-                        sb.subResource(r,cost.get(r));
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+        Board playerBoard = players.get(player).getValue();
+        Warehouse wr = playerBoard.getWarehouse().clone();
+        Strongbox sb = playerBoard.getStrongbox().clone();
 
-        if(check){
+        for(LeaderCard LC: playerBoard.getLeadercardsplayed()){
+            LCCapacity.put(LC,LC.getAbility().getCapacity());
+        }
+        ArrayList<Resources> tmpHand = new ArrayList<>();
+        int producedFaith=0;
+        for(Integer i: userChoice.keySet()){
+            if (1<=i && i<=3){
+                try{
+                    cost = new HashMap<>(playerBoard.getSlot(i).getFirstCard().getrequiredResources());
+                    producedFaith += playerBoard.getSlot(i).getFirstCard().getproducedFaith();
+                    for(Resources r: playerBoard.getSlot(i).getFirstCard().getproducedResources().keySet()){
+                        for(int j=0; j<playerBoard.getSlot(i).getFirstCard().getproducedResources().get(r); j++){
+                            tmpHand.add(r);
+                        }
+                    }
+                }catch (EmptyDeckException e){throw new IllegalArgumentException("Slot vuoto");}
+            }
+            else if (i==4 || i==5){
+                try{
+                    cost = new HashMap<>();
+                    cost.put(playerBoard.getLeadercardsplayed().get(i-4).getAbility().getRestype(),1);
+                    tmpHand.add(Resources.getResourceFromString(userChoice.get(i).remove(userChoice.get(i).size()-1).getKey()));
+                    producedFaith ++;
+                }catch (Exception e){throw new IllegalArgumentException("Errore nella produzione della leader card");}
+            }
+            else if (i==6){
+                try{
+                    tmpHand.add(Resources.getResourceFromString(userChoice.get(i).remove(userChoice.get(i).size()-1).getKey()));
+                    int count=0;
+                    for (int j=0; j<userChoice.get(i).size(); j++){
+                        count += userChoice.get(i).get(j).getValue();
+                    }
+                    if (count==2){
+                        cost = new HashMap<>();
+                        for (int j=0; j<userChoice.get(i).size(); j++){
+                            cost.put(Resources.getResourceFromString(userChoice.get(i).get(j).getKey()),userChoice.get(i).get(j).getValue());
+                        }
+                    } else throw new IllegalArgumentException("Errore nella produzione di base");
+
+                }catch (Exception e){throw new IllegalArgumentException("Errore nella produzione della leader card");}
+            }
+            else throw new IllegalArgumentException("Scegli una produzione valida");
             try{
-                Slot requestedSlot = playerBoard.getSlot(slotNumber);
-                requestedSlot.addCard(DC);
-                playerBoard.setWarehouse(wr);
-                playerBoard.setStrongbox(sb);
-                for(LeaderCard L : playerBoard.getLeadercardsplayed()){
-                    if(LCCapacity.get(L)!=null){
-                        L.getAbility().doUpdateSlot(L.getAbility().getRestype(),LCCapacity.get(L));
-                    }
-                }
-                developmentcardmarket.getFirstCard(c,level);
-            }catch (Exception e){
-                throw e;
-            }
+                consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice.get(i));
+            }catch (Exception e){throw new IllegalArgumentException("Impossibile produrre");}
         }
-        else{
-            throw new IllegalArgumentException("You don't have enough resources to buy the card");
+        playerBoard.setStrongbox(sb);
+        playerBoard.setWarehouse(wr);
+        for (LeaderCard L : playerBoard.getLeadercardsplayed()) {
+            L.getAbility().doUpdateSlot(L.getAbility().getRestype(),
+                    LCCapacity.get(L)-L.getAbility().getCapacity());
         }
-    }
-
-    public void activateBaseProduction(int player, ArrayList<Resources> usedResources, Resources gotResources) throws IllegalArgumentException{
-        try{
-            players.get(player).getValue().production(usedResources,new ArrayList<Resources>() {{add(gotResources);}}); //TESTING MASSIVO
-        }catch (IllegalArgumentException e){
-            throw e;
-        }
-    }
-
-    //slots number goes from 1 to 3
-    public void activateDevelopmentCardProduction(int player, int slot) throws EmptyDeckException{
-        try{
-            int faith = players.get(player).getValue().slotProduction(slot);
-            for(int i=0; i<faith; i++){
-                players.get(player).getValue().getFaithtrack().advanceTrack();
-                int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
-                if(tmp!=-1) popeEvent(tmp);
-            }
-        }catch (EmptyDeckException e){
-            throw e;
-        }
-    }
-
-    public void activateLeaderCardProduction(int player, int leaderCardIndex, Resources gotResource) throws IllegalArgumentException{
-        try{
-            players.get(player).getValue().leaderProduction(leaderCardIndex,gotResource);
+        playerBoard.getHand().addAll(tmpHand);
+        playerBoard.dumpHandIntoStrongbox();
+        for(int i=0; i<producedFaith; i++){
             players.get(player).getValue().getFaithtrack().advanceTrack();
             int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
             if(tmp!=-1) popeEvent(tmp);
-        }
-        catch(IllegalArgumentException e){
-            throw e;
         }
     }
 
