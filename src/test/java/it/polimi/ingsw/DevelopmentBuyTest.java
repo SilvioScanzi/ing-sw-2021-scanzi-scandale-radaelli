@@ -28,7 +28,7 @@ public class DevelopmentBuyTest{
 
     @Test
     @DisplayName("Ensure correct behaviour of development card buying action")
-    void testCannotBuyDCCardForLackOfResources(){
+    void testCanBuyDCCard(){
         try {
             playerBoard.getWarehouse().addDepot(3, Resources.Servants, 3);
             playerBoard.getWarehouse().addDepot(2, Resources.Stones, 2);
@@ -42,7 +42,7 @@ public class DevelopmentBuyTest{
         choice.add(new Pair<>("PI",2));
 
         try {
-            game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
+            game.getDevelopmentCard(Colours.Purple, 1, 0, 1, choice);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getSlot(1).getList().size()==1);
@@ -53,7 +53,6 @@ public class DevelopmentBuyTest{
             assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Purple));
             assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 4);
         }catch(Exception e) {e.printStackTrace();}
-        //System.out.println(playerBoard.slottoString());
     }
 
     @Test

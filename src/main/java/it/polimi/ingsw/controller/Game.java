@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
-import jdk.internal.loader.Resource;
 
 import java.util.*;
 
@@ -149,24 +148,6 @@ public class Game {
         }
     }
 
-    //Stash resources into depots
-    public void setResourcesToDepot(int player, Resources r, int depot) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException{
-        Board playerBoard = players.get(player).getValue();
-        try{
-            playerBoard.getWarehouse().addDepot(depot,r,1);
-        }
-        catch(Exception e){
-            throw e;
-        }
-    }
-
-    //Stash resources into leadercards
-    public void setResourcesToLeaderCard(int player, Resources r, int amount, LeaderCard LC) throws IllegalArgumentException{
-        Board playerBoard = players.get(player).getValue();
-        if(!LC.getAbility().doUpdateSlot(r,amount));
-        throw new IllegalArgumentException("Action went wrong");
-    }
-
     //Discard resources and advance other players
     public void discardRemainingResources(int player){
         Board playerBoard = players.get(player).getValue();
@@ -223,7 +204,11 @@ public class Game {
                 }else throw new IllegalArgumentException("Non hai la risorsa nello strongbox");
             } else throw new IllegalArgumentException("Selezione scorretta");
         }
-        if(!cost.equals(selectedResources)) throw new IllegalArgumentException("You don't have enough resources to buy the card");
+        for(Resources r:selectedResources.keySet()){
+            if(selectedResources.get(r)!=0 && !selectedResources.get(r).equals(cost.get(r)))
+                throw new IllegalArgumentException("You don't have enough resources to buy the card");
+        }
+
     }
 
     //Player (nickname) selects colour and level; method checks for costs and adds to the board
@@ -382,10 +367,7 @@ public class Game {
             try{
                 r = Resources.getResourceFromString(uc.get_1());
                 if(1<=uc.get_3() && uc.get_3()<=3){
-                    if(wr.checkResourcePresent(uc.get_2(), r)){
-                        wr.addDepot(uc.get_2(),r,1);
-                    }
-                    else throw new IllegalArgumentException("Wrong resource requested");
+                    wr.addDepot(uc.get_3(), r, 1);
                 }
                 else if(4==uc.get_3() && uc.get_3()==5){
                     LeaderCard LC;
@@ -497,8 +479,6 @@ public class Game {
             playerBoard.setVictoryPoints(tmp);
         }
     }
-
-
 
     //ONLY FOR SINGLE PLAYER
     public ActionToken activatedToken(){

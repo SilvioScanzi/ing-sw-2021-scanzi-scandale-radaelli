@@ -159,8 +159,8 @@ public class GameHandler{
     private boolean choiceMenu(int c, int player) {
         switch (c) {
             case 1:  marketAction(player); break;  //sarebbe un messaggio da mandare al controller
-            case 2:  return buyDevelopmentAction(player);
-            case 3:  productionAction(player); break;
+            //case 2:  return buyDevelopmentAction(player);
+            //case 3:  productionAction(player); break;
             case 4:  moveAction(player); return false;
             case 5:  playLeaderCardAction(player); return false;
             case 6:  discardLeaderCardAction(player); return false;
@@ -232,7 +232,7 @@ public class GameHandler{
     }
 
     //TODO: sistemare le chiamate alla funzione del Game
-    private boolean buyDevelopmentAction(int player) {
+    /*private boolean buyDevelopmentAction(int player) {
         while(true){
             System.out.println(game.getDevelopmentcardmarket().toString());
             System.out.println(game.getBoard(player).slottoString());
@@ -400,7 +400,7 @@ public class GameHandler{
         }
 
         playerBoard.dumpHandIntoStrongbox();
-    }
+    }*/
 
     //TODO: sistemare le chiamate alla funzione del Game
     private void moveAction(int player){
