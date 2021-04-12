@@ -27,9 +27,12 @@ public class ProductionPowerAbility implements Ability{
         return restype;
     }
 
+    public int getStashedResources(){return 0;}
+
     public int getCapacity(){
         return 0;
     }
+
     public String toString(){
         return "Potere di produzione: richiesta la risorsa "+restype.toString();
     }

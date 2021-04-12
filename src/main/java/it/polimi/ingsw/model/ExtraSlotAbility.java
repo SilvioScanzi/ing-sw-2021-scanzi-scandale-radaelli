@@ -36,9 +36,11 @@ public class ExtraSlotAbility implements Ability{
     }
 
     //other abilities return 0; here returns the number of stored resources
-    public int getCapacity(){
+    public int getStashedResources(){
         return stashedResources;
     }
+
+    public int getCapacity(){ return capacity; }
 
     public String toString(){
         return capacity +" Slot extra per "+restype.toString()+" attualmente sono presenti: "+stashedResources+" "+restype.toString();

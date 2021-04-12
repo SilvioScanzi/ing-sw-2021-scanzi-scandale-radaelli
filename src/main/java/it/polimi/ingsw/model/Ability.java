@@ -8,6 +8,7 @@ public interface Ability {
     public boolean doConvert();
     public boolean doUpdateSlot(Resources resource, int amount);
     public Resources getRestype();
+    public int getStashedResources();
     public int getCapacity();
     public String toString();
 }

@@ -170,7 +170,7 @@ public class Board {
 
         //adds leader cards resources
         for(LeaderCard LC : leadercardsplayed){
-            tmp.put(LC.getAbility().getRestype(), tmp.get(LC.getAbility().getRestype())+LC.getAbility().getCapacity());
+            tmp.put(LC.getAbility().getRestype(), tmp.get(LC.getAbility().getRestype())+LC.getAbility().getStashedResources());
         }
 
         return tmp;

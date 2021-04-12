@@ -228,11 +228,10 @@ public class GameHandler{
         }
 
         game.getMarketResources(player,r,n,requestedWMConversion);
-        moveAction(player); //TODO
-        game.discardRemainingResources(player); //fattibile magari all'interno di un metodo moveAction nel game
+        moveAction(player);
     }
 
-    //view checking ok
+    //TODO: sistemare le chiamate alla funzione del Game
     private boolean buyDevelopmentAction(int player) {
         while(true){
             System.out.println(game.getDevelopmentcardmarket().toString());
@@ -293,6 +292,7 @@ public class GameHandler{
         }
     }
 
+    //TODO: sistemare le chiamate alla funzione del Game
     private void productionAction(int player){
         Board playerBoard = game.getBoard(player);
         System.out.println("Hai scelto di attivare un potere di produzione.");
@@ -402,41 +402,20 @@ public class GameHandler{
         playerBoard.dumpHandIntoStrongbox();
     }
 
+    //TODO: sistemare le chiamate alla funzione del Game
     private void moveAction(int player){
         Board playerBoard = game.getBoard(player);
         boolean done = false;
         while(!done) {
             System.out.println(playerBoard.getWarehouse().toString());
-            System.out.println((playerBoard.getHand().size()>0)?"La tua mano di risorse da distribuire nel deposito è: \n"+playerBoard.handtoString()+"\nCome vuoi distribuirle?\n1 - Deposito 1\n2 - Deposito 2\n3 - Deposito 3\n4 - Carta Leader 1\n5 - Carta Leader 2":"Non hai nessuna risorsa in mano, vuoi ridistribuire qualcosa?");
+            System.out.println((playerBoard.getHand().size() > 0) ? "La tua mano di risorse da distribuire nel deposito è: " +
+                    "\n" + playerBoard.handtoString() + "\nCome vuoi distribuirle?\n1 - Deposito 1\n2 - Deposito 2\n3 - Deposito 3" +
+                    "\n4 - Carta Leader 1\n5 - Carta Leader 2" : "Non hai nessuna risorsa in mano, vuoi ridistribuire qualcosa?");
             System.out.println("6 - Ridistribuisci le risorse già presenti in un deposito");
             System.out.println("7 - Reset di tutte le risorse");
             System.out.println("0 - Finisci la distribuzione");
-            int choice = Integer.parseInt(scanner.nextLine());
-            if(1<= choice && choice <=3) {
-                try {
-                    game.setResourcesToDepot(player,playerBoard.getHand().get(0),choice);
-                    playerBoard.getHand().remove(0);
-                }catch(Exception e) {System.out.println("Non va bene");}
-            }
-            else if(choice == 4 || choice == 5) {
-                try {
-                    game.setResourcesToLeaderCard(player,playerBoard.getHand().get(0),1,playerBoard.getLeadercardsplayed().get(choice-4));
-                    playerBoard.getHand().remove(0);
-                }catch(Exception e) {System.out.println("Non va bene");}
-            }
-            else if(choice == 6){
-                System.out.println("Che deposito vuoi svuotare?");
-                int depot = Integer.parseInt(scanner.nextLine());
-                playerBoard.clearDepot(depot);
-            }
-            else if(choice == 7){
-                playerBoard.clearWarehouse();
-            }
-            else if(choice == 0){
-                done = true;
-            }
-            else System.out.println("Inserisci un valore valido");
         }
+        //chiama la funzione nel game
     }
 
     private void playLeaderCardAction(int player){

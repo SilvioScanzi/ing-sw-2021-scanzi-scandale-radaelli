@@ -29,6 +29,8 @@ public class WhiteMarbleAbility implements Ability{
         return restype;
     }
 
+    public int getStashedResources(){return 0;}
+
     public int getCapacity(){
         return 0;
     }

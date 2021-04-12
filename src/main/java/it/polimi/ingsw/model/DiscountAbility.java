@@ -35,6 +35,8 @@ public class DiscountAbility implements Ability{
         return restype;
     }
 
+    public int getStashedResources(){return 0;}
+
     public int getCapacity(){
         return 0;
     }
