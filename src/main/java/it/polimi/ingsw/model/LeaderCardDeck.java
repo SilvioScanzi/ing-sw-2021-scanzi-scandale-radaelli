@@ -158,6 +158,10 @@ public class LeaderCardDeck {
         return deck.pop();
     }
 
+    public Stack<LeaderCard> getDeck() {
+        return deck;
+    }
+
     public ArrayList<LeaderCard> getLeaderCards(){
         ArrayList<LeaderCard> tmp = new ArrayList<>();
         for(int i=0;i<4;i++){

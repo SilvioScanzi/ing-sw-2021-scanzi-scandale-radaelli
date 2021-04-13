@@ -35,7 +35,7 @@ public class LeaderCard {
             ability = new ProductionPowerAbility(restype);
         }
         else if(type.equals("WhiteMarbleAbility")){
-            ability = new ProductionPowerAbility(restype);
+            ability = new WhiteMarbleAbility(restype);
         }
     }
 

@@ -52,6 +52,17 @@ public class Game {
         }
     }
 
+    public LeaderCardDeck getLeadercarddeck() {
+        return leadercarddeck;
+    }
+
+    public void LCTestsetup(){
+        nplayer = 1;
+        inkwell = 0;
+        players.add(new Pair<>("player",new Board(leadercarddeck.getLeaderCards())));
+        players.get(0).getValue().getLeadercardsplayed().addAll(leadercarddeck.getLeaderCards());
+    }
+
     public int getInkwell() {
         return inkwell;
     }
@@ -191,7 +202,7 @@ public class Game {
             } else if (p.getValue()==4 || p.getValue()==5){
                 LeaderCard LC;
                 try{
-                    LC = playerBoard.getLeadercardsplayed().get(p.getValue()-3);
+                    LC = playerBoard.getLeadercardsplayed().get(p.getValue()-4);
                 }catch (Exception e) {throw e;}
                 if(LCCapacity.get(LC)>0 && LC.getAbility().getRestype().equals(r)){
                     LCCapacity.put(LC,LCCapacity.get(LC)-1);
@@ -324,71 +335,81 @@ public class Game {
         }
     }
 
+    //The ArrayList of triplets contains user choices on resources to move. In particular, the string represents the resource to move,
+    //the first Integer (_2) represents the source (FROM), the last Integer (_3) represents the destination (TO)
+    //1-3 for the depots, 4-5 for the Leader Cards (Extra slot only), 0 to the hand which is used to make the swaps
+    //In the end, if there are resources left in the Hand, there needs to be a check from the caller of this method.
     public void moveAction(int player,ArrayList<Triplet<String,Integer,Integer>> userChoice) throws IllegalArgumentException{
         Board playerBoard = players.get(player).getValue();
         Warehouse wr = playerBoard.getWarehouse().clone();
-        Strongbox sb = playerBoard.getStrongbox().clone();
-        ArrayList<Resources> tmpHand = new ArrayList<>();
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
         for(LeaderCard LC: playerBoard.getLeadercardsplayed()){
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
-        tmpHand = (ArrayList<Resources>)playerBoard.getHand().clone();
+        ArrayList<Resources> tmpHand = (ArrayList<Resources>)playerBoard.getHand().clone();
 
-        for(Triplet<String,Integer,Integer> uc : userChoice){
+        Resources r;
+
+        //Removing every resource got from the user from the cloned storages
+        for(Triplet<String,Integer,Integer> uc : userChoice) {
             //try-catch to check and remove resources from their (cloned) location
-            Resources r;
-            try{
+            try {
                 r = Resources.getResourceFromString(uc.get_1());
-                if(1<=uc.get_2() && uc.get_2()<=3){
-                    if(wr.checkResourcePresent(uc.get_2(), r)){
-                        wr.subDepot(uc.get_2(),1);
-                    }
-                    else throw new IllegalArgumentException("Wrong resource requested");
-                }
-                else if(4==uc.get_2() && uc.get_2()==5){
+                if (1 <= uc.get_2() && uc.get_2() <= 3) {
+                    if (wr.checkResourcePresent(uc.get_2(), r)) {
+                        wr.subDepot(uc.get_2(), 1);
+                    } else throw new IllegalArgumentException("Wrong resource requested");
+                } else if (4 == uc.get_2() && uc.get_2() == 5) {
                     LeaderCard LC;
-                    try{
-                        LC = playerBoard.getLeadercardsplayed().get(uc.get_2()-3);
-                    }catch (Exception e) {throw e;}
-                    if(LCCapacity.get(LC)>0 && LC.getAbility().getRestype().equals(r)){
-                        LCCapacity.put(LC,LCCapacity.get(LC)-1);
+                    try {
+                        LC = playerBoard.getLeadercardsplayed().get(uc.get_2() - 4);
+                    } catch (Exception e) {
+                        throw e;
+                    }
+                    if (LCCapacity.get(LC) > 0 && LC.getAbility().getRestype().equals(r)) {
+                        LCCapacity.put(LC, LCCapacity.get(LC) - 1);
                     } else throw new IllegalArgumentException("No corresponding leader card");
-                }
-                else if(uc.get_2()==0){
-                    if(tmpHand.remove(r)) ;
+                } else if (uc.get_2() == 0) {
+                    if (tmpHand.remove(r)) ;
                     else throw new IllegalArgumentException("No such resource in hand");
-                }
-                else throw new IllegalArgumentException("Invalid position requested");
-            }catch(IllegalArgumentException e){throw e;}
-            catch(ResourceErrorException e){throw new IllegalArgumentException("Not enough resources to move");}
+                } else throw new IllegalArgumentException("Invalid position requested");
+            } catch (IllegalArgumentException e) {
+                throw e;
+            } catch (ResourceErrorException e) {
+                throw new IllegalArgumentException("Not enough resources to move");
+            }
+            //Resources moved to the hand are added now. This makes possible for the user to swap depots (firstly, he decides to move the
+            // resources from a depot to the hand, those resources are moved, and then he can take the resources from the hand and dump
+            // them into another depot)
+            if(uc.get_3() == 0){
+                tmpHand.add(r);
+            }
+        }
 
+        //Adding every resource got from the user to the cloned storages
+        for(Triplet<String,Integer,Integer> uc : userChoice){
             //try-catch to check and insert resources into their (cloned) location
             try{
                 r = Resources.getResourceFromString(uc.get_1());
-                if(1<=uc.get_3() && uc.get_3()<=3){
+                if(1 <= uc.get_3() && uc.get_3() <= 3){
                     wr.addDepot(uc.get_3(), r, 1);
                 }
-                else if(4==uc.get_3() && uc.get_3()==5){
+                else if(4 == uc.get_3() || uc.get_3() == 5){
                     LeaderCard LC;
                     try{
-                        LC = playerBoard.getLeadercardsplayed().get(uc.get_3()-3);
+                        LC = playerBoard.getLeadercardsplayed().get(uc.get_3()-4);
                     }catch (Exception e) {throw e;}
                     if(LCCapacity.get(LC)<LC.getAbility().getCapacity() && LC.getAbility().getRestype().equals(r)){
                         LCCapacity.put(LC,LCCapacity.get(LC)+1);
                     } else throw new IllegalArgumentException("No corresponding leader card");
                 }
-                else if(uc.get_2()==0){
-                    tmpHand.add(r);
-                }
-                else throw new IllegalArgumentException("Invalid position requested");
+                else if(uc.get_3() != 0) throw new IllegalArgumentException("Invalid position requested");
             }catch(IllegalArgumentException e){throw e;}
             catch (IncompatibleResourceException e){throw new IllegalArgumentException("Invalid Resource placement");}
             catch (ResourceErrorException e){throw new IllegalArgumentException("Not enough space in warehouse");}
         }
 
         //if ok, actually modify everything
-        playerBoard.setStrongbox(sb);
         playerBoard.setWarehouse(wr);
         for (LeaderCard L : playerBoard.getLeadercardsplayed()) {
             L.getAbility().doUpdateSlot(L.getAbility().getRestype(),
