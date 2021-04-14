@@ -86,7 +86,12 @@ public class Game {
         Board playerBoard = players.get(player).getValue();
         ArrayList<Resources> tmp = new ArrayList<>();
 
-        if(market.getWhiteMarbles(row, i) == requestedWMConversion.size()){ //checking white marbles in market equals requested conversions
+        boolean gotConversion = false;
+        for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+            gotConversion = gotConversion || LC.getAbility().doConvert();
+        }
+
+        if(market.getWhiteMarbles(row, i) == requestedWMConversion.size() && gotConversion){ //checking white marbles in market equals requested conversions
             for(int j=0;j<requestedWMConversion.size() && playerBoard.getLeadercardsplayed().size()>0;j++){ //checking LC presence and if there are conversions
                 if(requestedWMConversion.get(j)>0 && requestedWMConversion.get(j)<=playerBoard.getLeadercardsplayed().size()){ //checking index of LC
                     try{
@@ -94,7 +99,7 @@ public class Game {
                     }catch(IllegalArgumentException e) {throw e;}
                 }
             }
-        }
+        }else if(requestedWMConversion.size()!=0 || gotConversion){throw new IllegalArgumentException("Requested a number of white conversions not congruent");}
 
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
@@ -140,13 +145,11 @@ public class Game {
 
     //Checks if LC provided can convert white marbles to resources, if so, gives them to the hand
     public Resources leaderCardConversion(int player, LeaderCard LC) throws IllegalArgumentException{
-        Board playerBoard = players.get(player).getValue();
         Resources tmp;
         if(LC.getAbility().doConvert()){
             tmp = LC.getAbility().getRestype();
         }
         else throw new IllegalArgumentException("Leader card has a different ability");
-
         return tmp;
     }
 
@@ -359,7 +362,7 @@ public class Game {
                     if (wr.checkResourcePresent(uc.get_2(), r)) {
                         wr.subDepot(uc.get_2(), 1);
                     } else throw new IllegalArgumentException("Wrong resource requested");
-                } else if (4 == uc.get_2() && uc.get_2() == 5) {
+                } else if (4 == uc.get_2() || uc.get_2() == 5) {
                     LeaderCard LC;
                     try {
                         LC = playerBoard.getLeadercardsplayed().get(uc.get_2() - 4);
@@ -415,10 +418,8 @@ public class Game {
             L.getAbility().doUpdateSlot(L.getAbility().getRestype(),
                     LCCapacity.get(L)-L.getAbility().getStashedResources());
         }
-        playerBoard.getHand().clear();
-        playerBoard.getHand().addAll(tmpHand);
-
-        discardRemainingResources(player); //TODO? mandare un messaggio per confermare (controllare prima di iniziare il metodo, lato client)
+        //TODO: Handling the resources left in the hand
+        if(tmpHand.size()>0) throw new IllegalArgumentException("There are still some resources in the hand");
     }
 
     public void discardLeaderCard(int player, int leaderCardIndex){
