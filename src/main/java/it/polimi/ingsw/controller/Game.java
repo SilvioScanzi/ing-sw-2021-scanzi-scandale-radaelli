@@ -351,6 +351,29 @@ public class Game {
         }
         ArrayList<Resources> tmpHand = (ArrayList<Resources>)playerBoard.getHand().clone();
 
+        boolean reduced;
+        int j;
+        for(int i=0; i<userChoice.size();i++) {
+            reduced = false;
+            j = i + 1;
+            while (j < userChoice.size() && !reduced) {
+                if (userChoice.get(i).get_1().equals(userChoice.get(j).get_1()) && userChoice.get(i).get_3().equals(userChoice.get(j).get_2())) {
+                    reduced = true;
+                    userChoice.get(j).set_2(userChoice.get(i).get_2());
+                    userChoice.remove(i);
+                    i = i-1;
+                }
+                j++;
+            }
+        }
+
+        for(int i=0;i<userChoice.size();i++){
+            if(userChoice.get(i).get_2().equals(userChoice.get(i).get_3())){
+                userChoice.remove(i);
+                i=i-1;
+            }
+        }
+
         Resources r;
 
         //Removing every resource got from the user from the cloned storages

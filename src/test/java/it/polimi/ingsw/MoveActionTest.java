@@ -86,6 +86,59 @@ public class MoveActionTest {
     }
 
     @Test
+    @DisplayName("Ensure correct behaviour of move action with multiple consecutive swaps")
+    void testCanConsecutiveSwap(){
+        try {
+            playerBoard.getWarehouse().addDepot(2, Resources.Servants, 1);
+            playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
+        }
+        catch(Exception e) {e.printStackTrace();}
+        ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
+        choice.add(new Triplet<>("SE",2,1));
+        choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("SE",1,2));
+        choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("PI",2,3));
+        choice.add(new Triplet<>("SE",2,1));
+        choice.add(new Triplet<>("PI",2,3));
+
+        try{
+            game.moveAction(0,choice);
+        }catch(Exception e){e.printStackTrace();}
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(3).getValue()==2);
+        assert(playerBoard.getWarehouse().getDepot(1).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(1).getValue()==1);
+    }
+
+    @Test
+    @DisplayName("Ensure correct behaviour of move action with consecutive swaps and null swaps")
+    void testCanConsecutiveSwapAndNullSwaps(){
+        try {
+            playerBoard.getWarehouse().addDepot(2, Resources.Servants, 1);
+            playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
+        }
+        catch(Exception e) {e.printStackTrace();}
+        ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
+        choice.add(new Triplet<>("SE",2,2));
+        choice.add(new Triplet<>("SE",2,2));
+        choice.add(new Triplet<>("SE",2,1));
+        choice.add(new Triplet<>("SE",1,2));
+        choice.add(new Triplet<>("SE",2,1));
+        choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("PI",2,3));
+        choice.add(new Triplet<>("PI",3,3));
+        choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("SE",1,1));
+        choice.add(new Triplet<>("SE",1,3));
+
+        try{
+            game.moveAction(0,choice);
+        }catch(Exception e){e.printStackTrace();}
+        assert(playerBoard.getWarehouse().getDepot(2).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(2).getValue()==2);
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(3).getValue()==1);
+    }
+
+    @Test
     @DisplayName("Ensure correct behaviour of move action with LeaderCards")
     void testCanLeaderCardSlot(){
         game = new Game(0);
