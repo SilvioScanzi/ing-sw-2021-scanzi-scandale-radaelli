@@ -25,12 +25,12 @@
         <capacity>-1</capacity>
     </leadercard>
     <leadercard>
-        <victorypoints>3</victorypoints>
-        <requiredcolours>NULL-0-0</requiredcolours>
-        <requiredresources>Stones-5</requiredresources>
-        <abilitytype>ExtraSlotAbility</abilitytype>
+        <victorypoints>2</victorypoints>
+        <requiredcolours>Yellow-1-0-Green-1-0</requiredcolours>
+        <requiredresources>NULL-0</requiredresources>
+        <abilitytype>DiscountAbility</abilitytype>
         <restype>Servants</restype>
-        <capacity>2</capacity>
+        <capacity>-1</capacity>
     </leadercard>
     <leadercard>
         <victorypoints>3</victorypoints>
@@ -43,41 +43,25 @@
     <leadercard>
         <victorypoints>3</victorypoints>
         <requiredcolours>NULL-0-0</requiredcolours>
+        <requiredresources>Coins-5</requiredresources>
+        <abilitytype>ExtraSlotAbility</abilitytype>
+        <restype>Stones</restype>
+        <capacity>2</capacity>
+    </leadercard>
+    <leadercard>
+        <victorypoints>3</victorypoints>
+        <requiredcolours>NULL-0-0</requiredcolours>
         <requiredresources>Shields-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
         <restype>Coins</restype>
         <capacity>2</capacity>
     </leadercard>
     <leadercard>
-        <victorypoints>4</victorypoints>
-        <requiredcolours>Blue-1-2</requiredcolours>
-        <requiredresources>NULL-0</requiredresources>
-        <abilitytype>ProductionPowerAbility</abilitytype>
-        <restype>Servants</restype>
-        <capacity>0</capacity>
-    </leadercard>
-    <leadercard>
-        <victorypoints>4</victorypoints>
-        <requiredcolours>Purple-1-2</requiredcolours>
-        <requiredresources>NULL-0</requiredresources>
-        <abilitytype>ProductionPowerAbility</abilitytype>
-        <restype>Stones</restype>
-        <capacity>0</capacity>
-    </leadercard>
-    <leadercard>
-        <victorypoints>2</victorypoints>
-        <requiredcolours>Yellow-1-0-Green-1-0</requiredcolours>
-        <requiredresources>NULL-0</requiredresources>
-        <abilitytype>DiscountAbility</abilitytype>
-        <restype>Servants</restype>
-        <capacity>-1</capacity>
-    </leadercard>
-    <leadercard>
         <victorypoints>3</victorypoints>
         <requiredcolours>NULL-0-0</requiredcolours>
-        <requiredresources>Coins-5</requiredresources>
+        <requiredresources>Stones-5</requiredresources>
         <abilitytype>ExtraSlotAbility</abilitytype>
-        <restype>Stones</restype>
+        <restype>Servants</restype>
         <capacity>2</capacity>
     </leadercard>
     <leadercard>
@@ -89,11 +73,11 @@
         <capacity>0</capacity>
     </leadercard>
     <leadercard>
-        <victorypoints>5</victorypoints>
-        <requiredcolours>Yellow-2-0-Blue-1-0</requiredcolours>
+        <victorypoints>4</victorypoints>
+        <requiredcolours>Purple-1-2</requiredcolours>
         <requiredresources>NULL-0</requiredresources>
-        <abilitytype>WhiteMarbleAbility</abilitytype>
-        <restype>Servants</restype>
+        <abilitytype>ProductionPowerAbility</abilitytype>
+        <restype>Stones</restype>
         <capacity>0</capacity>
     </leadercard>
     <leadercard>
@@ -102,6 +86,14 @@
         <requiredresources>NULL-0</requiredresources>
         <abilitytype>ProductionPowerAbility</abilitytype>
         <restype>Coins</restype>
+        <capacity>0</capacity>
+    </leadercard>
+    <leadercard>
+        <victorypoints>4</victorypoints>
+        <requiredcolours>Blue-1-2</requiredcolours>
+        <requiredresources>NULL-0</requiredresources>
+        <abilitytype>ProductionPowerAbility</abilitytype>
+        <restype>Servants</restype>
         <capacity>0</capacity>
     </leadercard>
     <leadercard>
@@ -126,6 +118,14 @@
         <requiredresources>NULL-0</requiredresources>
         <abilitytype>WhiteMarbleAbility</abilitytype>
         <restype>Coins</restype>
+        <capacity>0</capacity>
+    </leadercard>
+    <leadercard>
+        <victorypoints>5</victorypoints>
+        <requiredcolours>Yellow-2-0-Blue-1-0</requiredcolours>
+        <requiredresources>NULL-0</requiredresources>
+        <abilitytype>WhiteMarbleAbility</abilitytype>
+        <restype>Servants</restype>
         <capacity>0</capacity>
     </leadercard>
 </leadercards>

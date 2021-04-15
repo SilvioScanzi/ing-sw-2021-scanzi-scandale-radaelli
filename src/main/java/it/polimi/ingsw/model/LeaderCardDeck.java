@@ -154,7 +154,7 @@ public class LeaderCardDeck {
         catch(Exception e) {e.printStackTrace();}
     }
 
-    private LeaderCard getFirstCard(){
+    public LeaderCard getFirstCard(){
         return deck.pop();
     }
 

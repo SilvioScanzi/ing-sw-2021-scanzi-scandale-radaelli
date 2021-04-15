@@ -56,13 +56,6 @@ public class Game {
         return leadercarddeck;
     }
 
-    public void LCTestsetup(){
-        nplayer = 1;
-        inkwell = 0;
-        players.add(new Pair<>("player",new Board(leadercarddeck.getLeaderCards())));
-        players.get(0).getValue().getLeadercardsplayed().addAll(leadercarddeck.getLeaderCards());
-    }
-
     public int getInkwell() {
         return inkwell;
     }
@@ -238,6 +231,7 @@ public class Game {
         for(LeaderCard LC: playerBoard.getLeadercardsplayed()){
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
+
         //Check if LC played give some discount
         for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
             cost = LC.getAbility().doDiscount(cost);

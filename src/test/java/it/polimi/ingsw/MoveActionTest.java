@@ -1,15 +1,12 @@
 package it.polimi.ingsw;
 import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.model.*;
-import kotlin.Triple;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
 import java.util.*;
 import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MoveActionTest {
@@ -27,8 +24,10 @@ public class MoveActionTest {
         playerBoard = game.getBoard(0);
     }
 
+    //Move without leader cards
+
     @Test
-    @DisplayName("Ensure correct behaviour of move action between two depots")
+    @DisplayName("Ensure correct behaviour of a simple move action between two depots")
     void testMoveResourceFromDepot1ToDepot2(){
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
@@ -55,8 +54,8 @@ public class MoveActionTest {
         catch(Exception e) {e.printStackTrace();}
         ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
         choice.add(new Triplet<>("SE",2,3));
-        choice.add(new Triplet<>("SE",2,3));
         choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("SE",2,3));
         choice.add(new Triplet<>("PI",3,2));
         try{
             game.moveAction(0,choice);
@@ -85,32 +84,9 @@ public class MoveActionTest {
         assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(3).getValue()==1);
     }
 
-    @Test
-    @DisplayName("Ensure correct behaviour of move action with multiple consecutive swaps")
-    void testCanConsecutiveSwap(){
-        try {
-            playerBoard.getWarehouse().addDepot(2, Resources.Servants, 1);
-            playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
-        }
-        catch(Exception e) {e.printStackTrace();}
-        ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
-        choice.add(new Triplet<>("SE",2,1));
-        choice.add(new Triplet<>("PI",3,2));
-        choice.add(new Triplet<>("SE",1,2));
-        choice.add(new Triplet<>("PI",3,2));
-        choice.add(new Triplet<>("PI",2,3));
-        choice.add(new Triplet<>("SE",2,1));
-        choice.add(new Triplet<>("PI",2,3));
-
-        try{
-            game.moveAction(0,choice);
-        }catch(Exception e){e.printStackTrace();}
-        assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(3).getValue()==2);
-        assert(playerBoard.getWarehouse().getDepot(1).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(1).getValue()==1);
-    }
 
     @Test
-    @DisplayName("Ensure correct behaviour of move action with consecutive swaps and null swaps")
+    @DisplayName("Ensure correct behaviour of move action with consecutive swaps")
     void testCanConsecutiveSwapAndNullSwaps(){
         try {
             playerBoard.getWarehouse().addDepot(2, Resources.Servants, 1);
@@ -138,19 +114,40 @@ public class MoveActionTest {
         assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(3).getValue()==1);
     }
 
+    @ParameterizedTest
+    @MethodSource("provideSourceOfError")
+    @DisplayName("Ensure correct behaviour of move action between two depots gone wrong for different reasons")
+    void CannotMoveForDifferentReasons(ArrayList<Triplet<String,Integer,Integer>> userChoice){
+        try {
+            playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
+            playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
+        }
+        catch(Exception e) {e.printStackTrace();}
+        assertThrows(Exception.class,()->{game.moveAction(0,userChoice);});
+    }
+
+    private static Stream<Arguments> provideSourceOfError() {
+        return Stream.of(
+                Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("MO",1,2));}}),
+                Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("PI",2,3));}}),
+                Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("SE",1,3));}}),
+                Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("PI",3,2));}})
+        );
+    }
+
+    //Leader Cards test
+
     @Test
-    @DisplayName("Ensure correct behaviour of move action with LeaderCards")
+    @DisplayName("Ensure correct behaviour of move action with LeaderCards which provide extra slot for resources")
     void testCanLeaderCardSlot(){
-        game = new Game(0);
+        //Adding a new LCCard which provides extra slots for stones
+        LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Stones,2);
+        playerBoard.getLeadercards().clear();
+        playerBoard.getLeadercards().add(LCSlot);
+        try {
+            game.playLeaderCard(0, 1);
+        }catch(Exception e){e.printStackTrace();}
 
-        game.LCTestsetup();
-        playerBoard = game.getBoard(0);
-
-        //Getting rid of the WhiteMarbleAbility LC and ProductionPowerAbility LC (to have 2 LC active and without interference on cost)
-        playerBoard.getLeadercardsplayed().remove(0);
-        playerBoard.getLeadercardsplayed().remove(0);
-
-        //Got played LC Slot in first position (Stones)
         try {
             playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
             playerBoard.getLeadercardsplayed().get(0).getAbility().doUpdateSlot(Resources.Stones,1);
@@ -175,27 +172,5 @@ public class MoveActionTest {
         assert(playerBoard.getWarehouse().getDepot(1).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(1).getValue()==1);
         assert(!playerBoard.getWarehouse().getDepot(3).getKey().isPresent() && playerBoard.getWarehouse().getDepot(3).getValue()==0);
         assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==2);
-    }
-
-
-
-    @ParameterizedTest
-    @MethodSource("provideSourceOfError")
-    @DisplayName("Ensure correct behaviour of move action between two depots gone wrong")
-    void CannotMoveForDifferentReasons(ArrayList<Triplet<String,Integer,Integer>> userChoice){
-        try {
-            playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
-            playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
-        }
-        catch(Exception e) {e.printStackTrace();}
-        assertThrows(Exception.class,()->{game.moveAction(0,userChoice);});
-    }
-
-    private static Stream<Arguments> provideSourceOfError() {
-        return Stream.of(
-                Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("MO",1,2));}}),
-                Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("PI",2,3));}}),
-                Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("SE",1,3));}})
-        );
     }
 }

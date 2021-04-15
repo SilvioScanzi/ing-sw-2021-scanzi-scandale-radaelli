@@ -5,10 +5,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
 import java.util.*;
 import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DevelopmentBuyTest{
@@ -16,6 +14,7 @@ public class DevelopmentBuyTest{
     private Game game;
     private Board playerBoard;
 
+    //Initialising Game and Board
     @BeforeEach
     void setup(){
         game = new Game(0);
@@ -26,8 +25,10 @@ public class DevelopmentBuyTest{
         playerBoard = game.getBoard(0);
     }
 
+    //Buy action without leader card influence
+
     @Test
-    @DisplayName("Ensure correct behaviour of development card buying action")
+    @DisplayName("Ensure correct behaviour of development card buying action, resources got from warehouse")
     void testCanBuyDCCard(){
         try {
             playerBoard.getWarehouse().addDepot(3, Resources.Servants, 3);
@@ -48,7 +49,6 @@ public class DevelopmentBuyTest{
         assert(playerBoard.getSlot(1).getList().size()==1);
         assert(playerBoard.getSlot(2).getList().size()==0);
         assert(playerBoard.getSlot(3).getList().size()==0);
-
         try {
             assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Purple));
             assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 4);
@@ -56,14 +56,12 @@ public class DevelopmentBuyTest{
     }
 
     @Test
-    @DisplayName("Ensure correct behaviour of development card buying action when resources are fully got from the strongbox")
+    @DisplayName("Ensure correct behaviour of development card buying action, choosing the right slot for every card, stacking them in order")
     void testCanBuyDCCardFromSB() {
         playerBoard.getStrongbox().addResource(Resources.Coins, 99);
         playerBoard.getStrongbox().addResource(Resources.Stones, 99);
         playerBoard.getStrongbox().addResource(Resources.Shields, 99);
         playerBoard.getStrongbox().addResource(Resources.Servants, 99);
-        //System.out.println(game.getDevelopmentcardmarket().toString());
-
 
         try{
             ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
@@ -94,14 +92,22 @@ public class DevelopmentBuyTest{
             {{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("SC",6));add(new Pair<>("SC",6));add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("SC",6));add(new Pair<>("SC",6));}};
             game.getDevelopmentCard(Colours.Purple, 3, 0, 3,choice);
         }catch(Exception e) {e.printStackTrace();}
-        //System.out.println(playerBoard.slottoString());
+
         assert(playerBoard.getSlot(1).getList().size()==3);
         assert(playerBoard.getSlot(2).getList().size()==3);
         assert(playerBoard.getSlot(3).getList().size()==3);
+        try {
+            assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Blue));
+            assert (playerBoard.getSlot(2).getFirstCard().getColour().equals(Colours.Yellow));
+            assert (playerBoard.getSlot(3).getFirstCard().getColour().equals(Colours.Purple));
+            assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 12);
+            assert (playerBoard.getSlot(2).getFirstCard().getvictoryPoints() == 12);
+            assert (playerBoard.getSlot(3).getFirstCard().getvictoryPoints() == 12);
+        }catch(Exception e) {e.printStackTrace();}
     }
 
     @Test
-    @DisplayName("Ensure correct behaviour of development card buying action when resources are partially got from the strongbox and partially from werehouse")
+    @DisplayName("Ensure correct behaviour of development card buying action when resources are partially got from the strongbox and partially from warehouse")
     void testCanBuyDCCardFromSBAndWH(){
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
@@ -115,7 +121,7 @@ public class DevelopmentBuyTest{
         try{
             game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
         }catch(Exception e) {e.printStackTrace();}
-        //System.out.println(playerBoard.slottoString());
+
         assert(playerBoard.getSlot(1).getList().size()==1);
         assert(playerBoard.getSlot(2).getList().size()==0);
         assert(playerBoard.getSlot(3).getList().size()==0);
@@ -156,14 +162,18 @@ public class DevelopmentBuyTest{
         );
     }
 
+    //Leader Card Tests
+
     @Test
-    @DisplayName("Ensure correct behaviour with LeaderCard Discount (Can buy)")
+    @DisplayName("Ensure correct behaviour with LeaderCard Discount, userChoice is correct")
     void testCanBuyDCCardWithDiscount(){
-        game = new Game(0);
-
-        game.LCTestsetup();
-        playerBoard = game.getBoard(0);
-
+        //Adding a new LCCard which provides a discount on servants
+        LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
+        playerBoard.getLeadercards().clear();
+        playerBoard.getLeadercards().add(LCDiscount);
+        try {
+            game.playLeaderCard(0, 1);
+        }catch(Exception e){e.printStackTrace();}
 
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
@@ -192,13 +202,15 @@ public class DevelopmentBuyTest{
     }
 
     @Test
-    @DisplayName("Ensure correct behaviour with LeaderCard Discount (Cannot buy)")
+    @DisplayName("Ensure correct behaviour with LeaderCard Discount, userChoice is incorrect, choosing an excessive number of resources")
     void testCannotBuyDCCardWithDiscount(){
-        game = new Game(0);
-
-        game.LCTestsetup();
-        playerBoard = game.getBoard(0);
-
+        //Adding a new LCCard which provides a discount on servants
+        LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
+        playerBoard.getLeadercards().clear();
+        playerBoard.getLeadercards().add(LCDiscount);
+        try {
+            game.playLeaderCard(0, 1);
+        }catch(Exception e){e.printStackTrace();}
 
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
@@ -217,24 +229,24 @@ public class DevelopmentBuyTest{
     @Test
     @DisplayName("Ensure correct behaviour with LeaderCard ExtraSlot")
     void testCanBuyFromExtraSlot(){
-        game = new Game(0);
+        //Adding a new LCCard which provides extra slots for stones
+        LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Stones,2);
+        playerBoard.getLeadercards().clear();
+        playerBoard.getLeadercards().add(LCSlot);
+        try {
+            game.playLeaderCard(0, 1);
+        }catch(Exception e){e.printStackTrace();}
 
-        game.LCTestsetup();
-        playerBoard = game.getBoard(0);
-
-        //Getting rid of the discountAbility LC and ProductionPowerAbility LC (to have 2 LC active and without interference on cost)
-        playerBoard.getLeadercardsplayed().remove(3);
-        playerBoard.getLeadercardsplayed().remove(1);
 
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
         }
         catch(Exception e) {e.printStackTrace();}
         playerBoard.getStrongbox().addResource(Resources.Servants,1);
-        playerBoard.getLeadercardsplayed().get(1).getAbility().doUpdateSlot(Resources.Stones,2);
+        playerBoard.getLeadercardsplayed().get(0).getAbility().doUpdateSlot(Resources.Stones,2);
 
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
-        {{add(new Pair<>("SE",1));add(new Pair<>("SE",6));add(new Pair<>("PI",5));add(new Pair<>("PI",5));}};
+        {{add(new Pair<>("SE",1));add(new Pair<>("SE",6));add(new Pair<>("PI",4));add(new Pair<>("PI",4));}};
 
         try{
             game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
@@ -247,20 +259,22 @@ public class DevelopmentBuyTest{
 
         assert(playerBoard.getSlot(2).getList().size()==0);
         assert(playerBoard.getSlot(3).getList().size()==0);
-        assert(playerBoard.getLeadercardsplayed().get(1).getAbility().getStashedResources()==0);
+        assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==0);
     }
 
     @Test
-    @DisplayName("Ensure correct behaviour with LeaderCard ExtraSlot and LeaderCard Discount")
+    @DisplayName("Ensure correct behaviour with LeaderCard ExtraSlot combined with LeaderCard Discount")
     void testCanBuyFromExtraSlotWithDiscount(){
-        game = new Game(0);
-
-        game.LCTestsetup();
-        playerBoard = game.getBoard(0);
-
-        //Getting rid of the WhiteMarbleAbility LC and ProductionPowerAbility LC (to have 2 LC active and without interference on cost)
-        playerBoard.getLeadercardsplayed().remove(0);
-        playerBoard.getLeadercardsplayed().remove(0);
+        //Adding a new LCCard which provides a discount on servants and a new LCCard which provides extra slots for stones
+        LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
+        LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Stones,2);
+        playerBoard.getLeadercards().clear();
+        playerBoard.getLeadercards().add(LCSlot);
+        playerBoard.getLeadercards().add(LCDiscount);
+        try {
+            game.playLeaderCard(0, 1);
+            game.playLeaderCard(0,1);
+        }catch(Exception e){e.printStackTrace();}
 
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
