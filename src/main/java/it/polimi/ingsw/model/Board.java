@@ -145,7 +145,7 @@ public class Board {
         //Checking resources and number of requested card
         tmp2.putAll(getAllResources());
         for(Resources r : requiredResources.keySet()){
-            if(requiredResources.get(r) < tmp2.get(r)) requiredResources.remove(r);
+            if(requiredResources.get(r) <= tmp2.get(r)) requiredResources.remove(r);
         }
 
         if(requiredColours.isEmpty() && requiredResources.isEmpty())
@@ -154,7 +154,7 @@ public class Board {
             throw new IllegalArgumentException("Requirements not met");
     }
 
-    private HashMap<Resources,Integer> getAllResources(){
+    public HashMap<Resources,Integer> getAllResources(){
         HashMap<Resources,Integer> tmp = new HashMap<>();
 
         //adds strongbox resources

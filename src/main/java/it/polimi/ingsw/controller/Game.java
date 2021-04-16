@@ -110,10 +110,9 @@ public class Game {
         }
 
         for(int i=0;i<discardedLC.length;i++){
-            if(1<=discardedLC[i] && discardedLC[i]<=4-i) players.get(player).getValue().discardLeaderCard(i);
+            if(1<=discardedLC[i] && discardedLC[i]<=4-i) players.get(player).getValue().discardLeaderCard(discardedLC[i]);
             else throw new IllegalArgumentException("Indice non risolvibile");
         }
-
     }
 
     //Converts Marbles to resources
@@ -441,7 +440,8 @@ public class Game {
         if(tmpHand.size()>0) throw new IllegalArgumentException("There are still some resources in the hand");
     }
 
-    public void discardLeaderCard(int player, int leaderCardIndex){
+    public void discardLeaderCard(int player, int leaderCardIndex) throws IllegalArgumentException{
+        if(leaderCardIndex>players.get(player).getValue().getLeadercards().size() || leaderCardIndex<=0) throw new IllegalArgumentException("");
         players.get(player).getValue().discardLeaderCard(leaderCardIndex);
         players.get(player).getValue().getFaithtrack().advanceTrack();
         int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();

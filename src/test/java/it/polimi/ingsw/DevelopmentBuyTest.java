@@ -29,7 +29,7 @@ public class DevelopmentBuyTest{
 
     @Test
     @DisplayName("Ensure correct behaviour of development card buying action, when resources are taken from warehouse")
-    void testCanBuyDCCard(){
+    void testCanBuyDCard(){
         try {
             playerBoard.getWarehouse().addDepot(3, Resources.Servants, 3);
             playerBoard.getWarehouse().addDepot(2, Resources.Stones, 2);
@@ -57,7 +57,7 @@ public class DevelopmentBuyTest{
 
     @Test
     @DisplayName("Ensure correct behaviour of development card buying action, choosing the right slot for every card, stacking them in order")
-    void testCanBuyDCCardFromSB() {
+    void testCanBuyDCardFromSB() {
         playerBoard.getStrongbox().addResource(Resources.Coins, 99);
         playerBoard.getStrongbox().addResource(Resources.Stones, 99);
         playerBoard.getStrongbox().addResource(Resources.Shields, 99);
