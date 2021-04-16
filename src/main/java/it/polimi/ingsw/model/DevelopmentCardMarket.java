@@ -98,7 +98,7 @@ public class DevelopmentCardMarket {
         catch(Exception e) {e.printStackTrace();}
     }
 
-    //costruttore per testing
+    //Only used for testing
     public DevelopmentCardMarket(int Arandom){
         cardMarket = new HashMap<>();
         cardMarket.put(new Pair<>(Colours.Blue,1),new Stack<>());
@@ -214,11 +214,14 @@ public class DevelopmentCardMarket {
     //ONLY FOR SINGLE PLAYER
     public void deleteCards(Colours colour){
         int count = 2;  //cards to be deleted
-
+        boolean Empty;
         for(int i=0; i<3 && count>0; i++){
-            if(cardMarket.get(new Pair<>(colour,i+1)).size() > 0){
-                cardMarket.get(new Pair<>(colour,i+1)).pop();
-                count--;
+            Empty = false;
+            while(!Empty && count>0) {
+                if (cardMarket.get(new Pair<>(colour, i + 1)).size() > 0) {
+                    cardMarket.get(new Pair<>(colour, i + 1)).pop();
+                    count--;
+                } else Empty = true;
             }
         }
     }

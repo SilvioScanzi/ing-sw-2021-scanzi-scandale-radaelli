@@ -23,12 +23,13 @@ public class ActionStack {
         }
     }
 
-    //costruttore per testing
+    //Only used for testing
     public ActionStack(int Arandom){
         ArrayList<ActionToken> tmp = new ArrayList<>();
-        tmp.add(ActionToken.Advance2);
-        tmp.add(ActionToken.Advance2);
+
         tmp.add(ActionToken.AdvanceAndRefresh);
+        tmp.add(ActionToken.Advance2);
+        tmp.add(ActionToken.Advance2);
         tmp.add(ActionToken.DeleteYellow);
         tmp.add(ActionToken.DeleteBlue);
         tmp.add(ActionToken.DeletePurple);
@@ -38,6 +39,10 @@ public class ActionStack {
         for(int i=0;i<7;i++){
             stack.push(tmp.remove(0));
         }
+    }
+
+    public Stack<ActionToken> getStack() {
+        return stack;
     }
 
     @Override

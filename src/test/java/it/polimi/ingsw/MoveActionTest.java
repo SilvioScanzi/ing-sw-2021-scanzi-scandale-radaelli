@@ -116,14 +116,14 @@ public class MoveActionTest {
 
     @ParameterizedTest
     @MethodSource("provideSourceOfError")
-    @DisplayName("Ensure correct behaviour of move action between two depots gone wrong for different reasons")
+    @DisplayName("Ensure incorrect move action throws an exception")
     void CannotMoveForDifferentReasons(ArrayList<Triplet<String,Integer,Integer>> userChoice){
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
             playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
         }
         catch(Exception e) {e.printStackTrace();}
-        assertThrows(Exception.class,()->{game.moveAction(0,userChoice);});
+        assertThrows(Exception.class,()-> game.moveAction(0,userChoice));
     }
 
     private static Stream<Arguments> provideSourceOfError() {

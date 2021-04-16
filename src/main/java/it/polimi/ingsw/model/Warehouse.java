@@ -58,7 +58,7 @@ public class Warehouse implements Cloneable {
 
     public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException{
         if(depotNumber==1){
-            if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 can't contain these resources",resource,quantity);
+            if(quantity != 1) throw new ResourceErrorException("Depot 1 can't contain these resources",resource,quantity);
             if(depot2.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 2 has already got this resource");
             if(depot3.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 3 has already got this resource");
             if(!(depot1.getKey().isPresent())){
@@ -67,7 +67,7 @@ public class Warehouse implements Cloneable {
             else throw new ResourceErrorException("Depot 1 is already full",resource,quantity);
         }
         else if(depotNumber==2) {
-            if (quantity>2 || quantity<0) throw new ResourceErrorException("Depot 2 can't contain these resources",resource,quantity);
+            if (quantity>2 || quantity<=0) throw new ResourceErrorException("Depot 2 can't contain these resources",resource,quantity);
             if(depot1.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 1 has already got this resource");
             if(depot3.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 3 has already got this resource");
             if(!(depot2.getKey().isPresent())){
@@ -80,7 +80,7 @@ public class Warehouse implements Cloneable {
             else throw new ResourceErrorException("Depot 2 is already full",resource,quantity-(2-depot2.getValue()));
         }
         else if(depotNumber==3){
-            if (quantity>3 || quantity<0) throw new ResourceErrorException("Depot 3 can't contain these resources",resource,quantity);
+            if (quantity>3 || quantity<=0) throw new ResourceErrorException("Depot 3 can't contain these resources",resource,quantity);
             if(depot1.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 1 has already got this resource");
             if(depot2.getKey().equals(Optional.of(resource))) throw new IllegalArgumentException("Depot 2 has already got this resource");
             if(!(depot3.getKey().isPresent())){
@@ -131,7 +131,7 @@ public class Warehouse implements Cloneable {
         else throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public ArrayList<Resources> clear(int depot){
+    /*public ArrayList<Resources> clear(int depot){
         ArrayList<Resources> tmp = new ArrayList<>();
         if(depot==1){
             if(depot1.getKey().isPresent()){
@@ -156,9 +156,9 @@ public class Warehouse implements Cloneable {
             }
         }
         return tmp;
-    }
+    }*/
 
     public boolean checkResourcePresent(int depot, Resources resource){
-        return resource.equals(getDepot(depot).getKey().get());
+        return getDepot(depot).getKey().isPresent() && getDepot(depot).getKey().get().equals(resource);
     }
 }

@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.exceptions.ResourceErrorException;
+
 import java.util.*;
 
 public class Strongbox implements Cloneable {
@@ -40,7 +42,8 @@ public class Strongbox implements Cloneable {
         storage.put(r,amount+storage.get(r));
     }
 
-    public void subResource(Resources r, int amount) {
-        storage.put(r,storage.get(r)-amount);
+    public void subResource(Resources r, int amount) throws ResourceErrorException {
+        if(storage.get(r)-amount >=0 ) storage.put(r,storage.get(r)-amount);
+        else throw new ResourceErrorException("Not enough resources",r,amount-storage.get(r));
     }
 }

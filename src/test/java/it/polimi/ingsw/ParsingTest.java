@@ -70,9 +70,8 @@ public class ParsingTest {
     @DisplayName("Ensure correct number Leader Cards got from parsing")
     void testParsingNumberLC(){
         LCD = new LeaderCardDeck(0);
-        LeaderCard LC;
         for(int i=0;i<16;i++){
-            LC = LCD.getFirstCard();
+            LCD.getFirstCard();
         }
         assertThrows(Exception.class,()-> LCD.getFirstCard());
     }

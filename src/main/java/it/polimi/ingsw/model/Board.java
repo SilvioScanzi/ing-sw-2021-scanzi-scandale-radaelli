@@ -52,7 +52,7 @@ public class Board {
         return s;
     }
 
-    public void clearWarehouse(){
+    /*public void clearWarehouse(){
         for(int i=1;i<4;i++) {
             hand.addAll(warehouse.clear(i));
         }
@@ -60,7 +60,7 @@ public class Board {
 
     public void clearDepot(int i){
         hand.addAll(warehouse.clear(i));
-    }
+    }*/
 
     public ArrayList<Resources> getHand() {
         return hand;

@@ -28,7 +28,7 @@ public class DevelopmentBuyTest{
     //Buy action without leader card influence
 
     @Test
-    @DisplayName("Ensure correct behaviour of development card buying action, resources got from warehouse")
+    @DisplayName("Ensure correct behaviour of development card buying action, when resources are taken from warehouse")
     void testCanBuyDCCard(){
         try {
             playerBoard.getWarehouse().addDepot(3, Resources.Servants, 3);
@@ -132,7 +132,7 @@ public class DevelopmentBuyTest{
     void testCannotBuyDCCardResources() {
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}};
-        assertThrows(IllegalArgumentException.class,()->{game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);});
+        assertThrows(IllegalArgumentException.class,()-> game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice));
     }
 
     @ParameterizedTest
@@ -146,7 +146,7 @@ public class DevelopmentBuyTest{
         try {
             game.getDevelopmentCard(Colours.Purple,1,0,1,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}});
         }catch(Exception e){e.printStackTrace();}
-        assertThrows(Exception.class,()->{game.getDevelopmentCard(c, l, 0, s,choice);});
+        assertThrows(Exception.class,()-> game.getDevelopmentCard(c, l, 0, s,choice));
     }
 
     private static Stream<Arguments> provideCombinationsOfColoursAndLevel() {
@@ -165,7 +165,7 @@ public class DevelopmentBuyTest{
     //Leader Card Tests
 
     @Test
-    @DisplayName("Ensure correct behaviour with LeaderCard Discount, userChoice is correct")
+    @DisplayName("Ensure correct behaviour with LeaderCard Discount, userChoice accounts for the discount")
     void testCanBuyDCCardWithDiscount(){
         //Adding a new LCCard which provides a discount on servants
         LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
@@ -202,7 +202,7 @@ public class DevelopmentBuyTest{
     }
 
     @Test
-    @DisplayName("Ensure correct behaviour with LeaderCard Discount, userChoice is incorrect, choosing an excessive number of resources")
+    @DisplayName("Ensure that when userChoice doesn't account for the discount, an exception is thrown")
     void testCannotBuyDCCardWithDiscount(){
         //Adding a new LCCard which provides a discount on servants
         LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
@@ -223,7 +223,7 @@ public class DevelopmentBuyTest{
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",1));add(new Pair<>("SE",6));add(new Pair<>("PI",2));add(new Pair<>("PI",6));}};
 
-        assertThrows(Exception.class,()->{game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);});
+        assertThrows(Exception.class,()-> game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice));
     }
 
     @Test

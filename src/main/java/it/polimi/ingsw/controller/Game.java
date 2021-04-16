@@ -206,7 +206,9 @@ public class Game {
                 } else throw new IllegalArgumentException("Non hai leader card valide");
             } else if (p.getValue()==6){
                 if(sb.getResource(r)>0){
-                    sb.subResource(r,1);
+                    try {
+                        sb.subResource(r, 1);
+                    }catch (Exception e) {e.printStackTrace();}
                     selectedResources.put(r, (1+selectedResources.get(r)));
                 }else throw new IllegalArgumentException("Non hai la risorsa nello strongbox");
             } else throw new IllegalArgumentException("Selezione scorretta");
@@ -528,18 +530,28 @@ public class Game {
                     lorenzo.advanceBlackCross();
                     if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
                 }
+                break;
             }
             case AdvanceAndRefresh: {
                 lorenzo.advanceBlackCross();
                 if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
                 actionStack = new ActionStack();
+                break;
             }
-            case DeleteBlue: developmentcardmarket.deleteCards(Colours.Blue);
-            case DeleteGreen: developmentcardmarket.deleteCards(Colours.Green);
-            case DeletePurple: developmentcardmarket.deleteCards(Colours.Purple);
-            case DeleteYellow: developmentcardmarket.deleteCards(Colours.Yellow);
+            case DeleteBlue: developmentcardmarket.deleteCards(Colours.Blue); break;
+            case DeleteGreen: developmentcardmarket.deleteCards(Colours.Green); break;
+            case DeletePurple: developmentcardmarket.deleteCards(Colours.Purple); break;
+            case DeleteYellow: developmentcardmarket.deleteCards(Colours.Yellow); break;
         }
         return AT;
+    }
+
+    public LorenzoTrack getLorenzo() {
+        return lorenzo;
+    }
+
+    public ActionStack getActionStack() {
+        return actionStack;
     }
 
     public boolean checkLorenzoWin(){
