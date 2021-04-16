@@ -36,7 +36,7 @@ public class DevelopmentCardMarket {
             /*Getting the XML file via path. For future updates: pathname is a String, it could be used another String
               given to the Constructor, eventually resorting to the default one
               Especially useful for parameter editor*/
-            Document document = builder.parse(new File("src\\xml_src\\developmentCards.xml"));
+            Document document = builder.parse(new File("src/xml_src/developmentCards.xml"));
             document.getDocumentElement().normalize();
 
             /* Only used for testing to identify if the DOM parser worked as intended
@@ -125,7 +125,7 @@ public class DevelopmentCardMarket {
             /*Getting the XML file via path. For future updates: pathname is a String, it could be used another String
               given to the Constructor, eventually resorting to the default one
               Especially useful for parameter editor*/
-            Document document = builder.parse(new File("src\\xml_src\\developmentCards.xml"));
+            Document document = builder.parse(new File("src/xml_src/developmentCards.xml"));
             document.getDocumentElement().normalize();
 
             /* Only used for testing to identify if the DOM parser worked as intended

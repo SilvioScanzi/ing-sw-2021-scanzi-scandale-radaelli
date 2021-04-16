@@ -94,7 +94,6 @@ public class Market {
             return tmp;
         }
         else{
-
             for(int k=0;k<3;k++) tmp.add(grid[k][i-1]);
             update(false,i-1);
             return tmp;
@@ -118,5 +117,10 @@ public class Market {
             grid[2][i]=remainingMarble;
             remainingMarble=tmp;
         }
+    }
+
+    //for testing
+    public Marbles[][] getGrid() {
+        return grid;
     }
 }
