@@ -14,7 +14,7 @@ public class UpdateMarketTest {
 
     @BeforeEach
     void setup(){
-        market = new Market(0);
+        market = new Market();
         grid = market.getGrid();
     }
 
