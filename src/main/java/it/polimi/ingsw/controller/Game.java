@@ -44,6 +44,7 @@ public class Game {
 
     //TODO: TABELLA A PAGINA 3 (IN BASSO) DEL REGOLAMENTO
     //Initializes variables and boards, assigning nicknames
+
     public void setup(ArrayList<String> names){
         nplayer = names.size();
         inkwell = (int)(Math.random() * nplayer);
