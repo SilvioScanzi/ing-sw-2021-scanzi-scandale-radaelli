@@ -1,8 +1,6 @@
 package it.polimi.ingsw.model;
 
-import java.util.HashMap;
-
-public class ExtraSlotAbility implements Ability{
+public class ExtraSlotAbility extends Ability{
     private Resources restype;
     private int capacity;
     private int stashedResources;
@@ -13,17 +11,12 @@ public class ExtraSlotAbility implements Ability{
         stashedResources = 0;
     }
 
-    public HashMap<Resources, Integer> doDiscount(HashMap<Resources, Integer> cost){
-        return cost;
+    @Override
+    public Resources getRestype(){
+        return restype;
     }
 
-    public boolean doActivate(){
-        return false;
-    }
-    public boolean doConvert(){
-        return false;
-    }
-
+    @Override
     public boolean doUpdateSlot(Resources resource, int amount){
         if(!restype.equals(resource)) return false;
         if(amount+capacity<0 || amount + stashedResources > capacity) return false;
@@ -31,17 +24,15 @@ public class ExtraSlotAbility implements Ability{
         return true;
     }
 
-    public Resources getRestype() {
-        return restype;
-    }
-
-    //other abilities return 0; here returns the number of stored resources
+    @Override
     public int getStashedResources(){
         return stashedResources;
     }
 
+    @Override
     public int getCapacity(){ return capacity; }
 
+    @Override
     public String toString(){
         return capacity +" Slot extra per "+restype.toString()+" attualmente sono presenti: "+stashedResources+" "+restype.toString();
     }

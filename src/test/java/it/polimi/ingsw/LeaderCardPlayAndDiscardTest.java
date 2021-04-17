@@ -2,14 +2,11 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.model.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-
+import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.*;
+
+
 
 public class LeaderCardPlayAndDiscardTest {
 
@@ -19,7 +16,7 @@ public class LeaderCardPlayAndDiscardTest {
     //Initialising Game and Board
     @BeforeEach
     void setup(){
-        game = new Game(0);
+        game = new Game();
         String s = "player";
         ArrayList<String> st = new ArrayList<>();
         st.add(s);
@@ -190,7 +187,7 @@ public class LeaderCardPlayAndDiscardTest {
         playerBoard.getLeadercards().add(LC3);
         playerBoard.getLeadercards().add(LC4);
 
-        int selection[] = {1,2};
+        int[] selection = {1,2};
         try{
             game.discardSelectedLC(0,selection);
         }catch(Exception e) {e.printStackTrace();}
@@ -218,7 +215,7 @@ public class LeaderCardPlayAndDiscardTest {
         playerBoard.getLeadercards().add(LC3);
         playerBoard.getLeadercards().add(LC4);
 
-        int selection[] = {6,2};
+        int[] selection = {6,2};
         assertThrows(Exception.class, () -> game.discardSelectedLC(0,selection));
     }
 
@@ -239,7 +236,7 @@ public class LeaderCardPlayAndDiscardTest {
         playerBoard.getLeadercards().add(LC3);
         playerBoard.getLeadercards().add(LC4);
 
-        int selection[] = {69,42,119};
+        int[] selection = {69,42,119};
         assertThrows(Exception.class, () -> game.discardSelectedLC(0,selection));
     }
 }

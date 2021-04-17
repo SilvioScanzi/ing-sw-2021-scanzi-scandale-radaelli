@@ -19,7 +19,7 @@ public class UpdateMarketTest {
     }
 
     @Test
-    @DisplayName("ensure the number of white marbles returned is correct")
+    @DisplayName("Ensures the number of white marbles returned is correct")
     void testGetWM(){
         int WMNumber = 0;
         int getWMrow = 0;
@@ -43,7 +43,7 @@ public class UpdateMarketTest {
     }
 
     @Test
-    @DisplayName("ensure update methos works")
+    @DisplayName("Ensures update methods works")
     void testUpdateMarket(){
         Marbles[][] previousGrid = new Marbles[3][4];
         for(int i=0;i<3;i++){

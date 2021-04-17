@@ -3,8 +3,7 @@ import it.polimi.ingsw.controller.*;
 import it.polimi.ingsw.model.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.*;
 import java.util.*;
 import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -197,6 +196,7 @@ public class DevelopmentBuyTest{
         assert(playerBoard.getSlot(2).getList().size()==0);
         assert(playerBoard.getSlot(3).getList().size()==0);
 
+        assert(playerBoard.getWarehouse().getDepot(1).getKey().isPresent());
         assert(playerBoard.getWarehouse().getDepot(1).getKey().get().equals(Resources.Servants));
         assert(playerBoard.getWarehouse().getDepot(1).getValue()==1);
     }

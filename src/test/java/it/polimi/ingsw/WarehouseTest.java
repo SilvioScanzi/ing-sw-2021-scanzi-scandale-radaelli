@@ -33,8 +33,11 @@ public class WarehouseTest {
             WH.addDepot(2,Resources.Shields,2);
             WH.addDepot(3,Resources.Servants,3);
         }catch(Exception e) {e.printStackTrace();}
+        assert(WH.getDepot(1).getKey().isPresent());
         assert(WH.getDepot(1).getKey().get().equals(Resources.Stones) && WH.getDepot(1).getValue()==1);
+        assert(WH.getDepot(2).getKey().isPresent());
         assert(WH.getDepot(2).getKey().get().equals(Resources.Shields) && WH.getDepot(2).getValue()==2);
+        assert(WH.getDepot(3).getKey().isPresent());
         assert(WH.getDepot(3).getKey().get().equals(Resources.Servants) && WH.getDepot(3).getValue()==3);
     }
 
@@ -99,8 +102,11 @@ public class WarehouseTest {
             WH.addDepot(2,Resources.Shields,2);
             WH.addDepot(3,Resources.Servants,3);
         }catch(Exception e) {e.printStackTrace();}
+        assert(WH.getDepot(1).getKey().isPresent());
         assert(WH.getDepot(1).getKey().get().equals(Resources.Stones) && WH.getDepot(1).getValue()==1);
+        assert(WH.getDepot(2).getKey().isPresent());
         assert(WH.getDepot(2).getKey().get().equals(Resources.Shields) && WH.getDepot(2).getValue()==2);
+        assert(WH.getDepot(3).getKey().isPresent());
         assert(WH.getDepot(3).getKey().get().equals(Resources.Servants) && WH.getDepot(3).getValue()==3);
         try{
             WH.subDepot(1,1);
@@ -109,6 +115,7 @@ public class WarehouseTest {
         }catch(Exception e) {e.printStackTrace();}
         assert(!WH.getDepot(1).getKey().isPresent() && WH.getDepot(1).getValue()==0);
         assert(!WH.getDepot(2).getKey().isPresent() && WH.getDepot(2).getValue()==0);
+        assert(WH.getDepot(3).getKey().isPresent());
         assert(WH.getDepot(3).getKey().get().equals(Resources.Servants) && WH.getDepot(3).getValue()==1);
     }
 

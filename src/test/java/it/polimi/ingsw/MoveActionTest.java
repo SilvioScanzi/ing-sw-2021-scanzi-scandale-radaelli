@@ -16,7 +16,7 @@ public class MoveActionTest {
 
     @BeforeEach
     void setup(){
-        game = new Game(0);
+        game = new Game();
         String s = "player";
         ArrayList<String> st = new ArrayList<>();
         st.add(s);
@@ -41,6 +41,8 @@ public class MoveActionTest {
         }catch(Exception e) { e.printStackTrace(); }
 
         assert(!playerBoard.getWarehouse().getDepot(1).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().isPresent());
         assert(playerBoard.getWarehouse().getDepot(2).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(2).getValue()==1);
     }
 
@@ -60,6 +62,9 @@ public class MoveActionTest {
         try{
             game.moveAction(0,choice);
         }catch(Exception e){e.printStackTrace();}
+        
+        assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().isPresent());
         assert(playerBoard.getWarehouse().getDepot(2).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(2).getValue()==2);
         assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(3).getValue()==2);
     }
@@ -67,9 +72,16 @@ public class MoveActionTest {
     @Test
     @DisplayName("Ensure correct behaviour of move action performed after market buy (with resources from the hand)")
     void testMoveAfterMarket(){
-        //Getting the third row which contains one white marble, two yellow ones and a purple
+        //Using the constructor with no random elements
+        game = new Game(0);
+        String s = "player";
+        ArrayList<String> st = new ArrayList<>();
+        st.add(s);
+        game.setup(st);
+        playerBoard = game.getBoard(0);
+        //Getting the second row which contains one Grey marble, two yellow ones and a purple
         try {
-            game.getMarketResources(0, true, 3, new ArrayList<>());
+            game.getMarketResources(0, true, 2, new ArrayList<>());
         }catch (Exception e){e.printStackTrace();}
 
         //Got in hand two Coins and one Servant
@@ -77,13 +89,17 @@ public class MoveActionTest {
         choice.add(new Triplet<>("SE",0,3));
         choice.add(new Triplet<>("MO",0,2));
         choice.add(new Triplet<>("MO",0,2));
+        choice.add(new Triplet<>("PI",0,1));
         try{
             game.moveAction(0,choice);
         }catch(Exception e){e.printStackTrace();}
+        assert(playerBoard.getWarehouse().getDepot(1).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(1).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(1).getValue()==1);
         assert(playerBoard.getWarehouse().getDepot(2).getKey().get().equals(Resources.Coins) && playerBoard.getWarehouse().getDepot(2).getValue()==2);
         assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(3).getValue()==1);
     }
-
 
     @Test
     @DisplayName("Ensure correct behaviour of move action with consecutive swaps")
@@ -110,8 +126,37 @@ public class MoveActionTest {
         try{
             game.moveAction(0,choice);
         }catch(Exception e){e.printStackTrace();}
+
+        assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().isPresent());
         assert(playerBoard.getWarehouse().getDepot(2).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(2).getValue()==2);
         assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(3).getValue()==1);
+    }
+
+    @Test
+    @DisplayName("Ensure correct behaviour of move action with null swaps")
+    void testNullSwaps(){
+        try {
+            playerBoard.getWarehouse().addDepot(2, Resources.Servants, 1);
+            playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
+        }
+        catch(Exception e) {e.printStackTrace();}
+        ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
+        choice.add(new Triplet<>("SE",2,1));
+        choice.add(new Triplet<>("SE",1,2));
+        choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("PI",3,2));
+        choice.add(new Triplet<>("PI",2,3));
+        choice.add(new Triplet<>("PI",2,3));
+
+        try{
+            game.moveAction(0,choice);
+        }catch(Exception e){e.printStackTrace();}
+
+        assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().isPresent());
+        assert(playerBoard.getWarehouse().getDepot(2).getKey().get().equals(Resources.Servants) && playerBoard.getWarehouse().getDepot(2).getValue()==1);
+        assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(3).getValue()==2);
     }
 
     @ParameterizedTest
@@ -169,6 +214,8 @@ public class MoveActionTest {
         try{
             game.moveAction(0,choice);
         }catch(Exception e) {e.printStackTrace();}
+
+        assert(playerBoard.getWarehouse().getDepot(1).getKey().isPresent());
         assert(playerBoard.getWarehouse().getDepot(1).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(1).getValue()==1);
         assert(!playerBoard.getWarehouse().getDepot(3).getKey().isPresent() && playerBoard.getWarehouse().getDepot(3).getValue()==0);
         assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==2);

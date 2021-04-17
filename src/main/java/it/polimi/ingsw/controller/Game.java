@@ -8,13 +8,13 @@ import java.util.*;
 public class Game {
     private int inkwell;
     private int nplayer;
-    private ArrayList<Pair<String,Board>> players;
-    private Market market;
-    private DevelopmentCardMarket developmentcardmarket;
-    private boolean[] vaticanReport;
-    private LeaderCardDeck leadercarddeck;
+    private final ArrayList<Pair<String,Board>> players;
+    private final Market market;
+    private final DevelopmentCardMarket developmentcardmarket;
+    private final boolean[] vaticanReport;
+    private final LeaderCardDeck leadercarddeck;
 
-    private LorenzoTrack lorenzo;
+    private final LorenzoTrack lorenzo;
     private ActionStack actionStack;
 
     public Game() {
@@ -52,8 +52,20 @@ public class Game {
         }
     }
 
-    public LeaderCardDeck getLeadercarddeck() {
-        return leadercarddeck;
+    public void discardSelectedLC(int player, int[] discardedLC) throws IllegalArgumentException {
+        if(discardedLC.length!=2) throw new IllegalArgumentException("Errore nelle LC da eliminare");
+
+        //sorting in descending order the index
+        if(discardedLC[0]<discardedLC[1]){
+            int tmp = discardedLC[0];
+            discardedLC[0] = discardedLC[1];
+            discardedLC[1] = tmp;
+        }
+
+        for(int i=0;i<discardedLC.length;i++){
+            if(1<=discardedLC[i] && discardedLC[i]<=4-i) players.get(player).getValue().discardLeaderCard(discardedLC[i]);
+            else throw new IllegalArgumentException("Indice non risolvibile");
+        }
     }
 
     public int getInkwell() {
@@ -74,45 +86,44 @@ public class Game {
 
     public Board getBoard(int i){return players.get(i).getValue();}
 
+    private void popeEvent(int index){
+        if(!(vaticanReport[index-1])) {
+            for(int i=0;i<nplayer;i++){
+                players.get(i).getValue().getFaithtrack().setPopeFavor(index);
+            }
+            vaticanReport[index-1] = true;
+        }
+    }
+
     //Adds the resources from the market to the hand, ignoring white marbles
     public void getMarketResources(int player, boolean row, int i, ArrayList<Integer> requestedWMConversion) throws IllegalArgumentException {
         Board playerBoard = players.get(player).getValue();
         ArrayList<Resources> tmp = new ArrayList<>();
 
-        boolean gotConversion = false;
-        for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
-            gotConversion = gotConversion || LC.getAbility().doConvert();
+        ArrayList<Integer> conversionIndex = new ArrayList<>();
+        for(int j=0;j<playerBoard.getLeadercardsplayed().size();j++){
+            if(playerBoard.getLeadercardsplayed().get(j).getAbility().doConvert()) conversionIndex.add(j);
         }
 
-        if(market.getWhiteMarbles(row, i) == requestedWMConversion.size() && gotConversion){ //checking white marbles in market equals requested conversions
-            for(int j=0;j<requestedWMConversion.size() && playerBoard.getLeadercardsplayed().size()>0;j++){ //checking LC presence and if there are conversions
-                if(requestedWMConversion.get(j)>0 && requestedWMConversion.get(j)<=playerBoard.getLeadercardsplayed().size()){ //checking index of LC
-                    try{
-                        tmp.add(leaderCardConversion(player,playerBoard.getLeadercardsplayed().get(requestedWMConversion.get(j))));
-                    }catch(IllegalArgumentException e) {throw e;}
-                }
+        if(conversionIndex.size()==1){
+            for(int j=0;j<market.getWhiteMarbles(row, i);j++){
+                tmp.add(playerBoard.getLeadercardsplayed().get(conversionIndex.get(0)).getAbility().getRestype());
             }
-        }else if(requestedWMConversion.size()!=0 || gotConversion){throw new IllegalArgumentException("Requested a number of white conversions not congruent");}
+        }
+
+        else if(conversionIndex.size()>1 && market.getWhiteMarbles(row, i) == requestedWMConversion.size()) { //checking white marbles in market equals requested conversions
+            for (Integer index : requestedWMConversion) { //checking LC presence and if there are conversions
+                if (index > 0 && index <= playerBoard.getLeadercardsplayed().size())  //checking index of LC
+                    tmp.add(playerBoard.getLeadercardsplayed().get(index - 1).getAbility().getRestype());
+                else throw new IllegalArgumentException("Requested a conversion with an inexistent LC Card");
+            }
+        }
+        else if(conversionIndex.size()==0);
+        else throw new IllegalArgumentException("Requested a number of white conversions not congruent");
 
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
         playerBoard.getHand().addAll(tmp);
-    }
-
-    public void discardSelectedLC(int player, int[] discardedLC) throws IllegalArgumentException {
-        if(discardedLC.length!=2) throw new IllegalArgumentException("Errore nelle LC da eliminare");
-
-        //sorting in descending order the index
-        if(discardedLC[0]<discardedLC[1]){
-            int tmp = discardedLC[0];
-            discardedLC[0] = discardedLC[1];
-            discardedLC[1] = tmp;
-        }
-
-        for(int i=0;i<discardedLC.length;i++){
-            if(1<=discardedLC[i] && discardedLC[i]<=4-i) players.get(player).getValue().discardLeaderCard(discardedLC[i]);
-            else throw new IllegalArgumentException("Indice non risolvibile");
-        }
     }
 
     //Converts Marbles to resources
@@ -135,29 +146,10 @@ public class Game {
         return tmp;
     }
 
-    //Checks if LC provided can convert white marbles to resources, if so, gives them to the hand
-    public Resources leaderCardConversion(int player, LeaderCard LC) throws IllegalArgumentException{
-        Resources tmp;
-        if(LC.getAbility().doConvert()){
-            tmp = LC.getAbility().getRestype();
-        }
-        else throw new IllegalArgumentException("Leader card has a different ability");
-        return tmp;
-    }
-
-    private void popeEvent(int index){
-        if(!(vaticanReport[index-1])) {
-            for(int i=0;i<nplayer;i++){
-                players.get(i).getValue().getFaithtrack().setPopeFavor(index);
-            }
-            vaticanReport[index-1] = true;
-        }
-    }
-
     //Discard resources and advance other players
     public void discardRemainingResources(int player){
         Board playerBoard = players.get(player).getValue();
-        for(Resources r : playerBoard.getHand()){
+        for(Resources ignored : playerBoard.getHand()){
             for(int i=0;i<nplayer;i++){
                 if(i!=player){
                     players.get(i).getValue().getFaithtrack().advanceTrack();
@@ -193,7 +185,7 @@ public class Game {
                         wr.subDepot(p.getValue(),1);
                         selectedResources.put(r,selectedResources.get(r)+1);
                     } else throw new IllegalArgumentException("Non hai la risorsa nel depot");
-                }catch (Exception e) {e.printStackTrace();}
+                }catch (Exception e) {throw new IllegalArgumentException("Non hai la risorsa nel depot");}
             } else if (p.getValue()==4 || p.getValue()==5){
                 LeaderCard LC;
                 try{
@@ -207,7 +199,7 @@ public class Game {
                 if(sb.getResource(r)>0){
                     try {
                         sb.subResource(r, 1);
-                    }catch (Exception e) {e.printStackTrace();}
+                    }catch (Exception e) {throw new IllegalArgumentException("Non hai la risorsa nello strongbox");}
                     selectedResources.put(r, (1+selectedResources.get(r)));
                 }else throw new IllegalArgumentException("Non hai la risorsa nello strongbox");
             } else throw new IllegalArgumentException("Selezione scorretta");
@@ -219,7 +211,7 @@ public class Game {
 
     }
 
-    //Player (nickname) selects colour and level; method checks for costs and adds to the board
+    //Player (nickname) selects colour and level; method checks for costs and adds to the board the development card
     public void getDevelopmentCard(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice) throws Exception{
         DevelopmentCard DC = developmentcardmarket.peekFirstCard(c,level);
         HashMap<Resources, Integer> cost = new HashMap<>(DC.getCost());
@@ -243,10 +235,8 @@ public class Game {
             requestedSlot.addCard(DC);
             playerBoard.setWarehouse(wr);
             playerBoard.setStrongbox(sb);
-            for (LeaderCard L : playerBoard.getLeadercardsplayed()) {
-                L.getAbility().doUpdateSlot(L.getAbility().getRestype(),
-                        LCCapacity.get(L)-L.getAbility().getStashedResources());
-            }
+            for (LeaderCard L : playerBoard.getLeadercardsplayed())
+            { L.getAbility().doUpdateSlot(L.getAbility().getRestype(), LCCapacity.get(L)-L.getAbility().getStashedResources());}
             developmentcardmarket.getFirstCard(c, level);
         }catch(Exception e) {
             throw e;
@@ -256,13 +246,6 @@ public class Game {
     //if player chooses to activate a leader card or the base production, the last position of the ArrayList
     // contained in userChoice is the to-be-produced resource
     public void activateProduction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice) throws IllegalArgumentException{
-        boolean[] activated = new boolean[] {false,false,false,false,false,false};
-
-        for(Integer i: userChoice.keySet()){
-            if(activated[i-1])throw new IllegalArgumentException("Non puoi attivare due volte le produzioni");
-            activated[i-1]=true;
-        }
-
         HashMap<Resources, Integer> cost;
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
 
@@ -289,6 +272,7 @@ public class Game {
             }
             else if (i==4 || i==5){
                 try{
+                    if(!playerBoard.getLeadercardsplayed().get(i-4).getAbility().doActivate()) throw new IllegalArgumentException("Errore nella produzione della leader card");
                     cost = new HashMap<>();
                     cost.put(playerBoard.getLeadercardsplayed().get(i-4).getAbility().getRestype(),1);
                     tmpHand.add(Resources.getResourceFromString(userChoice.get(i).remove(userChoice.get(i).size()-1).getKey()));
@@ -297,21 +281,18 @@ public class Game {
             }
             else if (i==6){
                 try{
-                    tmpHand.add(Resources.getResourceFromString(userChoice.get(i).remove(userChoice.get(i).size()-1).getKey()));
-                    int count=0;
-                    for (int j=0; j<userChoice.get(i).size(); j++){
-                        count += userChoice.get(i).get(j).getValue();
-                    }
-                    if (count==2){
+                    tmpHand.add(Resources.getResourceFromString((userChoice.get(i).remove(userChoice.get(i).size()-1).getKey())));
+
+                    if (userChoice.get(i).size()==2){
                         cost = new HashMap<>();
                         for (int j=0; j<userChoice.get(i).size(); j++){
-                            cost.put(Resources.getResourceFromString(userChoice.get(i).get(j).getKey()),userChoice.get(i).get(j).getValue());
+                            Resources r = Resources.getResourceFromString(userChoice.get(i).get(j).getKey());
+                            cost.put(r,(cost.get(r) == null)?1:cost.get(r)+1);
                         }
                     } else throw new IllegalArgumentException("Errore nella produzione di base");
+                }catch (Exception e){throw new IllegalArgumentException("Errore nella produzione di base");}
+            } else throw new IllegalArgumentException("Scegli una produzione valida");
 
-                }catch (Exception e){throw new IllegalArgumentException("Errore nella produzione della leader card");}
-            }
-            else throw new IllegalArgumentException("Scegli una produzione valida");
             try{
                 consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice.get(i));
             }catch (Exception e){throw new IllegalArgumentException("Impossibile produrre");}
@@ -391,8 +372,7 @@ public class Game {
                         LCCapacity.put(LC, LCCapacity.get(LC) - 1);
                     } else throw new IllegalArgumentException("No corresponding leader card");
                 } else if (uc.get_2() == 0) {
-                    if (tmpHand.remove(r)) ;
-                    else throw new IllegalArgumentException("No such resource in hand");
+                    if (!tmpHand.remove(r)) throw new IllegalArgumentException("No such resource in hand");
                 } else throw new IllegalArgumentException("Invalid position requested");
             } catch (IllegalArgumentException e) {
                 throw e;
@@ -556,7 +536,6 @@ public class Game {
 
     public boolean checkLorenzoWin(){
         if(lorenzo.getBlackCross() == 24) return true;
-        if(developmentcardmarket.lorenzoWin()) return true;
-        return false;
+        return developmentcardmarket.lorenzoWin();
     }
 }

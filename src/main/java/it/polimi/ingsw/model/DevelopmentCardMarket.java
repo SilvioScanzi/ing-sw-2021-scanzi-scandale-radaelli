@@ -12,18 +12,11 @@ public class DevelopmentCardMarket {
     public DevelopmentCardMarket(){
         //Instantiating one stack for every card deck (One for every combination of Color-Level)
         cardMarket = new HashMap<>();
-        cardMarket.put(new Pair<>(Colours.Blue,1),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Blue,2),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Blue,3),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Green,1),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Green,2),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Green,3),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Purple,1),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Purple,2),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Purple,3),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Yellow,1),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Yellow,2),new Stack<>());
-        cardMarket.put(new Pair<>(Colours.Yellow,3),new Stack<>());
+        for(Colours c: Colours.values()){
+            for(int i=1;i<=3;i++){
+                cardMarket.put(new Pair<>(c,i),new Stack<>());
+            }
+        }
 
         //XML file Parsing
         try{

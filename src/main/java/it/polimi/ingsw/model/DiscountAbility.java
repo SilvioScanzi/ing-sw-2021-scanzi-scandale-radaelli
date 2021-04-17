@@ -1,8 +1,7 @@
 package it.polimi.ingsw.model;
-
 import java.util.HashMap;
 
-public class DiscountAbility implements Ability{
+public class DiscountAbility extends Ability{
     private Resources restype;
     private int discount;
 
@@ -10,6 +9,13 @@ public class DiscountAbility implements Ability{
         this.discount=discount;
         this.restype=restype;
     }
+
+    @Override
+    public Resources getRestype(){
+        return restype;
+    }
+
+    @Override
     public HashMap<Resources, Integer> doDiscount(HashMap<Resources, Integer> cost){
         for(Resources r : cost.keySet()){
             if(r.equals(restype)){
@@ -19,28 +25,7 @@ public class DiscountAbility implements Ability{
         return cost;
     }
 
-    public boolean doActivate(){
-        return false;
-    }
-
-    public boolean doConvert(){
-        return false;
-    }
-
-    public boolean doUpdateSlot(Resources resource, int amount){
-        return false;
-    }
-
-    public Resources getRestype() {
-        return restype;
-    }
-
-    public int getStashedResources(){return 0;}
-
-    public int getCapacity(){
-        return 0;
-    }
-
+    @Override
     public String toString(){
         return "Sconto su " + restype.toString() +" di: "+ -discount;
     }

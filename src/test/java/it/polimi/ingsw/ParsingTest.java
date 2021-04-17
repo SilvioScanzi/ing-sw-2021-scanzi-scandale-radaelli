@@ -69,7 +69,7 @@ public class ParsingTest {
     @Test
     @DisplayName("Ensure correct number Leader Cards got from parsing")
     void testParsingNumberLC(){
-        LCD = new LeaderCardDeck(0);
+        LCD = new LeaderCardDeck();
         for(int i=0;i<16;i++){
             LCD.getFirstCard();
         }
@@ -82,9 +82,8 @@ public class ParsingTest {
         LCD = new LeaderCardDeck(0);
         LeaderCard LC;
         LC = LCD.getFirstCard();
-        assert(LC.getVictoryPoints()==5 && LC.getRequiredColours().equals(
-                new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Yellow,new Pair<>(2,0));put(Colours.Blue,new Pair<>(1,0));}}) &&
-                LC.getRequiredResources().equals(new HashMap<>()) && LC.getAbility().getRestype().equals(Resources.Servants) &&
-                LC.getAbility().getCapacity()==0 && LC.getAbility().doConvert());
+        HashMap<Colours,Pair<Integer,Integer>> RC = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Yellow,new Pair<>(2,0));put(Colours.Blue,new Pair<>(1,0));}};
+        assert(LC.getVictoryPoints()==5 && LC.getRequiredColours().equals(RC) && LC.getRequiredResources().equals(new HashMap<>())
+                && LC.getAbility().getRestype().equals(Resources.Servants) && LC.getAbility().getCapacity()==0 && LC.getAbility().doConvert());
     }
 }

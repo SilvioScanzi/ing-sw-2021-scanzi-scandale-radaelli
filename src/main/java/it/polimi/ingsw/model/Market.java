@@ -42,14 +42,15 @@ public class Market {
         tmp.add(Marbles.Blue);
         tmp.add(Marbles.Grey);
         tmp.add(Marbles.Grey);
-        tmp.add(Marbles.White);
-        tmp.add(Marbles.White);
-        tmp.add(Marbles.White);
-        tmp.add(Marbles.White);
         tmp.add(Marbles.Yellow);
         tmp.add(Marbles.Yellow);
         tmp.add(Marbles.Purple);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
+        tmp.add(Marbles.White);
         tmp.add(Marbles.Purple);
+
 
         grid = new Marbles[3][4];
         int k=0;

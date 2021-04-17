@@ -2,9 +2,7 @@ package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.model.Colours;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
