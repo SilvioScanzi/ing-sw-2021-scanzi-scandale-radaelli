@@ -40,7 +40,6 @@ public class Server {
                 }
                 lobby.addPlayer(CH);
                 if(lobby.getAddedPlayers()==lobby.getPlayerNumber()) executor.submit(lobby);
-                executor.submit(CH);
             } catch(IOException e) {
                 break; // entrerei qui se serverSocket venisse chiuso
             }

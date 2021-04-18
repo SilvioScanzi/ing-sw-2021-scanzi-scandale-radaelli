@@ -12,7 +12,7 @@ public class Board {
     private final ArrayList<LeaderCard> leadercardshand;
     private final ArrayList<LeaderCard> leadercardsplayed;
     private final ArrayList<Resources> hand;
-    private boolean actionDone; //TODO
+    private boolean actionDone;
     private int victoryPoints;
 
     public Board(ArrayList<LeaderCard> leadercards) {
@@ -103,7 +103,6 @@ public class Board {
         this.strongbox = strongbox;
     }
 
-    //TODO
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
     }

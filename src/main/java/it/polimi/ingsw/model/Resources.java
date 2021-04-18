@@ -8,7 +8,7 @@ public enum Resources {
     Shields("SC");
 
     public final String label;
-    private Resources(String label) {
+    Resources(String label) {
         this.label = label;
     }
 

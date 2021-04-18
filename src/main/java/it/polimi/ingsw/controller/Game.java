@@ -42,14 +42,46 @@ public class Game {
         actionStack = new ActionStack(Arandom);
     }
 
-    //TODO: TABELLA A PAGINA 3 (IN BASSO) DEL REGOLAMENTO
     //Initializes variables and boards, assigning nicknames
-
-    public void setup(ArrayList<String> names){
+    public int setup(ArrayList<String> names){
         nplayer = names.size();
         inkwell = (int)(Math.random() * nplayer);
         for(int i=0;i<nplayer;i++){
             players.add(new Pair<>(names.get(i),new Board(leadercarddeck.getLeaderCards())));
+        }
+        return inkwell;
+    }
+
+    //to call on all players but the first
+    public void finishingSetup(int player, ArrayList<Resources> userChoice){
+        //player 2
+        if(player == (inkwell + 1)%nplayer) {
+            try{
+                players.get(player).getValue().getWarehouse().addDepot(1,userChoice.get(0),1);
+            }catch(Exception e){e.printStackTrace();}
+        }
+        if(nplayer>2){
+            //player 3
+            if(player == (inkwell + 2)%nplayer) {
+                players.get(player).getValue().getFaithtrack().advanceTrack();
+                try{
+                    players.get(player).getValue().getWarehouse().addDepot(1,userChoice.get(0),1);
+                }catch(Exception e){e.printStackTrace();}
+            }
+        }
+        if(nplayer>3){
+            //player 3
+            if(player == (inkwell + 3)%nplayer) {
+                players.get(player).getValue().getFaithtrack().advanceTrack();
+                try{
+                    if(userChoice.get(0).equals(userChoice.get(1)))
+                        players.get(player).getValue().getWarehouse().addDepot(2,userChoice.get(0),2);
+                    else {
+                        players.get(player).getValue().getWarehouse().addDepot(1,userChoice.get(0),1);
+                        players.get(player).getValue().getWarehouse().addDepot(2,userChoice.get(1),1);
+                    }
+                }catch(Exception e){e.printStackTrace();}
+            }
         }
     }
 
@@ -99,6 +131,8 @@ public class Game {
     //Adds the resources from the market to the hand, ignoring white marbles
     public void getMarketResources(int player, boolean row, int i, ArrayList<Integer> requestedWMConversion) throws IllegalArgumentException {
         Board playerBoard = players.get(player).getValue();
+        if(playerBoard.getActionDone()) throw new IllegalArgumentException("Hai già fatto un'azione in questo turno");
+
         ArrayList<Resources> tmp = new ArrayList<>();
 
         ArrayList<Integer> conversionIndex = new ArrayList<>();
@@ -125,6 +159,8 @@ public class Game {
         ArrayList<Marbles> marbles = market.updateMarket(row,i);
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
         playerBoard.getHand().addAll(tmp);
+
+        playerBoard.setActionDone(true);
     }
 
     //Converts Marbles to resources
@@ -214,11 +250,13 @@ public class Game {
 
     //Player (nickname) selects colour and level; method checks for costs and adds to the board the development card
     public void getDevelopmentCard(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice) throws Exception{
+        Board playerBoard = players.get(player).getValue();
+        if(playerBoard.getActionDone()) throw new IllegalArgumentException("Hai già fatto un'azione in questo turno");
+
         DevelopmentCard DC = developmentcardmarket.peekFirstCard(c,level);
         HashMap<Resources, Integer> cost = new HashMap<>(DC.getCost());
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
 
-        Board playerBoard = players.get(player).getValue();
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
@@ -242,15 +280,19 @@ public class Game {
         }catch(Exception e) {
             throw e;
         }
+
+        playerBoard.setActionDone(true);
     }
 
     //if player chooses to activate a leader card or the base production, the last position of the ArrayList
     // contained in userChoice is the to-be-produced resource
     public void activateProduction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice) throws IllegalArgumentException{
+        Board playerBoard = players.get(player).getValue();
+        if(playerBoard.getActionDone()) throw new IllegalArgumentException("Hai già fatto un'azione in questo turno");
+
         HashMap<Resources, Integer> cost;
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
 
-        Board playerBoard = players.get(player).getValue();
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
@@ -313,6 +355,8 @@ public class Game {
             int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
             if(tmp!=-1) popeEvent(tmp);
         }
+
+        playerBoard.setActionDone(true);
     }
 
     //The ArrayList of triplets contains user choices on resources to move. In particular, the string represents the resource to move,

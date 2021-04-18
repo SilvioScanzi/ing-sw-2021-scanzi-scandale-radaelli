@@ -6,7 +6,7 @@ import it.polimi.ingsw.model.*;
 import java.lang.reflect.Array;
 import java.util.*;
 
-public class GameHandler{
+public class GameHandler {
     private Game game;
     private Scanner scanner = new Scanner(System.in);
 
@@ -51,7 +51,6 @@ public class GameHandler{
         }
     }
 
-    //TODO: need to check actionDone in controller, in view is not totally accountable
     private void playing(int players){
         boolean endGame=false;
         int person = 0;
