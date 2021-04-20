@@ -496,7 +496,7 @@ public class Game {
         return false;
     }
 
-    private void countVictoryPoints(){
+    public void countVictoryPoints(){
         int tmp;
         for(int i=0;i<nplayer;i++){
             Board playerBoard = players.get(i).getValue();
@@ -540,7 +540,10 @@ public class Game {
             for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
                 amount+=LC.getAbility().getStashedResources();
             }
+
             tmp+=(amount-amount%5)/5;
+
+            System.out.println(tmp);
 
             playerBoard.setVictoryPoints(tmp);
         }

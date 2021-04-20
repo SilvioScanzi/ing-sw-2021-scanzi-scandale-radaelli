@@ -12,9 +12,9 @@ public class Lobby implements Runnable {
     private boolean endGame = false;
     private int inkwell;
     private final int playerNumber;
-    private HashMap<String, ClientHandler> clientNames = new HashMap<>();
-    private ArrayList<ClientHandler> clients = new ArrayList<>();
-    private ArrayList<String> playersName = new ArrayList<>();
+    private final HashMap<ClientHandler,String> clientNames = new HashMap<>();
+    private final ArrayList<ClientHandler> clients = new ArrayList<>();
+    private final ArrayList<String> playersName = new ArrayList<>();
 
     public Lobby(int playerNumber){
         this.playerNumber = playerNumber;
@@ -30,38 +30,34 @@ public class Lobby implements Runnable {
     }
 
     public void addPlayer(ClientHandler CH) {
-        CH.setNickname(false);
-        while (playersName.contains(CH.getNickname())) {
-            CH.setNickname(true);
-        }
-        clientNames.put(CH.getNickname(), CH);
-        playersName.add(CH.getNickname());
         clients.add(CH);
     }
 
     @Override
-    public void run(){
-        //starting client handlers for each player, using their sockets
+    public void run() {
+
         for(ClientHandler CH : clients){
-            Thread thread = new Thread(CH);
-            thread.start();
+            CH.setNameQueue(clientNames);
         }
 
-        //DAFARE: messaggi di benvenuto
-        inkwell = game.setup(playersName);
-
+        for(ClientHandler CH : clients){
+            CH.sendStandardMessage(StandardMessages.chooseNickName);
+        }
         for(int i=0;i<playerNumber;i++){
-            if(i%inkwell > 0){
-                //richiedi le risorse extra che vuole ricevere
-                ArrayList<Resources> userChoice = new ArrayList<>();
-                game.finishingSetup(i,userChoice);
+            synchronized (clientNames) {
+                if(clientNames.get(clients.get(i))==null) try{clientNames.wait();}catch(Exception e){e.printStackTrace();}
+                playersName.add(clientNames.get(clients.get(i)));
             }
+        }
+
+        inkwell = game.setup(playersName);
+        for(int i=0;i<playerNumber;i++){
             //richiedi le leader card che vuole scartare
             int[] LCChoice = new int[2];
             game.discardSelectedLC(i,LCChoice);
         }
 
-        if(playerNumber==1) playingSolo();
+        if (playerNumber == 1) playingSolo();
         else playingMultiplayer();
     }
 
@@ -69,11 +65,16 @@ public class Lobby implements Runnable {
 
     }
 
-    private void playingMultiplayer(){
-        //Benvenuti...
-
-        for(int i=game.getInkwell();!endGame;i=(i+1)%playerNumber){
-
+    public void playingMultiplayer(){
+        for(int i=0;i<playerNumber;i++){
+            if(i%inkwell > 0){
+                //richiedi le risorse extra che vuole ricevere
+                ArrayList<Resources> userChoice = new ArrayList<>();
+                game.finishingSetup(i,userChoice);
+            }
         }
+
+        if(playerNumber==1) playingSolo();
+        else playingMultiplayer();
     }
 }

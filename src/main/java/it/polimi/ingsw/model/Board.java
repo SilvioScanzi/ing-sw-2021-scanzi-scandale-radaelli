@@ -52,16 +52,6 @@ public class Board {
         return s;
     }
 
-    /*public void clearWarehouse(){
-        for(int i=1;i<4;i++) {
-            hand.addAll(warehouse.clear(i));
-        }
-    }
-
-    public void clearDepot(int i){
-        hand.addAll(warehouse.clear(i));
-    }*/
-
     public ArrayList<Resources> getHand() {
         return hand;
     }
@@ -109,6 +99,10 @@ public class Board {
 
     public void setVictoryPoints(int victoryPoints) {
         this.victoryPoints = victoryPoints;
+    }
+
+    public int getVictoryPoints() {
+        return victoryPoints;
     }
 
     public void discardLeaderCard(int i){

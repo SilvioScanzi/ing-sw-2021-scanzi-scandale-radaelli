@@ -1,9 +1,10 @@
 package it.polimi.ingsw.network;
 
-import it.polimi.ingsw.messages.StandardMessages;
+import it.polimi.ingsw.messages.*;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Scanner;
 
 //server side
@@ -11,11 +12,15 @@ public class ClientHandler implements Runnable{
 
     private String nickname = null;
     private Socket socket;
-    private boolean myTurn;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
     private PrintWriter out;
     private Scanner in;
+    private HashMap<ClientHandler,String> nameQueue;
+    private boolean chosenNickName = false;
+    private boolean myTurn = false;
+    private boolean setPlayerNumber;
+    private int playerNumber;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -29,32 +34,49 @@ public class ClientHandler implements Runnable{
         myTurn = false;
     }
 
+    public void setNameQueue(HashMap<ClientHandler, String> nameQueue) {
+        this.nameQueue = nameQueue;
+    }
+
     @Override
     public void run() {
-
+        Object message = null;
+        while(true){
+            try {
+                message = socketIn.readObject();
+                if(!(message instanceof Message)){
+                    sendStandardMessage(StandardMessages.wrongObject);
+                }
+                else{
+                    processMessage((Message) message);
+                }
+            }catch(IOException | ClassNotFoundException e){
+                sendStandardMessage(StandardMessages.wrongObject);
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void setNickname(boolean already){
-        if(already){
-            out.println("Il nickname " + nickname + " è già in uso, inserisci un nuovo nickname");
+    public void processMessage(Message message){
+        if(!setPlayerNumber){
+            //...
+            //playerNumber = message;
         }
-        else{
-            out.println("Inserisci il nickname");
-            out.println();
+        else if(!chosenNickName){
+            if(message instanceof nicknameMessage){
+                String inputNickname = ((nicknameMessage) message).getNickname();
+                synchronized (nameQueue){
+                    if(!nameQueue.containsValue(inputNickname)){
+                        nameQueue.put(this,inputNickname);
+                        chosenNickName = true;
+                        nickname = inputNickname;
+                        nameQueue.notify();
+                    }
+                    else sendStandardMessage(StandardMessages.nicknameAlreadyInUse);
+                }
+            }
         }
-        out.flush();
-        nickname = in.nextLine();
-    }
-
-    public int setPlayerNumber(boolean already){
-        if(already){
-            out.println("Il numero deve essere tra 1 e 4. Reinserisci il numero");
-        }
-        else{
-            out.println("Inserisci il numero di giocatori della partita");
-        }
-        out.flush();
-        return Integer.parseInt(in.nextLine());
+        else if(myTurn){}
     }
 
     public String getNickname() {
@@ -66,4 +88,6 @@ public class ClientHandler implements Runnable{
             socketOut.writeObject(SM);
         }catch(IOException e){e.printStackTrace();}
     }
+
+
 }
