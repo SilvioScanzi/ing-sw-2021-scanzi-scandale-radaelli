@@ -2,9 +2,10 @@ package it.polimi.ingsw.messages;
 
 import java.io.Serializable;
 
-public class nicknameMessage extends Message implements Serializable {
+public class NicknameMessage extends Message implements Serializable {
     private final String nickname;
-    public nicknameMessage(String nickname){
+
+    public NicknameMessage(String nickname){
         this.nickname = nickname;
     }
 

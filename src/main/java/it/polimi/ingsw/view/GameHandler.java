@@ -14,7 +14,7 @@ public class GameHandler {
     public void init(){
         game = new Game();
         System.out.println("Benvenuti nel gioco 'Maestri del rinascimento' ");
-        System.out.println("Inserisci i nomi dei giocatori: ");
+        /*System.out.println("Inserisci i nomi dei giocatori: ");
         System.out.println("Scrivi DONE per terminare l'inserimento");
         String tmp = "";
         ArrayList<String> s = new ArrayList<>();
@@ -23,10 +23,10 @@ public class GameHandler {
             s.add(tmp);
         }
         s.remove("DONE");
-        game.setup(s);
+        game.setup(s);*/
 
         //stampa le leader card di ogni giocatore
-        int[] discardedLC = new int[2];
+        /*int[] discardedLC = new int[2];
         for(int i=0;i<s.size();i++){
             for(int k=0;k<2;k++) {
                 System.out.println("Queste sono le carte leader del giocatore: "+game.getPlayers(i)+"\n");
@@ -48,6 +48,56 @@ public class GameHandler {
         }
         else {
             playing(s.size());
+        }*/
+    }
+
+    //TODO: check next time
+    private void playingSolo(){
+        while(!game.checkLorenzoWin() && !game.checkEndGame(0)) {
+            boolean actionDone = false;
+            boolean turnDone = false;
+            while(!turnDone) {
+                System.out.println("E' il tuo turno");
+                System.out.println("Scegli l'azione che vuoi compiere: ");
+                System.out.println("1 - Compra Risorse dal mercato");
+                System.out.println("2 - Compra una Carta sviluppo");
+                System.out.println("3 - Attiva la produzione delle tue carte");
+                System.out.println("Oppure scegli un'azione bonus: ");
+                System.out.println("4 - Sposta le risorse dal magazzino");
+                System.out.println("5 - Gioca una carta leader");
+                System.out.println("6 - Scarta una carta leader");
+                System.out.println("0 - Fine turno");
+                String choice = scanner.nextLine();
+                int c = Integer.parseInt(choice);
+                if (1 <= c && c <= 3 && !actionDone) {
+                    try {
+                        actionDone = choiceMenu(c, 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(1 <= c && c <= 3 && actionDone){
+                    System.out.println("Hai già effettuato un'azione per questo turno!");
+                }
+                else if (4 <= c && c <= 6) {
+                    try {
+                        choiceMenu(c, 0);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else if(c==0 && !actionDone){
+                    System.out.println("Devi prima fare un'azione!");
+                }
+                else if(c==0){
+                    turnDone=true;
+                }
+                else{
+                    System.out.println("Inserisci una scelta valida!");
+                }
+            }
+            System.out.println("E' il turno di Lorenzo il Magnifico.");
+            ActionToken AT = game.activatedToken();
+            System.out.println(AT.toString());
         }
     }
 
@@ -103,56 +153,6 @@ public class GameHandler {
         }
         //TODO: ritorna tutti i victory points e vede chi ha vinto. Prima va però finito il giro dei turni
         //person...
-    }
-
-    //TODO: check next time
-    private void playingSolo(){
-        while(!game.checkLorenzoWin() && !game.checkEndGame(0)) {
-            boolean actionDone = false;
-            boolean turnDone = false;
-            while(!turnDone) {
-                System.out.println("E' il tuo turno");
-                System.out.println("Scegli l'azione che vuoi compiere: ");
-                System.out.println("1 - Compra Risorse dal mercato");
-                System.out.println("2 - Compra una Carta sviluppo");
-                System.out.println("3 - Attiva la produzione delle tue carte");
-                System.out.println("Oppure scegli un'azione bonus: ");
-                System.out.println("4 - Sposta le risorse dal magazzino");
-                System.out.println("5 - Gioca una carta leader");
-                System.out.println("6 - Scarta una carta leader");
-                System.out.println("0 - Fine turno");
-                String choice = scanner.nextLine();
-                int c = Integer.parseInt(choice);
-                if (1 <= c && c <= 3 && !actionDone) {
-                    try {
-                        actionDone = choiceMenu(c, 0);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                else if(1 <= c && c <= 3 && actionDone){
-                    System.out.println("Hai già effettuato un'azione per questo turno!");
-                }
-                else if (4 <= c && c <= 6) {
-                    try {
-                        choiceMenu(c, 0);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else if(c==0 && !actionDone){
-                    System.out.println("Devi prima fare un'azione!");
-                }
-                else if(c==0){
-                    turnDone=true;
-                }
-                else{
-                    System.out.println("Inserisci una scelta valida!");
-                }
-            }
-            System.out.println("E' il turno di Lorenzo il Magnifico.");
-            ActionToken AT = game.activatedToken();
-            System.out.println(AT.toString());
-        }
     }
 
     private boolean choiceMenu(int c, int player) {

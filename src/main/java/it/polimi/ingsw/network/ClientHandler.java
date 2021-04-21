@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 //server side
 public class ClientHandler implements Runnable{
-
+    private Object message;
     private String nickname = null;
     private Socket socket;
     private ObjectOutputStream socketOut;
@@ -20,6 +20,7 @@ public class ClientHandler implements Runnable{
     private boolean chosenNickName = false;
     private boolean myTurn = false;
     private boolean setPlayerNumber;
+    private boolean messageReady = false;
     private int playerNumber;
 
     public ClientHandler(Socket socket) {
@@ -27,6 +28,7 @@ public class ClientHandler implements Runnable{
         try{
             socketOut = new ObjectOutputStream(socket.getOutputStream());
             socketIn = new ObjectInputStream(socket.getInputStream());
+            socketOut.writeObject("Ciao");
         }
         catch(Exception e){e.printStackTrace();}
         out = new PrintWriter(socketOut);
@@ -40,7 +42,6 @@ public class ClientHandler implements Runnable{
 
     @Override
     public void run() {
-        Object message = null;
         while(true){
             try {
                 message = socketIn.readObject();
@@ -59,12 +60,11 @@ public class ClientHandler implements Runnable{
 
     public void processMessage(Message message){
         if(!setPlayerNumber){
-            //...
-            //playerNumber = message;
+
         }
         else if(!chosenNickName){
-            if(message instanceof nicknameMessage){
-                String inputNickname = ((nicknameMessage) message).getNickname();
+            if(message instanceof NicknameMessage){
+                String inputNickname = ((NicknameMessage) message).getNickname();
                 synchronized (nameQueue){
                     if(!nameQueue.containsValue(inputNickname)){
                         nameQueue.put(this,inputNickname);
@@ -76,11 +76,32 @@ public class ClientHandler implements Runnable{
                 }
             }
         }
-        else if(myTurn){}
+        else if(myTurn) {
+
+            messageReady = true;
+            this.notifyAll();
+            try{
+                this.wait();
+            }catch(Exception e){e.printStackTrace();}
+            //lobby.updateBuyResources((BuyResourceMessage)message);
+        }
+    }
+
+    public boolean getMessageReady() {
+        return messageReady;
+    }
+
+    //Not message error handled above
+    public Message getMessage() {
+        return (Message)message;
     }
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void setMessageReady(boolean check) {
+        this.messageReady = check;
     }
 
     public void sendStandardMessage(StandardMessages SM){

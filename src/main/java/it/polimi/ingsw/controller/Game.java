@@ -43,13 +43,12 @@ public class Game {
     }
 
     //Initializes variables and boards, assigning nicknames
-    public int setup(ArrayList<String> names){
+    public void setup(ArrayList<String> names){
         nplayer = names.size();
         inkwell = (int)(Math.random() * nplayer);
         for(int i=0;i<nplayer;i++){
             players.add(new Pair<>(names.get(i),new Board(leadercarddeck.getLeaderCards())));
         }
-        return inkwell;
     }
 
     //to call on all players but the first

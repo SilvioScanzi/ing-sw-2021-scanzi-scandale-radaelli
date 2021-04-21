@@ -20,7 +20,7 @@ public class Server {
         ExecutorService executor = Executors.newCachedThreadPool();
         ServerSocket serverSocket;
         try {
-            serverSocket = new ServerSocket(6969);
+            serverSocket = new ServerSocket(9090);
         } catch (IOException e) {
             System.err.println(e.getMessage());
             return;
@@ -31,6 +31,7 @@ public class Server {
         while (true) {
             try {
                 Socket socket = serverSocket.accept();
+                System.out.println("Connessione accettata");
                 ClientHandler CH = new ClientHandler(socket);
                 executor.submit(CH);
                 synchronized (clientHandlers) {
@@ -71,7 +72,7 @@ public class Server {
         }
         new Thread(() -> currentLobby.run());
         currentLobby = null;
-        if (clientHandlers.size() > 0) new Thread(()->lobbyManager());
+        if (clientHandlers.size() > 0) new Thread(()->lobbyManager()).start();
         else first = true;
     }
 }

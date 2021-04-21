@@ -1,9 +1,10 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.network.ClientHandler;
+import it.polimi.ingsw.client.NetworkHandler;
 
 public class ClientApp {
     public static void main(String args[]){
-        //ClientHandler clientHandler = new ClientHandler();
+        NetworkHandler NH = new NetworkHandler();
+
     }
 }
