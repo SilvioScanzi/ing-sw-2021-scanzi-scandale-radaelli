@@ -2,11 +2,7 @@ package it.polimi.ingsw.exceptions;
 import it.polimi.ingsw.model.*;
 
 public class IncompatibleResourceException extends Exception{
-    Resources requested;
-    Resources got;
-    public IncompatibleResourceException(String message, Resources rr, Resources rg){
+    public IncompatibleResourceException(String message){
         super(message);
-        requested=rr;
-        got=rg;
     }
 }

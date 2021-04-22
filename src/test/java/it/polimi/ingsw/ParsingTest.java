@@ -46,7 +46,7 @@ public class ParsingTest {
         DCM = new DevelopmentCardMarket(0);
         DevelopmentCard DC;
         DC = DCM.getFirstCard(c,l);
-        assert(DC.getCost().equals(cost) && DC.getvictoryPoints()==vp && DC.getrequiredResources().equals(r) && DC.getproducedResources().equals(p) && DC.getproducedFaith()==faith);
+        assert(DC.getCost().equals(cost) && DC.getVictoryPoints()==vp && DC.getRequiredResources().equals(r) && DC.getProducedResources().equals(p) && DC.getProducedFaith()==faith);
     }
 
     private static Stream<Arguments> provideSourceOfDCCards() {
@@ -84,6 +84,6 @@ public class ParsingTest {
         LC = LCD.getFirstCard();
         HashMap<Colours,Pair<Integer,Integer>> RC = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Yellow,new Pair<>(2,0));put(Colours.Blue,new Pair<>(1,0));}};
         assert(LC.getVictoryPoints()==5 && LC.getRequiredColours().equals(RC) && LC.getRequiredResources().equals(new HashMap<>())
-                && LC.getAbility().getRestype().equals(Resources.Servants) && LC.getAbility().getCapacity()==0 && LC.getAbility().doConvert());
+                && LC.getAbility().getResType().equals(Resources.Servants) && LC.getAbility().getCapacity()==0 && LC.getAbility().doConvert());
     }
 }

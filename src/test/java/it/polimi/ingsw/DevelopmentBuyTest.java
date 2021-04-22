@@ -42,7 +42,7 @@ public class DevelopmentBuyTest{
         choice.add(new Pair<>("PI",2));
 
         try {
-            game.getDevelopmentCard(Colours.Purple, 1, 0, 1, choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1, choice);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getSlot(1).getList().size()==1);
@@ -50,7 +50,7 @@ public class DevelopmentBuyTest{
         assert(playerBoard.getSlot(3).getList().size()==0);
         try {
             assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Purple));
-            assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 4);
+            assert (playerBoard.getSlot(1).getFirstCard().getVictoryPoints() == 4);
         }catch(Exception e) {e.printStackTrace();}
     }
 
@@ -65,31 +65,39 @@ public class DevelopmentBuyTest{
         try{
             ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
                 {{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}};
-            game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("MO",6));add(new Pair<>("MO",6));add(new Pair<>("SC",6));add(new Pair<>("SC",6));}};
-            game.getDevelopmentCard(Colours.Green, 1, 0, 2,choice);
+            game.BuyDevelopmentCardAction(Colours.Green, 1, 0, 2,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("MO",6));add(new Pair<>("MO",6));add(new Pair<>("SE",6));add(new Pair<>("SE",6));}};
-            game.getDevelopmentCard(Colours.Blue, 1, 0, 3,choice);
+            game.BuyDevelopmentCardAction(Colours.Blue, 1, 0, 3,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));}};
-            game.getDevelopmentCard(Colours.Yellow, 2, 0, 1,choice);
+            game.BuyDevelopmentCardAction(Colours.Yellow, 2, 0, 1,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("SE",6));add(new Pair<>("SC",6));add(new Pair<>("SE",6));add(new Pair<>("SC",6));add(new Pair<>("SE",6));add(new Pair<>("SC",6));}};
-            game.getDevelopmentCard(Colours.Purple, 2, 0, 2,choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 2, 0, 2,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("MO",6));add(new Pair<>("SC",6));add(new Pair<>("SC",6));add(new Pair<>("SC",6));add(new Pair<>("MO",6));add(new Pair<>("MO",6));}};
-            game.getDevelopmentCard(Colours.Green, 2, 0, 3,choice);
+            game.BuyDevelopmentCardAction(Colours.Green, 2, 0, 3,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("MO",6));add(new Pair<>("MO",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));add(new Pair<>("MO",6));add(new Pair<>("MO",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}};
-            game.getDevelopmentCard(Colours.Blue, 3, 0, 1,choice);
+            game.BuyDevelopmentCardAction(Colours.Blue, 3, 0, 1,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}};
-            game.getDevelopmentCard(Colours.Yellow, 3, 0, 2,choice);
+            game.BuyDevelopmentCardAction(Colours.Yellow, 3, 0, 2,choice);
+            playerBoard.setActionDone(false);
             choice = new ArrayList<Pair<String,Integer>>()
             {{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("SC",6));add(new Pair<>("SC",6));add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("SC",6));add(new Pair<>("SC",6));}};
-            game.getDevelopmentCard(Colours.Purple, 3, 0, 3,choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 3, 0, 3,choice);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getSlot(1).getList().size()==3);
@@ -99,9 +107,9 @@ public class DevelopmentBuyTest{
             assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Blue));
             assert (playerBoard.getSlot(2).getFirstCard().getColour().equals(Colours.Yellow));
             assert (playerBoard.getSlot(3).getFirstCard().getColour().equals(Colours.Purple));
-            assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 12);
-            assert (playerBoard.getSlot(2).getFirstCard().getvictoryPoints() == 12);
-            assert (playerBoard.getSlot(3).getFirstCard().getvictoryPoints() == 12);
+            assert (playerBoard.getSlot(1).getFirstCard().getVictoryPoints() == 12);
+            assert (playerBoard.getSlot(2).getFirstCard().getVictoryPoints() == 12);
+            assert (playerBoard.getSlot(3).getFirstCard().getVictoryPoints() == 12);
         }catch(Exception e) {e.printStackTrace();}
     }
 
@@ -118,7 +126,7 @@ public class DevelopmentBuyTest{
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",6));add(new Pair<>("SE",1));add(new Pair<>("PI",2));add(new Pair<>("PI",6));}};
         try{
-            game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getSlot(1).getList().size()==1);
@@ -131,7 +139,7 @@ public class DevelopmentBuyTest{
     void testCannotBuyDCCardResources() {
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}};
-        assertThrows(IllegalArgumentException.class,()-> game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice));
+        assertThrows(Exception.class,()-> game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice));
     }
 
     @ParameterizedTest
@@ -143,9 +151,9 @@ public class DevelopmentBuyTest{
         playerBoard.getStrongbox().addResource(Resources.Shields,99);
         playerBoard.getStrongbox().addResource(Resources.Servants,99);
         try {
-            game.getDevelopmentCard(Colours.Purple,1,0,1,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}});
+            game.BuyDevelopmentCardAction(Colours.Purple,1,0,1,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}});
         }catch(Exception e){e.printStackTrace();}
-        assertThrows(Exception.class,()-> game.getDevelopmentCard(c, l, 0, s,choice));
+        assertThrows(Exception.class,()-> game.BuyDevelopmentCardAction(c, l, 0, s,choice));
     }
 
     private static Stream<Arguments> provideCombinationsOfColoursAndLevel() {
@@ -184,12 +192,12 @@ public class DevelopmentBuyTest{
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",6));add(new Pair<>("PI",2));add(new Pair<>("PI",6));}};
         try{
-            game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice);
         }catch(Exception e) {e.printStackTrace();}
 
         try {
             assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Purple));
-            assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 4);
+            assert (playerBoard.getSlot(1).getFirstCard().getVictoryPoints() == 4);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getSlot(1).getList().size()==1);
@@ -223,7 +231,7 @@ public class DevelopmentBuyTest{
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",1));add(new Pair<>("SE",6));add(new Pair<>("PI",2));add(new Pair<>("PI",6));}};
 
-        assertThrows(Exception.class,()-> game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice));
+        assertThrows(Exception.class,()-> game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice));
     }
 
     @Test
@@ -249,12 +257,12 @@ public class DevelopmentBuyTest{
         {{add(new Pair<>("SE",1));add(new Pair<>("SE",6));add(new Pair<>("PI",4));add(new Pair<>("PI",4));}};
 
         try{
-            game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice);
         }catch(Exception e) {e.printStackTrace();}
 
         try {
             assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Purple));
-            assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 4);
+            assert (playerBoard.getSlot(1).getFirstCard().getVictoryPoints() == 4);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getSlot(2).getList().size()==0);
@@ -287,12 +295,12 @@ public class DevelopmentBuyTest{
         {{add(new Pair<>("SE",1));add(new Pair<>("PI",4));add(new Pair<>("PI",4));}};
 
         try{
-            game.getDevelopmentCard(Colours.Purple, 1, 0, 1,choice);
+            game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice);
         }catch(Exception e) {e.printStackTrace();}
 
         try {
             assert (playerBoard.getSlot(1).getFirstCard().getColour().equals(Colours.Purple));
-            assert (playerBoard.getSlot(1).getFirstCard().getvictoryPoints() == 4);
+            assert (playerBoard.getSlot(1).getFirstCard().getVictoryPoints() == 4);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getSlot(2).getList().size()==0);

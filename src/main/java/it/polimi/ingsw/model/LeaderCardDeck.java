@@ -84,7 +84,7 @@ public class LeaderCardDeck {
         catch(Exception e) {e.printStackTrace();}
     }
 
-    //costruttore per mettere le carte in ordine (testing)
+    //Only used for testing
     public LeaderCardDeck(int Arandom){
         deck = new Stack<>();
         try{

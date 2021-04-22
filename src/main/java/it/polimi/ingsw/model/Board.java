@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.exceptions.EmptyDeckException;
+import it.polimi.ingsw.exceptions.EmptyException;
+import it.polimi.ingsw.exceptions.RequirementsNotMetException;
 
 import java.util.*;
 
@@ -30,6 +31,7 @@ public class Board {
         victoryPoints = 0;
     }
 
+    //toString Methods for debugging
     public String slottoString(){
         String s = "";
         for(int i=0;i<3;i++){
@@ -37,7 +39,7 @@ public class Board {
             try{
                 slot.getFirstCard();
                 s=s.concat("Slot numero "+(i+1)+":\n"+slot.getFirstCard().toString()+"\n");
-            }catch(EmptyDeckException e) {
+            }catch(EmptyException e) {
                 s=s.concat("Lo slot numero "+(i+1)+" è vuoto\n");
             }
         }
@@ -52,6 +54,19 @@ public class Board {
         return s;
     }
 
+    //getters
+    public Warehouse getWarehouse() {
+        return warehouse;
+    }
+
+    public Strongbox getStrongbox() {
+        return strongbox;
+    }
+
+    public boolean getActionDone() {
+        return actionDone;
+    }
+
     public ArrayList<Resources> getHand() {
         return hand;
     }
@@ -64,14 +79,6 @@ public class Board {
         return faithtrack;
     }
 
-    public Warehouse getWarehouse() {
-        return warehouse;
-    }
-
-    public Strongbox getStrongbox() {
-        return strongbox;
-    }
-
     public Slot getSlot(int index) throws IllegalArgumentException{
         if(index < 1 || index > 3) throw new IllegalArgumentException("Invalid slot: index must be between 1 and 3");
         return slots[index-1];
@@ -81,10 +88,33 @@ public class Board {
         return leadercardshand;
     }
 
-    public boolean getActionDone() {
-        return actionDone;
+    public int getVictoryPoints() {
+        return victoryPoints;
     }
 
+    public HashMap<Resources,Integer> getAllResources(){
+        HashMap<Resources,Integer> tmp = new HashMap<>();
+
+        //adds strongbox resources
+        for(Resources r : Resources.values()){
+            tmp.put(r,strongbox.getResource(r));
+        }
+
+        //adds warehouse resources
+        for(int i=1;i<=3;i++){
+            Pair<Optional<Resources>,Integer> whtmp = new Pair<>(warehouse.getDepot(i));
+            if(whtmp.getKey().isPresent()) tmp.put(whtmp.getKey().get(), tmp.get(whtmp.getKey().get())+whtmp.getValue());
+        }
+
+        //adds leader cards resources
+        for(LeaderCard LC : leadercardsplayed){
+            tmp.put(LC.getAbility().getResType(), tmp.get(LC.getAbility().getResType())+LC.getAbility().getStashedResources());
+        }
+
+        return tmp;
+    }
+
+    //setters
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
     }
@@ -101,15 +131,20 @@ public class Board {
         this.victoryPoints = victoryPoints;
     }
 
-    public int getVictoryPoints() {
-        return victoryPoints;
+
+    //action related methods
+    public void dumpHandIntoStrongbox(){
+        for(Resources R: hand){
+            strongbox.addResource(R,1);
+        }
+        hand.clear();
     }
 
     public void discardLeaderCard(int i){
         leadercardshand.remove(i-1);
     }
 
-    public void playLeaderCard(int i) throws IllegalArgumentException{
+    public void playLeaderCard(int i) throws RequirementsNotMetException {
         LeaderCard LC = leadercardshand.get(i-1);
         Map<Colours,Pair<Integer,Integer>> requiredColours = new HashMap<>(LC.getRequiredColours());
         Map<Resources,Integer> requiredResources = new HashMap<>(LC.getRequiredResources());
@@ -144,35 +179,6 @@ public class Board {
         if(requiredColours.isEmpty() && requiredResources.isEmpty())
             leadercardsplayed.add(leadercardshand.remove(i-1));
         else
-            throw new IllegalArgumentException("Requirements not met");
-    }
-
-    public HashMap<Resources,Integer> getAllResources(){
-        HashMap<Resources,Integer> tmp = new HashMap<>();
-
-        //adds strongbox resources
-        for(Resources r : Resources.values()){
-            tmp.put(r,strongbox.getResource(r));
-        }
-
-        //adds warehouse resources
-        for(int i=1;i<=3;i++){
-            Pair<Optional<Resources>,Integer> whtmp = new Pair<>(warehouse.getDepot(i));
-            if(whtmp.getKey().isPresent()) tmp.put(whtmp.getKey().get(), tmp.get(whtmp.getKey().get())+whtmp.getValue());
-        }
-
-        //adds leader cards resources
-        for(LeaderCard LC : leadercardsplayed){
-            tmp.put(LC.getAbility().getRestype(), tmp.get(LC.getAbility().getRestype())+LC.getAbility().getStashedResources());
-        }
-
-        return tmp;
-    }
-
-    public void dumpHandIntoStrongbox(){
-        for(Resources R: hand){
-            strongbox.addResource(R,1);
-        }
-        hand.clear();
+            throw new RequirementsNotMetException("Cannot play selected leader card");
     }
 }

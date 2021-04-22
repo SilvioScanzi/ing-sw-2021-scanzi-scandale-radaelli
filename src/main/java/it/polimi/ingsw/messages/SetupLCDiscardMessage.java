@@ -3,7 +3,7 @@ package it.polimi.ingsw.messages;
 import java.io.Serializable;
 
 public class SetupLCDiscardMessage extends Message implements Serializable {
-    private int[] discardedLC;
+    private final int[] discardedLC;
 
     public SetupLCDiscardMessage(int[] discardedLC) {
         this.discardedLC = discardedLC;

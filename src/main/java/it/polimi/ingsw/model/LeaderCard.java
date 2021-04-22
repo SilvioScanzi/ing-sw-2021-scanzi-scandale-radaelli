@@ -8,19 +8,6 @@ public class LeaderCard {
     private Map<Resources,Integer> requiredResources;
     private Ability ability;
 
-    @Override
-    public String toString(){
-        String tmp = "Punti vittoria: "+victoryPoints+"\n";
-        for(Colours c: requiredColours.keySet()){
-            tmp=tmp.concat("Colore richiesto: "+c.toString()+"; Numero di carte richiesto: "+requiredColours.get(c).getKey()+"; Livello richiesto: "+requiredColours.get(c).getValue()+"\n");
-        }
-        for(Resources r:requiredResources.keySet()){
-            tmp=tmp.concat("Risorsa richiesta: "+r.toString()+"; Numero: "+requiredResources.get(r)+"\n");
-        }
-        tmp=tmp.concat(ability.toString()+"\n");
-        return tmp;
-    }
-
     public LeaderCard(int victoryPoints, Map<Colours,Pair<Integer, Integer>> requiredColours, Map<Resources,Integer> requiredResources, String type, Resources restype, int cap) {
         this.victoryPoints = victoryPoints;
         this.requiredColours = requiredColours;
@@ -37,6 +24,19 @@ public class LeaderCard {
         else if(type.equals("WhiteMarbleAbility")){
             ability = new WhiteMarbleAbility(restype);
         }
+    }
+
+    @Override
+    public String toString(){
+        String tmp = "Punti vittoria: "+victoryPoints+"\n";
+        for(Colours c: requiredColours.keySet()){
+            tmp=tmp.concat("Colore richiesto: "+c.toString()+"; Numero di carte richiesto: "+requiredColours.get(c).getKey()+"; Livello richiesto: "+requiredColours.get(c).getValue()+"\n");
+        }
+        for(Resources r:requiredResources.keySet()){
+            tmp=tmp.concat("Risorsa richiesta: "+r.toString()+"; Numero: "+requiredResources.get(r)+"\n");
+        }
+        tmp=tmp.concat(ability.toString()+"\n");
+        return tmp;
     }
 
     public Ability getAbility() {

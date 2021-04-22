@@ -1,5 +1,5 @@
 package it.polimi.ingsw.model;
-import it.polimi.ingsw.exceptions.EmptyDeckException;
+import it.polimi.ingsw.exceptions.EmptyException;
 import org.w3c.dom.*;
 import javax.xml.parsers.*;
 import java.io.*;
@@ -186,25 +186,27 @@ public class DevelopmentCardMarket {
                 try {
                     tmp = tmp.concat(peekFirstCard(c, i).toString() + "\n\n");
                 }
-                catch(EmptyDeckException e){tmp = tmp.concat("Le carte di livello "+i+" e colore "+c.toString()+" sono finite");}
+                catch(EmptyException e){tmp = tmp.concat("Le carte di livello "+i+" e colore "+c.toString()+" sono finite");}
             }
         }
         return tmp;
     }
 
-    public DevelopmentCard peekFirstCard(Colours colour, int level) throws EmptyDeckException {
+    //Peek doesn't remove the card from the relative deck, it's used to check the cost of the card
+    public DevelopmentCard peekFirstCard(Colours colour, int level) throws EmptyException {
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
-        if(cardMarket.get(tmp1).empty()) throw new EmptyDeckException("D");
+        if(cardMarket.get(tmp1).empty()) throw new EmptyException("D");
         return cardMarket.get(tmp1).peek();
     }
 
+    //Get used when it's sure that the player can buy the card and thus remove it from the market
     public DevelopmentCard getFirstCard(Colours colour, int level){
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
         return cardMarket.get(tmp1).pop();
     }
 
 
-    //ONLY FOR SINGLE PLAYER
+    //Only used in single player
     public void deleteCards(Colours colour){
         int count = 2;  //cards to be deleted
         boolean Empty;

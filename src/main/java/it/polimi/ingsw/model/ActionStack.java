@@ -41,13 +41,13 @@ public class ActionStack {
         }
     }
 
-    public Stack<ActionToken> getStack() {
-        return stack;
-    }
-
     @Override
     public String toString(){
         return "La pila ha: "+stack.size()+" segnalini azione";
+    }
+
+    public Stack<ActionToken> getStack() {
+        return stack;
     }
 
     public ActionToken draw(){

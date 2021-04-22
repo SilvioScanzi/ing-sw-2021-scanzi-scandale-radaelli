@@ -25,18 +25,18 @@ public class LorenzoTest {
 
         assert(game.getLorenzo().getBlackCross()==5);
         assert(game.getActionStack().getStack().size()==7);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Green,1).getvictoryPoints()==2);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Green,1).getvictoryPoints()==1);
-        assertThrows(Exception.class,()->game.getDevelopmentcardmarket().getFirstCard(Colours.Green,1));
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Yellow,1).getvictoryPoints()==2);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Yellow,1).getvictoryPoints()==1);
-        assertThrows(Exception.class,()->game.getDevelopmentcardmarket().getFirstCard(Colours.Yellow,1));
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,1).getvictoryPoints()==2);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,1).getvictoryPoints()==1);
-        assertThrows(Exception.class,()->game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,1));
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Blue,1).getvictoryPoints()==2);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Blue,1).getvictoryPoints()==1);
-        assertThrows(Exception.class,()->game.getDevelopmentcardmarket().getFirstCard(Colours.Blue,1));
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Green,1).getVictoryPoints()==2);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Green,1).getVictoryPoints()==1);
+        assertThrows(Exception.class,()->game.getDevelopmentCardMarket().getFirstCard(Colours.Green,1));
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Yellow,1).getVictoryPoints()==2);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Yellow,1).getVictoryPoints()==1);
+        assertThrows(Exception.class,()->game.getDevelopmentCardMarket().getFirstCard(Colours.Yellow,1));
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,1).getVictoryPoints()==2);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,1).getVictoryPoints()==1);
+        assertThrows(Exception.class,()->game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,1));
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Blue,1).getVictoryPoints()==2);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Blue,1).getVictoryPoints()==1);
+        assertThrows(Exception.class,()->game.getDevelopmentCardMarket().getFirstCard(Colours.Blue,1));
         assert(!game.checkLorenzoWin());
     }
 
@@ -44,17 +44,17 @@ public class LorenzoTest {
     @DisplayName("Ensure remove cards in order")
     void testRemoveCards(){
         for(int i=0;i<3;i++){
-            game.getDevelopmentcardmarket().deleteCards(Colours.Purple);
+            game.getDevelopmentCardMarket().deleteCards(Colours.Purple);
         }
-        assertThrows(Exception.class,()->game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,1));
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,2).getvictoryPoints()==6);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,2).getvictoryPoints()==5);
-        assertThrows(Exception.class,()->game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,2));
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,3).getvictoryPoints()==12);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,3).getvictoryPoints()==11);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,3).getvictoryPoints()==10);
-        assert(game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,3).getvictoryPoints()==9);
-        assertThrows(Exception.class,()->game.getDevelopmentcardmarket().getFirstCard(Colours.Purple,3));
+        assertThrows(Exception.class,()->game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,1));
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,2).getVictoryPoints()==6);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,2).getVictoryPoints()==5);
+        assertThrows(Exception.class,()->game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,2));
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,3).getVictoryPoints()==12);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,3).getVictoryPoints()==11);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,3).getVictoryPoints()==10);
+        assert(game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,3).getVictoryPoints()==9);
+        assertThrows(Exception.class,()->game.getDevelopmentCardMarket().getFirstCard(Colours.Purple,3));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class LorenzoTest {
     @DisplayName("Ensure Lorenzo wins thanks to empty DC deck")
     void testLorenzoWinDC(){
         for(int i=0;i<6;i++){
-            game.getDevelopmentcardmarket().deleteCards(Colours.Purple);
+            game.getDevelopmentCardMarket().deleteCards(Colours.Purple);
         }
         assert(game.checkLorenzoWin());
     }

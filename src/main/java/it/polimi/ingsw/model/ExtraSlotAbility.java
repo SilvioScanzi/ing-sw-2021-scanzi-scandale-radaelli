@@ -1,27 +1,24 @@
 package it.polimi.ingsw.model;
 
 public class ExtraSlotAbility extends Ability{
-    private Resources restype;
+    private Resources resType;
     private int capacity;
     private int stashedResources;
 
-    public ExtraSlotAbility(Resources restype, int capacity){
-        this.restype=restype;
+    public ExtraSlotAbility(Resources resType, int capacity){
+        this.resType = resType;
         this.capacity = capacity;
         stashedResources = 0;
     }
 
     @Override
-    public Resources getRestype(){
-        return restype;
+    public String toString(){
+        return capacity +" Slot extra per "+resType.toString()+" attualmente sono presenti: "+stashedResources+" "+resType.toString();
     }
 
     @Override
-    public boolean doUpdateSlot(Resources resource, int amount){
-        if(!restype.equals(resource)) return false;
-        if(amount+capacity<0 || amount + stashedResources > capacity) return false;
-        stashedResources = stashedResources + amount;
-        return true;
+    public Resources getResType(){
+        return resType;
     }
 
     @Override
@@ -33,7 +30,10 @@ public class ExtraSlotAbility extends Ability{
     public int getCapacity(){ return capacity; }
 
     @Override
-    public String toString(){
-        return capacity +" Slot extra per "+restype.toString()+" attualmente sono presenti: "+stashedResources+" "+restype.toString();
+    public boolean doUpdateSlot(Resources resource, int amount){
+        if(!resType.equals(resource)) return false;
+        if(amount+capacity<0 || amount + stashedResources > capacity) return false;
+        stashedResources = stashedResources + amount;
+        return true;
     }
 }

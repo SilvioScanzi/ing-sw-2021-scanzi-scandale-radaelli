@@ -192,9 +192,9 @@ public class LeaderCardPlayAndDiscardTest {
             game.discardSelectedLC(0,selection);
         }catch(Exception e) {e.printStackTrace();}
 
-        assert(playerBoard.getLeadercards().get(0).getAbility().getRestype().equals(Resources.Servants));
+        assert(playerBoard.getLeadercards().get(0).getAbility().getResType().equals(Resources.Servants));
         assert(playerBoard.getLeadercards().get(0).getVictoryPoints()==3);
-        assert(playerBoard.getLeadercards().get(1).getAbility().getRestype().equals(Resources.Coins));
+        assert(playerBoard.getLeadercards().get(1).getAbility().getResType().equals(Resources.Coins));
         assert(playerBoard.getLeadercards().get(1).getVictoryPoints()==4);
     }
 

@@ -1,11 +1,11 @@
 package it.polimi.ingsw.model;
-import it.polimi.ingsw.exceptions.EmptyDeckException;
+import it.polimi.ingsw.exceptions.EmptyException;
 import it.polimi.ingsw.exceptions.InvalidPlacementException;
 
 import java.util.*;
 
 public class Slot {
-    private ArrayList<DevelopmentCard> developmentcards;
+    private final ArrayList<DevelopmentCard> developmentcards;
 
     public Slot() {
         developmentcards = new ArrayList<>();
@@ -19,8 +19,8 @@ public class Slot {
         return tmp;
     }
 
-    public DevelopmentCard getFirstCard() throws EmptyDeckException{
-        if(developmentcards.size()==0) throw new EmptyDeckException("S");
+    public DevelopmentCard getFirstCard() throws EmptyException {
+        if(developmentcards.size()==0) throw new EmptyException("S");
         else return developmentcards.get(developmentcards.size()-1);
     }
 
@@ -31,9 +31,9 @@ public class Slot {
     public void addCard(DevelopmentCard DC) throws InvalidPlacementException {
         if(developmentcards.size()==0){
             if(DC.getLevel()==1)  developmentcards.add(DC);
-            else throw new InvalidPlacementException("Card level is incorrect",0);
+            else throw new InvalidPlacementException("Cannot play the selected card on this slot");
         }
         else if(developmentcards.get(developmentcards.size()-1).getLevel() == DC.getLevel() - 1)  developmentcards.add(DC);
-        else throw new InvalidPlacementException("Card level is incorrect",0);
+        else throw new InvalidPlacementException("Cannot play the selected card on this slot");
     }
 }

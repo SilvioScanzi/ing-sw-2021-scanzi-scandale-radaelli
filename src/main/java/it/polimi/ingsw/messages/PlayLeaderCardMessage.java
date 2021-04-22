@@ -1,6 +1,8 @@
 package it.polimi.ingsw.messages;
 
-public class PlayLeaderCardMessage extends Message {
+import java.io.Serializable;
+
+public class PlayLeaderCardMessage extends Message implements Serializable {
     private final int n;
 
     public PlayLeaderCardMessage(int i){

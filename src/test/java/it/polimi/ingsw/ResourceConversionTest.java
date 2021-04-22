@@ -37,7 +37,7 @@ public class ResourceConversionTest {
     @DisplayName("Ensure correct conversion of marbles without white marbles")
     void testConversionNoWhite(){
         try {
-            game.getMarketResources(0, true, 2, new ArrayList<>());
+            game.BuyMarketResourcesAction(0, true, 2, new ArrayList<>());
         }catch (Exception e) {e.printStackTrace();}
         assert(playerBoard.getHand().size()==4);
         assert(playerBoard.getHand().get(0).equals(Resources.Stones));
@@ -50,7 +50,7 @@ public class ResourceConversionTest {
     @DisplayName("Ensure correct conversion of red marble")
     void testConversionRed(){
         try {
-            game.getMarketResources(0, true, 1, new ArrayList<>());
+            game.BuyMarketResourcesAction(0, true, 1, new ArrayList<>());
         }catch (Exception e) {e.printStackTrace();}
         assert(playerBoard.getHand().size()==3);
         assert(playerBoard.getHand().get(0).equals(Resources.Shields));
@@ -63,7 +63,7 @@ public class ResourceConversionTest {
     @DisplayName("Ensure correct conversion of White marble when player doesn't have any Leader Card that interfere")
     void testConversionWhiteNull(){
         try {
-            game.getMarketResources(0, true, 3, new ArrayList<>());
+            game.BuyMarketResourcesAction(0, true, 3, new ArrayList<>());
         }catch (Exception e) {e.printStackTrace();}
         assert(playerBoard.getHand().size()==0);
     }
@@ -79,7 +79,7 @@ public class ResourceConversionTest {
         }catch(Exception e){e.printStackTrace();}
 
         try{
-            game.getMarketResources(0,true,3,new ArrayList<>());
+            game.BuyMarketResourcesAction(0,true,3,new ArrayList<>());
         }catch (Exception e){e.printStackTrace();}
 
         assert(playerBoard.getHand().size()==4);
@@ -107,7 +107,7 @@ public class ResourceConversionTest {
         requestedWMConversion.add(1);
         requestedWMConversion.add(2);
         try {
-            game.getMarketResources(0, true, 3, requestedWMConversion);
+            game.BuyMarketResourcesAction(0, true, 3, requestedWMConversion);
         }catch (Exception e){e.printStackTrace();}
         assert(playerBoard.getHand().size()==4);
         assert(playerBoard.getHand().get(0).equals(Resources.Servants));
@@ -132,7 +132,7 @@ public class ResourceConversionTest {
         requestedWMConversion.add(1);
         requestedWMConversion.add(1);
         requestedWMConversion.add(2);
-        assertThrows(Exception.class,()-> game.getMarketResources(0,true,3,requestedWMConversion));
+        assertThrows(Exception.class,()-> game.BuyMarketResourcesAction(0,true,3,requestedWMConversion));
     }
 
     @Test
@@ -152,6 +152,6 @@ public class ResourceConversionTest {
         requestedWMConversion.add(10);
         requestedWMConversion.add(2);
         requestedWMConversion.add(2);
-        assertThrows(Exception.class,()-> game.getMarketResources(0,true,3,requestedWMConversion));
+        assertThrows(Exception.class,()-> game.BuyMarketResourcesAction(0,true,3,requestedWMConversion));
     }
 }

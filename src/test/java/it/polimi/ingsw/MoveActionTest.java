@@ -37,7 +37,7 @@ public class MoveActionTest {
         ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
         choice.add(new Triplet<>("SE",1,2));
         try {
-            game.moveAction(0, choice);
+            game.moveResources(0, choice);
         }catch(Exception e) { e.printStackTrace(); }
 
         assert(!playerBoard.getWarehouse().getDepot(1).getKey().isPresent());
@@ -60,7 +60,7 @@ public class MoveActionTest {
         choice.add(new Triplet<>("SE",2,3));
         choice.add(new Triplet<>("PI",3,2));
         try{
-            game.moveAction(0,choice);
+            game.moveResources(0,choice);
         }catch(Exception e){e.printStackTrace();}
         
         assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
@@ -81,7 +81,7 @@ public class MoveActionTest {
         playerBoard = game.getBoard(0);
         //Getting the second row which contains one Grey marble, two yellow ones and a purple
         try {
-            game.getMarketResources(0, true, 2, new ArrayList<>());
+            game.BuyMarketResourcesAction(0, true, 2, new ArrayList<>());
         }catch (Exception e){e.printStackTrace();}
 
         //Got in hand two Coins and one Servant
@@ -91,7 +91,7 @@ public class MoveActionTest {
         choice.add(new Triplet<>("MO",0,2));
         choice.add(new Triplet<>("PI",0,1));
         try{
-            game.moveAction(0,choice);
+            game.moveResources(0,choice);
         }catch(Exception e){e.printStackTrace();}
         assert(playerBoard.getWarehouse().getDepot(1).getKey().isPresent());
         assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
@@ -124,7 +124,7 @@ public class MoveActionTest {
         choice.add(new Triplet<>("SE",1,3));
 
         try{
-            game.moveAction(0,choice);
+            game.moveResources(0,choice);
         }catch(Exception e){e.printStackTrace();}
 
         assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
@@ -150,7 +150,7 @@ public class MoveActionTest {
         choice.add(new Triplet<>("PI",2,3));
 
         try{
-            game.moveAction(0,choice);
+            game.moveResources(0,choice);
         }catch(Exception e){e.printStackTrace();}
 
         assert(playerBoard.getWarehouse().getDepot(2).getKey().isPresent());
@@ -168,7 +168,7 @@ public class MoveActionTest {
             playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
         }
         catch(Exception e) {e.printStackTrace();}
-        assertThrows(Exception.class,()-> game.moveAction(0,userChoice));
+        assertThrows(Exception.class,()-> game.moveResources(0,userChoice));
     }
 
     private static Stream<Arguments> provideSourceOfError() {
@@ -202,7 +202,7 @@ public class MoveActionTest {
         ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
         choice.add(new Triplet<>("PI",4,3));
         try{
-            game.moveAction(0,choice);
+            game.moveResources(0,choice);
         }catch(Exception e) {e.printStackTrace();}
         assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(3).getValue()==3);
         assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==0);
@@ -212,7 +212,7 @@ public class MoveActionTest {
         choice.add(new Triplet<>("PI",3,4));
         choice.add(new Triplet<>("PI",3,1));
         try{
-            game.moveAction(0,choice);
+            game.moveResources(0,choice);
         }catch(Exception e) {e.printStackTrace();}
 
         assert(playerBoard.getWarehouse().getDepot(1).getKey().isPresent());

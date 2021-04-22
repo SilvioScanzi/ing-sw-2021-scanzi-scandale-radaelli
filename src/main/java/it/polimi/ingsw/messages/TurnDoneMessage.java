@@ -1,7 +1,9 @@
 package it.polimi.ingsw.messages;
 
-public class TurnDoneMessage extends Message {
-    private boolean done;
+import java.io.Serializable;
+
+public class TurnDoneMessage extends Message implements Serializable{
+    private final boolean done;
 
     public TurnDoneMessage(boolean done){
         this.done = done;

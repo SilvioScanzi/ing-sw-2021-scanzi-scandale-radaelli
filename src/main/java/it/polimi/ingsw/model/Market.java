@@ -35,6 +35,7 @@ public class Market {
         remainingMarble = tmp.remove(0);
     }
 
+    //Only used for testing
     public Market(int Arandom){
         ArrayList<Marbles> tmp = new ArrayList<>();
         tmp.add(Marbles.Red);
@@ -74,6 +75,10 @@ public class Market {
         }
         tmp=tmp.concat("La biglia rimanente è: "+remainingMarble.toString());
         return tmp;
+    }
+
+    public Marbles[][] getGrid() {
+        return grid;
     }
 
     public int getWhiteMarbles(boolean row, int i){
@@ -118,10 +123,5 @@ public class Market {
             grid[2][i]=remainingMarble;
             remainingMarble=tmp;
         }
-    }
-
-    //for testing
-    public Marbles[][] getGrid() {
-        return grid;
     }
 }

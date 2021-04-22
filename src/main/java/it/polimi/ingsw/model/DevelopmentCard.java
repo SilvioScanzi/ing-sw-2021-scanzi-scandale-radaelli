@@ -2,13 +2,13 @@ package it.polimi.ingsw.model;
 import java.util.*;
 
 public class DevelopmentCard {
-    private final int level;        //level between 1 and 3
+    private final int level;                                        //level between 1 and 3
     private final Colours colour;
     private final int victoryPoints;
-    private final HashMap<Resources,Integer> cost;               //Resources required to buy the card
-    private final HashMap<Resources,Integer> requiredResources;  //Resources required to activate production power
-    private final HashMap<Resources,Integer> producedResources;  //Resources produced during the activation
-    private final int producedFaith;                              //Faith produced during the activation
+    private final HashMap<Resources,Integer> cost;                  //Resources required to buy the card
+    private final HashMap<Resources,Integer> requiredResources;     //Resources required to activate production power
+    private final HashMap<Resources,Integer> producedResources;     //Resources produced during the activation
+    private final int producedFaith;                                //Faith produced during the activation
 
     public DevelopmentCard(int level, Colours colour, int victoryPoints, HashMap<Resources, Integer> cost,
                            HashMap<Resources, Integer> requiredResources, HashMap<Resources, Integer> producedResources, int producedFaith) {
@@ -47,7 +47,7 @@ public class DevelopmentCard {
         return colour;
     }
 
-    public int getvictoryPoints() {
+    public int getVictoryPoints() {
         return victoryPoints;
     }
 
@@ -55,15 +55,15 @@ public class DevelopmentCard {
         return cost;
     }
 
-    public HashMap<Resources, Integer> getrequiredResources() {
+    public HashMap<Resources, Integer> getRequiredResources() {
         return requiredResources;
     }
 
-    public HashMap<Resources, Integer> getproducedResources() {
+    public HashMap<Resources, Integer> getProducedResources() {
         return producedResources;
     }
 
-    public int getproducedFaith() {
+    public int getProducedFaith() {
         return producedFaith;
     }
 }

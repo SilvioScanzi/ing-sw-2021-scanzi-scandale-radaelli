@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class FinishSetupMessage extends Message implements Serializable {
-    private ArrayList<Resources> userChoice;
+    private final ArrayList<Resources> userChoice;
 
     public FinishSetupMessage(ArrayList<Resources> userChoice) {
         this.userChoice = userChoice;

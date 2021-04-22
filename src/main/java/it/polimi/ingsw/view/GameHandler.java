@@ -1,9 +1,7 @@
 package it.polimi.ingsw.view;
 import it.polimi.ingsw.controller.Game;
-import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class GameHandler {
@@ -52,7 +50,7 @@ public class GameHandler {
     }
 
     //TODO: check next time
-    private void playingSolo(){
+    /*private void playingSolo(){
         while(!game.checkLorenzoWin() && !game.checkEndGame(0)) {
             boolean actionDone = false;
             boolean turnDone = false;
@@ -221,12 +219,12 @@ public class GameHandler {
                         okConversion = true;
                     } catch (Exception E) {
                         System.out.println("La carta scelta non è del tipo corretto");
-                    }*/
+                    }*//*
                 }while(!okConversion);
             }
         }
 
-        game.getMarketResources(player,r,n,requestedWMConversion);
+        game.BuyMarketResourcesAction(player,r,n,requestedWMConversion);
         moveAction(player);
     }
 

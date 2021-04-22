@@ -1,24 +1,24 @@
 package it.polimi.ingsw.model;
 
 public class ProductionPowerAbility extends Ability{
-    private Resources restype;
+    private Resources resType;
 
-    public  ProductionPowerAbility(Resources restype){
-        this.restype = restype;
+    public  ProductionPowerAbility(Resources resType){
+        this.resType = resType;
     }
 
     @Override
-    public Resources getRestype(){
-        return restype;
+    public String toString(){
+        return "Potere di produzione: richiesta la risorsa "+ resType.toString();
+    }
+
+    @Override
+    public Resources getResType(){
+        return resType;
     }
 
     @Override
     public boolean doActivate(){
         return true;
-    }
-
-    @Override
-    public String toString(){
-        return "Potere di produzione: richiesta la risorsa "+restype.toString();
     }
 }

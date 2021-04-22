@@ -62,7 +62,7 @@ public class ActivateProductionTest {
         userChoice.put(6,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",1));add(new Pair<>("PI",2));add(new Pair<>("MO",-1));}});
 
         try {
-            game.activateProduction(0, userChoice);
+            game.activateProductionAction(0, userChoice);
         }catch(Exception e){e.printStackTrace();}
 
         assert(playerBoard.getStrongbox().getResource(Resources.Coins)==2);
@@ -83,7 +83,7 @@ public class ActivateProductionTest {
             playerBoard.getWarehouse().subDepot(1,1);
         }catch(Exception e){e.printStackTrace();}
 
-        assertThrows(Exception.class,()-> game.activateProduction(0, userChoice));
+        assertThrows(Exception.class,()-> game.activateProductionAction(0, userChoice));
     }
 
     @Test
@@ -91,15 +91,15 @@ public class ActivateProductionTest {
     void testCannotActivateProductionBecauseOfRequest(){
         HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice = new HashMap<>();
         userChoice.put(6,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",1));add(new Pair<>("MO",-1));}});
-        assertThrows(Exception.class,()-> game.activateProduction(0, userChoice));
+        assertThrows(Exception.class,()-> game.activateProductionAction(0, userChoice));
 
         userChoice.clear();
         userChoice.put(6,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",1));add(new Pair<>("MO",2));add(new Pair<>("MO",2));add(new Pair<>("MO",-1));}});
-        assertThrows(Exception.class,()-> game.activateProduction(0, userChoice));
+        assertThrows(Exception.class,()-> game.activateProductionAction(0, userChoice));
 
         userChoice.clear();
         userChoice.put(15,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",1));add(new Pair<>("MO",2));add(new Pair<>("MO",2));add(new Pair<>("MO",-1));}});
-        assertThrows(Exception.class,()-> game.activateProduction(0, userChoice));
+        assertThrows(Exception.class,()-> game.activateProductionAction(0, userChoice));
     }
 
     @Test
@@ -118,7 +118,7 @@ public class ActivateProductionTest {
         userChoice.put(6,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",1));add(new Pair<>("SC",4));add(new Pair<>("MO",-1));}});
 
         try {
-            game.activateProduction(0, userChoice);
+            game.activateProductionAction(0, userChoice);
         }catch(Exception e){e.printStackTrace();}
 
         assert(playerBoard.getStrongbox().getResource(Resources.Coins)==2);
@@ -137,7 +137,7 @@ public class ActivateProductionTest {
         userChoice.put(4,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",1));add(new Pair<>("MO",-1));}});
 
         try {
-            game.activateProduction(0, userChoice);
+            game.activateProductionAction(0, userChoice);
         }catch(Exception e){e.printStackTrace();}
 
         assert(playerBoard.getStrongbox().getResource(Resources.Coins)==1);
