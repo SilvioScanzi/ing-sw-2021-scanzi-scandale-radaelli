@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
 
-public class NetworkHandler {
+public class NetworkHandler implements Runnable{
     Socket socket;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
@@ -22,13 +22,12 @@ public class NetworkHandler {
         }catch(Exception e){System.out.println("Connessione non disponibile"); e.printStackTrace();}
     }
 
+    @Override
     public void run() {
         while(true){
             try {
                 System.out.println(socketIn.readObject().toString());
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
             String s = in.nextLine();
@@ -41,5 +40,9 @@ public class NetworkHandler {
         }
     }
 
-
+    public void sendObject(Object o){
+        try{
+            socketOut.writeObject(o);
+        }catch(IOException e){e.printStackTrace();}
+    }
 }

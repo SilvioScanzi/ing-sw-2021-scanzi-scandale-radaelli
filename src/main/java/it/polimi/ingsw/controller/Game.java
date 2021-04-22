@@ -461,7 +461,6 @@ public class Game {
             L.getAbility().doUpdateSlot(L.getAbility().getRestype(),
                     LCCapacity.get(L)-L.getAbility().getStashedResources());
         }
-        //TODO: Handling the resources left in the hand
         if(tmpHand.size()>0) throw new IllegalArgumentException("There are still some resources in the hand");
     }
 

@@ -10,7 +10,10 @@ public enum StandardMessages implements Serializable {
     nicknameAlreadyInUse("Il nickname scelto è già in uso"),
     lobbyNotReady("Aspetta che inizi il gioco"),
     waitALittleMore("Aspetta un attimo..."),
-    notYourTurn("Non è ancora il tuo turno");
+    notYourTurn("Non è ancora il tuo turno"),
+    yourTurn("É il tuo turno"),
+    chooseOneResource("Scegli una risorsa extra da ottenere"),
+    chooseTwoResource("Scegli due risorse extra da ottenere");
     //...
 
     private final String message;

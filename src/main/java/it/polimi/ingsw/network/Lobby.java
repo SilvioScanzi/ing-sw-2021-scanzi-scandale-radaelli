@@ -49,13 +49,26 @@ public class Lobby implements Runnable {
             }
         }
 
-        //TODO: discard leader card and request for extra resources (finishingSetup)
         game.setup(playersName);
         for(int i=0;i<playerNumber;i++){
-            //richiedi le leader card che vuole scartare
-            //writeObject con le carte pescate; readObject con quelle scelte
-            int[] LCDiscardChoice = new int[2];
-            game.discardSelectedLC(i,LCDiscardChoice);
+            synchronized (clients.get(i)) {
+                while(!clients.get(i).getMessageReady()){
+                    try {
+                        clients.get(i).wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Message message = clients.get(i).getMessage();
+                if(message instanceof SetupLCDiscardMessage){
+                    game.discardSelectedLC(i, ((SetupLCDiscardMessage) message).getDiscardedLC());
+                    clients.get(i).setDiscardLeaderCard(true);
+                } else{
+                    clients.get(i).sendStandardMessage(StandardMessages.wrongObject);
+                    i--;
+                }
+                clients.get(i).setMessageReady(false);
+            }
         }
 
         if (playerNumber == 1) playingSolo();
@@ -67,18 +80,39 @@ public class Lobby implements Runnable {
     }
 
     public void playingMultiplayer(){
-        for(int i=0;i<playerNumber;i++){
-            if(i%game.getInkwell() > 0){    //TODO: dal secondo giocatore in poi
-                //richiedi le risorse extra che vuole ricevere
-                ArrayList<Resources> userChoice = new ArrayList<>();
-                game.finishingSetup(i,userChoice);
+        int k=1;
+        for(int i=game.getInkwell()+1;i!=game.getInkwell();i=(i+1)%playerNumber) {
+            if (k == 1 || k == 2) {
+                clients.get(i).sendStandardMessage(StandardMessages.chooseOneResource);
+            } else if (k == 3) {
+                clients.get(i).sendStandardMessage(StandardMessages.chooseTwoResource);
             }
+            synchronized (clients.get(i)) {
+                while (!clients.get(i).getMessageReady()) {
+                    try {
+                        clients.get(i).wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                Message message = clients.get(i).getMessage();
+                if (message instanceof FinishSetupMessage) {
+                    game.finishingSetup(i, ((FinishSetupMessage) message).getUserChoice());
+                    clients.get(i).setFinishingSetup(true);
+                } else {
+                    clients.get(i).sendStandardMessage(StandardMessages.wrongObject);
+                    k--;
+                    i--;
+                }
+            }
+            k++;
         }
 
         int i = game.getInkwell();
         boolean lastRound = false;
         while(!endGame || !lastRound){
             clients.get(i).setMyTurn(true);
+            clients.get(i).sendStandardMessage(StandardMessages.yourTurn);
             boolean turnDone = false;
             while (!turnDone) {
                 synchronized (clients.get(i)) {
@@ -122,15 +156,7 @@ public class Lobby implements Runnable {
     private boolean handleMessage(Message message,int player){
         //TODO: try catch and send/handle errors
         //Buy resources from market
-        if(message instanceof SetupLCDiscardMessage){
-            game.discardSelectedLC(player, ((SetupLCDiscardMessage) message).getDiscardedLC());
-            clients.get(player).setDiscardLeaderCard(true);
-        }
-        else if(message instanceof FinishSetupMessage){
-            game.finishingSetup(player, ((FinishSetupMessage) message).getUserChoice());
-            clients.get(player).setFinishingSetup(true);
-        }
-        else if(message instanceof BuyResourcesMessage) {
+        if(message instanceof BuyResourcesMessage) {
             game.getMarketResources(player, ((BuyResourcesMessage) message).getRow(),
                     ((BuyResourcesMessage) message).getN(), ((BuyResourcesMessage) message).getRequestedWMConversion());
 
