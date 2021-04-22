@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network;
 
+import it.polimi.ingsw.messages.ChoosePlayerNumberMessage;
+import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.StandardMessages;
 
 import java.io.IOException;
@@ -27,7 +29,6 @@ public class Server {
         }
         System.out.println("Server ready");
 
-        Lobby lobby;
         while (true) {
             try {
                 Socket socket = serverSocket.accept();
@@ -39,7 +40,7 @@ public class Server {
                     clientHandlers.notifyAll();
                 }
                 if(first) {
-                    new Thread (() ->lobbyManager());
+                    new Thread (() ->lobbyManager()).start();
                 }
                 first = false;
             } catch(IOException e) {
@@ -51,11 +52,24 @@ public class Server {
 
     public void lobbyManager() {
         int players = 0;
-        do {
-            clientHandlers.get(0).sendStandardMessage(StandardMessages.choosePlayerNumber);
-            //TODO: ClientRead
-            //players = Integer.parseInt(clientHandlers.get(0).read());
-        } while (players < 1 || players > 4);
+
+        //first player to connect gets to choose how many are the players
+        clientHandlers.get(0).sendStandardMessage(StandardMessages.choosePlayerNumber);
+        synchronized (clientHandlers.get(0)) {
+            clientHandlers.get(0).setSetPlayerNumber(true);
+            while (!clientHandlers.get(0).getMessageReady()) {
+                try {
+                    clientHandlers.get(0).wait();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            ChoosePlayerNumberMessage message = (ChoosePlayerNumberMessage) clientHandlers.get(0).getMessage();
+            clientHandlers.get(0).setMessageReady(false);
+            players = message.getN();
+        }
+
+        //starting the lobby with the requested number of players
         synchronized (clientHandlers) {
             currentLobby = new Lobby(players);
             currentLobby.addPlayer(clientHandlers.remove(0));
@@ -66,13 +80,14 @@ public class Server {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    currentLobby.addPlayer(clientHandlers.remove(0));
                 }
+                currentLobby.addPlayer(clientHandlers.remove(0));
             }
         }
-        new Thread(() -> currentLobby.run());
-        currentLobby = null;
+        new Thread(() -> currentLobby.run()).start();
+
+        //others waiting so a new lobby gets initialized...
         if (clientHandlers.size() > 0) new Thread(()->lobbyManager()).start();
-        else first = true;
+        else first = true;  //...otherwise waits for others to connect
     }
 }

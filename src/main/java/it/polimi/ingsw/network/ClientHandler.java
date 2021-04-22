@@ -19,48 +19,84 @@ public class ClientHandler implements Runnable{
     private HashMap<ClientHandler,String> nameQueue;
     private boolean chosenNickName = false;
     private boolean myTurn = false;
-    private boolean setPlayerNumber;
+    private boolean setPlayerNumber = false;
     private boolean messageReady = false;
-    private int playerNumber;
+    private boolean lobbyReady = false;
+    private boolean discardLeaderCard = false;
+    private boolean finishingSetup = false;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
         try{
             socketOut = new ObjectOutputStream(socket.getOutputStream());
             socketIn = new ObjectInputStream(socket.getInputStream());
-            socketOut.writeObject("Ciao");
         }
         catch(Exception e){e.printStackTrace();}
         out = new PrintWriter(socketOut);
         in = new Scanner(socketIn);
-        myTurn = false;
+    }
+
+    public void setMyTurn(boolean myTurn) {
+        this.myTurn = myTurn;
     }
 
     public void setNameQueue(HashMap<ClientHandler, String> nameQueue) {
         this.nameQueue = nameQueue;
     }
 
+    public void setLobbyReady(boolean lobbyReady) {
+        this.lobbyReady = lobbyReady;
+    }
+
+    public void setSetPlayerNumber(boolean setPlayerNumber) {
+        this.setPlayerNumber = setPlayerNumber;
+    }
+
+    public void setDiscardLeaderCard(boolean discardLeaderCard) {
+        this.discardLeaderCard = discardLeaderCard;
+    }
+
+    public void setFinishingSetup(boolean finishingSetup) {
+        this.finishingSetup = finishingSetup;
+    }
+
     @Override
     public void run() {
-        while(true){
-            try {
-                message = socketIn.readObject();
-                if(!(message instanceof Message)){
+        while(true) {
+                try {
+                    message = socketIn.readObject();
+                    if (!(message instanceof Message)) {
+                        sendStandardMessage(StandardMessages.wrongObject);
+                    } else {
+                        processMessage((Message) message);
+                    }
+                } catch (IOException | ClassNotFoundException e) {
                     sendStandardMessage(StandardMessages.wrongObject);
+                    e.printStackTrace();
                 }
-                else{
-                    processMessage((Message) message);
-                }
-            }catch(IOException | ClassNotFoundException e){
-                sendStandardMessage(StandardMessages.wrongObject);
-                e.printStackTrace();
             }
-        }
     }
 
     public void processMessage(Message message){
-        if(!setPlayerNumber){
+        if(setPlayerNumber){
+            if(!(message instanceof ChoosePlayerNumberMessage)) sendStandardMessage(StandardMessages.wrongObject);
+            else{
+                if(((ChoosePlayerNumberMessage) message).getN()<1 || ((ChoosePlayerNumberMessage) message).getN()>4) {
+                    sendStandardMessage(StandardMessages.wrongObject);
+                    sendStandardMessage(StandardMessages.choosePlayerNumber);
 
+                }
+                else {
+                    synchronized (this) {
+                        messageReady = true;
+                        setPlayerNumber = false;
+                        this.notifyAll();
+                    }
+                }
+            }
+        }
+        else if(!lobbyReady){
+          sendStandardMessage(StandardMessages.lobbyNotReady);
         }
         else if(!chosenNickName){
             if(message instanceof NicknameMessage){
@@ -76,15 +112,24 @@ public class ClientHandler implements Runnable{
                 }
             }
         }
+        else if(!discardLeaderCard){
+            if(message instanceof SetupLCDiscardMessage){
+                messageReady = true;
+                this.notifyAll();
+            } else sendStandardMessage(StandardMessages.wrongObject);
+        }
+        else if(!finishingSetup){
+            if(message instanceof FinishSetupMessage){
+                messageReady = true;
+                this.notifyAll();
+            } else sendStandardMessage(StandardMessages.wrongObject);
+        }
         else if(myTurn) {
-
+            if(messageReady) sendStandardMessage(StandardMessages.waitALittleMore);
             messageReady = true;
             this.notifyAll();
-            try{
-                this.wait();
-            }catch(Exception e){e.printStackTrace();}
-            //lobby.updateBuyResources((BuyResourceMessage)message);
         }
+        else sendStandardMessage(StandardMessages.notYourTurn);
     }
 
     public boolean getMessageReady() {
@@ -107,6 +152,12 @@ public class ClientHandler implements Runnable{
     public void sendStandardMessage(StandardMessages SM){
         try{
             socketOut.writeObject(SM);
+        }catch(IOException e){e.printStackTrace();}
+    }
+
+    public void sendObject(Object o){
+        try{
+            socketOut.writeObject(o);
         }catch(IOException e){e.printStackTrace();}
     }
 

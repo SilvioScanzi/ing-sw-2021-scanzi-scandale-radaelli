@@ -84,6 +84,7 @@ public class Game {
         }
     }
 
+    //setup discard of leader cards
     public void discardSelectedLC(int player, int[] discardedLC) throws IllegalArgumentException {
         if(discardedLC.length!=2) throw new IllegalArgumentException("Errore nelle LC da eliminare");
 
@@ -541,8 +542,6 @@ public class Game {
             }
 
             tmp+=(amount-amount%5)/5;
-
-            System.out.println(tmp);
 
             playerBoard.setVictoryPoints(tmp);
         }
