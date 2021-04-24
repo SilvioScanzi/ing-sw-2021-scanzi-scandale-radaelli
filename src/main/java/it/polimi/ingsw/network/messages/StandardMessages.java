@@ -1,4 +1,4 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.network.messages;
 
 import java.io.Serializable;
 
@@ -18,11 +18,20 @@ public enum StandardMessages implements Serializable {
     leaderCardOutOfBounds("La carta leader selezionata non esiste"),
     leaderCardWrongFormat("Non hai selezionato il giusto numero di carte leader da scartare"),
     actionAlreadyDone("Hai già fatto un azione per questo turno"),
-    IndexOutOfBound("Hai scelto un elemento non esistente"),
+    indexOutOfBound("Hai scelto un elemento non esistente"),
     whiteMarbleNotCongruent("Hai scelto un numero di biglie bianche da convertire non congruente"),
     emptyDCStack("La carta scelta è già stata acquistata da un altro giocatore"),
     invalidSlot("Lo slot scelto non può accogliere questa carta"),
-    invalidChoice("La scelta effettuata sulla locazione della risorsa non è valida");
+    invalidChoice("La scelta effettuata non è valida"),
+    baseProductionError("La scelta della produzione di base non è valida"),
+    emptySlot("Lo slot selezionato è vuoto"),
+    resourcesWrong("Le risorse sono state scelte in maniera errata"),
+    moveActionNeeded("Devi scegliere dove posizionare le risorse appena ottenute"),
+    resourcesLeftInHand("Devi riposizionare le risorse che hai nella mano"),
+    incompatibleResources("L'allocazione delle risorse è fallita perchè sono presenti risorse non compatibili"),
+    leaderCardWrongAbility("La carta leader scelta non ha un'abilità compatibile con l'azione svolta"),
+    requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
+    notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione");
     //...
 
     private final String message;

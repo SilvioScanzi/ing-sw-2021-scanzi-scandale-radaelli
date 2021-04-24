@@ -142,6 +142,17 @@ public class DevelopmentBuyTest{
         assertThrows(Exception.class,()-> game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice));
     }
 
+    @Test
+    @DisplayName("Ensure exception is thrown when DC stack is empty")
+    void testCannotBuyDCEmpty(){
+        ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
+        {{add(new Pair<>("SE",6));add(new Pair<>("SE",6));add(new Pair<>("PI",6));add(new Pair<>("PI",6));}};
+        for(int i=0;i<4;i++) {
+            game.getDevelopmentCardMarket().getFirstCard(Colours.Purple, 1);
+        }
+        assertThrows(Exception.class,()-> game.BuyDevelopmentCardAction(Colours.Purple, 1, 0, 1,choice));
+    }
+
     @ParameterizedTest
     @MethodSource("provideCombinationsOfColoursAndLevel")
     @DisplayName("Ensure correct behaviour of development card buying action when slot choice impedes the action")

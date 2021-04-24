@@ -1,5 +1,5 @@
 package it.polimi.ingsw.view;
-import it.polimi.ingsw.client.NetworkHandler;
+import it.polimi.ingsw.network.client.NetworkHandler;
 
 import java.util.Scanner;
 /*TODO: network handler sempre in ascolto, CLI scrive usando il metodo sendObject, usiamo una sorta di buffer per stampare a schermo

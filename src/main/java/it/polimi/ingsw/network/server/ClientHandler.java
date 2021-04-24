@@ -1,11 +1,10 @@
-package it.polimi.ingsw.server;
+package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.messages.*;
+import it.polimi.ingsw.network.messages.*;
 
 import java.io.*;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.Scanner;
 
 //server side
 public class ClientHandler implements Runnable{

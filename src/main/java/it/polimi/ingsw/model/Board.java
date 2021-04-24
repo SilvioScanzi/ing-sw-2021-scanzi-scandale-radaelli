@@ -12,7 +12,7 @@ public class Board {
     private final Slot[] slots;
     private final ArrayList<LeaderCard> leadercardshand;
     private final ArrayList<LeaderCard> leadercardsplayed;
-    private final ArrayList<Resources> hand;
+    private ArrayList<Resources> hand;
     private boolean actionDone;
     private int victoryPoints;
 
@@ -131,6 +131,9 @@ public class Board {
         this.victoryPoints = victoryPoints;
     }
 
+    public void setHand(ArrayList<Resources> hand) {
+        this.hand = hand;
+    }
 
     //action related methods
     public void dumpHandIntoStrongbox(){
@@ -144,7 +147,7 @@ public class Board {
         leadercardshand.remove(i-1);
     }
 
-    public void playLeaderCard(int i) throws RequirementsNotMetException {
+    public void playLeaderCard(int i) throws RequirementsNotMetException,IndexOutOfBoundsException {
         LeaderCard LC = leadercardshand.get(i-1);
         Map<Colours,Pair<Integer,Integer>> requiredColours = new HashMap<>(LC.getRequiredColours());
         Map<Resources,Integer> requiredResources = new HashMap<>(LC.getRequiredResources());

@@ -127,9 +127,9 @@ public class ActivateProductionTest {
     @Test
     @DisplayName("Ensure correct activation of LC")
     void testCanActivateLCProduction(){
-        LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ProductionPowerAbility",Resources.Servants,0);
+        LeaderCard LCProduction = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ProductionPowerAbility",Resources.Servants,0);
         playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LCSlot);
+        playerBoard.getLeadercards().add(LCProduction);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -142,5 +142,20 @@ public class ActivateProductionTest {
 
         assert(playerBoard.getStrongbox().getResource(Resources.Coins)==1);
         assert(playerBoard.getFaithtrack().getFaithMarker()==1);
+    }
+
+    @Test
+    @DisplayName("Ensure exception is thrown when trying to produce with a LC that has a different ability")
+    void testWrongLC(){
+        LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Servants,0);
+        playerBoard.getLeadercards().clear();
+        playerBoard.getLeadercards().add(LCSlot);
+        try {
+            game.playLeaderCard(0, 1);
+        }catch(Exception e){e.printStackTrace();}
+        HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice = new HashMap<>();
+        userChoice.put(4,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SE",1));add(new Pair<>("MO",-1));}});
+
+        assertThrows(Exception.class,()-> game.activateProductionAction(0, userChoice));
     }
 }

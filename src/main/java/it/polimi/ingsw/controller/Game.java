@@ -247,7 +247,7 @@ public class Game {
     //if player chooses to activate a leader card or the base production, the last position of the ArrayList
     //contained in userChoice is the to-be-produced resource
     public void activateProductionAction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice)
-            throws ActionAlreadyDoneException, LeaderCardNotCompatibleException, IllegalArgumentException, EmptyException, ResourceErrorException, RequirementsNotMetException {
+            throws ActionAlreadyDoneException,LeaderCardNotCompatibleException,IllegalArgumentException,EmptyException,ResourceErrorException,RequirementsNotMetException,BadRequestException {
         Board playerBoard = players.get(player).getValue();
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
 
@@ -290,8 +290,8 @@ public class Game {
                             Resources r = Resources.getResourceFromString(userChoice.get(i).get(j).getKey());
                             cost.put(r,(cost.get(r) == null)?1:cost.get(r)+1);
                         }
-                    } else throw new IllegalArgumentException("Errore nella produzione di base");
-            } else throw new IllegalArgumentException("Scegli una produzione valida");
+                    } else throw new BadRequestException("Error in the base production");
+            } else throw new IllegalArgumentException("Error in the selection of the production");
 
             consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice.get(i));
         }
@@ -456,6 +456,7 @@ public class Game {
             L.getAbility().doUpdateSlot(L.getAbility().getResType(),
                     LCCapacity.get(L)-L.getAbility().getStashedResources());
         }
+        playerBoard.setHand(tmpHand);
         if(tmpHand.size()>0) throw new ResourcesLeftInHandException("There are still some resources in the hand");
     }
 
@@ -467,7 +468,8 @@ public class Game {
         if(tmp!=-1) popeEvent(tmp);
     }
 
-    public void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException{
+    public void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
+        if(leaderCardIndex>players.get(player).getValue().getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).getValue().playLeaderCard(leaderCardIndex);
     }
 

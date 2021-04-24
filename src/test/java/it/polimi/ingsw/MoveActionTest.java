@@ -162,7 +162,7 @@ public class MoveActionTest {
     @ParameterizedTest
     @MethodSource("provideSourceOfError")
     @DisplayName("Ensure incorrect move action throws an exception")
-    void CannotMoveForDifferentReasons(ArrayList<Triplet<String,Integer,Integer>> userChoice){
+    void testCannotMoveForDifferentReasons(ArrayList<Triplet<String,Integer,Integer>> userChoice){
         try {
             playerBoard.getWarehouse().addDepot(1, Resources.Servants, 1);
             playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
@@ -178,6 +178,30 @@ public class MoveActionTest {
                 Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("SE",1,3));}}),
                 Arguments.of(new ArrayList<Triplet<String,Integer,Integer>>(){{add(new Triplet<>("PI",3,2));}})
         );
+    }
+
+    @Test
+    @DisplayName("Ensure exception is thrown when resources are left in hand")
+    void testResourcesLeftInHand(){
+        game = new Game(0);
+        String s = "player";
+        ArrayList<String> st = new ArrayList<>();
+        st.add(s);
+        game.setup(st);
+        playerBoard = game.getBoard(0);
+        //Getting the second row which contains one Grey marble, two yellow ones and a purple
+        try {
+            game.BuyMarketResourcesAction(0, true, 2, new ArrayList<>());
+        }catch (Exception e){e.printStackTrace();}
+
+        //Got in hand two Coins and one Servant
+        ArrayList<Triplet<String,Integer,Integer>> choice = new ArrayList<>();
+        choice.add(new Triplet<>("SE",0,3));
+        choice.add(new Triplet<>("MO",0,2));
+        choice.add(new Triplet<>("MO",0,2));
+
+        assertThrows(Exception.class,()-> game.moveResources(0,choice));
+        assert(playerBoard.getHand().size()==1 && playerBoard.getHand().get(0).equals(Resources.Stones));
     }
 
     @Test

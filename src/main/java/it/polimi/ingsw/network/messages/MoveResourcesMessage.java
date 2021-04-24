@@ -1,4 +1,4 @@
-package it.polimi.ingsw.messages;
+package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.model.Triplet;
 
