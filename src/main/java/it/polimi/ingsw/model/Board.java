@@ -79,8 +79,8 @@ public class Board {
         return faithtrack;
     }
 
-    public Slot getSlot(int index) throws IllegalArgumentException{
-        if(index < 1 || index > 3) throw new IllegalArgumentException("Invalid slot: index must be between 1 and 3");
+    public Slot getSlot(int index) throws IndexOutOfBoundsException{
+        if(index < 1 || index > 3) throw new IndexOutOfBoundsException("Invalid slot: index must be between 1 and 3");
         return slots[index-1];
     }
 

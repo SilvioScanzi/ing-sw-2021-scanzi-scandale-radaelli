@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.exceptions.*;
@@ -14,6 +14,7 @@ public class Lobby implements Runnable {
     private final HashMap<ClientHandler,String> clientNames = new HashMap<>();
     private final ArrayList<ClientHandler> clients = new ArrayList<>();
     private final ArrayList<String> playersName = new ArrayList<>();
+    private boolean lastActionMarket = false;
 
     public Lobby(int playerNumber){
         this.playerNumber = playerNumber;
@@ -111,13 +112,12 @@ public class Lobby implements Runnable {
                 if (message instanceof FinishSetupMessage) {
                     game.finishingSetup(i, ((FinishSetupMessage) message).getUserChoice());
                     clients.get(i).setFinishingSetup(true);
+                    k++;
                 } else {
                     clients.get(i).sendStandardMessage(StandardMessages.wrongObject);
-                    k--;
                     i--;
                 }
             }
-            k++;
         }
 
         int i = game.getInkwell();
@@ -166,68 +166,81 @@ public class Lobby implements Runnable {
     }
 
     private boolean handleMessage(Message message,int player){
-        //TODO: try catch and send/handle errors
         //Buy resources from market
         if(message instanceof BuyResourcesMessage) {
             try {
-                game.BuyMarketResourcesAction(player, ((BuyResourcesMessage) message).getRow(),
-                        ((BuyResourcesMessage) message).getN(), ((BuyResourcesMessage) message).getRequestedWMConversion());
-            } catch (ActionAlreadyDoneException e) {
-                e.printStackTrace();
+                game.BuyMarketResourcesAction(player, ((BuyResourcesMessage) message).getRow(), ((BuyResourcesMessage) message).getN(), ((BuyResourcesMessage) message).getRequestedWMConversion());
+            } catch (ActionAlreadyDoneException | IndexOutOfBoundsException e) {
+                handleExceptions(e,player);
+            }
+            catch(IllegalArgumentException e){
+                clients.get(player).sendStandardMessage(StandardMessages.whiteMarbleNotCongruent);
+            }
+            finally {
+                clients.get(player).setMessageReady(false);
             }
 
-            clients.get(player).setMessageReady(false);
-
             //after getting the resources, the user needs to say where he wants to deposit them
-            boolean moveActionCorrect = false;
-            do {
-                while (!clients.get(player).getMessageReady()) {
-                    try {
-                        clients.get(player).wait();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-                Message userChoice = clients.get(player).getMessage();
-                clients.get(player).setMessageReady(false);
-
-                if(userChoice instanceof MoveActionMessage) {
-                    try {
-                        game.moveResources(player, ((MoveActionMessage) userChoice).getUserChoice());
-                    } catch (BadRequestException | LeaderCardNotCompatibleException | ResourceErrorException | InvalidPlacementException | IncompatibleResourceException | ResourcesLeftInHandException e) {
-                        e.printStackTrace();
-                    }
-                    game.discardRemainingResources(player); //can't hold resources after getting them from the market
-                    moveActionCorrect = true;
-                } else {
-                    clients.get(player).sendStandardMessage(StandardMessages.wrongObject);
-                }
-            }while(!moveActionCorrect);
-        }
-
-        //move resources around
-        else if(message instanceof MoveActionMessage){
-            try{
-                game.moveResources(player,((MoveActionMessage) message).getUserChoice());
-            }catch(IllegalArgumentException | BadRequestException | LeaderCardNotCompatibleException | IncompatibleResourceException | ResourcesLeftInHandException | InvalidPlacementException | ResourceErrorException e){e.printStackTrace();}
+            clients.get(player).setMoveNeeded(true);
+            lastActionMarket = true;
         }
 
         //buy development card
-        else if(message instanceof BuyDevelopmentCardMessage){
+        else if(message instanceof BuyDevelopmentCardMessage) {
             try {
-                game.BuyDevelopmentCardAction(((BuyDevelopmentCardMessage) message).getC(),((BuyDevelopmentCardMessage) message).getLevel(),
-                player,((BuyDevelopmentCardMessage) message).getSlotNumber(),((BuyDevelopmentCardMessage) message).getUserChoice());
-            } catch (Exception e) {
-                e.printStackTrace();
+                game.BuyDevelopmentCardAction(((BuyDevelopmentCardMessage) message).getC(), ((BuyDevelopmentCardMessage) message).getLevel(), player, ((BuyDevelopmentCardMessage) message).getSlotNumber(), ((BuyDevelopmentCardMessage) message).getUserChoice());
+            } catch (ActionAlreadyDoneException| RequirementsNotMetException | ResourceErrorException | LeaderCardNotCompatibleException | IndexOutOfBoundsException e) {
+                handleExceptions(e, player);
+            }catch (EmptyException e){
+                clients.get(player).sendStandardMessage(StandardMessages.emptyDCStack);
+            }
+            catch(InvalidPlacementException e){
+                clients.get(player).sendStandardMessage(StandardMessages.invalidSlot);
+            }
+            catch(IllegalArgumentException e){
+                clients.get(player).sendStandardMessage(StandardMessages.invalidChoice);
+            }
+            finally {
+                clients.get(player).setMessageReady(false);
             }
         }
+
+        //TODO: update catch blocks with personalized messages
 
         //activate production (choice of which one is in the message)
         else if(message instanceof ProductionMessage){
             try {
                 game.activateProductionAction(player,((ProductionMessage) message).getUserChoice());
             } catch (ActionAlreadyDoneException | LeaderCardNotCompatibleException | EmptyException | ResourceErrorException | RequirementsNotMetException e) {
-                e.printStackTrace();
+                handleExceptions(e, player);
+                clients.get(player).setMessageReady(false);
+            }
+            finally{
+                clients.get(player).setMessageReady(false);
+            }
+        }
+
+        //move resources around
+        else if(message instanceof MoveResourcesMessage){
+            try{
+                game.moveResources(player,((MoveResourcesMessage) message).getUserChoice());
+                clients.get(player).setMoveNeeded(false);
+                lastActionMarket = false;
+            }catch(IllegalArgumentException | BadRequestException | LeaderCardNotCompatibleException | IncompatibleResourceException | InvalidPlacementException | ResourceErrorException e) {
+                handleExceptions(e, player);
+            }
+            catch(ResourcesLeftInHandException e){
+                if(lastActionMarket){
+                    game.discardRemainingResources(player);
+                    clients.get(player).setMoveNeeded(false);
+                    lastActionMarket = false;
+                }
+                else{
+                    clients.get(player).setMoveNeeded(true);
+                }
+            }
+            finally{
+                clients.get(player).setMessageReady(false);
             }
         }
 
@@ -238,22 +251,41 @@ public class Lobby implements Runnable {
             } catch (RequirementsNotMetException e) {
                 e.printStackTrace();
             }
+            finally{
+                clients.get(player).setMessageReady(false);
+            }
         }
 
         //discard a leader card
         else if(message instanceof DiscardLeaderCardMessage){
-            game.discardLeaderCard(player,((DiscardLeaderCardMessage) message).getN());
+            try {
+                game.discardLeaderCard(player, ((DiscardLeaderCardMessage) message).getN());
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+            finally{
+                clients.get(player).setMessageReady(false);
+            }
         }
 
         //turn finished
         else if(message instanceof TurnDoneMessage){
+            clients.get(player).setMessageReady(false);
+            clients.get(player).setMessageReady(false);
             return true;
         }
 
         //message not recognized
-        else clients.get(player).sendStandardMessage(StandardMessages.wrongObject);
-
-        clients.get(player).setMessageReady(false);
+        else {
+            clients.get(player).sendStandardMessage(StandardMessages.wrongObject);
+            clients.get(player).setMessageReady(false);
+        }
         return false;
+    }
+
+    //TODO: complete the multiple exceptions that can be thrown
+    private void handleExceptions(Exception e, int player){
+        if(e instanceof ActionAlreadyDoneException) clients.get(player).sendStandardMessage(StandardMessages.actionAlreadyDone);
+        else if(e instanceof IndexOutOfBoundsException) clients.get(player).sendStandardMessage(StandardMessages.IndexOutOfBound);
     }
 }

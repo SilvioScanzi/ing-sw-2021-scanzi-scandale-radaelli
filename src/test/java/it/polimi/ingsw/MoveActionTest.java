@@ -180,6 +180,27 @@ public class MoveActionTest {
         );
     }
 
+    @Test
+    @DisplayName("Ensure discard remaining resources is correct")
+    void testDiscard(){
+        game = new Game();
+        String s = "player1";
+        String p = "player2";
+        ArrayList<String> st = new ArrayList<>();
+        st.add(s);
+        st.add(p);
+        game.setup(st);
+        playerBoard = game.getBoard(0);
+        Board playerBoard2 = game.getBoard(1);
+        playerBoard.getHand().add(Resources.Coins);
+        playerBoard.getHand().add(Resources.Shields);
+        playerBoard.getHand().add(Resources.Stones);
+        playerBoard.getHand().add(Resources.Servants);
+        game.discardRemainingResources(0);
+        assert(playerBoard.getHand().size()==0);
+        assert(playerBoard2.getFaithtrack().getFaithMarker() == 4);
+    }
+
     //Leader Cards test
 
     @Test

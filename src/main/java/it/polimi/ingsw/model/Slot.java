@@ -24,7 +24,7 @@ public class Slot {
         else return developmentcards.get(developmentcards.size()-1);
     }
 
-    public ArrayList<DevelopmentCard> getDevelopmentcards() {
+    public ArrayList<DevelopmentCard> getDevelopmentCards() {
         return developmentcards;
     }
 

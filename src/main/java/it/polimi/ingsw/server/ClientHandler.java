@@ -1,4 +1,4 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.messages.*;
 
@@ -11,11 +11,9 @@ import java.util.Scanner;
 public class ClientHandler implements Runnable{
     private Object message;
     private String nickname = null;
-    private Socket socket;
+    private final Socket socket;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
-    private PrintWriter out;
-    private Scanner in;
     private HashMap<ClientHandler,String> nameQueue;
     private boolean chosenNickName = false;
     private boolean myTurn = false;
@@ -24,6 +22,7 @@ public class ClientHandler implements Runnable{
     private boolean lobbyReady = false;
     private boolean discardLeaderCard = false;
     private boolean finishingSetup = false;
+    private boolean moveNeeded = false;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -32,8 +31,10 @@ public class ClientHandler implements Runnable{
             socketIn = new ObjectInputStream(socket.getInputStream());
         }
         catch(Exception e){e.printStackTrace();}
-        out = new PrintWriter(socketOut);
-        in = new Scanner(socketIn);
+    }
+
+    public void setMoveNeeded(boolean moveNeeded) {
+        this.moveNeeded = moveNeeded;
     }
 
     public void setMyTurn(boolean myTurn) {
@@ -126,8 +127,11 @@ public class ClientHandler implements Runnable{
         }
         else if(myTurn) {
             if(messageReady) sendStandardMessage(StandardMessages.waitALittleMore);
-            messageReady = true;
-            this.notifyAll();
+            else if(moveNeeded && !(message instanceof MoveResourcesMessage)) sendStandardMessage(StandardMessages.wrongObject);
+            else {
+                messageReady = true;
+                this.notifyAll();
+            }
         }
         else sendStandardMessage(StandardMessages.notYourTurn);
     }

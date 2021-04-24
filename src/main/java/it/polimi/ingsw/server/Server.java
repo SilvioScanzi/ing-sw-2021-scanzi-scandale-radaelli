@@ -1,7 +1,6 @@
-package it.polimi.ingsw.network;
+package it.polimi.ingsw.server;
 
 import it.polimi.ingsw.messages.ChoosePlayerNumberMessage;
-import it.polimi.ingsw.messages.Message;
 import it.polimi.ingsw.messages.StandardMessages;
 
 import java.io.IOException;

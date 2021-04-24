@@ -57,7 +57,7 @@ public class Warehouse implements Cloneable {
             throw new IllegalArgumentException("Invalid depot number");
     }
 
-    public void addDepot(int depotNumber, Resources resource, int quantity) throws IllegalArgumentException, ResourceErrorException, IncompatibleResourceException, InvalidPlacementException{
+    public void addDepot(int depotNumber, Resources resource, int quantity) throws IndexOutOfBoundsException,ResourceErrorException,IncompatibleResourceException,InvalidPlacementException{
         if(depotNumber==1){
             if(quantity != 1) throw new ResourceErrorException("Depot 1 can't contain these resources");
             if(depot2.getKey().equals(Optional.of(resource))) throw new InvalidPlacementException("Depot 2 has already got this resource");
@@ -92,10 +92,10 @@ public class Warehouse implements Cloneable {
             else throw new ResourceErrorException("Depot 3 is already full");
         }
         else
-            throw new IllegalArgumentException("Invalid depot number");
+            throw new IndexOutOfBoundsException("Invalid depot number");
     }
 
-    public void subDepot(int depotNumber, int quantity) throws IllegalArgumentException, ResourceErrorException {
+    public void subDepot(int depotNumber, int quantity) throws IndexOutOfBoundsException, ResourceErrorException {
         if(depotNumber==1){
             if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 doesn't have this many resources");
             if((depot1.getKey().isPresent())){
@@ -127,10 +127,11 @@ public class Warehouse implements Cloneable {
             }
             else throw new ResourceErrorException("Depot 3 doesn't have this many resources");
         }
-        else throw new IllegalArgumentException("Invalid depot number");
+        else throw new IndexOutOfBoundsException("Invalid depot number");
     }
 
-    public boolean checkResourcePresent(int depot, Resources resource){
+    public boolean checkResourcePresent(int depot, Resources resource) throws IndexOutOfBoundsException{
+        if(depot<1 || depot>3) throw new IndexOutOfBoundsException();
         return getDepot(depot).getKey().isPresent() && getDepot(depot).getKey().get().equals(resource);
     }
 }

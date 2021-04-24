@@ -16,8 +16,13 @@ public enum StandardMessages implements Serializable {
     waitALittleMore("Aspetta un attimo..."),
     notYourTurn("Non è ancora il tuo turno"),
     leaderCardOutOfBounds("La carta leader selezionata non esiste"),
-    leaderCardWrongFormat("Non hai selezionato il giusto numero di carte leader da scartare");
-
+    leaderCardWrongFormat("Non hai selezionato il giusto numero di carte leader da scartare"),
+    actionAlreadyDone("Hai già fatto un azione per questo turno"),
+    IndexOutOfBound("Hai scelto un elemento non esistente"),
+    whiteMarbleNotCongruent("Hai scelto un numero di biglie bianche da convertire non congruente"),
+    emptyDCStack("La carta scelta è già stata acquistata da un altro giocatore"),
+    invalidSlot("Lo slot scelto non può accogliere questa carta"),
+    invalidChoice("La scelta effettuata sulla locazione della risorsa non è valida");
     //...
 
     private final String message;
