@@ -10,8 +10,7 @@ public class DevelopmentCard {
     private final HashMap<Resources,Integer> producedResources;     //Resources produced during the activation
     private final int producedFaith;                                //Faith produced during the activation
 
-    public DevelopmentCard(int level, Colours colour, int victoryPoints, HashMap<Resources, Integer> cost,
-                           HashMap<Resources, Integer> requiredResources, HashMap<Resources, Integer> producedResources, int producedFaith) {
+    public DevelopmentCard(int level, Colours colour, int victoryPoints, HashMap<Resources, Integer> cost, HashMap<Resources, Integer> requiredResources, HashMap<Resources, Integer> producedResources, int producedFaith) {
         this.level = level;
         this.colour = colour;
         this.victoryPoints = victoryPoints;

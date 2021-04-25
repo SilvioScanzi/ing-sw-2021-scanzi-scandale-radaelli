@@ -15,33 +15,26 @@ import java.io.IOException;
 import java.util.*;
 
 public class LeaderCardParser {
-    private final String path;
+    private final Document document;
 
     public LeaderCardParser(String path){
-        this.path = path;
+        Document tmp = null;
+        File f = new File(path);
+        if(!f.exists() || !f.isDirectory()) f = new File("src/xml_src/leaderCards.xml");
+        try {
+            tmp = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f);
+            tmp.getDocumentElement().normalize();
+        }
+        catch (ParserConfigurationException |IOException | SAXException e){
+            e.printStackTrace();
+        }
+        finally{
+            document = tmp;
+        }
     }
 
     public ArrayList<LeaderCard> parseFromXML() throws IOException, SAXException {
         ArrayList<LeaderCard> tmp = new ArrayList<>();
-
-        //Instantiating objects for the XML file parsing
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = null;
-        try {
-            builder = factory.newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            e.printStackTrace();
-        }
-
-        /*Getting the XML file via path. For future updates: pathname is a String, it could be used another String
-        given to the Constructor, eventually resorting to the default one
-        Especially useful for parameter editor*/
-        assert builder != null;
-        Document document = builder.parse(new File(path));
-        document.getDocumentElement().normalize();
-
-        /* Only used for testing to identify if the DOM parser worked as intended
-        Element root = document.getDocumentElement(); */
 
         NodeList leadercards = document.getElementsByTagName("leadercard");
         //Iterating on the nodelist previously got, single node for every LCCard
@@ -90,5 +83,73 @@ public class LeaderCardParser {
             }
         }
         return tmp;
+    }
+
+    public String findCardByID(Resources r, int vp, int sr){
+        NodeList leadercards = document.getElementsByTagName("leadercard");
+        //Iterating on the nodelist previously got, single node for every LCCard
+        for (int i = 0; i < leadercards.getLength(); i++) {
+            Node leadercardnode = leadercards.item(i);
+            if (leadercardnode.getNodeType() == Node.ELEMENT_NODE) {
+                Element leadercardElement = (Element) leadercardnode;
+
+                int victorypoints = Integer.parseInt(leadercardElement.getElementsByTagName("victorypoints").item(0).getTextContent());
+                if(victorypoints == vp) {
+                    Resources restype = Resources.valueOf(leadercardElement.getElementsByTagName("restype").item(0).getTextContent());
+                    if (restype.equals(r)) {
+
+                        String[] requiredcoloursString = (leadercardElement.getElementsByTagName("requiredcolours").item(0).getTextContent()).split("-");
+                        String[] requiredresourcesString = (leadercardElement.getElementsByTagName("requiredresources").item(0).getTextContent()).split("-");
+                        String type = leadercardElement.getElementsByTagName("abilitytype").item(0).getTextContent();
+                        int capacity = Integer.parseInt(leadercardElement.getElementsByTagName("capacity").item(0).getTextContent());
+
+                        //Generating the HashMap from costString
+                        HashMap<Colours, Pair<Integer, Integer>> requiredcolours = new HashMap<>();
+                        if (!requiredcoloursString[0].equals("NULL")) {
+                            for (int j = 0; j < requiredcoloursString.length; j = j + 3) {
+                                requiredcolours.put(Colours.valueOf(requiredcoloursString[j]), new Pair<>(Integer.parseInt(requiredcoloursString[j + 1]), Integer.parseInt(requiredcoloursString[j + 2])));
+                            }
+                        }
+
+                        //Generating the HashMap from requiredresourcesString
+                        HashMap<Resources, Integer> requiredresources = new HashMap<>();
+                        if (!requiredresourcesString[0].equals("NULL")) {
+                            for (int j = 0; j < requiredresourcesString.length; j = j + 2) {
+                                requiredresources.put(Resources.valueOf(requiredresourcesString[j]), Integer.parseInt(requiredresourcesString[j + 1]));
+                            }
+                        }
+                        Ability ability = null;
+
+                        if(type.equals("DiscountAbility")){
+                            ability = new DiscountAbility(restype,capacity);
+                        }
+                        else if(type.equals("ExtraSlotAbility")){
+                            ability = new ExtraSlotAbility(restype,capacity);
+                            try {
+                                ability.doUpdateSlot(r,sr);
+                            }catch(Exception e){e.printStackTrace();}
+                        }
+                        else if(type.equals("ProductionPowerAbility")){
+                            ability = new ProductionPowerAbility(restype);
+                        }
+                        else if(type.equals("WhiteMarbleAbility")){
+                            ability = new WhiteMarbleAbility(restype);
+                        }
+
+                        String tmp = "Punti vittoria: "+vp+"\n";
+                        for(Colours c: requiredcolours.keySet()){
+                            tmp=tmp.concat("Colore richiesto: "+c.toString()+"; Numero di carte richiesto: "+requiredcolours.get(c).getKey()+"; Livello richiesto: "+requiredcolours.get(c).getValue()+"\n");
+                        }
+                        for(Resources res:requiredresources.keySet()){
+                            tmp=tmp.concat("Risorsa richiesta: "+res.toString()+"; Numero: "+requiredresources.get(res)+"\n");
+                        }
+
+                        tmp=tmp.concat(ability.toString()+"\n");
+                        return tmp;
+                    }
+                }
+            }
+        }
+        return "";
     }
 }
