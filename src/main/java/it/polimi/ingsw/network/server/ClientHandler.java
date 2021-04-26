@@ -28,6 +28,7 @@ public class ClientHandler implements Runnable{
         try{
             socketOut = new ObjectOutputStream(socket.getOutputStream());
             socketIn = new ObjectInputStream(socket.getInputStream());
+            socketOut.writeObject(StandardMessages.connectionEstablished);
         }
         catch(Exception e){e.printStackTrace();}
     }
@@ -106,7 +107,7 @@ public class ClientHandler implements Runnable{
                         nameQueue.put(this,inputNickname);
                         chosenNickName = true;
                         nickname = inputNickname;
-                        nameQueue.notify();
+                        nameQueue.notifyAll();
                     }
                     else sendStandardMessage(StandardMessages.nicknameAlreadyInUse);
                 }

@@ -1,8 +1,9 @@
 package it.polimi.ingsw.model;
 
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Triplet<A, B, C> {
+public class Triplet<A, B, C> implements Serializable {
     private A _1;
     private B _2;
     private C _3;

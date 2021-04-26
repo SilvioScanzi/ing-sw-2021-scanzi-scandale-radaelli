@@ -1,18 +1,23 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.network.messages.ChoosePlayerNumberMessage;
+import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.view.CLI.CLI;
+import it.polimi.ingsw.view.View;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class NetworkHandler implements Runnable{
-    Socket socket;
+    private Socket socket;
+    private View view;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
-    Scanner in = new Scanner(System.in);
+    private Scanner in = new Scanner(System.in);
 
     public NetworkHandler(){
         try{
@@ -20,24 +25,138 @@ public class NetworkHandler implements Runnable{
             socketOut = new ObjectOutputStream(socket.getOutputStream());
             socketIn = new ObjectInputStream(socket.getInputStream());
         }catch(Exception e){System.out.println("Connessione non disponibile"); e.printStackTrace();}
+
+        view = new CLI();
+        new Thread((CLI) view).start();
     }
 
     @Override
     public void run() {
         while(true){
             try {
-                System.out.println(socketIn.readObject().toString());
+                Object message = socketIn.readObject();
+                handleMessage(message);
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
-            String s = in.nextLine();
-            ChoosePlayerNumberMessage CPNM = new ChoosePlayerNumberMessage(Integer.parseInt(s));
-            try {
-                socketOut.writeObject(CPNM);
-            } catch (IOException e) {
-                e.printStackTrace();
+        }
+    }
+
+    private void handleMessage(Object message){
+        boolean redo = false;
+        if(message instanceof StandardMessages) {
+            System.out.println(message.toString());
+            if(message.equals(StandardMessages.choosePlayerNumber) || message.equals(StandardMessages.chooseNickName)
+                || message.equals(StandardMessages.chooseOneResource) || message.equals(StandardMessages.chooseTwoResource)
+                || message.equals(StandardMessages.nicknameAlreadyInUse) || message.equals(StandardMessages.chooseDiscardedLC)){
+                        do {
+                            view.setCanInput(true);
+                            synchronized (view) {
+                                while (!view.getMessageReady()) {
+                                    try { view.wait(); } catch (InterruptedException e) { e.printStackTrace(); }
+                                }
+                            }
+                            String inputMessage = view.getMessage();
+                            redo = buildStandardMessage((StandardMessages) message, inputMessage);
+                        }while(!redo);
             }
         }
+        else if(message.equals(StandardMessages.yourTurn)){view.yourTurn();}
+        else if(message instanceof Message){
+            printMessage((Message) message);
+        }
+    }
+
+    /*TODO: spostare le system.out nella CLI (View interface) in modo da modificare solo quella classe
+       una volta che ci sarà la GUI*/
+    private boolean buildStandardMessage(StandardMessages message, String inputMessage){
+        view.setMessageReady(false);
+
+        if(message.equals(StandardMessages.chooseNickName) || message.equals(StandardMessages.nicknameAlreadyInUse)){
+            sendObject(new NicknameMessage(inputMessage));
+        }
+        else if(message.equals(StandardMessages.choosePlayerNumber)){
+            int n = 0;
+            try{
+                n = Integer.parseInt(inputMessage);
+            }catch(NumberFormatException e){
+                System.out.println(StandardMessages.wrongObject.toString());
+                return false;
+            }
+
+            if(n<1 || n>4) {
+                System.out.println("Numero di giocatori non supportato.");
+                return false;
+            } else {
+                sendObject(new ChoosePlayerNumberMessage(n));
+            }
+
+        }
+        else if(message.equals(StandardMessages.chooseOneResource)){
+            Resources r;
+            try{
+                r = Resources.getResourceFromString(inputMessage);
+            }catch(IllegalArgumentException e){
+                System.out.println("Risorsa non supportata: inseriscine una valida");
+                return false;
+            }
+            sendObject(new FinishSetupMessage(new ArrayList<Resources>(){{add(r);}}));
+        }
+        else if(message.equals(StandardMessages.chooseTwoResource)){
+            ArrayList<Resources> tmp = new ArrayList<>();
+            try{
+                String[] s = inputMessage.split(" ");
+                for(String a : s){
+                    tmp.add(Resources.getResourceFromString(a));
+                }
+            }catch(IllegalArgumentException e){
+                System.out.println("Risorsa non supportata: inseriscine una valida");
+                return false;
+            }
+
+            if(tmp.size()!=2) {
+                System.out.println("Numero errato di risorse: riscrivile");
+                return false;
+            }
+
+            sendObject(new FinishSetupMessage(tmp));
+        }
+        else if(message.equals(StandardMessages.chooseDiscardedLC)){
+            int[] inputChoice = new int[2];
+            try{
+                String[] s = inputMessage.split(" ");
+                if(s.length!=2){
+                    System.out.println("Devi inserire 2 Leader Card da scartare! ");
+                    return false;
+                }
+                for(int i=0;i<2;i++){
+                    inputChoice[i] = Integer.parseInt(s[i]);
+                    if(inputChoice[i]<1 || inputChoice[i]>4){
+                        System.out.println("Errore nella scelta, scegli indici compresi tra 1 e 4.");
+                        return false;
+                    }
+                }
+                if(inputChoice[0]==inputChoice[1]){
+                    System.out.println("Errore nella scelta, servono due indici diversi");
+                    return false;
+                }
+            }catch(Exception e){
+                System.out.println("Errore nella scelta!");
+                return false;
+            }
+
+            sendObject(new SetupLCDiscardMessage(inputChoice));
+        }
+
+        return true;
+    }
+
+    private void printMessage(Message message){
+        if(message instanceof MarketMessage){
+            view.printMarket(((MarketMessage) message).getGrid(),((MarketMessage) message).getRemainingMarble());
+        }
+        else if(message instanceof LeaderCardMessage)
+            view.printLC(((LeaderCardMessage) message).getLC());
     }
 
     public void sendObject(Object o){

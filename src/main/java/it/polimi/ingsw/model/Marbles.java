@@ -1,6 +1,8 @@
 package it.polimi.ingsw.model;
 
-public enum Marbles {
+import java.io.Serializable;
+
+public enum Marbles implements Serializable {
     Grey,
     Purple,
     Red,

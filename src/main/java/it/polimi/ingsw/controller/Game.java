@@ -51,7 +51,20 @@ public class Game {
         return players.get(i).getKey();
     }
 
+    public Board getBoard(String s){
+        System.out.println("Giocatori Game: " + players.toString());
+        for(Pair<String,Board> p : players){
+            if(p.getKey().equals(s)) return p.getValue();
+        }
+
+        return null;
+    }
+
     public Board getBoard(int i){return players.get(i).getValue();}
+
+    public Market getMarket() {
+        return market;
+    }
 
     public DevelopmentCardMarket getDevelopmentCardMarket() {
         return developmentCardMarket;

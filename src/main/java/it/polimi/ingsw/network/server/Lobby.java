@@ -2,6 +2,7 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.model.LeaderCard;
 import it.polimi.ingsw.network.messages.*;
 
 import java.util.ArrayList;
@@ -43,14 +44,26 @@ public class Lobby implements Runnable {
         for(ClientHandler CH : clients){
             CH.sendStandardMessage(StandardMessages.chooseNickName);
         }
-        for(int i=0;i<playerNumber;i++){
-            synchronized (clientNames) {
-                if(clientNames.get(clients.get(i))==null) {try{clientNames.wait();}catch(Exception e){e.printStackTrace();}}
+        synchronized (clientNames){
+            while(clientNames.size()<playerNumber){
+                try{clientNames.wait();
+                }catch(Exception e){e.printStackTrace();}
+            }
+            for(int i=0;i<playerNumber;i++){
                 playersName.add(clientNames.get(clients.get(i)));
             }
         }
 
+        //beginning setup
         game.setup(playersName);
+        System.out.println("Giocatori Lobby: " + playersName.toString());
+        //sending market and leader cards drawn to choose the ones to keep
+        for(ClientHandler CH : clients){
+            CH.sendObject(new MarketMessage(game.getMarket()));
+            CH.sendObject(new LeaderCardMessage(game.getBoard(clientNames.get(CH)).getLeadercards()));
+            CH.sendStandardMessage(StandardMessages.chooseDiscardedLC);
+        }
+
         for(int i=0;i<playerNumber;i++){
             synchronized (clients.get(i)) {
                 while(!clients.get(i).getMessageReady()){
@@ -89,7 +102,7 @@ public class Lobby implements Runnable {
     }
 
     private void playingSolo(){
-
+        //HAH, GAY
     }
 
     public void playingMultiplayer(){

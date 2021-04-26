@@ -81,6 +81,10 @@ public class Market {
         return grid;
     }
 
+    public Marbles getRemainingMarble() {
+        return remainingMarble;
+    }
+
     public int getWhiteMarbles(boolean row, int i){
         int n=0;
         if(row){
