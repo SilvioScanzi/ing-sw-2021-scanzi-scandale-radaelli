@@ -1,15 +1,15 @@
 package it.polimi.ingsw.view;
 import it.polimi.ingsw.controller.Game;
-import it.polimi.ingsw.model.*;
+//import it.polimi.ingsw.model.
 
 import java.util.*;
 
-public class GameHandler {
-    private Game game;
-    private Scanner scanner = new Scanner(System.in);
+public class GameHandler {}
+    //private Game game;
+    //private Scanner scanner = new Scanner(System.in);
 
     //tecnicamente da fare in rete, tramite gestione delle lobby
-    public void init(){
+    /*public void init(){
         game = new Game();
         System.out.println("Benvenuti nel gioco 'Maestri del rinascimento' ");
         /*System.out.println("Inserisci i nomi dei giocatori: ");
@@ -46,8 +46,8 @@ public class GameHandler {
         }
         else {
             playing(s.size());
-        }*/
-    }
+        }
+    }*/
 
     //TODO: check next time
     /*private void playingSolo(){
@@ -229,7 +229,7 @@ public class GameHandler {
     }
 
     //TODO: sistemare le chiamate alla funzione del Game
-    /*private boolean buyDevelopmentAction(int player) {
+    private boolean buyDevelopmentAction(int player) {
         while(true){
             System.out.println(game.getDevelopmentcardmarket().toString());
             System.out.println(game.getBoard(player).slottoString());
@@ -400,7 +400,7 @@ public class GameHandler {
     }*/
 
     //TODO: sistemare le chiamate alla funzione del Game
-    private void moveAction(int player){
+    /*private void moveAction(int player){
         Board playerBoard = game.getBoard(player);
         boolean done = false;
         while(!done) {
@@ -455,4 +455,4 @@ public class GameHandler {
         }while(index<1 || index>(playerBoard.getLeadercards().size()));
             game.discardLeaderCard(player,index);
     }
-}
+}*/

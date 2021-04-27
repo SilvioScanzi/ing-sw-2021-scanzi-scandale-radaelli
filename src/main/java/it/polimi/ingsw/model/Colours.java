@@ -16,4 +16,14 @@ public enum Colours {
             default: return "Error";
         }
     }
+
+    public static Colours getColourFromString(String string) throws IllegalArgumentException {
+        switch(string){
+            case "BL" : return Blue;
+            case "VE" : return Green;
+            case "GI" : return Yellow;
+            case "VI" : return Purple;
+            default : throw new IllegalArgumentException();
+        }
+    }
 }

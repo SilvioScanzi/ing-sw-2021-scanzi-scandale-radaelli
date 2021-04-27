@@ -1,5 +1,7 @@
 package it.polimi.ingsw.network.client;
 
+import it.polimi.ingsw.model.Colours;
+import it.polimi.ingsw.model.Pair;
 import it.polimi.ingsw.model.Resources;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.CLI.CLI;
@@ -26,7 +28,7 @@ public class NetworkHandler implements Runnable{
             socketIn = new ObjectInputStream(socket.getInputStream());
         }catch(Exception e){System.out.println("Connessione non disponibile"); e.printStackTrace();}
 
-        view = new CLI();
+        view = new CLI(this);
         new Thread((CLI) view).start();
     }
 
@@ -61,7 +63,10 @@ public class NetworkHandler implements Runnable{
                         }while(!redo);
             }
         }
-        else if(message.equals(StandardMessages.yourTurn)){view.yourTurn();}
+        else if(message.equals(StandardMessages.yourTurn)){
+            view.setYourTurn(true);
+            view.yourTurnPrint();
+        }
         else if(message instanceof Message){
             printMessage((Message) message);
         }
@@ -163,5 +168,18 @@ public class NetworkHandler implements Runnable{
         try{
             socketOut.writeObject(o);
         }catch(IOException e){e.printStackTrace();}
+    }
+
+    public void buildBuyResources(boolean r,int n,ArrayList<Integer> requestedWMConversion){
+        sendObject(new BuyResourcesMessage(r,n,requestedWMConversion));
+    }
+
+    public void buildEndTurnMessage(){
+        sendObject(new TurnDoneMessage(true));
+        view.setYourTurn(false);
+    }
+
+    public void buildBuyDC(Colours colour,int level,int slot,ArrayList<Pair<String,Integer>> userChoice){
+        sendObject(new BuyDevelopmentCardMessage(colour,level,slot,userChoice));
     }
 }

@@ -299,7 +299,6 @@ public class Lobby implements Runnable {
         //turn finished
         else if(message instanceof TurnDoneMessage){
             clients.get(player).setMessageReady(false);
-            clients.get(player).setMessageReady(false);
             return true;
         }
 

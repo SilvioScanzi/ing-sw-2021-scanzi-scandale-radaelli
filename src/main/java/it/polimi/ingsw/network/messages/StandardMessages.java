@@ -11,6 +11,7 @@ public enum StandardMessages implements Serializable {
     chooseTwoResource("Scegli due risorse extra da ottenere"),  //setup
     chooseDiscardedLC("Scegli le Leader Card da scartare"),
     yourTurn("É il tuo turno"),
+
     //Error messages
     wrongObject("Hai inviato dei dati non validi"),
     nicknameAlreadyInUse("Il nickname scelto è già in uso"),
