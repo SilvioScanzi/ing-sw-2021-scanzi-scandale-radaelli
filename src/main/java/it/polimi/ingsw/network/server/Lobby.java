@@ -2,7 +2,6 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.exceptions.*;
-import it.polimi.ingsw.model.LeaderCard;
 import it.polimi.ingsw.network.messages.*;
 
 import java.util.ArrayList;
@@ -118,6 +117,8 @@ public class Lobby implements Runnable {
                 clients.get(i).setMessageReady(false);
             }
         }
+
+        clients.get(game.getInkwell()).setFinishingSetup(true);
 
         int i = game.getInkwell();
         boolean lastRound = false;

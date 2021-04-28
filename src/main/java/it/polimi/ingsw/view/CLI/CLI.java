@@ -11,8 +11,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 //ASKPROF: va bene avere un attributo networkHandler come attributo o meglio fare altro?
 //ASKPROF: salviamo una classe model (lato client) con LC e poco altro per fare controlli e mandare meno messaggi
-/*TODO: network handler sempre in ascolto, CLI scrive usando il metodo sendObject, usiamo una sorta di buffer per stampare a schermo
-*  quando finisce l'azione (se non sono errori). IDEA MACCHINA A STATI*/
+
 public class CLI implements View, Runnable {
     private String message;
     private boolean messageReady = false;
@@ -28,8 +27,6 @@ public class CLI implements View, Runnable {
 
     @Override
     public void run(){
-
-        //TODO? possibile implementazione: va in wait alla fine del turno e networkHandler lo risveglia
         while(true){
             String tmpMessage = scanner.nextLine();
             if(canInput && !messageReady){
@@ -43,43 +40,35 @@ public class CLI implements View, Runnable {
             else if(!yourTurn){
                 System.out.println(StandardMessages.waitALittleMore.toString());
             }
-            else if(yourTurn){
+            else {
+                message = tmpMessage;
                 playerTurn();
             }
-
-
         }
     }
 
     public void playerTurn() {
         //TODO: actionDone da implementare nel caso delle prime 3 azioni
-        System.out.println("È arrivato il tuo turno! ");
-        System.out.println("Scegli l'azione che vuoi compiere: ");
-        System.out.println("1 - Compra Risorse dal mercato");
-        System.out.println("2 - Compra una Carta sviluppo");
-        System.out.println("3 - Attiva la produzione delle tue carte");
-        System.out.println("Oppure scegli un'azione bonus: ");
-        System.out.println("4 - Sposta le risorse dal magazzino");
-        System.out.println("5 - Gioca una carta leader");
-        System.out.println("6 - Scarta una carta leader");
-        System.out.println("0 - Fine turno");
-
-        int userChoice = -1;
-        do {
+        if(!messageReady) {
+            yourTurnPrint();
+        }
+        else messageReady = false;
+        int userChoice = getChoice();
+        while(userChoice < 0 || userChoice > 6){
+            System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
             message = scanner.nextLine();
             userChoice = getChoice();
-        } while (userChoice < 0 || userChoice > 6);
+        }
 
         switch (userChoice) {
-            case 1: buyResources();
-            case 2: buyDevelopmentCard();
-            case 3: activateProduction();
-            //case 4: moveResources();
-            case 5: playLeaderCard();
-            case 6: discardLeaderCard();
-            case 0: networkHandler.buildEndTurnMessage();
+            case 1: buyResources(); break;
+            case 2: buyDevelopmentCard(); break;
+            case 3: activateProduction(); break;
+            //case 4: moveResources(); break;
+            case 5: playLeaderCard(); break;
+            case 6: discardLeaderCard(); break;
+            case 0: networkHandler.buildEndTurnMessage(); break;
         }
-        canInput = false;
     }
 
     public boolean getMessageReady() {
@@ -122,7 +111,16 @@ public class CLI implements View, Runnable {
     }
 
     public void yourTurnPrint(){
-        System.out.println("È arrivato il tuo turno!");
+        System.out.println("È arrivato il tuo turno! ");
+        System.out.println("Scegli l'azione che vuoi compiere: ");
+        System.out.println("1 - Compra Risorse dal mercato");
+        System.out.println("2 - Compra una Carta sviluppo");
+        System.out.println("3 - Attiva la produzione delle tue carte");
+        System.out.println("Oppure scegli un'azione bonus: ");
+        System.out.println("4 - Sposta le risorse dal magazzino");
+        System.out.println("5 - Gioca una carta leader");
+        System.out.println("6 - Scarta una carta leader");
+        System.out.println("0 - Fine turno");
         //TODO: server manda le cose necessarie: board e market
     }
 
@@ -139,14 +137,12 @@ public class CLI implements View, Runnable {
         System.out.println("Hai scelto di comprare le risorse dal mercato");
         System.out.println("Seleziona una riga o una colonna (R per riga e C per colonna): ");
         String RC;
-        boolean r=false;
+        boolean r = false;
         do {
             RC = scanner.nextLine();
             if (RC.equals("R")) {
                 r = true;
-            } else if (RC.equals("C")) {
-                r = false;
-            } else {
+            } else if (!RC.equals("C")) {
                 System.out.println("Inserisci un valore valido");
             }
         }while(!RC.equals("R") && !RC.equals("C"));
@@ -171,9 +167,11 @@ public class CLI implements View, Runnable {
         ArrayList<Integer> requestedWMConversion = new ArrayList<>();
         System.out.println("Quali carte vuoi usare per le biglie bianche? (indice 1-2 della leader card)");
         String[] choice = scanner.nextLine().split(" ");
-        for(int i=0;i<choice.length;i++){
-            message = choice[i];
-            requestedWMConversion.add(getChoice());
+        if(choice.length!=0) {
+            for (String s : choice) {
+                message = s;
+                requestedWMConversion.add(getChoice());
+            }
         }
 
         networkHandler.buildBuyResources(r,n,requestedWMConversion);

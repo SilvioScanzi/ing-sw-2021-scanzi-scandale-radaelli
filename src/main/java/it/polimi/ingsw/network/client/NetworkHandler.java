@@ -16,7 +16,7 @@ import java.util.Scanner;
 
 public class NetworkHandler implements Runnable{
     private Socket socket;
-    private View view;
+    private final View view;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
     private Scanner in = new Scanner(System.in);
@@ -64,6 +64,8 @@ public class NetworkHandler implements Runnable{
             }
             else if(message.equals(StandardMessages.yourTurn)){
                 view.setYourTurn(true);
+                view.setCanInput(false);
+                view.setMessageReady(true);
                 view.yourTurnPrint();
             }
         }

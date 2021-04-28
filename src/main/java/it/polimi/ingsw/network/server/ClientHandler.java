@@ -151,10 +151,6 @@ public class ClientHandler implements Runnable{
         return (Message)message;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
     public void setMessageReady(boolean check) {
         this.messageReady = check;
     }
