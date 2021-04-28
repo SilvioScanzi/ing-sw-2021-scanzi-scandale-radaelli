@@ -51,22 +51,19 @@ public class Lobby implements Runnable {
             }
             for(int i=0;i<playerNumber;i++){
                 playersName.add(clientNames.get(clients.get(i)));
+                clients.get(i).setMessageReady(false);
             }
         }
 
         //beginning setup
         game.setup(playersName);
-        System.out.println("Giocatori Lobby: " + playersName.toString());
         //sending market and leader cards drawn to choose the ones to keep
-        for(ClientHandler CH : clients){
-            CH.sendObject(new MarketMessage(game.getMarket()));
-            CH.sendObject(new LeaderCardMessage(game.getBoard(clientNames.get(CH)).getLeadercards()));
-            CH.sendStandardMessage(StandardMessages.chooseDiscardedLC);
-        }
-
-        for(int i=0;i<playerNumber;i++){
+        for(int i=0; i<playerNumber; i++){
+            clients.get(i).sendObject(new MarketMessage(game.getMarket()));
+            clients.get(i).sendObject(new LeaderCardMessage(game.getBoard(clientNames.get(clients.get(i))).getLeadercards()));
+            clients.get(i).sendStandardMessage(StandardMessages.chooseDiscardedLC);
             synchronized (clients.get(i)) {
-                while(!clients.get(i).getMessageReady()){
+                while (!clients.get(i).getMessageReady()) {
                     try {
                         clients.get(i).wait();
                     } catch (InterruptedException e) {
@@ -74,22 +71,10 @@ public class Lobby implements Runnable {
                     }
                 }
                 Message message = clients.get(i).getMessage();
-                if(message instanceof SetupLCDiscardMessage){
-                    try{
-                        game.discardSelectedLC(i, ((SetupLCDiscardMessage) message).getDiscardedLC());
-                        clients.get(i).setDiscardLeaderCard(true);
-                    }
-                    catch(IndexOutOfBoundsException e) {
-                        e.printStackTrace();
-                        clients.get(i).sendStandardMessage(StandardMessages.leaderCardOutOfBounds);
-                        i--;
-                    }
-                    catch(IllegalArgumentException e) {
-                        e.printStackTrace();
-                        clients.get(i).sendStandardMessage(StandardMessages.leaderCardWrongFormat);
-                        i--;
-                    }
-                } else{
+                if (message instanceof SetupLCDiscardMessage) {
+                    game.discardSelectedLC(i, ((SetupLCDiscardMessage) message).getDiscardedLC());
+                    clients.get(i).setDiscardLeaderCard(true);
+                } else {
                     clients.get(i).sendStandardMessage(StandardMessages.wrongObject);
                     i--;
                 }
@@ -102,12 +87,12 @@ public class Lobby implements Runnable {
     }
 
     private void playingSolo(){
-        //HAH, GAY
+
     }
 
     public void playingMultiplayer(){
         int k=1;
-        for(int i=game.getInkwell()+1;i!=game.getInkwell();i=(i+1)%playerNumber) {
+        for(int i=(game.getInkwell()+1)%playerNumber;i!=game.getInkwell();i=(i+1)%playerNumber) {
             if (k == 1 || k == 2) {
                 clients.get(i).sendStandardMessage(StandardMessages.chooseOneResource);
             } else if (k == 3) {
@@ -130,6 +115,7 @@ public class Lobby implements Runnable {
                     clients.get(i).sendStandardMessage(StandardMessages.wrongObject);
                     i--;
                 }
+                clients.get(i).setMessageReady(false);
             }
         }
 

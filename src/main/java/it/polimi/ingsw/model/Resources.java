@@ -1,16 +1,13 @@
 package it.polimi.ingsw.model;
 
 
-public enum Resources {
-    Coins("MO"),
-    Stones("PI"),
-    Servants("SE"),
-    Shields("SC");
+import java.io.Serializable;
 
-    public final String label;
-    Resources(String label) {
-        this.label = label;
-    }
+public enum Resources implements Serializable {
+    Coins,
+    Stones,
+    Servants,
+    Shields;
 
     @Override
     public String toString(){

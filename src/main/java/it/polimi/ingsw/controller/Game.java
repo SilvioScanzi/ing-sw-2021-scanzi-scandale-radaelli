@@ -52,7 +52,6 @@ public class Game {
     }
 
     public Board getBoard(String s){
-        System.out.println("Giocatori Game: " + players.toString());
         for(Pair<String,Board> p : players){
             if(p.getKey().equals(s)) return p.getValue();
         }
@@ -83,11 +82,17 @@ public class Game {
     }
 
     //Called on all players but the first
-    public void finishingSetup(int player, ArrayList<Resources> userChoice){
+    public void finishingSetup(int player, ArrayList<String> userChoice) throws IllegalArgumentException{
+
+        ArrayList<Resources> R = new ArrayList<>();
+        for(String s : userChoice){
+             R.add(Resources.getResourceFromString(s));
+        }
+
         //player 2
         if(player == (inkwell + 1)% playerNumber) {
             try{
-                players.get(player).getValue().getWarehouse().addDepot(1,userChoice.get(0),1);
+                players.get(player).getValue().getWarehouse().addDepot(1,R.get(0),1);
             }catch(Exception e){e.printStackTrace();}
         }
         if(playerNumber >2){
@@ -95,7 +100,7 @@ public class Game {
             if(player == (inkwell + 2)% playerNumber) {
                 players.get(player).getValue().getFaithtrack().advanceTrack();
                 try{
-                    players.get(player).getValue().getWarehouse().addDepot(1,userChoice.get(0),1);
+                    players.get(player).getValue().getWarehouse().addDepot(1,R.get(0),1);
                 }catch(Exception e){e.printStackTrace();}
             }
         }
@@ -104,11 +109,11 @@ public class Game {
             if(player == (inkwell + 3)% playerNumber) {
                 players.get(player).getValue().getFaithtrack().advanceTrack();
                 try{
-                    if(userChoice.get(0).equals(userChoice.get(1)))
-                        players.get(player).getValue().getWarehouse().addDepot(2,userChoice.get(0),2);
+                    if(R.get(0).equals(R.get(1)))
+                        players.get(player).getValue().getWarehouse().addDepot(2,R.get(0),2);
                     else {
-                        players.get(player).getValue().getWarehouse().addDepot(1,userChoice.get(0),1);
-                        players.get(player).getValue().getWarehouse().addDepot(2,userChoice.get(1),1);
+                        players.get(player).getValue().getWarehouse().addDepot(1,R.get(0),1);
+                        players.get(player).getValue().getWarehouse().addDepot(2,R.get(1),1);
                     }
                 }catch(Exception e){e.printStackTrace();}
             }

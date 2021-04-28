@@ -7,6 +7,7 @@ import it.polimi.ingsw.utils.LeaderCardParser;
 import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 //ASKPROF: va bene avere un attributo networkHandler come attributo o meglio fare altro?
 //ASKPROF: salviamo una classe model (lato client) con LC e poco altro per fare controlli e mandare meno messaggi
@@ -72,13 +73,12 @@ public class CLI implements View, Runnable {
         switch (userChoice) {
             case 1: buyResources();
             case 2: buyDevelopmentCard();
-            //case 3: activateProduction();
+            case 3: activateProduction();
             //case 4: moveResources();
             //case 5: playLeaderCard();
             //case 6: discardLeaderCard();
             case 0: networkHandler.buildEndTurnMessage();
         }
-
         canInput = false;
     }
 
@@ -224,10 +224,51 @@ public class CLI implements View, Runnable {
             String[] s = scanner.nextLine().split(" ");
             message = s[0];
             n = getChoice();
-            userChoice.add(new Pair<>(s[1], n));
+            if(1<=n && n<=5) userChoice.add(new Pair<>(s[1], n));
+            else if(n!=6) System.out.println("Devi inserire dati validi!");
         } while (n != 6);
 
         networkHandler.buildBuyDC(colour,level,slot,userChoice);
     }
 
+    private void activateProduction() {
+        System.out.println("Hai deciso di attivare la produzione. ");
+        int index=-1;
+        HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice = new HashMap<>();
+        do {
+            System.out.println("Seleziona la carta che desideri. Per chiudere la selezione digita 0");
+            System.out.println("1, 2, 3 - Carte sviluppo negli slot");
+            System.out.println("4 - Potere di base");
+            System.out.println("5, 6 - Carte leader");  //needs update: show only for leader cards actually available
+            message = scanner.nextLine();
+            index = getChoice();
+            boolean leap = false;
+            if(1<=index && index<=6){
+                if(userChoice.get(index) != null){
+                    System.out.println("Hai già attivato questa produzione, vuoi sostituire la scelta effettuata in precedenza? [Y/N]");
+                    String m;
+                    do{
+                        m = scanner.nextLine();
+                    }while(!m.equals("Y") && !m.equals("N"));
+                    if(m.equals("N")) leap = true;
+                }
+                if(!leap){
+                    int n;
+                    ArrayList<Pair<String, Integer>> resourceArray = new ArrayList<>();
+                    System.out.println("Scegli che risorse vuoi usare e da dove le vuoi prendere.");
+                    System.out.println("Inserisci i valori a coppie (es: 2 SE)");
+                    System.out.println("1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Fine");
+                    System.out.println("SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
+                    do {
+                        String[] s = scanner.nextLine().split(" ");
+                        message = s[0];
+                        n = getChoice();
+                        if(1<=n && n<=5) resourceArray.add(new Pair<>(s[1], n));
+                        else if(n!=6) System.out.println("Devi inserire dati validi!");
+                    }while(n != 6);
+                    userChoice.put(index,resourceArray);
+                }
+            }
+        }while(index!=0);
+    }
 }

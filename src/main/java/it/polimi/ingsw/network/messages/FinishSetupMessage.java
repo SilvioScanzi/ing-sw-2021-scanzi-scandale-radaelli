@@ -6,13 +6,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class FinishSetupMessage extends Message implements Serializable {
-    private final ArrayList<Resources> userChoice;
+    private final ArrayList<String> userChoice;
 
-    public FinishSetupMessage(ArrayList<Resources> userChoice) {
+    public FinishSetupMessage(ArrayList<String> userChoice) {
         this.userChoice = userChoice;
     }
-
-    public ArrayList<Resources> getUserChoice() {
+    public ArrayList<String> getUserChoice() {
         return userChoice;
     }
 }

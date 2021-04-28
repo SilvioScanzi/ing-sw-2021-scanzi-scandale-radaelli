@@ -62,10 +62,10 @@ public class NetworkHandler implements Runnable{
                             redo = buildStandardMessage((StandardMessages) message, inputMessage);
                         }while(!redo);
             }
-        }
-        else if(message.equals(StandardMessages.yourTurn)){
-            view.setYourTurn(true);
-            view.yourTurnPrint();
+            else if(message.equals(StandardMessages.yourTurn)){
+                view.setYourTurn(true);
+                view.yourTurnPrint();
+            }
         }
         else if(message instanceof Message){
             printMessage((Message) message);
@@ -74,78 +74,74 @@ public class NetworkHandler implements Runnable{
 
     /*TODO: spostare le system.out nella CLI (View interface) in modo da modificare solo quella classe
        una volta che ci sarà la GUI*/
-    private boolean buildStandardMessage(StandardMessages message, String inputMessage){
+    private boolean buildStandardMessage(StandardMessages message, String inputMessage) {
         view.setMessageReady(false);
 
-        if(message.equals(StandardMessages.chooseNickName) || message.equals(StandardMessages.nicknameAlreadyInUse)){
+        if (message.equals(StandardMessages.chooseNickName) || message.equals(StandardMessages.nicknameAlreadyInUse)) {
             sendObject(new NicknameMessage(inputMessage));
-        }
-        else if(message.equals(StandardMessages.choosePlayerNumber)){
+
+        } else if (message.equals(StandardMessages.choosePlayerNumber)) {
             int n = 0;
-            try{
+            try {
                 n = Integer.parseInt(inputMessage);
-            }catch(NumberFormatException e){
+            } catch (NumberFormatException e) {
                 System.out.println(StandardMessages.wrongObject.toString());
                 return false;
             }
 
-            if(n<1 || n>4) {
+            if (n < 1 || n > 4) {
                 System.out.println("Numero di giocatori non supportato.");
                 return false;
             } else {
                 sendObject(new ChoosePlayerNumberMessage(n));
             }
 
-        }
-        else if(message.equals(StandardMessages.chooseOneResource)){
-            Resources r;
-            try{
-                r = Resources.getResourceFromString(inputMessage);
-            }catch(IllegalArgumentException e){
+        } else if (message.equals(StandardMessages.chooseOneResource)) {
+            if (!inputMessage.equals("SC") && !inputMessage.equals("SE") && !inputMessage.equals("PI") && !inputMessage.equals("MO")) {
                 System.out.println("Risorsa non supportata: inseriscine una valida");
                 return false;
             }
-            sendObject(new FinishSetupMessage(new ArrayList<Resources>(){{add(r);}}));
-        }
-        else if(message.equals(StandardMessages.chooseTwoResource)){
-            ArrayList<Resources> tmp = new ArrayList<>();
-            try{
-                String[] s = inputMessage.split(" ");
-                for(String a : s){
-                    tmp.add(Resources.getResourceFromString(a));
+            ArrayList<String> tmp = new ArrayList<>();
+            tmp.add(inputMessage);
+            sendObject(new FinishSetupMessage(tmp));
+
+        } else if (message.equals(StandardMessages.chooseTwoResource)) {
+            ArrayList<String> tmp = new ArrayList<>();
+            String[] s = inputMessage.split(" ");
+            for (String a : s) {
+                if (!a.equals("SC") && !a.equals("SE") && !a.equals("PI") && !a.equals("MO")) {
+                    System.out.println("Risorsa non supportata: inseriscine una valida");
+                    return false;
                 }
-            }catch(IllegalArgumentException e){
-                System.out.println("Risorsa non supportata: inseriscine una valida");
-                return false;
+                else tmp.add(a);
             }
 
-            if(tmp.size()!=2) {
+            if (s.length != 2) {
                 System.out.println("Numero errato di risorse: riscrivile");
                 return false;
             }
-
             sendObject(new FinishSetupMessage(tmp));
-        }
-        else if(message.equals(StandardMessages.chooseDiscardedLC)){
+
+        } else if (message.equals(StandardMessages.chooseDiscardedLC)) {
             int[] inputChoice = new int[2];
-            try{
+            try {
                 String[] s = inputMessage.split(" ");
-                if(s.length!=2){
+                if (s.length != 2) {
                     System.out.println("Devi inserire 2 Leader Card da scartare! ");
                     return false;
                 }
-                for(int i=0;i<2;i++){
+                for (int i = 0; i < 2; i++) {
                     inputChoice[i] = Integer.parseInt(s[i]);
-                    if(inputChoice[i]<1 || inputChoice[i]>4){
+                    if (inputChoice[i] < 1 || inputChoice[i] > 4) {
                         System.out.println("Errore nella scelta, scegli indici compresi tra 1 e 4.");
                         return false;
                     }
                 }
-                if(inputChoice[0]==inputChoice[1]){
+                if (inputChoice[0] == inputChoice[1]) {
                     System.out.println("Errore nella scelta, servono due indici diversi");
                     return false;
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 System.out.println("Errore nella scelta!");
                 return false;
             }

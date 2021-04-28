@@ -26,12 +26,12 @@ public class Server {
             System.err.println(e.getMessage());
             return;
         }
-        System.out.println("Server ready");
+        System.out.println("[SERVER] Ready");
 
         while (true) {
             try {
                 Socket socket = serverSocket.accept();
-                System.out.println("Connessione accettata");
+                System.out.println("[SERVER] Connection Established");
                 ClientHandler CH = new ClientHandler(socket);
                 executor.submit(CH);
                 synchronized (clientHandlers) {
@@ -39,7 +39,7 @@ public class Server {
                     clientHandlers.notifyAll();
                 }
                 if(first) {
-                    new Thread (() ->lobbyManager()).start();
+                    new Thread (this::lobbyManager).start();
                 }
                 first = false;
             } catch(IOException e) {
@@ -68,6 +68,8 @@ public class Server {
             players = message.getN();
         }
 
+        System.out.println("[SERVER] Player number chosen");
+
         //starting the lobby with the requested number of players
         synchronized (clientHandlers) {
             currentLobby = new Lobby(players);
@@ -85,8 +87,10 @@ public class Server {
         }
         new Thread(() -> currentLobby.run()).start();
 
+        System.out.println("[SERVER] Lobby started");
+
         //others waiting so a new lobby gets initialized...
-        if (clientHandlers.size() > 0) new Thread(()->lobbyManager()).start();
+        if (clientHandlers.size() > 0) new Thread(this::lobbyManager).start();
         else first = true;  //...otherwise waits for others to connect
     }
 }

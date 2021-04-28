@@ -115,22 +115,28 @@ public class ClientHandler implements Runnable{
         }
         else if(!discardLeaderCard){
             if(message instanceof SetupLCDiscardMessage){
-                messageReady = true;
-                this.notifyAll();
+                synchronized (this) {
+                    messageReady = true;
+                    this.notifyAll();
+                }
             } else sendStandardMessage(StandardMessages.wrongObject);
         }
         else if(!finishingSetup){
             if(message instanceof FinishSetupMessage){
-                messageReady = true;
-                this.notifyAll();
+                synchronized (this) {
+                    messageReady = true;
+                    this.notifyAll();
+                }
             } else sendStandardMessage(StandardMessages.wrongObject);
         }
         else if(myTurn) {
             if(messageReady) sendStandardMessage(StandardMessages.waitALittleMore);
             else if(moveNeeded && !(message instanceof MoveResourcesMessage)) sendStandardMessage(StandardMessages.wrongObject);
             else {
-                messageReady = true;
-                this.notifyAll();
+                synchronized (this) {
+                    messageReady = true;
+                    this.notifyAll();
+                }
             }
         }
         else sendStandardMessage(StandardMessages.notYourTurn);
