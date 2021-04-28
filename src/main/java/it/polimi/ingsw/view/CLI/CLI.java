@@ -64,7 +64,7 @@ public class CLI implements View, Runnable {
             case 1: buyResources(); break;
             case 2: buyDevelopmentCard(); break;
             case 3: activateProduction(); break;
-            //case 4: moveResources(); break;
+            case 4: moveResources(); break;
             case 5: playLeaderCard(); break;
             case 6: discardLeaderCard(); break;
             case 0: networkHandler.buildEndTurnMessage(); break;
@@ -237,7 +237,7 @@ public class CLI implements View, Runnable {
             System.out.println("Seleziona la carta che desideri. Per chiudere la selezione digita 0");
             System.out.println("1, 2, 3 - Carte sviluppo negli slot");
             System.out.println("4 - Potere di base");
-            System.out.println("5, 6 - Carte leader");  //needs update: show only for leader cards actually available
+            System.out.println("5, 6 - Carte leader");  //TODO: show only for leader cards actually available
             message = scanner.nextLine();
             index = getChoice();
             boolean leap = false;
@@ -255,8 +255,8 @@ public class CLI implements View, Runnable {
                     ArrayList<Pair<String, Integer>> resourceArray = new ArrayList<>();
                     System.out.println("Scegli che risorse vuoi usare e da dove le vuoi prendere.");
                     System.out.println("Inserisci i valori a coppie (es: 2 SE)");
-                    System.out.println("1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Fine");
-                    System.out.println("SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
+                    System.out.println("Posti: 1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Fine");
+                    System.out.println("Risorse: SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
                     do {
                         String[] s = scanner.nextLine().split(" ");
                         message = s[0];
@@ -268,6 +268,37 @@ public class CLI implements View, Runnable {
                 }
             }
         }while(index!=0);
+    }
+
+    //TODO: avendo un model, potremmo stampare ogni volta la sua board
+    private void moveResources(){
+        System.out.println("Hai deciso di spostare le risorse. ");
+        System.out.println("Scegli la risorsa, il luogo da dove prendela e il luogo dove metterla.");
+        System.out.println("La mano serve solo a fare scambi, quindi non lasciarci risorse!");
+        System.out.println("Inserisci i valori a triplette (es: SE 2 3); per finire digita solo il numero richiesto.");
+        System.out.println("Posti: 1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 0 - hand; 7 - Fine");
+        System.out.println("Risorse: SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
+        ArrayList<Triplet<String,Integer,Integer>> userChoice = new ArrayList<>();
+        String[] s;
+        do{
+           s = scanner.nextLine().split(" ");
+           if(s[0].equals("7")) ;
+           else if(!s[0].equals("SE") && !s[0].equals("MO") && !s[0].equals("SC") && !s[0].equals("PI"))
+               System.out.println("Risorsa inestitente. Inserisci di nuovo la tripletta: ");
+           else{
+               int[] tmp = new int[2];
+               message = s[1];
+               tmp[0] = getChoice();
+               message = s[2];
+               tmp[1] = getChoice();
+               if(tmp[0]<0 || tmp[0]>6 || tmp[1]<0 || tmp[1]>6){
+                   System.out.println("Posto inesistente. Inserisci di nuovo la tripletta:  ");
+               }
+               else userChoice.add(new Triplet<>(s[1],tmp[0],tmp[1]));
+           }
+        }while(!s[0].equals("7"));
+
+        networkHandler.buildMoveResources(userChoice);
     }
 
     //needs update: show only for leader cards actually available

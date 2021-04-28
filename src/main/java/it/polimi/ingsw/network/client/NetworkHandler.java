@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.client;
 import it.polimi.ingsw.model.Colours;
 import it.polimi.ingsw.model.Pair;
 import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Triplet;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.view.CLI.CLI;
 import it.polimi.ingsw.view.View;
@@ -180,6 +181,11 @@ public class NetworkHandler implements Runnable{
     public void buildBuyDC(Colours colour,int level,int slot,ArrayList<Pair<String,Integer>> userChoice){
         sendObject(new BuyDevelopmentCardMessage(colour,level,slot,userChoice));
     }
+
+    public void buildMoveResources(ArrayList<Triplet<String, Integer, Integer>> userChoice){
+        sendObject(new MoveResourcesMessage(userChoice));
+    }
+
     public void buildActivateLC (int userChoice){
         sendObject(new PlayLeaderCardMessage(userChoice));
     }

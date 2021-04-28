@@ -6,16 +6,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class MoveResourcesMessage extends Message implements Serializable {
-    private final int player;
     private final ArrayList<Triplet<String,Integer,Integer>> userChoice;
 
-    public MoveResourcesMessage(int player, ArrayList<Triplet<String, Integer, Integer>> userChoice) {
-        this.player = player;
+    public MoveResourcesMessage(ArrayList<Triplet<String, Integer, Integer>> userChoice) {
         this.userChoice = userChoice;
-    }
-
-    public int getPlayer() {
-        return player;
     }
 
     public ArrayList<Triplet<String, Integer, Integer>> getUserChoice() {
