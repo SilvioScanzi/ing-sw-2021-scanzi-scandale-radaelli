@@ -75,8 +75,8 @@ public class CLI implements View, Runnable {
             case 2: buyDevelopmentCard();
             case 3: activateProduction();
             //case 4: moveResources();
-            //case 5: playLeaderCard();
-            //case 6: discardLeaderCard();
+            case 5: playLeaderCard();
+            case 6: discardLeaderCard();
             case 0: networkHandler.buildEndTurnMessage();
         }
         canInput = false;
@@ -271,4 +271,56 @@ public class CLI implements View, Runnable {
             }
         }while(index!=0);
     }
+
+    //needs update: show only for leader cards actually available
+    private void playLeaderCard(){
+        System.out.println("Hai deciso di attivare una carta leader");
+        boolean ok = false;
+        int userChoice = -1;
+        System.out.println("Seleziona la carta leader che vuoi attivare");
+        do {
+            int c = Integer.parseInt(scanner.nextLine());
+            if (c == 1 || c == 2) {
+                userChoice = c;
+                ok = true;
+            } else {System.out.println("Devi inserire un indice valido!");}
+        }while(!ok);
+
+        networkHandler.buildActivateLC(userChoice);
+    }
+
+    private void discardLeaderCard(){
+        System.out.println("Hai deciso di scartare una carta leader");
+        boolean ok = false;
+        int userChoice = -1;
+        System.out.println("Seleziona la carta leader che vuoi scartare");
+        do {
+            int c = Integer.parseInt(scanner.nextLine());
+            if (c == 1 || c == 2) {
+                userChoice = c;
+                ok = true;
+            } else {System.out.println("Devi inserire un indice valido!");}
+        }while(!ok);
+
+        networkHandler.buildDiscardLC(userChoice);
+    }
+
+    /*e se invece unissimo le due funzioni cosi?
+    private void LeaderCardAction(n){
+        if (n==5){System.out.println("Hai deciso di attivare una carta leader");}
+        else if (n==6){System.out.println("Hai deciso di scartare una carta leader");}
+        boolean ok = false;
+        int userChoice = -1;
+        System.out.println("Seleziona la carta leader che vuoi scartare");
+        do {
+            int c = Integer.parseInt(scanner.nextLine());
+            if (c == 1 || c == 2) {
+                userChoice = c;
+                ok = true;
+            } else {System.out.println("Devi inserire un indice valido!");}
+        }while(!ok);
+
+        if (n==5){networkHandler.buildActivateLC(userChoice);}
+        else if (n==6){networkHandler.buildDiscardLC(userChoice);}
+    }*/
 }

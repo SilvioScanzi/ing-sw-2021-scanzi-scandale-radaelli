@@ -178,4 +178,11 @@ public class NetworkHandler implements Runnable{
     public void buildBuyDC(Colours colour,int level,int slot,ArrayList<Pair<String,Integer>> userChoice){
         sendObject(new BuyDevelopmentCardMessage(colour,level,slot,userChoice));
     }
+    public void buildActivateLC (int userChoice){
+        sendObject(new PlayLeaderCardMessage(userChoice));
+    }
+
+    public void buildDiscardLC (int userChoice){
+        sendObject(new DiscardLeaderCardMessage(userChoice));
+    }
 }
