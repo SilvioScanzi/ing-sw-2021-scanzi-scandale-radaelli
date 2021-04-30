@@ -1,7 +1,6 @@
 package it.polimi.ingsw.view.CLI;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.client.NetworkHandler;
-import it.polimi.ingsw.network.messages.Message;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.utils.LeaderCardParser;
 import it.polimi.ingsw.view.View;
@@ -16,9 +15,9 @@ public class CLI implements View, Runnable {
     private String message;
     private boolean messageReady = false;
     private boolean canInput = false;
-    private Scanner scanner;
     private boolean yourTurn = false;
-    private NetworkHandler networkHandler;
+    private final Scanner scanner;
+    private final NetworkHandler networkHandler;
 
     public CLI(NetworkHandler NH) {
         scanner = new Scanner(System.in);
@@ -49,10 +48,6 @@ public class CLI implements View, Runnable {
 
     public void playerTurn() {
         //TODO: actionDone da implementare nel caso delle prime 3 azioni
-        if(!messageReady) {
-            yourTurnPrint();
-        }
-        else messageReady = false;
         int userChoice = getChoice();
         while(userChoice < 0 || userChoice > 6){
             System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
@@ -68,6 +63,10 @@ public class CLI implements View, Runnable {
             case 5: playLeaderCard(); break;
             case 6: discardLeaderCard(); break;
             case 0: networkHandler.buildEndTurnMessage(); break;
+        }
+        if(userChoice!=0) {
+            clearScreen();
+            yourTurnPrint();
         }
     }
 
@@ -150,7 +149,7 @@ public class CLI implements View, Runnable {
         System.out.println("Indica il numero di " + ((RC.equals("R"))?"riga" : "colonna"));
         String num;
         boolean ok = false;
-        int n = -1;
+        int n;
         do {
             num = scanner.nextLine();
             n = Integer.parseInt(num);
@@ -197,9 +196,7 @@ public class CLI implements View, Runnable {
             System.out.println("Scegli il livello tra 1, 2 e 3: ");
             message = scanner.nextLine();
             level = getChoice();
-            if (level == 1 || level == 2 || level == 3) {
-                ok = true;
-            } else ok = false;
+            ok = 1 <= level && level <= 3;
         } while (!ok);
 
         int slot;
@@ -207,9 +204,7 @@ public class CLI implements View, Runnable {
             System.out.println("Scegli lo slot tra 1, 2 e 3: ");
             message = scanner.nextLine();
             slot = getChoice();
-            if (slot == 1 || slot == 2 || slot == 3) {
-                ok = true;
-            } else ok = false;
+            ok = slot == 1 || slot == 2 || slot == 3;
         } while (!ok);
 
         System.out.println("Scegli che risorse vuoi usare e da dove le vuoi prendere.");
@@ -231,7 +226,7 @@ public class CLI implements View, Runnable {
 
     private void activateProduction() {
         System.out.println("Hai deciso di attivare la produzione. ");
-        int index=-1;
+        int index;
         HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice = new HashMap<>();
         do {
             System.out.println("Seleziona la carta che desideri. Per chiudere la selezione digita 0");
@@ -268,6 +263,8 @@ public class CLI implements View, Runnable {
                 }
             }
         }while(index!=0);
+
+        networkHandler.buildActivateProduction(userChoice);
     }
 
     //TODO: avendo un model, potremmo stampare ogni volta la sua board
@@ -352,4 +349,8 @@ public class CLI implements View, Runnable {
         if (n==5){networkHandler.buildActivateLC(userChoice);}
         else if (n==6){networkHandler.buildDiscardLC(userChoice);}
     }*/
+
+    private void clearScreen(){
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
+    }
 }

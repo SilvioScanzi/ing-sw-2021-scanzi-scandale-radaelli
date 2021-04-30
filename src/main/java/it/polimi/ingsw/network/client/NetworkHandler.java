@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class NetworkHandler implements Runnable{
@@ -66,7 +67,7 @@ public class NetworkHandler implements Runnable{
             else if(message.equals(StandardMessages.yourTurn)){
                 view.setYourTurn(true);
                 view.setCanInput(false);
-                view.setMessageReady(true);
+                view.setMessageReady(false);
                 view.yourTurnPrint();
             }
         }
@@ -192,5 +193,9 @@ public class NetworkHandler implements Runnable{
 
     public void buildDiscardLC (int userChoice){
         sendObject(new DiscardLeaderCardMessage(userChoice));
+    }
+
+    public void buildActivateProduction(HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice){
+        sendObject(new ProductionMessage(userChoice));
     }
 }

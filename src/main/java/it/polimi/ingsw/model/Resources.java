@@ -1,9 +1,6 @@
 package it.polimi.ingsw.model;
 
-
-import java.io.Serializable;
-
-public enum Resources implements Serializable {
+public enum Resources{
     Coins,
     Stones,
     Servants,

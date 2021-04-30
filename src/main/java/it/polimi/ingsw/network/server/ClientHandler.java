@@ -22,6 +22,7 @@ public class ClientHandler implements Runnable{
     private boolean discardLeaderCard = false;
     private boolean finishingSetup = false;
     private boolean moveNeeded = false;
+    private boolean actionDone = false;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -132,6 +133,7 @@ public class ClientHandler implements Runnable{
         else if(myTurn) {
             if(messageReady) sendStandardMessage(StandardMessages.waitALittleMore);
             else if(moveNeeded && !(message instanceof MoveResourcesMessage)) sendStandardMessage(StandardMessages.wrongObject);
+            else if(!actionDone && message instanceof TurnDoneMessage) sendStandardMessage(StandardMessages.actionNotDone);
             else {
                 synchronized (this) {
                     messageReady = true;
@@ -167,5 +169,7 @@ public class ClientHandler implements Runnable{
         }catch(IOException e){e.printStackTrace();}
     }
 
-
+    public void setActionDone(boolean actionDone) {
+        this.actionDone = actionDone;
+    }
 }

@@ -183,6 +183,7 @@ public class Lobby implements Runnable {
             //after getting the resources, the user needs to say where he wants to deposit them
             clients.get(player).sendStandardMessage(StandardMessages.moveActionNeeded);
             clients.get(player).setMoveNeeded(true);
+            clients.get(player).setActionDone(true);
             lastActionMarket = true;
         }
 
@@ -204,6 +205,7 @@ public class Lobby implements Runnable {
             finally {
                 clients.get(player).setMessageReady(false);
             }
+            clients.get(player).setActionDone(true);
         }
 
         //activate production (choice of which one is in the message)
@@ -226,6 +228,7 @@ public class Lobby implements Runnable {
             finally{
                 clients.get(player).setMessageReady(false);
             }
+            clients.get(player).setActionDone(true);
         }
 
         //move resources around

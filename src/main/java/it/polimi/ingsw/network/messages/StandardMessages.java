@@ -34,7 +34,8 @@ public enum StandardMessages implements Serializable {
     incompatibleResources("L'allocazione delle risorse è fallita perchè sono presenti risorse non compatibili"),
     leaderCardWrongAbility("La carta leader scelta non ha un'abilità compatibile con l'azione svolta"),
     requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
-    notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione");
+    notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione"),
+    actionNotDone("Non hai ancora compiuto un'azione per questo turno");
     //...
 
     private final String message;
