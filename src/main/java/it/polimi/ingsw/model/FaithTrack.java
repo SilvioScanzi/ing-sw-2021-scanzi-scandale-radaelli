@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-public class FaithTrack {
+public class FaithTrack{
     private int FaithMarker;
     private boolean[] PopeFavor;
 

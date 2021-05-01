@@ -1,13 +1,20 @@
 package it.polimi.ingsw.network.server;
 
+import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.observers.CHObservable;
+import it.polimi.ingsw.observers.ModelObservable;
+import it.polimi.ingsw.observers.ModelObserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 //server side
-public class ClientHandler implements Runnable{
+public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
+    public enum STATE{Inizio, fine, disconnesso}
+    private STATE state = STATE.Inizio;
     private Object message;
     private String nickname = null;
     private final Socket socket;
@@ -23,6 +30,7 @@ public class ClientHandler implements Runnable{
     private boolean finishingSetup = false;
     private boolean moveNeeded = false;
     private boolean actionDone = false;
+    private boolean disconnected = false;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -32,6 +40,24 @@ public class ClientHandler implements Runnable{
             socketOut.writeObject(StandardMessages.connectionEstablished);
         }
         catch(Exception e){e.printStackTrace();}
+    }
+
+    public void closeConnection(){
+        try {
+            socketOut.close();
+            socketIn.close();
+            socket.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public STATE getState(){
+        return state;
+    }
+
+    public String getNickname(){
+        return nickname;
     }
 
     public void setMoveNeeded(boolean moveNeeded) {
@@ -65,18 +91,19 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         while(true) {
-                try {
-                    message = socketIn.readObject();
-                    if (!(message instanceof Message)) {
-                        sendStandardMessage(StandardMessages.wrongObject);
-                    } else {
-                        processMessage((Message) message);
-                    }
-                } catch (IOException | ClassNotFoundException e) {
+            try {
+                message = socketIn.readObject();
+                if (!(message instanceof Message)) {
                     sendStandardMessage(StandardMessages.wrongObject);
-                    e.printStackTrace();
+                } else {
+                    processMessage((Message) message);
                 }
+            } catch (IOException | ClassNotFoundException e) {
+                state = STATE.disconnesso;
+                notifyLobby(StandardMessages.disconnectedMessage);
+
             }
+        }
     }
 
     public void processMessage(Message message){
@@ -171,5 +198,45 @@ public class ClientHandler implements Runnable{
 
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
+    }
+
+    @Override
+    public void updateMarket(Market m){
+        sendObject(new MarketMessage(m.getGrid(),m.getRemainingMarble()));
+    }
+
+    @Override
+    public void updateDCMarket(DevelopmentCard DC){
+        sendObject(new DCMarketMessage(DC.getColour(),DC.getVictoryPoints()));
+    }
+
+    @Override
+    public void updateWR(Warehouse wr){
+        sendObject(new WarehouseMessage(wr));
+    }
+
+    @Override
+    public void updateSB(Strongbox sb){
+        sendObject(new StrongboxMessage(sb));
+    }
+
+    @Override
+    public void updateFT(FaithTrack ft){
+        sendObject(new FaithTrackMessage(ft));
+    }
+
+    @Override
+    public void updateSlots(int slotNumber,DevelopmentCard DC){
+        sendObject(new SlotMessage(slotNumber,DC));
+    }
+
+    @Override
+    public void updateHand(ArrayList<Resources> hand){
+        sendObject(new HandMessage(hand));
+    }
+
+    @Override
+    public void updateLCPlayed(LeaderCard lcp){
+        sendObject(new LeaderCardPlayedMessage(lcp));
     }
 }

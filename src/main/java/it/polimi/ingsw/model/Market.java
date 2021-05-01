@@ -1,8 +1,10 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.observers.ModelObservable;
+
 import java.util.*;
 
-public class Market {
+public class Market extends ModelObservable {
     private final Marbles[][] grid;
     private Marbles remainingMarble;
 
@@ -127,5 +129,6 @@ public class Market {
             grid[2][i]=remainingMarble;
             remainingMarble=tmp;
         }
+        notifyMarket(this);
     }
 }

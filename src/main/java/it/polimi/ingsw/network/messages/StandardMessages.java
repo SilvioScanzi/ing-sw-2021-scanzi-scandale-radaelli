@@ -14,6 +14,7 @@ public enum StandardMessages implements Serializable {
 
     //Error messages
     wrongObject("Hai inviato dei dati non validi"),
+    developmentCardMarketEmpty("Non ci sono development card in questa pila"),
     nicknameAlreadyInUse("Il nickname scelto è già in uso"),
     lobbyNotReady("Aspetta che inizi il gioco"),
     waitALittleMore("Aspetta un attimo..."),
@@ -35,7 +36,8 @@ public enum StandardMessages implements Serializable {
     leaderCardWrongAbility("La carta leader scelta non ha un'abilità compatibile con l'azione svolta"),
     requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
     notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione"),
-    actionNotDone("Non hai ancora compiuto un'azione per questo turno");
+    actionNotDone("Non hai ancora compiuto un'azione per questo turno"),
+    disconnectedMessage("Il giocatore si è disconnesso");
     //...
 
     private final String message;

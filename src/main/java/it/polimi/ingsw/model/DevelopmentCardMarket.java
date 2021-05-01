@@ -1,6 +1,7 @@
 package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyException;
+import it.polimi.ingsw.observers.ModelObservable;
 import it.polimi.ingsw.utils.DevelopmentCardParser;
 import org.xml.sax.SAXException;
 
@@ -11,7 +12,7 @@ import java.util.Map;
 import java.util.Stack;
 
 
-public class DevelopmentCardMarket {
+public class DevelopmentCardMarket extends ModelObservable {
     private final Map<Pair<Colours,Integer>,Stack<DevelopmentCard>> cardMarket; //attributes: colour, level, cards
 
     public DevelopmentCardMarket() {
@@ -82,7 +83,10 @@ public class DevelopmentCardMarket {
     //Get used when it's sure that the player can buy the card and thus remove it from the market
     public DevelopmentCard getFirstCard(Colours colour, int level){
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
-        return cardMarket.get(tmp1).pop();
+        DevelopmentCard DC = cardMarket.get(tmp1).pop();
+    //TODO: sfrutta messaggi standard e DevelopmentMarket per mandare "la carta" o l'errore
+        notifyDCMarket(DC);
+        return DC;
     }
 
 

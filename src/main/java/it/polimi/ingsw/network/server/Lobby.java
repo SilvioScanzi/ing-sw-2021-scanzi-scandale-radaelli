@@ -2,18 +2,22 @@ package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.exceptions.*;
+import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.network.messages.*;
+import it.polimi.ingsw.observers.CHObservable;
+import it.polimi.ingsw.observers.CHObserver;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Lobby implements Runnable {
+public class Lobby implements Runnable, CHObserver {
     private final Game game;
     private boolean endGame = false;
     private final int playerNumber;
     private final HashMap<ClientHandler,String> clientNames = new HashMap<>();
     private final ArrayList<ClientHandler> clients = new ArrayList<>();
     private final ArrayList<String> playersName = new ArrayList<>();
+    private ArrayList<String> disconnectedPlayers = new ArrayList<>();
     private boolean lastActionMarket = false;
 
     public Lobby(int playerNumber){
@@ -35,6 +39,19 @@ public class Lobby implements Runnable {
 
     @Override
     public void run() {
+        //attaching client handler observers
+        for(ClientHandler CH : clients){
+            CH.addObserver(this);
+        }
+
+        //attaching model observers
+        for(int i=0;i<playerNumber;i++){
+            Board board = game.getBoard(i);
+            for(ClientHandler CH : clients){
+                board.addObserver(CH);
+            }
+        }
+
         for(ClientHandler CH : clients){
             CH.setNameQueue(clientNames);
             CH.setLobbyReady(true);
@@ -123,29 +140,34 @@ public class Lobby implements Runnable {
         int i = game.getInkwell();
         boolean lastRound = false;
         while(!endGame || !lastRound){
-            clients.get(i).setMyTurn(true);
-            clients.get(i).sendStandardMessage(StandardMessages.yourTurn);
-            boolean turnDone = false;
-            while (!turnDone) {
-                synchronized (clients.get(i)) {
-                    while (!clients.get(i).getMessageReady()) {
-                        try {
-                            clients.get(i).wait();
-                        } catch (Exception e) {
-                            e.printStackTrace();
+            if(disconnectedPlayers.contains(playersName.get(i))){
+                i=(i+1)%playerNumber;
+            }
+            else {
+                clients.get(i).setMyTurn(true);
+                clients.get(i).sendStandardMessage(StandardMessages.yourTurn);
+                boolean turnDone = false;
+                while (!turnDone) {
+                    synchronized (clients.get(i)) {
+                        while (!clients.get(i).getMessageReady()) {
+                            try {
+                                clients.get(i).wait();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
+                        Message message = clients.get(i).getMessage();
+                        turnDone = handleMessage(message, i);
                     }
-                    Message message = clients.get(i).getMessage();
-                    turnDone = handleMessage(message, i);
                 }
-            }
-            if(game.checkEndGame(i)){
-                endGame = true;
-            }
-            clients.get(i).setMyTurn(false);
-            i=(i+1)%playerNumber;
-            if(endGame && i==game.getInkwell()){
-                lastRound = true;
+                if (game.checkEndGame(i)) {
+                    endGame = true;
+                }
+                clients.get(i).setMyTurn(false);
+                i = (i + 1) % playerNumber;
+                if (endGame && i == game.getInkwell()) {
+                    lastRound = true;
+                }
             }
         }
 
@@ -309,5 +331,26 @@ public class Lobby implements Runnable {
         else if(e instanceof RequirementsNotMetException) clients.get(player).sendStandardMessage(StandardMessages.requirementsNotMet);
         else if(e instanceof ResourceErrorException) clients.get(player).sendStandardMessage(StandardMessages.notEnoughResources);
         else clients.get(player).sendStandardMessage(StandardMessages.wrongObject);
+    }
+
+    @Override
+    public void updateLobby(CHObservable obs, Object obj){
+        if(!(obs instanceof ClientHandler) || !(obj instanceof StandardMessages)){
+            System.out.println("Errore nei messaggi o oggetti passati.");
+        }
+        else if(obj.equals(StandardMessages.disconnectedMessage)){
+            ArrayList<String> disconnectedNames = new ArrayList<>();
+            for(ClientHandler CH : clients){
+                if(CH.getState().equals(ClientHandler.STATE.disconnesso)){
+                    disconnectedNames.add(CH.getNickname());
+                    disconnectedPlayers.add(CH.getNickname());
+                    clients.remove(CH);
+                }
+            }
+            for(ClientHandler CH : clients){
+                CH.sendObject(new DisconnectedMessage(disconnectedNames));
+                CH.closeConnection();
+            }
+        }
     }
 }

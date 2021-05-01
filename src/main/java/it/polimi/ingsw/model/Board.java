@@ -2,10 +2,11 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyException;
 import it.polimi.ingsw.exceptions.RequirementsNotMetException;
+import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
 
-public class Board {
+public class Board extends ModelObservable {
     private final FaithTrack faithtrack;
     private Warehouse warehouse;
     private Strongbox strongbox;

@@ -85,7 +85,7 @@ public class Server {
                 currentLobby.addPlayer(clientHandlers.remove(0));
             }
         }
-        new Thread(() -> currentLobby.run()).start();
+        new Thread(currentLobby).start();
 
         System.out.println("[SERVER] Lobby started");
 

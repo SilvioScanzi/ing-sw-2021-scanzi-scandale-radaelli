@@ -34,6 +34,10 @@ public class Strongbox implements Cloneable {
         return tmp;
     }
 
+    public HashMap<Resources, Integer> getStorage() {
+        return storage;
+    }
+
     public int getResource(Resources r){
         return storage.get(r);
     }
