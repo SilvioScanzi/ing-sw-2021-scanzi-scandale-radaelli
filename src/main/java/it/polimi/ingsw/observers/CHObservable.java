@@ -12,9 +12,15 @@ public class CHObservable {
         }
     }
 
-    public void notifyLobby(Object o){
+    public void notify(Object o){
         for(CHObserver obs : observers){
-            obs.updateLobby(this,o);
+            obs.update(this,o);
+        }
+    }
+
+    public void removeObserver(CHObserver observer){
+        synchronized (observers) {
+            observers.remove(observer);
         }
     }
 }

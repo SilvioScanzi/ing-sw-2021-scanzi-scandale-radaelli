@@ -8,29 +8,21 @@ import it.polimi.ingsw.observers.ModelObserver;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 //server side
 public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
-    public enum STATE{Inizio, fine, disconnesso}
-    private STATE state = STATE.Inizio;
+    public enum STATE{start, nickname, playerNumber, lobbyNotReady, discardLeaderCard, finishingSetup, myTurn, moveNeeded, actionDone, wait, endGame, disconnected}
+    private STATE state = STATE.start;
     private Object message;
     private String nickname = null;
     private final Socket socket;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
     private HashMap<ClientHandler,String> nameQueue;
-    private boolean chosenNickName = false;
-    private boolean myTurn = false;
-    private boolean setPlayerNumber = false;
     private boolean messageReady = false;
-    private boolean lobbyReady = false;
-    private boolean discardLeaderCard = false;
-    private boolean finishingSetup = false;
-    private boolean moveNeeded = false;
-    private boolean actionDone = false;
-    private boolean disconnected = false;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -56,42 +48,21 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         return state;
     }
 
+    public void setState(STATE state) { this.state = state; }
+
     public String getNickname(){
         return nickname;
-    }
-
-    public void setMoveNeeded(boolean moveNeeded) {
-        this.moveNeeded = moveNeeded;
-    }
-
-    public void setMyTurn(boolean myTurn) {
-        this.myTurn = myTurn;
     }
 
     public void setNameQueue(HashMap<ClientHandler, String> nameQueue) {
         this.nameQueue = nameQueue;
     }
 
-    public void setLobbyReady(boolean lobbyReady) {
-        this.lobbyReady = lobbyReady;
-    }
-
-    public void setSetPlayerNumber(boolean setPlayerNumber) {
-        this.setPlayerNumber = setPlayerNumber;
-    }
-
-    public void setDiscardLeaderCard(boolean discardLeaderCard) {
-        this.discardLeaderCard = discardLeaderCard;
-    }
-
-    public void setFinishingSetup(boolean finishingSetup) {
-        this.finishingSetup = finishingSetup;
-    }
-
     @Override
     public void run() {
         while(true) {
             try {
+                socket.setSoTimeout(60000);
                 message = socketIn.readObject();
                 if (!(message instanceof Message)) {
                     sendStandardMessage(StandardMessages.wrongObject);
@@ -99,27 +70,26 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     processMessage((Message) message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                state = STATE.disconnesso;
-                notifyLobby(StandardMessages.disconnectedMessage);
-
+                    state = STATE.disconnected;
+                    notify(this);
             }
         }
     }
 
-    public void processMessage(Message message){
-        if(setPlayerNumber){
-            if(!(message instanceof ChoosePlayerNumberMessage)) sendStandardMessage(StandardMessages.wrongObject);
-            else{
-                if(((ChoosePlayerNumberMessage) message).getN()<1 || ((ChoosePlayerNumberMessage) message).getN()>4) {
-                    sendStandardMessage(StandardMessages.wrongObject);
-                    sendStandardMessage(StandardMessages.choosePlayerNumber);
+    public void
 
-                }
-                else {
-                    synchronized (this) {
-                        messageReady = true;
-                        setPlayerNumber = false;
-                        this.notifyAll();
+    public void processMessage(Message message){
+        switch(state) {
+            case playerNumber: {
+                if(!(message instanceof ChoosePlayerNumberMessage)) sendStandardMessage(StandardMessages.wrongObject);
+                else{
+                    if(((ChoosePlayerNumberMessage) message).getN()<1 || ((ChoosePlayerNumberMessage) message).getN()>4) {
+                        sendStandardMessage(StandardMessages.wrongObject);
+                        sendStandardMessage(StandardMessages.choosePlayerNumber);
+                    }
+                    else {
+                        state = STATE.lobbyNotReady;
+                        notify(message);
                     }
                 }
             }

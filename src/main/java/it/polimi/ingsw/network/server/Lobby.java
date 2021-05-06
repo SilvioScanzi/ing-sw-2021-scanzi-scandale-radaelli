@@ -334,14 +334,14 @@ public class Lobby implements Runnable, CHObserver {
     }
 
     @Override
-    public void updateLobby(CHObservable obs, Object obj){
+    public void update(CHObservable obs, Object obj){
         if(!(obs instanceof ClientHandler) || !(obj instanceof StandardMessages)){
             System.out.println("Errore nei messaggi o oggetti passati.");
         }
         else if(obj.equals(StandardMessages.disconnectedMessage)){
             ArrayList<String> disconnectedNames = new ArrayList<>();
             for(ClientHandler CH : clients){
-                if(CH.getState().equals(ClientHandler.STATE.disconnesso)){
+                if(CH.getState().equals(ClientHandler.STATE.disconnected)){
                     disconnectedNames.add(CH.getNickname());
                     disconnectedPlayers.add(CH.getNickname());
                     clients.remove(CH);
