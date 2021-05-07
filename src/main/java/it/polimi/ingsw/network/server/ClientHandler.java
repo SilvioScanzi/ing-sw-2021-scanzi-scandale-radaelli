@@ -3,25 +3,22 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.CHObservable;
-import it.polimi.ingsw.observers.ModelObservable;
 import it.polimi.ingsw.observers.ModelObserver;
 
 import java.io.*;
 import java.net.Socket;
-import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.HashMap;
+
 
 //server side
 public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
-    public enum STATE{start, nickname, playerNumber, lobbyNotReady, discardLeaderCard, finishingSetup, myTurn, moveNeeded, actionDone, wait, endGame, disconnected}
-    private STATE state = STATE.start;
+    public enum ClientHandlerState{nickname, playerNumber, lobbyNotReady, discardLeaderCard, finishingSetup, wait, myTurn, moveNeeded, actionDone, notMyTurn, endGame, disconnected}
+    private ClientHandlerState state = ClientHandlerState.nickname;
     private Object message;
     private String nickname = null;
     private final Socket socket;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
-    private HashMap<ClientHandler,String> nameQueue;
     private boolean messageReady = false;
 
     public ClientHandler(Socket socket) {
@@ -44,18 +41,14 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         }
     }
 
-    public STATE getState(){
+    public ClientHandlerState getState(){
         return state;
     }
 
-    public void setState(STATE state) { this.state = state; }
+    public void setState(ClientHandlerState state) { this.state = state; }
 
     public String getNickname(){
         return nickname;
-    }
-
-    public void setNameQueue(HashMap<ClientHandler, String> nameQueue) {
-        this.nameQueue = nameQueue;
     }
 
     @Override
@@ -70,75 +63,102 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     processMessage((Message) message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                    state = STATE.disconnected;
+                    state = ClientHandlerState.disconnected;
                     notify(this);
             }
         }
     }
 
-    public void
-
     public void processMessage(Message message){
-        switch(state) {
-            case playerNumber: {
-                if(!(message instanceof ChoosePlayerNumberMessage)) sendStandardMessage(StandardMessages.wrongObject);
-                else{
-                    if(((ChoosePlayerNumberMessage) message).getN()<1 || ((ChoosePlayerNumberMessage) message).getN()>4) {
-                        sendStandardMessage(StandardMessages.wrongObject);
-                        sendStandardMessage(StandardMessages.choosePlayerNumber);
+        if(messageReady){
+            sendStandardMessage(StandardMessages.waitALittleMore);
+        }
+        else {
+            switch (state) {
+
+                case nickname: {
+                    if(message instanceof NicknameMessage){
+                        messageReady = true;
+                        notify(message);
                     }
+                    else{
+                        sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                }
+
+                case playerNumber: {
+                    if (!(message instanceof ChoosePlayerNumberMessage))
+                        sendStandardMessage(StandardMessages.wrongObject);
                     else {
-                        state = STATE.lobbyNotReady;
+                        if (((ChoosePlayerNumberMessage) message).getN() < 1 || ((ChoosePlayerNumberMessage) message).getN() > 4) {
+                            sendStandardMessage(StandardMessages.wrongObject);
+                            sendStandardMessage(StandardMessages.choosePlayerNumber);
+                        } else {
+                            messageReady = true;
+                            state = ClientHandlerState.lobbyNotReady;
+                            notify(message);
+                        }
+                    }
+                }
+
+                case lobbyNotReady:{
+                    sendStandardMessage(StandardMessages.lobbyNotReady);
+                }
+
+                case discardLeaderCard:{
+                    if(message instanceof SetupLCDiscardMessage){
+                        messageReady = true;
+                        notify(message);
+                    }
+                    else sendStandardMessage(StandardMessages.wrongObject);
+                }
+
+                case finishingSetup: {
+                    if(message instanceof FinishSetupMessage) {
+                        messageReady = true;
+                        notify(message);
+                    } else sendStandardMessage(StandardMessages.wrongObject);
+                }
+
+                case myTurn:{
+                    if(!(message instanceof BuyResourcesMessage) && !(message instanceof BuyDevelopmentCardMessage) && !(message instanceof ProductionMessage)
+                            && !(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage)){
+                        sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                    else{
+                        messageReady = true;
                         notify(message);
                     }
                 }
-            }
-        }
-        else if(!lobbyReady){
-          sendStandardMessage(StandardMessages.lobbyNotReady);
-        }
-        else if(!chosenNickName){
-            if(message instanceof NicknameMessage){
-                String inputNickname = ((NicknameMessage) message).getNickname();
-                synchronized (nameQueue){
-                    if(!nameQueue.containsValue(inputNickname)){
-                        nameQueue.put(this,inputNickname);
-                        chosenNickName = true;
-                        nickname = inputNickname;
-                        nameQueue.notifyAll();
+
+                case moveNeeded:{
+                    if(!(message instanceof MoveResourcesMessage)){
+                        sendStandardMessage(StandardMessages.moveActionNeeded);
                     }
-                    else sendStandardMessage(StandardMessages.nicknameAlreadyInUse);
+                    else{
+                        messageReady = true;
+                        notify(message);
+                    }
                 }
+
+                case actionDone:{
+                    if(!(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage) &&
+                        !(message instanceof TurnDoneMessage)){
+                        sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                    else{
+                        messageReady = true;
+                        notify(message);
+                    }
+                }
+
+                case notMyTurn: sendStandardMessage(StandardMessages.notYourTurn);
+
+                case wait: sendStandardMessage(StandardMessages.waitALittleMore);
+
+                case endGame: sendStandardMessage(StandardMessages.endGame);
             }
         }
-        else if(!discardLeaderCard){
-            if(message instanceof SetupLCDiscardMessage){
-                synchronized (this) {
-                    messageReady = true;
-                    this.notifyAll();
-                }
-            } else sendStandardMessage(StandardMessages.wrongObject);
-        }
-        else if(!finishingSetup){
-            if(message instanceof FinishSetupMessage){
-                synchronized (this) {
-                    messageReady = true;
-                    this.notifyAll();
-                }
-            } else sendStandardMessage(StandardMessages.wrongObject);
-        }
-        else if(myTurn) {
-            if(messageReady) sendStandardMessage(StandardMessages.waitALittleMore);
-            else if(moveNeeded && !(message instanceof MoveResourcesMessage)) sendStandardMessage(StandardMessages.wrongObject);
-            else if(!actionDone && message instanceof TurnDoneMessage) sendStandardMessage(StandardMessages.actionNotDone);
-            else {
-                synchronized (this) {
-                    messageReady = true;
-                    this.notifyAll();
-                }
-            }
-        }
-        else sendStandardMessage(StandardMessages.notYourTurn);
     }
 
     public boolean getMessageReady() {
@@ -150,8 +170,12 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         return (Message)message;
     }
 
-    public void setMessageReady(boolean check) {
-        this.messageReady = check;
+    public void setNickname(String nickname){
+        this.nickname = nickname;
+    }
+
+    public void setMessageReady(boolean messageReady) {
+        this.messageReady = messageReady;
     }
 
     public void sendStandardMessage(StandardMessages SM){
@@ -164,10 +188,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         try{
             socketOut.writeObject(o);
         }catch(IOException e){e.printStackTrace();}
-    }
-
-    public void setActionDone(boolean actionDone) {
-        this.actionDone = actionDone;
     }
 
     @Override
