@@ -262,7 +262,7 @@ public class DevelopmentBuyTest{
         }
         catch(Exception e) {e.printStackTrace();}
         playerBoard.getStrongbox().addResource(Resources.Servants,1);
-        playerBoard.getLeadercardsplayed().get(0).getAbility().doUpdateSlot(Resources.Stones,2);
+        playerBoard.getLeaderCardsPlayed().get(0).getAbility().doUpdateSlot(Resources.Stones,2);
 
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",1));add(new Pair<>("SE",6));add(new Pair<>("PI",4));add(new Pair<>("PI",4));}};
@@ -278,7 +278,7 @@ public class DevelopmentBuyTest{
 
         assert(playerBoard.getSlot(2).getList().size()==0);
         assert(playerBoard.getSlot(3).getList().size()==0);
-        assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==0);
+        assert(playerBoard.getLeaderCardsPlayed().get(0).getAbility().getStashedResources()==0);
     }
 
     @Test
@@ -300,7 +300,7 @@ public class DevelopmentBuyTest{
         }
         catch(Exception e) {e.printStackTrace();}
         playerBoard.getStrongbox().addResource(Resources.Servants,1);
-        playerBoard.getLeadercardsplayed().get(0).getAbility().doUpdateSlot(Resources.Stones,2);
+        playerBoard.getLeaderCardsPlayed().get(0).getAbility().doUpdateSlot(Resources.Stones,2);
 
         ArrayList<Pair<String,Integer>> choice = new ArrayList<Pair<String,Integer>>()
         {{add(new Pair<>("SE",1));add(new Pair<>("PI",4));add(new Pair<>("PI",4));}};
@@ -316,6 +316,6 @@ public class DevelopmentBuyTest{
 
         assert(playerBoard.getSlot(2).getList().size()==0);
         assert(playerBoard.getSlot(3).getList().size()==0);
-        assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==0);
+        assert(playerBoard.getLeaderCardsPlayed().get(0).getAbility().getStashedResources()==0);
     }
 }

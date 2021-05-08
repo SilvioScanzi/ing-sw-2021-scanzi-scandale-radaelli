@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class UpdateMarketTest {
-    private Market market;
+public class UpdateResourceMarketTest {
+    private ResourceMarket resourceMarket;
     private Marbles[][] grid = new Marbles[3][4];
 
     @BeforeEach
     void setup(){
-        market = new Market();
-        grid = market.getGrid();
+        resourceMarket = new ResourceMarket();
+        grid = resourceMarket.getGrid();
     }
 
     @Test
@@ -32,10 +32,10 @@ public class UpdateMarketTest {
         }
         //test the method for rows and columns
         for(int i=0;i<3;i++){
-            getWMrow += market.getWhiteMarbles(true,i+1);
+            getWMrow += resourceMarket.getWhiteMarbles(true,i+1);
         }
         for(int i=0;i<4;i++){
-            getWMcol += market.getWhiteMarbles(false,i+1);
+            getWMcol += resourceMarket.getWhiteMarbles(false,i+1);
         }
 
         assert(WMNumber == getWMrow);
@@ -53,7 +53,7 @@ public class UpdateMarketTest {
         }
 
         for(int i=0;i<3;i++){
-            ArrayList<Marbles> received = market.updateMarket(true,i+1);
+            ArrayList<Marbles> received = resourceMarket.updateMarket(true,i+1);
             ArrayList<Marbles> gotMarbles = new ArrayList<>();
             Arrays.stream(previousGrid[i]).forEach(e -> gotMarbles.add(e));
             assert(received.equals(gotMarbles));
@@ -67,7 +67,7 @@ public class UpdateMarketTest {
         }
 
         for(int i=0;i<4;i++){
-            ArrayList<Marbles> received = market.updateMarket(false,i+1);
+            ArrayList<Marbles> received = resourceMarket.updateMarket(false,i+1);
             ArrayList<Marbles> gotMarbles = new ArrayList<>();
             for(int j=0;j<3;j++){
                 gotMarbles.add(previousGrid[j][i]);

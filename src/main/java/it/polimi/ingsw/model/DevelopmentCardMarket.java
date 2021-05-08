@@ -84,11 +84,9 @@ public class DevelopmentCardMarket extends ModelObservable {
     public DevelopmentCard getFirstCard(Colours colour, int level){
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
         DevelopmentCard DC = cardMarket.get(tmp1).pop();
-    //TODO: sfrutta messaggi standard e DevelopmentMarket per mandare "la carta" o l'errore
-        notifyDCMarket(DC);
+        notify(this);
         return DC;
     }
-
 
     //Only used in single player
     public void deleteCards(Colours colour){
@@ -103,6 +101,7 @@ public class DevelopmentCardMarket extends ModelObservable {
                 } else Empty = true;
             }
         }
+        notify(this);
     }
 
     public boolean lorenzoWin(){

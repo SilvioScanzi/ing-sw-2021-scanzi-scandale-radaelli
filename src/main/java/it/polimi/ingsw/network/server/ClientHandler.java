@@ -3,6 +3,7 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.CHObservable;
+import it.polimi.ingsw.observers.ModelObservable;
 import it.polimi.ingsw.observers.ModelObserver;
 
 import java.io.*;
@@ -19,7 +20,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     private final Socket socket;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
-    private boolean messageReady = false;
+    private boolean lastActionMarket = false;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -47,12 +48,21 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     public void setState(ClientHandlerState state) { this.state = state; }
 
+    public boolean getLastActionMarket() {
+        return lastActionMarket;
+    }
+
+    public void setLastActionMarket(boolean lastActionMarket) {
+        this.lastActionMarket = lastActionMarket;
+    }
+
     public String getNickname(){
         return nickname;
     }
 
     @Override
     public void run() {
+        sendStandardMessage(StandardMessages.chooseNickName);
         while(true) {
             try {
                 socket.setSoTimeout(60000);
@@ -63,106 +73,110 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     processMessage((Message) message);
                 }
             } catch (IOException | ClassNotFoundException e) {
+                synchronized (state) {
                     state = ClientHandlerState.disconnected;
                     notify(this);
+                    try {
+                        state.wait();
+                    } catch (InterruptedException interruptedException) {
+                        interruptedException.printStackTrace();
+                    }
+                }
+                return;
             }
         }
     }
 
-    public void processMessage(Message message){
-        if(messageReady){
-            sendStandardMessage(StandardMessages.waitALittleMore);
-        }
-        else {
-            switch (state) {
+    public void processMessage(Message message) {
+        switch (state) {
+            case nickname: {
+                if (message instanceof NicknameMessage) {
+                    notify(message);
+                } else {
+                    sendStandardMessage(StandardMessages.wrongObject);
+                }
+                break;
+            }
 
-                case nickname: {
-                    if(message instanceof NicknameMessage){
-                        messageReady = true;
-                        notify(message);
-                    }
-                    else{
+            case playerNumber: {
+                if (!(message instanceof ChoosePlayerNumberMessage))
+                    sendStandardMessage(StandardMessages.wrongObject);
+                else {
+                    if (((ChoosePlayerNumberMessage) message).getN() < 1 || ((ChoosePlayerNumberMessage) message).getN() > 4) {
                         sendStandardMessage(StandardMessages.wrongObject);
-                    }
-                }
-
-                case playerNumber: {
-                    if (!(message instanceof ChoosePlayerNumberMessage))
-                        sendStandardMessage(StandardMessages.wrongObject);
-                    else {
-                        if (((ChoosePlayerNumberMessage) message).getN() < 1 || ((ChoosePlayerNumberMessage) message).getN() > 4) {
-                            sendStandardMessage(StandardMessages.wrongObject);
-                            sendStandardMessage(StandardMessages.choosePlayerNumber);
-                        } else {
-                            messageReady = true;
-                            state = ClientHandlerState.lobbyNotReady;
-                            notify(message);
-                        }
-                    }
-                }
-
-                case lobbyNotReady:{
-                    sendStandardMessage(StandardMessages.lobbyNotReady);
-                }
-
-                case discardLeaderCard:{
-                    if(message instanceof SetupLCDiscardMessage){
-                        messageReady = true;
-                        notify(message);
-                    }
-                    else sendStandardMessage(StandardMessages.wrongObject);
-                }
-
-                case finishingSetup: {
-                    if(message instanceof FinishSetupMessage) {
-                        messageReady = true;
-                        notify(message);
-                    } else sendStandardMessage(StandardMessages.wrongObject);
-                }
-
-                case myTurn:{
-                    if(!(message instanceof BuyResourcesMessage) && !(message instanceof BuyDevelopmentCardMessage) && !(message instanceof ProductionMessage)
-                            && !(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage)){
-                        sendStandardMessage(StandardMessages.wrongObject);
-                    }
-                    else{
-                        messageReady = true;
+                        sendStandardMessage(StandardMessages.choosePlayerNumber);
+                    } else {
+                        state = ClientHandlerState.lobbyNotReady;
                         notify(message);
                     }
                 }
+                break;
+            }
 
-                case moveNeeded:{
-                    if(!(message instanceof MoveResourcesMessage)){
-                        sendStandardMessage(StandardMessages.moveActionNeeded);
-                    }
-                    else{
-                        messageReady = true;
-                        notify(message);
-                    }
+            case lobbyNotReady: {
+                sendStandardMessage(StandardMessages.lobbyNotReady);
+                break;
+            }
+
+            case discardLeaderCard: {
+                if (message instanceof SetupLCDiscardMessage) {
+                    notify(message);
+                } else sendStandardMessage(StandardMessages.wrongObject);
+                break;
+            }
+
+            case finishingSetup: {
+                if (message instanceof FinishSetupMessage) {
+                    notify(message);
+                } else sendStandardMessage(StandardMessages.wrongObject);
+                break;
+            }
+
+            case myTurn: {
+                if (!(message instanceof BuyResourcesMessage) && !(message instanceof BuyDevelopmentCardMessage) && !(message instanceof ProductionMessage)
+                        && !(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage)) {
+                    sendStandardMessage(StandardMessages.wrongObject);
+                } else {
+                    notify(message);
                 }
+                break;
+            }
 
-                case actionDone:{
-                    if(!(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage) &&
-                        !(message instanceof TurnDoneMessage)){
-                        sendStandardMessage(StandardMessages.wrongObject);
-                    }
-                    else{
-                        messageReady = true;
-                        notify(message);
-                    }
+            case moveNeeded: {
+                if (!(message instanceof MoveResourcesMessage)) {
+                    sendStandardMessage(StandardMessages.moveActionNeeded);
+                } else {
+                    notify(message);
                 }
+                break;
+            }
 
-                case notMyTurn: sendStandardMessage(StandardMessages.notYourTurn);
+            case actionDone: {
+                if (!(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage) &&
+                        !(message instanceof TurnDoneMessage)) {
+                    sendStandardMessage(StandardMessages.wrongObject);
+                } else {
+                    notify(message);
+                }
+                break;
+            }
 
-                case wait: sendStandardMessage(StandardMessages.waitALittleMore);
+            case notMyTurn: {
+                sendStandardMessage(StandardMessages.notYourTurn);
+                break;
+            }
 
-                case endGame: sendStandardMessage(StandardMessages.endGame);
+            case wait: {
+                sendStandardMessage(StandardMessages.waitALittleMore);
+                break;
+            }
+
+            case endGame: {
+                sendStandardMessage(StandardMessages.endGame);
+                break;
             }
         }
-    }
 
-    public boolean getMessageReady() {
-        return messageReady;
     }
 
     //Not message error handled above
@@ -172,10 +186,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     public void setNickname(String nickname){
         this.nickname = nickname;
-    }
-
-    public void setMessageReady(boolean messageReady) {
-        this.messageReady = messageReady;
     }
 
     public void sendStandardMessage(StandardMessages SM){
@@ -191,16 +201,20 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void updateMarket(Market m){
-        sendObject(new MarketMessage(m.getGrid(),m.getRemainingMarble()));
+    public void update(ModelObservable obs, Object obj){
+        if(obs instanceof Board){
+
+        }
+        else if(obs instanceof DevelopmentCardMarket){
+            sendObject(new DCMarketMessage((DevelopmentCardMarket)obj));
+        }
+        else if(obs instanceof ResourceMarket){
+            sendObject(new MarketMessage(((ResourceMarket) obs).getGrid(),((ResourceMarket) obs).getRemainingMarble()));
+        }
     }
 
-    @Override
-    public void updateDCMarket(DevelopmentCard DC){
-        sendObject(new DCMarketMessage(DC.getColour(),DC.getVictoryPoints()));
-    }
 
-    @Override
+    /*@Override
     public void updateWR(Warehouse wr){
         sendObject(new WarehouseMessage(wr));
     }
@@ -228,5 +242,5 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     @Override
     public void updateLCPlayed(LeaderCard lcp){
         sendObject(new LeaderCardPlayedMessage(lcp));
-    }
+    }*/
 }

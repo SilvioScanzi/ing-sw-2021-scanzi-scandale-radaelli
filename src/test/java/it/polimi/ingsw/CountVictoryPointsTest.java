@@ -56,7 +56,7 @@ public class CountVictoryPointsTest {
         //Adding 11 resources in various places
         try {
             playerBoard.getWarehouse().addDepot(3, Resources.Stones, 3);
-            playerBoard.getLeadercardsplayed().get(0).getAbility().doUpdateSlot(Resources.Shields,2);
+            playerBoard.getLeaderCardsPlayed().get(0).getAbility().doUpdateSlot(Resources.Shields,2);
         }catch (Exception e){e.printStackTrace();}
         playerBoard.getStrongbox().addResource(Resources.Servants,6);
 

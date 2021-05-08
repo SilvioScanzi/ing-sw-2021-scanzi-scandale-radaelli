@@ -240,7 +240,7 @@ public class MoveActionTest {
 
         try {
             playerBoard.getWarehouse().addDepot(3, Resources.Stones, 2);
-            playerBoard.getLeadercardsplayed().get(0).getAbility().doUpdateSlot(Resources.Stones,1);
+            playerBoard.getLeaderCardsPlayed().get(0).getAbility().doUpdateSlot(Resources.Stones,1);
         }
         catch(Exception e) {e.printStackTrace();}
 
@@ -250,7 +250,7 @@ public class MoveActionTest {
             game.moveResources(0,choice);
         }catch(Exception e) {e.printStackTrace();}
         assert(playerBoard.getWarehouse().getDepot(3).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(3).getValue()==3);
-        assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==0);
+        assert(playerBoard.getLeaderCardsPlayed().get(0).getAbility().getStashedResources()==0);
 
         choice.clear();
         choice.add(new Triplet<>("PI",3,4));
@@ -263,6 +263,6 @@ public class MoveActionTest {
         assert(playerBoard.getWarehouse().getDepot(1).getKey().isPresent());
         assert(playerBoard.getWarehouse().getDepot(1).getKey().get().equals(Resources.Stones) && playerBoard.getWarehouse().getDepot(1).getValue()==1);
         assert(!playerBoard.getWarehouse().getDepot(3).getKey().isPresent() && playerBoard.getWarehouse().getDepot(3).getValue()==0);
-        assert(playerBoard.getLeadercardsplayed().get(0).getAbility().getStashedResources()==2);
+        assert(playerBoard.getLeaderCardsPlayed().get(0).getAbility().getStashedResources()==2);
     }
 }

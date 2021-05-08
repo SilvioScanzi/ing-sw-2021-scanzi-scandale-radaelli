@@ -111,7 +111,7 @@ public class ActivateProductionTest {
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
-        playerBoard.getLeadercardsplayed().get(0).getAbility().doUpdateSlot(Resources.Shields,2);
+        playerBoard.getLeaderCardsPlayed().get(0).getAbility().doUpdateSlot(Resources.Shields,2);
 
         HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice = new HashMap<>();
         userChoice.put(1,new ArrayList<Pair<String,Integer>>(){{add(new Pair<>("SC",4));}});

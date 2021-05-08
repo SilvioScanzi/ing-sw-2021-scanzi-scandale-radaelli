@@ -7,23 +7,22 @@ import it.polimi.ingsw.model.Pair;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.CHObservable;
 import it.polimi.ingsw.observers.CHObserver;
+import it.polimi.ingsw.observers.LobbyObservable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Lobby implements Runnable, CHObserver {
-    //TODO: Fatal error forces the lobby to destroy itself, server must be notified when lobby is done
-    public enum LobbyState{start, discardedLCSetup, finishingSetup, play, end, fatalError};
+public class Lobby extends LobbyObservable implements Runnable, CHObserver {
+    public enum LobbyState{start, discardedLCSetup, finishingSetup, play, end, fatalError}
+    private final Object Lock = new Object();
     private LobbyState state = LobbyState.start;
     private final Game game;
-    private boolean endGame = false;
     private final int playerNumber;
     private final HashMap<ClientHandler, Pair<String,Integer>> clientMap = new HashMap<>();
     private final ArrayList<ClientHandler> clients = new ArrayList<>();
-    private final ArrayList<String> disconnectedPlayers = new ArrayList<>();
-    private boolean lastActionMarket = false;
+    private final HashMap<String, Integer> disconnectedPlayers = new HashMap<>();
     private int playersDone = 0;
-    private final Object Lock = new Object();
+    private int turn;
 
     public Lobby(int playerNumber){
         this.playerNumber = playerNumber;
@@ -39,7 +38,25 @@ public class Lobby implements Runnable, CHObserver {
     }
 
     public void addPlayer(ClientHandler CH) {
-        clients.add(CH);
+        if(state.equals(LobbyState.start)){
+            clients.add(CH);
+        }
+        else if(state.equals(LobbyState.play)) {
+            String name = CH.getNickname();
+            synchronized (clients) {
+                CH.setState(ClientHandler.ClientHandlerState.notMyTurn);
+                //TODO: manda messaggi per interfaccia
+                int n = disconnectedPlayers.get(name);
+                clients.set(n,CH);
+                clientMap.put(CH, new Pair<>(name,disconnectedPlayers.get(name)));
+                disconnectedPlayers.remove(name);
+                if (n < turn) turn = (turn + 1) % playerNumber;
+            }
+        }
+        else{
+            CH.sendStandardMessage(StandardMessages.wrongObject);
+            CH.closeConnection();
+        }
     }
 
     public void removePlayer(ClientHandler CH){
@@ -53,14 +70,6 @@ public class Lobby implements Runnable, CHObserver {
             CH.addObserver(this);
         }
 
-        //attaching model observers
-        for (int i = 0; i < playerNumber; i++) {
-            Board board = game.getBoard(i);
-            for (ClientHandler CH : clients) {
-                board.addObserver(CH);
-            }
-        }
-
         //beginning setup
         for(int i=0;i<playerNumber;i++){
             clientMap.put(clients.get(i),new Pair<>(clients.get(i).getNickname(),i));
@@ -71,10 +80,33 @@ public class Lobby implements Runnable, CHObserver {
         }
         game.setup(playersName);
 
+        //attaching model observers
+        for (int i = 0; i < playerNumber; i++) {
+            Board board = game.getBoard(i);
+            for (ClientHandler CH : clients) {
+                board.addObserver(CH);
+            }
+        }
+        for(ClientHandler CH : clients){
+            game.getMarket().addObserver(CH);
+            game.getDevelopmentCardMarket().addObserver(CH);
+        }
+
         //sending market and leader cards drawn to choose the ones to keep
         for(ClientHandler CH : clients){
             CH.sendObject(new MarketMessage(game.getMarket()));
             CH.sendObject(new LeaderCardMessage(game.getBoard(CH.getNickname()).getLeadercards()));
+        }
+
+        for(ClientHandler CH : clients){
+            synchronized (CH){
+                CH.setState(ClientHandler.ClientHandlerState.discardLeaderCard);
+                CH.sendStandardMessage(StandardMessages.chooseDiscardedLC);
+            }
+        }
+
+        synchronized(Lock){
+            if(!state.equals(LobbyState.fatalError)) state = LobbyState.discardedLCSetup;
         }
 
         while (state.equals(LobbyState.discardedLCSetup)){
@@ -84,8 +116,10 @@ public class Lobby implements Runnable, CHObserver {
         }
 
         if(state.equals(LobbyState.fatalError)){
+            lobbyNotify();
             return;
         }
+
         playersDone = 0;
 
         if (playerNumber == 1) playingSolo();
@@ -112,35 +146,48 @@ public class Lobby implements Runnable, CHObserver {
 
         while (state.equals(LobbyState.finishingSetup)){
             synchronized (Lock){
-                if(playersDone == playerNumber - 1) state = LobbyState.finishingSetup;
+                if(playersDone == playerNumber - 1) state = LobbyState.play;
             }
         }
 
         if(state.equals(LobbyState.fatalError)){
+            lobbyNotify();
             return;
         }
 
-        int i = game.getInkwell();
         boolean lastRound = false;
+        boolean endGame = false;
+        synchronized (clients) {
+            turn = game.getInkwell();
+        }
         while(!endGame || !lastRound){
-            ClientHandler CH = clients.get(i);
-            if (!disconnectedPlayers.contains(clientMap.get(CH).getKey())) {
+            if (!disconnectedPlayers.containsValue(turn)) {
+                ClientHandler CH;
+                synchronized(clients) {
+                    CH = clients.get(turn);
+                }
+                ClientHandler.ClientHandlerState state;
                 synchronized (CH) {
                     CH.setState(ClientHandler.ClientHandlerState.myTurn);
+                    CH.sendStandardMessage(StandardMessages.yourTurn);
+                    state = ClientHandler.ClientHandlerState.myTurn;
                 }
-                clients.get(i).sendStandardMessage(StandardMessages.yourTurn);
-                ClientHandler.ClientHandlerState state = ClientHandler.ClientHandlerState.myTurn;
+
                 while (!state.equals(ClientHandler.ClientHandlerState.disconnected) && !state.equals(ClientHandler.ClientHandlerState.notMyTurn)) {
                     synchronized (CH) {
                         state = CH.getState();
+                        if(state.equals(ClientHandler.ClientHandlerState.disconnected)) {CH.notify();}
                     }
                 }
-                endGame = game.checkEndGame(i);
-                if (endGame && i == game.getInkwell()) {
+                endGame = game.checkEndGame(turn);
+                synchronized (clients) {
+                    turn = (turn + 1) % playerNumber;
+                }
+                if (endGame && turn == game.getInkwell()) {
                     lastRound = true;
                 }
             }
-            i = (i+1)%playerNumber;
+            else{ synchronized (clients) {turn = (turn+1)%playerNumber;}}
         }
 
         //checking who won
@@ -156,141 +203,9 @@ public class Lobby implements Runnable, CHObserver {
         for(ClientHandler CH : clients){
             CH.sendObject(new VictoryMessage(game.getPlayers(victoryIndex),max));
         }
-    }
 
-    private boolean handleMessage(Message message,int player){
-        //Buy resources from market
-        if(message instanceof BuyResourcesMessage) {
-            try {
-                game.BuyMarketResourcesAction(player, ((BuyResourcesMessage) message).getRow(), ((BuyResourcesMessage) message).getN(), ((BuyResourcesMessage) message).getRequestedWMConversion());
-            } catch (ActionAlreadyDoneException | IndexOutOfBoundsException e) {
-                handleExceptions(e,player);
-            }
-            catch(IllegalArgumentException e){
-                clients.get(player).sendStandardMessage(StandardMessages.whiteMarbleNotCongruent);
-            }
-            finally {
-                clients.get(player).setMessageReady(false);
-            }
-
-            //after getting the resources, the user needs to say where he wants to deposit them
-            clients.get(player).sendStandardMessage(StandardMessages.moveActionNeeded);
-            clients.get(player).setMoveNeeded(true);
-            clients.get(player).setActionDone(true);
-            lastActionMarket = true;
-        }
-
-        //buy development card
-        else if(message instanceof BuyDevelopmentCardMessage) {
-            try {
-                game.BuyDevelopmentCardAction(((BuyDevelopmentCardMessage) message).getC(), ((BuyDevelopmentCardMessage) message).getLevel(), player, ((BuyDevelopmentCardMessage) message).getSlotNumber(), ((BuyDevelopmentCardMessage) message).getUserChoice());
-            } catch (ActionAlreadyDoneException| RequirementsNotMetException | ResourceErrorException | LeaderCardNotCompatibleException | IndexOutOfBoundsException e) {
-                handleExceptions(e, player);
-            }catch (EmptyException e){
-                clients.get(player).sendStandardMessage(StandardMessages.emptyDCStack);
-            }
-            catch(InvalidPlacementException e){
-                clients.get(player).sendStandardMessage(StandardMessages.invalidSlot);
-            }
-            catch(IllegalArgumentException e){
-                clients.get(player).sendStandardMessage(StandardMessages.invalidChoice);
-            }
-            finally {
-                clients.get(player).setMessageReady(false);
-            }
-            clients.get(player).setActionDone(true);
-        }
-
-        //activate production (choice of which one is in the message)
-        else if(message instanceof ProductionMessage){
-            try {
-                game.activateProductionAction(player,((ProductionMessage) message).getUserChoice());
-            } catch (ActionAlreadyDoneException | LeaderCardNotCompatibleException | ResourceErrorException | RequirementsNotMetException e)  {
-                handleExceptions(e, player);
-                clients.get(player).setMessageReady(false);
-            }
-            catch (IllegalArgumentException e){
-                clients.get(player).sendStandardMessage(StandardMessages.invalidChoice);
-            }
-            catch (BadRequestException e){
-                clients.get(player).sendStandardMessage(StandardMessages.baseProductionError);
-            }
-            catch (EmptyException e){
-                clients.get(player).sendStandardMessage(StandardMessages.emptySlot);
-            }
-            finally{
-                clients.get(player).setMessageReady(false);
-            }
-            clients.get(player).setActionDone(true);
-        }
-
-        //move resources around
-        else if(message instanceof MoveResourcesMessage){
-            try{
-                game.moveResources(player,((MoveResourcesMessage) message).getUserChoice());
-                clients.get(player).setMoveNeeded(false);
-                lastActionMarket = false;
-            }catch(IllegalArgumentException e) {
-                clients.get(player).sendStandardMessage(StandardMessages.invalidChoice);
-            }
-            catch(BadRequestException e) {
-                clients.get(player).sendStandardMessage(StandardMessages.resourcesWrong);
-            }
-            catch(LeaderCardNotCompatibleException | IncompatibleResourceException | InvalidPlacementException | ResourceErrorException e) {
-                handleExceptions(e, player);
-            }
-            catch(ResourcesLeftInHandException e){
-                if(lastActionMarket){
-                    game.discardRemainingResources(player);
-                    clients.get(player).setMoveNeeded(false);
-                    lastActionMarket = false;
-                }
-                else{
-                    clients.get(player).sendStandardMessage(StandardMessages.resourcesLeftInHand);
-                    clients.get(player).setMoveNeeded(true);
-                }
-            }
-            finally{
-                clients.get(player).setMessageReady(false);
-            }
-        }
-
-        //play a leader card
-        else if(message instanceof PlayLeaderCardMessage){
-            try {
-                game.playLeaderCard(player, ((PlayLeaderCardMessage) message).getN());
-            } catch (RequirementsNotMetException | IndexOutOfBoundsException e) {
-                handleExceptions(e,player);
-            }
-            finally{
-                clients.get(player).setMessageReady(false);
-            }
-        }
-
-        //discard a leader card
-        else if(message instanceof DiscardLeaderCardMessage){
-            try {
-                game.discardLeaderCard(player, ((DiscardLeaderCardMessage) message).getN());
-            } catch(IndexOutOfBoundsException e) {
-                handleExceptions(e,player);
-            }
-            finally{
-                clients.get(player).setMessageReady(false);
-            }
-        }
-
-        //turn finished
-        else if(message instanceof TurnDoneMessage){
-            clients.get(player).setMessageReady(false);
-            return true;
-        }
-
-        //message not recognized
-        else {
-            clients.get(player).sendStandardMessage(StandardMessages.wrongObject);
-            clients.get(player).setMessageReady(false);
-        }
-        return false;
+        //TODO: Sistemare la notify
+        lobbyNotify();
     }
 
     private void handleExceptions(Exception e, int player){
@@ -308,64 +223,124 @@ public class Lobby implements Runnable, CHObserver {
     public void update(CHObservable obs, Object obj) {
         if (obs instanceof ClientHandler) {
             ClientHandler client = (ClientHandler) obs;
-            int playerNumber = clientMap.get(client).getValue();
+            int player = clientMap.get(client).getValue();
 
-            if (obj instanceof DisconnectedMessage) {
-                for (ClientHandler CH : clients) {
-                    synchronized (CH) {
-                        if (CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)) {
-                            disconnectedPlayers.add(CH.getNickname());
-                            clients.remove(CH);
+            if (obj instanceof ClientHandler) {
+                LobbyState LS;
+                synchronized (Lock) {
+                    LS = state;
+                }
+                if (LS.equals(LobbyState.discardedLCSetup) || LS.equals(LobbyState.finishingSetup)) {
+                    for (ClientHandler CH : clients) {
+                        synchronized (CH) {
+                            CH.sendStandardMessage(StandardMessages.endGame);
+                            CH.closeConnection();
                         }
                     }
-                }
-
-                for (ClientHandler CH : clients) {
-                    CH.sendObject(new DisconnectedMessage(disconnectedPlayers));
-                }
-
-                synchronized (Lock){
-                    if(!state.equals(LobbyState.play) && !state.equals(LobbyState.end)){
-                        for(ClientHandler CH : clients){
-                            synchronized (CH){
-                                CH.sendStandardMessage(StandardMessages.endGame);
-                                CH.closeConnection();
+                    synchronized (Lock) {
+                        playersDone = playerNumber;
+                        state = LobbyState.fatalError;
+                    }
+                } else {
+                    for (ClientHandler CH : clients) {
+                        synchronized (CH) {
+                            if (CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)) {
+                                disconnectedPlayers.put(CH.getNickname(), clientMap.get(CH).getValue());
+                                clientMap.remove(CH);
                             }
                         }
                     }
-                    state = LobbyState.fatalError;
+
+                    ArrayList<String> DP = new ArrayList<>(disconnectedPlayers.keySet());
+                    for (ClientHandler CH : clients) {
+                        if(!disconnectedPlayers.containsKey(CH.getNickname())) {
+                            CH.sendObject(new DisconnectedMessage(DP));
+                        }
+                    }
                 }
             }
 
             //TODO: Exception Handling
-            else if (obj instanceof SetupLCDiscardMessage) {
-                try {
-                    game.discardSelectedLC(playerNumber,((SetupLCDiscardMessage) obj).getDiscardedLC());
-                    client.setState(ClientHandler.ClientHandlerState.wait);
-                    synchronized (Lock) {
-                        playersDone++;
+            synchronized (client) {
+                if (obj instanceof SetupLCDiscardMessage) {
+                    try {
+                        game.discardSelectedLC(player, ((SetupLCDiscardMessage) obj).getDiscardedLC());
+                        client.setState(ClientHandler.ClientHandlerState.wait);
+                        synchronized (Lock) {
+                            playersDone++;
+                        }
+                    } catch (Exception e) {
+                        client.sendStandardMessage(StandardMessages.leaderCardOutOfBounds);
                     }
-                }catch(Exception e){
-                    client.sendStandardMessage(StandardMessages.leaderCardOutOfBounds);
-                }
-                finally{
-                    client.setMessageReady(false);
-                }
-            }
-            else if (obj instanceof FinishSetupMessage){
-                try{
-                    game.finishingSetup(playerNumber, ((FinishSetupMessage) obj).getUserChoice());
-                    client.setState(ClientHandler.ClientHandlerState.wait);
-                    synchronized (Lock) {
-                        playersDone++;
+                } else if (obj instanceof FinishSetupMessage) {
+                    try {
+                        game.finishingSetup(player, ((FinishSetupMessage) obj).getUserChoice());
+                        client.setState(ClientHandler.ClientHandlerState.wait);
+                        synchronized (Lock) {
+                            playersDone++;
+                        }
+                    } catch (Exception e) {
+                        client.sendStandardMessage(StandardMessages.wrongObject);
                     }
-                }catch(Exception e){
-                    client.sendStandardMessage(StandardMessages.wrongObject);
-                }finally{
-                    client.setMessageReady(false);
+                } else if (obj instanceof BuyResourcesMessage) {
+                    try {
+                        game.BuyMarketResourcesAction(player, ((BuyResourcesMessage) obj).getRow(), ((BuyResourcesMessage) obj).getN(), ((BuyResourcesMessage) obj).getRequestedWMConversion());
+                    } catch (Exception e) {
+                        client.sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                    //after getting the resources, the user needs to say where he wants to deposit them
+                    client.setLastActionMarket(true);
+                    client.setState(ClientHandler.ClientHandlerState.moveNeeded);
+                } else if (obj instanceof BuyDevelopmentCardMessage) {
+                    try {
+                        game.BuyDevelopmentCardAction(((BuyDevelopmentCardMessage) obj).getC(), ((BuyDevelopmentCardMessage) obj).getLevel(), player, ((BuyDevelopmentCardMessage) obj).getSlotNumber(), ((BuyDevelopmentCardMessage) obj).getUserChoice());
+                    } catch (Exception e) {
+                        client.sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                    client.setState(ClientHandler.ClientHandlerState.actionDone);
+                } else if (obj instanceof ProductionMessage) {
+                    try {
+                        game.activateProductionAction(player, ((ProductionMessage) obj).getUserChoice());
+                    } catch (Exception e) {
+                        client.sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                    client.setState(ClientHandler.ClientHandlerState.actionDone);
+                } else if (obj instanceof MoveResourcesMessage) {
+                    try {
+                        game.moveResources(player, ((MoveResourcesMessage) obj).getUserChoice());
+                        if (client.getLastActionMarket()) {
+                            client.setLastActionMarket(false);
+                            client.setState(ClientHandler.ClientHandlerState.actionDone);
+                        } else {
+                            client.setState(ClientHandler.ClientHandlerState.myTurn);
+                        }
+                    } catch (IllegalArgumentException | BadRequestException | LeaderCardNotCompatibleException | IncompatibleResourceException | InvalidPlacementException | ResourceErrorException e) {
+                        client.sendStandardMessage(StandardMessages.wrongObject);
+                    } catch (ResourcesLeftInHandException e) {
+                        if (client.getLastActionMarket()) {
+                            client.setLastActionMarket(false);
+                            game.discardRemainingResources(player);
+                            client.setState(ClientHandler.ClientHandlerState.actionDone);
+                        } else {
+                            client.sendStandardMessage(StandardMessages.wrongObject);
+                        }
+                    }
+                } else if (obj instanceof PlayLeaderCardMessage) {
+                    try {
+                        game.playLeaderCard(player, ((PlayLeaderCardMessage) obj).getN());
+                    } catch (RequirementsNotMetException | IndexOutOfBoundsException e) {
+                        client.sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                } else if (obj instanceof DiscardLeaderCardMessage) {
+                    try {
+                        game.discardLeaderCard(player, ((DiscardLeaderCardMessage) obj).getN());
+                    } catch (IndexOutOfBoundsException e) {
+                        client.sendStandardMessage(StandardMessages.wrongObject);
+                    }
+                } else if (obj instanceof TurnDoneMessage) {
+                    client.setState(ClientHandler.ClientHandlerState.notMyTurn);
                 }
             }
         }
     }
-
 }

@@ -17,10 +17,4 @@ public class CHObservable {
             obs.update(this,o);
         }
     }
-
-    public void removeObserver(CHObserver observer){
-        synchronized (observers) {
-            observers.remove(observer);
-        }
-    }
 }

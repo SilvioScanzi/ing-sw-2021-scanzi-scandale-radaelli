@@ -14,45 +14,9 @@ public class ModelObservable {
         }
     }
 
-    public void notifyMarket(Market m){
+    public void notify(Object obj){
         for(ModelObserver obs : observers){
-            obs.updateMarket(m);
-        }
-    }
-
-    public void notifyDCMarket(DevelopmentCard DC){
-        for(ModelObserver obs : observers){
-            obs.updateDCMarket(DC);
-        }
-    }
-
-    public void notifyWR(Warehouse wr){
-        for(ModelObserver obs : observers){
-            obs.updateWR(wr);
-        }
-    }
-
-    public void notifySB(Strongbox sb){
-        for(ModelObserver obs : observers){
-            obs.updateSB(sb);
-        }
-    }
-
-    public void notifyFT(FaithTrack ft){
-        for(ModelObserver obs : observers){
-            obs.updateFT(ft);
-        }
-    }
-
-    public void notifyHand(ArrayList<Resources> hand){
-        for(ModelObserver obs : observers){
-            obs.updateHand(hand);
-        }
-    }
-
-    public void notifyLCPlayed(LeaderCard lcp){
-        for(ModelObserver obs : observers){
-            obs.updateLCPlayed(lcp);
+            obs.update(this,obj);
         }
     }
 }

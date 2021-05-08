@@ -7,17 +7,19 @@ import it.polimi.ingsw.observers.ModelObservable;
 import java.util.*;
 
 public class Board extends ModelObservable {
+    private final String nickname;
     private final FaithTrack faithtrack;
     private Warehouse warehouse;
     private Strongbox strongbox;
     private final Slot[] slots;
-    private final ArrayList<LeaderCard> leadercardshand;
-    private final ArrayList<LeaderCard> leadercardsplayed;
+    private final ArrayList<LeaderCard> leaderCardsHand;
+    private final ArrayList<LeaderCard> leaderCardsPlayed;
     private ArrayList<Resources> hand;
     private boolean actionDone;
     private int victoryPoints;
 
-    public Board(ArrayList<LeaderCard> leadercards) {
+    public Board(ArrayList<LeaderCard> leadercards, String nickname) {
+        this.nickname = nickname;
         faithtrack = new FaithTrack();
         warehouse = new Warehouse();
         strongbox = new Strongbox();
@@ -25,8 +27,8 @@ public class Board extends ModelObservable {
         for(int i=0;i<3;i++){
             slots[i] = new Slot();
         }
-        leadercardshand = new ArrayList<LeaderCard> (leadercards);
-        leadercardsplayed = new ArrayList<LeaderCard>();
+        leaderCardsHand = new ArrayList<> (leadercards);
+        leaderCardsPlayed = new ArrayList<>();
         hand = new ArrayList<>();
         actionDone = false;
         victoryPoints = 0;
@@ -56,6 +58,10 @@ public class Board extends ModelObservable {
     }
 
     //getters
+    public String getNickname() {
+        return nickname;
+    }
+
     public Warehouse getWarehouse() {
         return warehouse;
     }
@@ -72,8 +78,8 @@ public class Board extends ModelObservable {
         return hand;
     }
 
-    public ArrayList<LeaderCard> getLeadercardsplayed() {
-        return leadercardsplayed;
+    public ArrayList<LeaderCard> getLeaderCardsPlayed() {
+        return leaderCardsPlayed;
     }
 
     public FaithTrack getFaithtrack() {
@@ -86,7 +92,7 @@ public class Board extends ModelObservable {
     }
 
     public ArrayList<LeaderCard> getLeadercards() {
-        return leadercardshand;
+        return leaderCardsHand;
     }
 
     public int getVictoryPoints() {
@@ -108,7 +114,7 @@ public class Board extends ModelObservable {
         }
 
         //adds leader cards resources
-        for(LeaderCard LC : leadercardsplayed){
+        for(LeaderCard LC : leaderCardsPlayed){
             tmp.put(LC.getAbility().getResType(), tmp.get(LC.getAbility().getResType())+LC.getAbility().getStashedResources());
         }
 
@@ -145,11 +151,11 @@ public class Board extends ModelObservable {
     }
 
     public void discardLeaderCard(int i){
-        leadercardshand.remove(i-1);
+        leaderCardsHand.remove(i-1);
     }
 
     public void playLeaderCard(int i) throws RequirementsNotMetException,IndexOutOfBoundsException {
-        LeaderCard LC = leadercardshand.get(i-1);
+        LeaderCard LC = leaderCardsHand.get(i-1);
         Map<Colours,Pair<Integer,Integer>> requiredColours = new HashMap<>(LC.getRequiredColours());
         Map<Resources,Integer> requiredResources = new HashMap<>(LC.getRequiredResources());
         ArrayList<Pair<Colours,Integer>> tmp1 = new ArrayList<>();
@@ -181,7 +187,7 @@ public class Board extends ModelObservable {
         }
 
         if(requiredColours.isEmpty() && requiredResources.isEmpty())
-            leadercardsplayed.add(leadercardshand.remove(i-1));
+            leaderCardsPlayed.add(leaderCardsHand.remove(i-1));
         else
             throw new RequirementsNotMetException("Cannot play selected leader card");
     }
