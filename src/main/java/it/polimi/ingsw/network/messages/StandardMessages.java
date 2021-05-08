@@ -37,7 +37,8 @@ public enum StandardMessages implements Serializable {
     requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
     notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione"),
     actionNotDone("Non hai ancora compiuto un'azione per questo turno"),
-    disconnectedMessage("Il giocatore si è disconnesso");
+    disconnectedMessage("Il giocatore si è disconnesso"),
+    endGame("La partita è conclusa");
     //...
 
     private final String message;

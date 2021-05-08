@@ -4,11 +4,11 @@ import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
 
-public class Market extends ModelObservable {
+public class ResourceMarket extends ModelObservable {
     private final Marbles[][] grid;
     private Marbles remainingMarble;
 
-    public Market(){
+    public ResourceMarket(){
         ArrayList<Marbles> tmp = new ArrayList<>();
         tmp.add(Marbles.Red);
         tmp.add(Marbles.Blue);
@@ -38,7 +38,7 @@ public class Market extends ModelObservable {
     }
 
     //Only used for testing
-    public Market(int Arandom){
+    public ResourceMarket(int Arandom){
         ArrayList<Marbles> tmp = new ArrayList<>();
         tmp.add(Marbles.Red);
         tmp.add(Marbles.Blue);
@@ -100,35 +100,26 @@ public class Market extends ModelObservable {
 
     public ArrayList<Marbles> updateMarket(boolean row, int i){
         ArrayList<Marbles> tmp = new ArrayList<>();
+        i = i-1;
         if(row){
-            for(int k=0;k<4;k++) tmp.add(grid[i-1][k]);
-            update(true,i-1);
-            return tmp;
+            for(int k=0;k<4;k++) tmp.add(grid[i][k]);
+            Marbles mb = grid[i][0];
+            for(int j=0;j<3;j++){
+                grid[i][j] = grid[i][j+1];
+            }
+            grid[i][3] = remainingMarble;
+            remainingMarble = mb;
         }
         else{
-            for(int k=0;k<3;k++) tmp.add(grid[k][i-1]);
-            update(false,i-1);
-            return tmp;
-        }
-    }
-
-    private void update(boolean row, int i){
-        if(row){
-            Marbles tmp = grid[i][0];
-            for(int j=0;j<3;j++){
-                grid[i][j]=grid[i][j+1];
-            }
-            grid[i][3]=remainingMarble;
-            remainingMarble=tmp;
-        }
-        else {
-            Marbles tmp = grid[0][i];
+            for(int k=0;k<3;k++) tmp.add(grid[k][i]);
+            Marbles mb = grid[0][i];
             for(int j=0;j<2;j++){
-                grid[j][i]=grid[j+1][i];
+                grid[j][i] = grid[j+1][i];
             }
-            grid[2][i]=remainingMarble;
-            remainingMarble=tmp;
+            grid[2][i] = remainingMarble;
+            remainingMarble = mb;
         }
-        notifyMarket(this);
+        notify(this);
+        return tmp;
     }
 }

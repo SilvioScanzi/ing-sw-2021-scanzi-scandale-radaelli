@@ -43,9 +43,9 @@ public class LeaderCardPlayAndDiscardTest {
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
-        assert(playerBoard.getLeadercardsplayed().size()==1 && playerBoard.getLeadercardsplayed().get(0).getRequiredResources().equals(rr) &&
-                playerBoard.getLeadercardsplayed().get(0).getRequiredColours().equals(rc) &&
-                playerBoard.getLeadercardsplayed().get(0).getVictoryPoints()==5);
+        assert(playerBoard.getLeaderCardsPlayed().size()==1 && playerBoard.getLeaderCardsPlayed().get(0).getRequiredResources().equals(rr) &&
+                playerBoard.getLeaderCardsPlayed().get(0).getRequiredColours().equals(rc) &&
+                playerBoard.getLeaderCardsPlayed().get(0).getVictoryPoints()==5);
     }
 
     @Test
@@ -63,9 +63,9 @@ public class LeaderCardPlayAndDiscardTest {
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
-        assert(playerBoard.getLeadercardsplayed().size()==1 && playerBoard.getLeadercardsplayed().get(0).getRequiredResources().equals(rr) &&
-                playerBoard.getLeadercardsplayed().get(0).getRequiredColours().equals(rc) &&
-                playerBoard.getLeadercardsplayed().get(0).getVictoryPoints()==3);
+        assert(playerBoard.getLeaderCardsPlayed().size()==1 && playerBoard.getLeaderCardsPlayed().get(0).getRequiredResources().equals(rr) &&
+                playerBoard.getLeaderCardsPlayed().get(0).getRequiredColours().equals(rc) &&
+                playerBoard.getLeaderCardsPlayed().get(0).getVictoryPoints()==3);
     }
 
     @Test
@@ -91,9 +91,9 @@ public class LeaderCardPlayAndDiscardTest {
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
-        assert(playerBoard.getLeadercardsplayed().size()==1 && playerBoard.getLeadercardsplayed().get(0).getRequiredResources().equals(rr) &&
-                playerBoard.getLeadercardsplayed().get(0).getRequiredColours().equals(rc) &&
-                playerBoard.getLeadercardsplayed().get(0).getVictoryPoints()==5);
+        assert(playerBoard.getLeaderCardsPlayed().size()==1 && playerBoard.getLeaderCardsPlayed().get(0).getRequiredResources().equals(rr) &&
+                playerBoard.getLeaderCardsPlayed().get(0).getRequiredColours().equals(rc) &&
+                playerBoard.getLeaderCardsPlayed().get(0).getVictoryPoints()==5);
     }
 
     @Test
@@ -144,7 +144,7 @@ public class LeaderCardPlayAndDiscardTest {
         }catch (Exception e){e.printStackTrace();}
         assert(playerBoard.getFaithtrack().getFaithMarker()==1);
         assert(playerBoard.getLeadercards().size()==3);
-        assert(playerBoard.getLeadercardsplayed().size()==0);
+        assert(playerBoard.getLeaderCardsPlayed().size()==0);
     }
 
     @Test
@@ -166,7 +166,7 @@ public class LeaderCardPlayAndDiscardTest {
         }catch (Exception e){e.printStackTrace();}
         assert(playerBoard.getFaithtrack().getFaithMarker()==8);
         assert(playerBoard.getLeadercards().size()==3);
-        assert(playerBoard.getLeadercardsplayed().size()==0);
+        assert(playerBoard.getLeaderCardsPlayed().size()==0);
         assert(playerBoard.getFaithtrack().getPopeFavor()[0] && !playerBoard.getFaithtrack().getPopeFavor()[1] && !playerBoard.getFaithtrack().getPopeFavor()[2]);
     }
 

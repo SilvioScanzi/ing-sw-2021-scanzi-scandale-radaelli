@@ -8,8 +8,8 @@ import java.util.*;
 public class Game {
     private int inkwell;
     private int playerNumber;
-    private final ArrayList<Pair<String,Board>> players;
-    private final Market market;
+    private final ArrayList<Board> players;
+    private final ResourceMarket resourceMarket;
     private final DevelopmentCardMarket developmentCardMarket;
     private final boolean[] vaticanReport;
     private final LeaderCardDeck leaderCardDeck;
@@ -21,7 +21,7 @@ public class Game {
         inkwell = 0;
         playerNumber = 0;
         players = new ArrayList<>();
-        market = new Market();
+        resourceMarket = new ResourceMarket();
         developmentCardMarket = new DevelopmentCardMarket();
         vaticanReport = new boolean[] {false,false,false};
         leaderCardDeck = new LeaderCardDeck();
@@ -34,7 +34,7 @@ public class Game {
         inkwell = 0;
         playerNumber = 0;
         players = new ArrayList<>();
-        market = new Market(Arandom);
+        resourceMarket = new ResourceMarket(Arandom);
         developmentCardMarket = new DevelopmentCardMarket(Arandom);
         vaticanReport = new boolean[] {false,false,false};
         leaderCardDeck = new LeaderCardDeck(Arandom);
@@ -48,21 +48,20 @@ public class Game {
     }
 
     public String getPlayers(int i) {
-        return players.get(i).getKey();
+        return players.get(i).getNickname();
     }
 
     public Board getBoard(String s){
-        for(Pair<String,Board> p : players){
-            if(p.getKey().equals(s)) return p.getValue();
+        for(Board B : players){
+            if(B.getNickname().equals(s)) return B;
         }
-
         return null;
     }
 
-    public Board getBoard(int i){return players.get(i).getValue();}
+    public Board getBoard(int i){return players.get(i);}
 
-    public Market getMarket() {
-        return market;
+    public ResourceMarket getMarket() {
+        return resourceMarket;
     }
 
     public DevelopmentCardMarket getDevelopmentCardMarket() {
@@ -77,7 +76,7 @@ public class Game {
         playerNumber = names.size();
         inkwell = (int)(Math.random() * playerNumber);
         for(int i = 0; i< playerNumber; i++){
-            players.add(new Pair<>(names.get(i),new Board(leaderCardDeck.getLeaderCards())));
+            players.add(new Board(leaderCardDeck.getLeaderCards(), names.get(i)));
         }
     }
 
@@ -92,28 +91,28 @@ public class Game {
         //player 2
         if(player == (inkwell + 1)% playerNumber) {
             try{
-                players.get(player).getValue().getWarehouse().addDepot(1,R.get(0),1);
+                players.get(player).getWarehouse().addDepot(1,R.get(0),1);
             }catch(Exception e){e.printStackTrace();}
         }
         if(playerNumber >2){
             //player 3
             if(player == (inkwell + 2)% playerNumber) {
-                players.get(player).getValue().getFaithtrack().advanceTrack();
+                players.get(player).getFaithtrack().advanceTrack();
                 try{
-                    players.get(player).getValue().getWarehouse().addDepot(1,R.get(0),1);
+                    players.get(player).getWarehouse().addDepot(1,R.get(0),1);
                 }catch(Exception e){e.printStackTrace();}
             }
         }
         if(playerNumber >3){
             //player 3
             if(player == (inkwell + 3)% playerNumber) {
-                players.get(player).getValue().getFaithtrack().advanceTrack();
+                players.get(player).getFaithtrack().advanceTrack();
                 try{
                     if(R.get(0).equals(R.get(1)))
-                        players.get(player).getValue().getWarehouse().addDepot(2,R.get(0),2);
+                        players.get(player).getWarehouse().addDepot(2,R.get(0),2);
                     else {
-                        players.get(player).getValue().getWarehouse().addDepot(1,R.get(0),1);
-                        players.get(player).getValue().getWarehouse().addDepot(2,R.get(1),1);
+                        players.get(player).getWarehouse().addDepot(1,R.get(0),1);
+                        players.get(player).getWarehouse().addDepot(2,R.get(1),1);
                     }
                 }catch(Exception e){e.printStackTrace();}
             }
@@ -136,7 +135,7 @@ public class Game {
         }
 
         for (int i : discardedLC) {
-            players.get(player).getValue().discardLeaderCard(i);
+            players.get(player).discardLeaderCard(i);
         }
     }
 
@@ -146,7 +145,7 @@ public class Game {
     private void popeEvent(int index){
         if(!(vaticanReport[index-1])) {
             for(int i = 0; i< playerNumber; i++){
-                players.get(i).getValue().getFaithtrack().setPopeFavor(index);
+                players.get(i).getFaithtrack().setPopeFavor(index);
             }
             vaticanReport[index-1] = true;
         }
@@ -154,34 +153,34 @@ public class Game {
 
     //Adds the resources from the market to the hand, ignoring white marbles
     public void BuyMarketResourcesAction(int player, boolean row, int i, ArrayList<Integer> requestedWMConversion) throws ActionAlreadyDoneException, IllegalArgumentException, IndexOutOfBoundsException {
-        Board playerBoard = players.get(player).getValue();
+        Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
         if((row && (i<1 || i>3)) || (!row && (i<1 || i>4))) throw new IndexOutOfBoundsException();
         ArrayList<Resources> tmp = new ArrayList<>();
 
         ArrayList<Integer> conversionIndex = new ArrayList<>();
-        for(int j=0;j<playerBoard.getLeadercardsplayed().size();j++){
-            if(playerBoard.getLeadercardsplayed().get(j).getAbility().doConvert()) conversionIndex.add(j);
+        for(int j = 0; j<playerBoard.getLeaderCardsPlayed().size(); j++){
+            if(playerBoard.getLeaderCardsPlayed().get(j).getAbility().doConvert()) conversionIndex.add(j);
         }
 
         if(conversionIndex.size() == 1){
-            for(int j=0;j<market.getWhiteMarbles(row, i);j++){
-                tmp.add(playerBoard.getLeadercardsplayed().get(conversionIndex.get(0)).getAbility().getResType());
+            for(int j = 0; j< resourceMarket.getWhiteMarbles(row, i); j++){
+                tmp.add(playerBoard.getLeaderCardsPlayed().get(conversionIndex.get(0)).getAbility().getResType());
             }
         }
         //checking if white marbles in market equals requested conversions
-        else if(conversionIndex.size()>1 && market.getWhiteMarbles(row, i) == requestedWMConversion.size()) {
+        else if(conversionIndex.size()>1 && resourceMarket.getWhiteMarbles(row, i) == requestedWMConversion.size()) {
             for (Integer index : requestedWMConversion) {
                 //checking LC presence and if there are conversions
-                if (index > 0 && index <= playerBoard.getLeadercardsplayed().size())
+                if (index > 0 && index <= playerBoard.getLeaderCardsPlayed().size())
                     //checking index of LC
-                    tmp.add(playerBoard.getLeadercardsplayed().get(index - 1).getAbility().getResType());
+                    tmp.add(playerBoard.getLeaderCardsPlayed().get(index - 1).getAbility().getResType());
                 else throw new IndexOutOfBoundsException("Selected leader card does not exist");
             }
         }
         else if(conversionIndex.size()!=0) throw new IllegalArgumentException("Requested a number of white conversions not congruent");
 
-        ArrayList<Marbles> marbles = market.updateMarket(row,i);
+        ArrayList<Marbles> marbles = resourceMarket.updateMarket(row,i);
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
         playerBoard.getHand().addAll(tmp);
 
@@ -210,17 +209,17 @@ public class Game {
 
     //Discard resources and advance other players
     public void discardRemainingResources(int player){
-        Board playerBoard = players.get(player).getValue();
+        Board playerBoard = players.get(player);
         for(Resources ignored : playerBoard.getHand()){
             for(int i = 0; i< playerNumber; i++){
                 if(i!=player){
-                    players.get(i).getValue().getFaithtrack().advanceTrack();
+                    players.get(i).getFaithtrack().advanceTrack();
                 }
             }
             //Checking if any player got to a Pope tile
             int cell=-1;
             for(int i = 0; i< playerNumber; i++){
-                cell = Math.max(players.get(i).getValue().getFaithtrack().checkPopeFavor(),cell);
+                cell = Math.max(players.get(i).getFaithtrack().checkPopeFavor(),cell);
             }
             if(cell!=-1) popeEvent(cell);
         }
@@ -230,7 +229,7 @@ public class Game {
     //Player selects colour and level; method checks for costs and adds to the board the development card
     public void BuyDevelopmentCardAction(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice)
             throws ActionAlreadyDoneException,EmptyException,InvalidPlacementException,RequirementsNotMetException,ResourceErrorException,LeaderCardNotCompatibleException,IndexOutOfBoundsException,IllegalArgumentException{
-        Board playerBoard = players.get(player).getValue();
+        Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
         DevelopmentCard DC;
         DC = developmentCardMarket.peekFirstCard(c, level);
@@ -240,12 +239,12 @@ public class Game {
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
-        for(LeaderCard LC: playerBoard.getLeadercardsplayed()){
+        for(LeaderCard LC: playerBoard.getLeaderCardsPlayed()){
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
 
         //Check if LC played give some discount
-        for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+        for(LeaderCard LC : playerBoard.getLeaderCardsPlayed()){
             cost = LC.getAbility().doDiscount(cost);
         }
 
@@ -256,7 +255,7 @@ public class Game {
         requestedSlot.addCard(DC);
         playerBoard.setWarehouse(wr);
         playerBoard.setStrongbox(sb);
-        for (LeaderCard L : playerBoard.getLeadercardsplayed())
+        for (LeaderCard L : playerBoard.getLeaderCardsPlayed())
         { L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L)-L.getAbility().getStashedResources());}
         developmentCardMarket.getFirstCard(c, level);
         playerBoard.setActionDone(true);
@@ -266,7 +265,7 @@ public class Game {
     //contained in userChoice is the to-be-produced resource
     public void activateProductionAction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice)
             throws ActionAlreadyDoneException,LeaderCardNotCompatibleException,IllegalArgumentException,EmptyException,ResourceErrorException,RequirementsNotMetException,BadRequestException {
-        Board playerBoard = players.get(player).getValue();
+        Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
 
         HashMap<Resources, Integer> cost;
@@ -275,7 +274,7 @@ public class Game {
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
-        for(LeaderCard LC: playerBoard.getLeadercardsplayed()){
+        for(LeaderCard LC: playerBoard.getLeaderCardsPlayed()){
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
         ArrayList<Resources> tmpHand = new ArrayList<>();
@@ -291,10 +290,10 @@ public class Game {
                 }
             }
             else if (i==4 || i==5) {
-                if (!playerBoard.getLeadercardsplayed().get(i - 4).getAbility().doActivate())
+                if (!playerBoard.getLeaderCardsPlayed().get(i - 4).getAbility().doActivate())
                     throw new LeaderCardNotCompatibleException("Leader card is not compatible");
                 cost = new HashMap<>();
-                cost.put(playerBoard.getLeadercardsplayed().get(i - 4).getAbility().getResType(), 1);
+                cost.put(playerBoard.getLeaderCardsPlayed().get(i - 4).getAbility().getResType(), 1);
                 tmpHand.add(Resources.getResourceFromString(userChoice.get(i).remove(userChoice.get(i).size() - 1).getKey()));
                 producedFaith++;
 
@@ -317,15 +316,15 @@ public class Game {
         //Actually modifying the model (no errors)
         playerBoard.setStrongbox(sb);
         playerBoard.setWarehouse(wr);
-        for (LeaderCard L : playerBoard.getLeadercardsplayed()) {
+        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
             L.getAbility().doUpdateSlot(L.getAbility().getResType(),
                     LCCapacity.get(L)-L.getAbility().getStashedResources());
         }
         playerBoard.getHand().addAll(tmpHand);
         playerBoard.dumpHandIntoStrongbox();
         for(int i=0; i<producedFaith; i++){
-            players.get(player).getValue().getFaithtrack().advanceTrack();
-            int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
+            players.get(player).getFaithtrack().advanceTrack();
+            int tmp = players.get(player).getFaithtrack().checkPopeFavor();
             if(tmp!=-1) popeEvent(tmp);
         }
 
@@ -357,7 +356,7 @@ public class Game {
 
             } else if (p.getValue()==4 || p.getValue()==5){
                 LeaderCard LC;
-                LC = playerBoard.getLeadercardsplayed().get(p.getValue()-4);
+                LC = playerBoard.getLeaderCardsPlayed().get(p.getValue()-4);
                 if(LCCapacity.get(LC)>0 && LC.getAbility().getResType().equals(r)){
                     LCCapacity.put(LC,LCCapacity.get(LC)-1);
                     selectedResources.put(r, (1+selectedResources.get(r)));
@@ -384,10 +383,10 @@ public class Game {
     //In the end, if there are resources left in the hand, there needs to be a check from the caller of this method.
     public void moveResources(int player, ArrayList<Triplet<String,Integer,Integer>> userChoice) throws BadRequestException, LeaderCardNotCompatibleException,
             ResourceErrorException, InvalidPlacementException, IllegalArgumentException, IncompatibleResourceException, ResourcesLeftInHandException{
-        Board playerBoard = players.get(player).getValue();
+        Board playerBoard = players.get(player);
         Warehouse wr = playerBoard.getWarehouse().clone();
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
-        for(LeaderCard LC: playerBoard.getLeadercardsplayed()){
+        for(LeaderCard LC: playerBoard.getLeaderCardsPlayed()){
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
         ArrayList<Resources> tmpHand = (ArrayList<Resources>)playerBoard.getHand().clone();
@@ -432,7 +431,7 @@ public class Game {
                 } else throw new BadRequestException("Wrong resource requested");
             } else if (4 == uc.get_2() || uc.get_2() == 5) {
                 LeaderCard LC;
-                LC = playerBoard.getLeadercardsplayed().get(uc.get_2() - 4);
+                LC = playerBoard.getLeaderCardsPlayed().get(uc.get_2() - 4);
                 if (LCCapacity.get(LC) > 0 && LC.getAbility().getResType().equals(r)) {
                     LCCapacity.put(LC, LCCapacity.get(LC) - 1);
                 } else throw new LeaderCardNotCompatibleException("Not compatible leader card");
@@ -459,7 +458,7 @@ public class Game {
                 }
                 else if(4 == uc.get_3() || uc.get_3() == 5){
                     LeaderCard LC;
-                    LC = playerBoard.getLeadercardsplayed().get(uc.get_3()-4);
+                    LC = playerBoard.getLeaderCardsPlayed().get(uc.get_3()-4);
                     if(LCCapacity.get(LC)<LC.getAbility().getCapacity() && LC.getAbility().getResType().equals(r)){
                         LCCapacity.put(LC,LCCapacity.get(LC)+1);
                     } else throw new LeaderCardNotCompatibleException("Not compatible leader card");
@@ -470,7 +469,7 @@ public class Game {
 
         //if ok, actually modify everything
         playerBoard.setWarehouse(wr);
-        for (LeaderCard L : playerBoard.getLeadercardsplayed()) {
+        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
             L.getAbility().doUpdateSlot(L.getAbility().getResType(),
                     LCCapacity.get(L)-L.getAbility().getStashedResources());
         }
@@ -479,22 +478,22 @@ public class Game {
     }
 
     public void discardLeaderCard(int player, int leaderCardIndex) throws IndexOutOfBoundsException{
-        if(leaderCardIndex>players.get(player).getValue().getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
-        players.get(player).getValue().discardLeaderCard(leaderCardIndex);
-        players.get(player).getValue().getFaithtrack().advanceTrack();
-        int tmp = players.get(player).getValue().getFaithtrack().checkPopeFavor();
+        if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
+        players.get(player).discardLeaderCard(leaderCardIndex);
+        players.get(player).getFaithtrack().advanceTrack();
+        int tmp = players.get(player).getFaithtrack().checkPopeFavor();
         if(tmp!=-1) popeEvent(tmp);
     }
 
     public void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
-        if(leaderCardIndex>players.get(player).getValue().getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
-        players.get(player).getValue().playLeaderCard(leaderCardIndex);
+        if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
+        players.get(player).playLeaderCard(leaderCardIndex);
     }
 
     public boolean checkEndGame(int player){
         if(vaticanReport[2]) return true;
         else{
-            Board playerBoard = players.get(player).getValue();
+            Board playerBoard = players.get(player);
             int count = 0;
             for(int i=0;i<3;i++){
                 count += playerBoard.getSlot(i+1).getDevelopmentCards().size();
@@ -510,7 +509,7 @@ public class Game {
     public void countVictoryPoints(){
         int tmp;
         for(int i = 0; i< playerNumber; i++){
-            Board playerBoard = players.get(i).getValue();
+            Board playerBoard = players.get(i);
             tmp=0;
 
             //faithTrack points
@@ -529,7 +528,7 @@ public class Game {
             }
 
             //leadercard points
-            for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+            for(LeaderCard LC : playerBoard.getLeaderCardsPlayed()){
                 tmp += LC.getVictoryPoints();
             }
 
@@ -548,7 +547,7 @@ public class Game {
             for(Resources r : Resources.values()){
                 amount+=playerBoard.getStrongbox().getResource(r);
             }
-            for(LeaderCard LC : playerBoard.getLeadercardsplayed()){
+            for(LeaderCard LC : playerBoard.getLeaderCardsPlayed()){
                 amount+=LC.getAbility().getStashedResources();
             }
 
