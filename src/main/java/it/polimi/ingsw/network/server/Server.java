@@ -4,10 +4,7 @@ import it.polimi.ingsw.model.Pair;
 import it.polimi.ingsw.network.messages.ChoosePlayerNumberMessage;
 import it.polimi.ingsw.network.messages.NicknameMessage;
 import it.polimi.ingsw.network.messages.StandardMessages;
-import it.polimi.ingsw.observers.CHObservable;
-import it.polimi.ingsw.observers.CHObserver;
-import it.polimi.ingsw.observers.LobbyObservable;
-import it.polimi.ingsw.observers.LobbyObserver;
+import it.polimi.ingsw.observers.*;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -116,7 +113,61 @@ public class Server implements CHObserver, LobbyObserver {
     }
 
     @Override
-    public void update(CHObservable obs, Object obj) {
+    public void updateServerDisconnection(CHObservable obs){
+        ClientHandler CH = (ClientHandler) obs;
+
+        synchronized (clientHandlers) {
+            if (!clientHandlers.remove(CH)) {
+                Pair<Lobby, Boolean> P = lobbyMap.get(CH.getNickname());
+                if (P.getKey().equals(currentLobby)) {
+                    lobbyMap.remove(CH.getNickname());
+                    currentLobby.removePlayer(CH);
+                } else {
+                    P.setValue(false);
+                    lobbyMap.put(CH.getNickname(), P);
+                }
+            }
+        }
+        System.out.println("[SERVER] " + ((CH.getNickname()==null)? "Anonymous client":"Client "+CH.getNickname()) + " has disconnected from the game");
+
+    }
+
+    @Override
+    public void updateServerPlayerNumber(CHObservable obs,ChoosePlayerNumberMessage message){
+        numberChosen = true;
+    }
+
+    @Override
+    public void updateServerNickname(CHObservable obs,NicknameMessage message){
+        ClientHandler CH = (ClientHandler) obs;
+        ArrayList<String> currPlayers;
+
+        synchronized (clientHandlers) {
+            currPlayers = new ArrayList<>(clientHandlers.stream().map(ClientHandler::getNickname).collect(Collectors.toList()));
+            String S = message.getNickname();
+            if ((lobbyMap.containsKey(S) && lobbyMap.get(S).getValue()) || currPlayers.contains(S)) {
+                ((ClientHandler) obs).sendStandardMessage(StandardMessages.nicknameAlreadyInUse);
+            } else if (lobbyMap.containsKey(S)) {
+                lobbyMap.get(S).setValue(true);
+                CH.setNickname(S);
+                lobbyMap.get(S).getKey().addPlayer(CH);
+                System.out.println("[SERVER] Client " + S + " is trying to reconnect");
+            } else {
+                System.out.println("[SERVER] Client " + S + " is ready to play");
+                CH.setState(ClientHandler.ClientHandlerState.lobbyNotReady);
+                CH.setNickname(S);
+                clientHandlers.add((ClientHandler) obs);
+                if (lobbyRequired) {
+                    new Thread(this::lobbyManager).start();
+                }
+                lobbyRequired = false;
+                clientHandlers.notifyAll();
+            }
+        }
+    }
+
+
+    public void updateServer(CHObservable obs, Object obj) {
 
         if (obs instanceof ClientHandler) {
             ClientHandler CH = (ClientHandler) obs;
@@ -174,11 +225,8 @@ public class Server implements CHObserver, LobbyObserver {
 
     @Override
     public void lobbyUpdate(LobbyObservable obs) {
-        if(obs instanceof Lobby){
-            synchronized (clientHandlers){
-                lobbyMap.remove(obs);
-            }
-            System.out.println("[SERVER] A Lobby is being demolished");
+        synchronized (clientHandlers){
+            lobbyMap.remove(obs);
         }
     }
 }

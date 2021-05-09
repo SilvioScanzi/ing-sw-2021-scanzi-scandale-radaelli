@@ -2,10 +2,11 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
 
-public class Game {
+public class Game extends ModelObservable {
     private int inkwell;
     private int playerNumber;
     private final ArrayList<Board> players;
@@ -77,7 +78,11 @@ public class Game {
         inkwell = (int)(Math.random() * playerNumber);
         for(int i = 0; i< playerNumber; i++){
             players.add(new Board(leaderCardDeck.getLeaderCards(), names.get(i)));
+            notifyLCHand(players.get(i).getLeadercards(),players.get(i).getNickname());
         }
+        //send to the players both the markets
+        notifyDCMarket(developmentCardMarket);
+        notifyResourceMarket(resourceMarket);
     }
 
     //Called on all players but the first
@@ -117,6 +122,7 @@ public class Game {
                 }catch(Exception e){e.printStackTrace();}
             }
         }
+        notifyWR(players.get(player).getWarehouse(),players.get(player).getNickname());
     }
 
     //Discards leader cards in the setup phase of the game
@@ -137,15 +143,17 @@ public class Game {
         for (int i : discardedLC) {
             players.get(player).discardLeaderCard(i);
         }
+
+        notifyLCHand(players.get(player).getLeadercards(),players.get(player).getNickname());
     }
 
 
     //Methods used in the actual game
-
     private void popeEvent(int index){
         if(!(vaticanReport[index-1])) {
             for(int i = 0; i< playerNumber; i++){
                 players.get(i).getFaithtrack().setPopeFavor(index);
+                notifyFT(players.get(i).getFaithtrack(),players.get(i).getNickname());
             }
             vaticanReport[index-1] = true;
         }
@@ -184,6 +192,9 @@ public class Game {
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
         playerBoard.getHand().addAll(tmp);
 
+        notifyResourceMarket(resourceMarket);
+        notifyHand(playerBoard.getHand(), playerBoard.getNickname());
+
         playerBoard.setActionDone(true);
     }
 
@@ -198,6 +209,7 @@ public class Game {
                 case Yellow: tmp.add(Resources.Coins); break;
                 case Red: {
                     playerBoard.getFaithtrack().advanceTrack();
+                    notifyFT(playerBoard.getFaithtrack(),playerBoard.getNickname());
                     if(playerBoard.getFaithtrack().checkPopeFavor()!=-1) popeEvent(playerBoard.getFaithtrack().checkPopeFavor());
                     break;
                 }
@@ -214,6 +226,7 @@ public class Game {
             for(int i = 0; i< playerNumber; i++){
                 if(i!=player){
                     players.get(i).getFaithtrack().advanceTrack();
+                    notifyFT(players.get(i).getFaithtrack(),players.get(i).getNickname());
                 }
             }
             //Checking if any player got to a Pope tile
@@ -224,6 +237,7 @@ public class Game {
             if(cell!=-1) popeEvent(cell);
         }
         playerBoard.getHand().clear();
+        notifyHand(playerBoard.getHand(), playerBoard.getNickname());
     }
 
     //Player selects colour and level; method checks for costs and adds to the board the development card
@@ -248,16 +262,24 @@ public class Game {
             cost = LC.getAbility().doDiscount(cost);
         }
 
-        //Try to consume the resources needed
-        consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice);
+        //TODO: controllare, prima di consumeResources, che effettivamente gli slot del warehouse siano corretti
         //Getting the slot requested by the player
         Slot requestedSlot = playerBoard.getSlot(slotNumber);
+        //Try to consume the resources needed
+        consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice);
         requestedSlot.addCard(DC);
         playerBoard.setWarehouse(wr);
         playerBoard.setStrongbox(sb);
-        for (LeaderCard L : playerBoard.getLeaderCardsPlayed())
-        { L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L)-L.getAbility().getStashedResources());}
+        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()){
+            L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L)-L.getAbility().getStashedResources());
+        }
         developmentCardMarket.getFirstCard(c, level);
+
+        notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
+        notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
+        notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
+        notifySlot(requestedSlot, playerBoard.getNickname());
+
         playerBoard.setActionDone(true);
     }
 
@@ -296,7 +318,6 @@ public class Game {
                 cost.put(playerBoard.getLeaderCardsPlayed().get(i - 4).getAbility().getResType(), 1);
                 tmpHand.add(Resources.getResourceFromString(userChoice.get(i).remove(userChoice.get(i).size() - 1).getKey()));
                 producedFaith++;
-
             }
             else if (i==6){
                     tmpHand.add(Resources.getResourceFromString((userChoice.get(i).remove(userChoice.get(i).size()-1).getKey())));
@@ -324,9 +345,14 @@ public class Game {
         playerBoard.dumpHandIntoStrongbox();
         for(int i=0; i<producedFaith; i++){
             players.get(player).getFaithtrack().advanceTrack();
+            notifyFT(players.get(player).getFaithtrack(),players.get(player).getNickname());
             int tmp = players.get(player).getFaithtrack().checkPopeFavor();
             if(tmp!=-1) popeEvent(tmp);
         }
+
+        notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
+        notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
+        notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
 
         playerBoard.setActionDone(true);
     }
@@ -407,7 +433,6 @@ public class Game {
                 j++;
             }
         }
-
         for(int i=0;i<userChoice.size();i++){
             if(userChoice.get(i).get_2().equals(userChoice.get(i).get_3())){
                 userChoice.remove(i);
@@ -474,6 +499,11 @@ public class Game {
                     LCCapacity.get(L)-L.getAbility().getStashedResources());
         }
         playerBoard.setHand(tmpHand);
+
+        notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
+        notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
+        notifyHand(playerBoard.getHand(), playerBoard.getNickname());
+
         if(tmpHand.size()>0) throw new ResourcesLeftInHandException("There are still some resources in the hand");
     }
 
@@ -481,13 +511,19 @@ public class Game {
         if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).discardLeaderCard(leaderCardIndex);
         players.get(player).getFaithtrack().advanceTrack();
+        notifyFT(players.get(player).getFaithtrack(), players.get(player).getNickname());
         int tmp = players.get(player).getFaithtrack().checkPopeFavor();
         if(tmp!=-1) popeEvent(tmp);
+
+        notifyLCHand(players.get(player).getLeadercards(),players.get(player).getNickname());
     }
 
     public void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
         if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).playLeaderCard(leaderCardIndex);
+
+        notifyLCPlayed(players.get(player).getLeaderCardsPlayed(),players.get(player).getNickname());
+        notifyLCHand(players.get(player).getLeadercards(),players.get(player).getNickname());
     }
 
     public boolean checkEndGame(int player){
@@ -554,6 +590,8 @@ public class Game {
             tmp+=(amount-amount%5)/5;
 
             playerBoard.setVictoryPoints(tmp);
+
+            notifyVictoryPoints(playerBoard.getVictoryPoints(), playerBoard.getNickname());
         }
     }
 
@@ -568,24 +606,27 @@ public class Game {
 
     public void activatedToken(){
         ActionToken AT = actionStack.draw();
+        notifyActionToken(AT);
         switch(AT){
             case Advance2: {
                 for(int i=0;i<2;i++){
                     lorenzo.advanceBlackCross();
                     if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
                 }
+                notifyLorenzo(lorenzo);
                 break;
             }
             case AdvanceAndRefresh: {
                 lorenzo.advanceBlackCross();
                 if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
                 actionStack = new ActionStack();
+                notifyLorenzo(lorenzo);
                 break;
             }
-            case DeleteBlue: developmentCardMarket.deleteCards(Colours.Blue); break;
-            case DeleteGreen: developmentCardMarket.deleteCards(Colours.Green); break;
-            case DeletePurple: developmentCardMarket.deleteCards(Colours.Purple); break;
-            case DeleteYellow: developmentCardMarket.deleteCards(Colours.Yellow); break;
+            case DeleteBlue: developmentCardMarket.deleteCards(Colours.Blue); notifyDCMarket(developmentCardMarket); break;
+            case DeleteGreen: developmentCardMarket.deleteCards(Colours.Green); notifyDCMarket(developmentCardMarket); break;
+            case DeletePurple: developmentCardMarket.deleteCards(Colours.Purple); notifyDCMarket(developmentCardMarket); break;
+            case DeleteYellow: developmentCardMarket.deleteCards(Colours.Yellow); notifyDCMarket(developmentCardMarket); break;
         }
     }
 

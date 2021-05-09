@@ -6,7 +6,7 @@ import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
 
-public class Board extends ModelObservable {
+public class Board{
     private final String nickname;
     private final FaithTrack faithtrack;
     private Warehouse warehouse;

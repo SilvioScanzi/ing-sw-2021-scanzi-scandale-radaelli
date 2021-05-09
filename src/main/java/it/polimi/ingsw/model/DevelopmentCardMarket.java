@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.Stack;
 
 
-public class DevelopmentCardMarket extends ModelObservable {
+public class DevelopmentCardMarket {
     private final Map<Pair<Colours,Integer>,Stack<DevelopmentCard>> cardMarket; //attributes: colour, level, cards
 
     public DevelopmentCardMarket() {
@@ -84,7 +84,6 @@ public class DevelopmentCardMarket extends ModelObservable {
     public DevelopmentCard getFirstCard(Colours colour, int level){
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
         DevelopmentCard DC = cardMarket.get(tmp1).pop();
-        notify(this);
         return DC;
     }
 
@@ -101,7 +100,6 @@ public class DevelopmentCardMarket extends ModelObservable {
                 } else Empty = true;
             }
         }
-        notify(this);
     }
 
     public boolean lorenzoWin(){

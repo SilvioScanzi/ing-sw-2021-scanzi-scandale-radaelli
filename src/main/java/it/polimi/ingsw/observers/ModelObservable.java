@@ -2,6 +2,7 @@ package it.polimi.ingsw.observers;
 
 import it.polimi.ingsw.model.*;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,9 +15,75 @@ public class ModelObservable {
         }
     }
 
-    public void notify(Object obj){
+    public void notifyResourceMarket(ResourceMarket m){
         for(ModelObserver obs : observers){
-            obs.update(this,obj);
+            obs.updateMarket(m);
+        }
+    }
+
+    public void notifyDCMarket(DevelopmentCardMarket DCM){
+        for(ModelObserver obs : observers){
+            obs.updateDCMarket(DCM);
+        }
+    }
+
+    public void notifyWR(Warehouse wr, String s){
+        for(ModelObserver obs : observers){
+            obs.updateWR(wr,s);
+        }
+    }
+
+    public void notifySlot(Slot slot, String s){
+        for(ModelObserver obs : observers){
+            obs.updateSlots(slot,s);
+        }
+    }
+
+    public void notifyLCHand(ArrayList<LeaderCard> LCHand, String s){
+        for(ModelObserver obs : observers){
+            obs.updateLCHand(LCHand,s);
+        }
+    }
+
+    public void notifySB(Strongbox sb, String s){
+        for(ModelObserver obs : observers){
+            obs.updateSB(sb,s);
+        }
+    }
+
+    public void notifyFT(FaithTrack ft, String s){
+        for(ModelObserver obs : observers){
+            obs.updateFT(ft,s);
+        }
+    }
+
+    public void notifyHand(ArrayList<Resources> hand, String s){
+        for(ModelObserver obs : observers){
+            obs.updateHand(hand,s);
+        }
+    }
+
+    public void notifyLCPlayed(ArrayList<LeaderCard> lcp, String s){
+        for(ModelObserver obs : observers){
+            obs.updateLCPlayed(lcp,s);
+        }
+    }
+
+    public void notifyLorenzo(LorenzoTrack lorenzo){
+        for(ModelObserver obs : observers){
+            obs.updateLorenzo(lorenzo);
+        }
+    }
+
+    public void notifyActionToken(ActionToken AT){
+        for(ModelObserver obs : observers){
+            obs.updateActionToken(AT);
+        }
+    }
+
+    public void notifyVictoryPoints(int victoryPoints, String s){
+        for(ModelObserver obs : observers){
+            obs.updateVP(victoryPoints,s);
         }
     }
 }

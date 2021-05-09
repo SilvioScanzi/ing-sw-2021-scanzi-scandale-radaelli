@@ -4,7 +4,7 @@ import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
 
-public class ResourceMarket extends ModelObservable {
+public class ResourceMarket {
     private final Marbles[][] grid;
     private Marbles remainingMarble;
 
@@ -119,7 +119,6 @@ public class ResourceMarket extends ModelObservable {
             grid[2][i] = remainingMarble;
             remainingMarble = mb;
         }
-        notify(this);
         return tmp;
     }
 }

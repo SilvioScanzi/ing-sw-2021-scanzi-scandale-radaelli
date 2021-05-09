@@ -63,7 +63,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     @Override
     public void run() {
         sendStandardMessage(StandardMessages.chooseNickName);
-        while(true) {
+        while(!state.equals(ClientHandlerState.disconnected)) {
             try {
                 socket.setSoTimeout(60000);
                 message = socketIn.readObject();
@@ -85,6 +85,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 return;
             }
         }
+
     }
 
     public void processMessage(Message message) {
@@ -201,46 +202,64 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void update(ModelObservable obs, Object obj){
-        if(obs instanceof Board){
-
-        }
-        else if(obs instanceof DevelopmentCardMarket){
-            sendObject(new DCMarketMessage((DevelopmentCardMarket)obj));
-        }
-        else if(obs instanceof ResourceMarket){
-            sendObject(new MarketMessage(((ResourceMarket) obs).getGrid(),((ResourceMarket) obs).getRemainingMarble()));
-        }
-    }
-
-
-    /*@Override
-    public void updateWR(Warehouse wr){
-        sendObject(new WarehouseMessage(wr));
+    public void updateMarket(ResourceMarket m){
+        sendObject(new MarketMessage(m.getGrid(),m.getRemainingMarble()));
     }
 
     @Override
-    public void updateSB(Strongbox sb){
-        sendObject(new StrongboxMessage(sb));
+    public void updateDCMarket(DevelopmentCardMarket DCM){
+        sendObject(new DCMarketMessage(DCM));
     }
 
     @Override
-    public void updateFT(FaithTrack ft){
-        sendObject(new FaithTrackMessage(ft));
+    public void updateWR(Warehouse wr, String s){
+        sendObject(new WarehouseMessage(wr,s));
     }
 
     @Override
-    public void updateSlots(int slotNumber,DevelopmentCard DC){
-        sendObject(new SlotMessage(slotNumber,DC));
+    public void updateSB(Strongbox sb, String s){
+        sendObject(new StrongboxMessage(sb,s));
+    }
+
+    //if you are playing, the cards are showed to you, otherwise it's just to show something to other players
+    @Override
+    public void updateLCHand(ArrayList<LeaderCard> LCHand, String s){
+        if(nickname.equals(s)) sendObject(new LeaderCardMessage(LCHand));
+        else sendObject(new LCHandUpdateMessage(s));
     }
 
     @Override
-    public void updateHand(ArrayList<Resources> hand){
-        sendObject(new HandMessage(hand));
+    public void updateFT(FaithTrack ft,String s){
+        sendObject(new FaithTrackMessage(ft,s));
     }
 
     @Override
-    public void updateLCPlayed(LeaderCard lcp){
-        sendObject(new LeaderCardPlayedMessage(lcp));
-    }*/
+    public void updateSlots(Slot slot, String s){
+        sendObject(new SlotMessage(slot,s));
+    }
+
+    @Override
+    public void updateHand(ArrayList<Resources> hand, String s){
+        sendObject(new HandMessage(hand,s));
+    }
+
+    @Override
+    public void updateLCPlayed(ArrayList<LeaderCard> lcp, String s){
+        sendObject(new LeaderCardPlayedMessage(lcp,s));
+    }
+
+    @Override
+    public void updateVP(int vp, String s){
+        sendObject(new VictoryPointsMessage(vp,s));
+    }
+
+    @Override
+    public void updateLorenzo(LorenzoTrack lorenzo){
+        sendObject(new LorenzoTrackMessage(lorenzo));
+    }
+
+    @Override
+    public void updateActionToken(ActionToken AT){
+        sendObject(new ActionTokenMessage(AT));
+    }
 }

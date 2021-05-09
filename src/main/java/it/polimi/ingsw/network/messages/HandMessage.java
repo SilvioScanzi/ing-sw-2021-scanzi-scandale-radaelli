@@ -6,9 +6,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class HandMessage extends Message implements Serializable {
-    ArrayList<Resources> hand;
+    private ArrayList<Resources> hand;
+    private String nickname;
 
-    public HandMessage(ArrayList<Resources> hand) {
+    public HandMessage(ArrayList<Resources> hand,String s) {
         this.hand = hand;
+        nickname = s;
+    }
+
+    public ArrayList<Resources> getHand() {
+        return hand;
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 }
