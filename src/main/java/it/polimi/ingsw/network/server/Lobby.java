@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.Board;
-import it.polimi.ingsw.model.DevelopmentCardMarket;
 import it.polimi.ingsw.model.Pair;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.CHObservable;
@@ -13,17 +12,22 @@ import it.polimi.ingsw.observers.LobbyObservable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//ASK: Sincronizzazione, quando è necessaria? (se leggo...)
+
 public class Lobby extends LobbyObservable implements Runnable, CHObserver {
-    public enum LobbyState{start, discardedLCSetup, finishingSetup, play, end, fatalError}
-    private final Object Lock = new Object();
-    private LobbyState state = LobbyState.start;
-    private final Game game;
-    private final int playerNumber;
-    private final HashMap<ClientHandler, Pair<String,Integer>> clientMap = new HashMap<>();
-    private final ArrayList<ClientHandler> clients = new ArrayList<>();
-    private final HashMap<String, Integer> disconnectedPlayers = new HashMap<>();
+    public enum LobbyState{start, discardedLCSetup, finishingSetup, play, fatalError}
     private int playersDone = 0;
-    private int turn;
+    private LobbyState state = LobbyState.start;
+    //Used to access Lobby State (synchronization)
+    private final Object Lock = new Object();
+    private final int playerNumber;
+    private final Game game;
+    //ArrayList of client handlers which are connected to this lobby
+    private final ArrayList<ClientHandler> clients = new ArrayList<>();
+    //Map: ClientHandler associated with his Name and his Position in the game
+    private final HashMap<ClientHandler, Pair<String,Integer>> clientMap = new HashMap<>();
+    //Map: Name of the disconnected players associated with his Position in the game
+    private final HashMap<String, Integer> disconnectedPlayers = new HashMap<>();
 
     public Lobby(int playerNumber){
         this.playerNumber = playerNumber;
@@ -35,22 +39,26 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     }
 
     public int getAddedPlayers(){
-        return clients.size();
+        synchronized (clients){
+            return clients.size();
+        }
     }
 
     public void addPlayer(ClientHandler CH) {
         if(state.equals(LobbyState.start)){
+            //no need for synchronization because this first add is only done in one thread (lobbyManager)
             clients.add(CH);
         }
         else if(state.equals(LobbyState.play)) {
             String name = CH.getNickname();
 
             CH.setState(ClientHandler.ClientHandlerState.notMyTurn);
-            synchronized (clients) {
-                for (ClientHandler clientHandler : clients) {
-                    if (!clientHandler.equals(CH)) clientHandler.sendObject(new ReconnectMessage(CH.getNickname()));
-                }
+
+
+            for (ClientHandler clientHandler : clients) {
+                if (!clientHandler.equals(CH) && !(disconnectedPlayers.containsKey(clientHandler.getNickname()))) clientHandler.sendObject(new ReconnectMessage(CH.getNickname()));
             }
+
             //attaching observers
             CH.addObserver(this);
             game.addObserver(CH);
@@ -76,7 +84,6 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                 clients.set(n, CH);
                 clientMap.put(CH, new Pair<>(name, disconnectedPlayers.get(name)));
                 disconnectedPlayers.remove(name);
-                if (n < turn) turn = (turn + 1) % playerNumber;
             }
         }
         else{
@@ -86,7 +93,9 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     }
 
     public void removePlayer(ClientHandler CH){
-        clients.remove(CH);
+        synchronized (clients) {
+            clients.remove(CH);
+        }
     }
 
     @Override
@@ -102,21 +111,21 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
         }
 
         //beginning setup
-        for(int i=0;i<playerNumber;i++){
-            clientMap.put(clients.get(i),new Pair<>(clients.get(i).getNickname(),i));
-        }
         ArrayList<String> playersName = new ArrayList<>();
-        for(ClientHandler CH : clients){
+
+        for (int i = 0; i < playerNumber; i++) {
+            clientMap.put(clients.get(i), new Pair<>(clients.get(i).getNickname(), i));
+        }
+
+        for (ClientHandler CH : clients) {
             playersName.add(clientMap.get(CH).getKey());
         }
+
         game.setup(playersName);
 
-
-        for(ClientHandler CH : clients){
-            synchronized (CH){
-                CH.setState(ClientHandler.ClientHandlerState.discardLeaderCard);
-                CH.sendStandardMessage(StandardMessages.chooseDiscardedLC);
-            }
+        for(ClientHandler CH : clients) {
+            CH.setState(ClientHandler.ClientHandlerState.discardLeaderCard);
+            CH.sendStandardMessage(StandardMessages.chooseDiscardedLC);
         }
 
         synchronized(Lock){
@@ -140,42 +149,59 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
         else playingMultiplayer();
     }
 
-    private void playingSolo(){
+    private void playingSolo() {
+
+        synchronized (Lock) {
+            if (!state.equals(LobbyState.fatalError)) state = LobbyState.play;
+            else {
+                lobbyNotify();
+                return;
+            }
+        }
+
         boolean endGame = false;
         boolean lorenzoWin = false;
-        while(!endGame && !lorenzoWin){
-            //player's turn     //TODO: implement lobby death if disconnected
+        while (!endGame && !lorenzoWin) {
+            //player's turn
             ClientHandler CH = clients.get(0);
 
-            ClientHandler.ClientHandlerState state;
-            synchronized (CH) {
-                CH.setState(ClientHandler.ClientHandlerState.myTurn);
-                CH.sendStandardMessage(StandardMessages.yourTurn);
-                state = ClientHandler.ClientHandlerState.myTurn;
-            }
 
-            while (!state.equals(ClientHandler.ClientHandlerState.disconnected) && !state.equals(ClientHandler.ClientHandlerState.notMyTurn)) {
-                synchronized (CH) {
-                    state = CH.getState();
-                    if(state.equals(ClientHandler.ClientHandlerState.disconnected)) {CH.notify();}
+            CH.setState(ClientHandler.ClientHandlerState.myTurn);
+            CH.sendStandardMessage(StandardMessages.yourTurn);
+
+
+            while (!CH.getState().equals(ClientHandler.ClientHandlerState.disconnected) && !CH.getState().equals(ClientHandler.ClientHandlerState.notMyTurn)) {
+            }
+            /*synchronized (CH) {
+                if(CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)) {CH.notify();}
+            }*/
+
+            synchronized (Lock) {
+                if (state.equals(LobbyState.fatalError)) {
+                    lobbyNotify();
+                    return;
                 }
             }
             endGame = game.checkEndGame(0);
 
             //Lorenzo's turn
-            if(!endGame){
+            if (!endGame) {
                 game.activatedToken();
                 lorenzoWin = game.checkLorenzoWin();
             }
         }
 
         game.countVictoryPoints();
-        clients.get(0).sendStandardMessage(StandardMessages.endGame);
-        if(endGame) clients.get(0).sendObject(new VictoryMessage(clients.get(0).getNickname(),game.getBoard(0).getVictoryPoints()));
-        else clients.get(0).sendStandardMessage(StandardMessages.lorenzoWin);
 
-        clients.get(0).setState(ClientHandler.ClientHandlerState.disconnected);
-        clients.get(0).closeConnection();
+        ClientHandler CH = clients.get(0);
+        clients.get(0).sendStandardMessage(StandardMessages.endGame);
+        if (endGame)
+            CH.sendObject(new VictoryMessage(clients.get(0).getNickname(), game.getBoard(0).getVictoryPoints()));
+        else CH.sendStandardMessage(StandardMessages.lorenzoWin);
+
+
+        CH.setState(ClientHandler.ClientHandlerState.disconnected);
+        CH.closeConnection();
 
         lobbyNotify();
     }
@@ -183,9 +209,9 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     public void playingMultiplayer(){
         int k=1;
         for(int i=(game.getInkwell()+1)%playerNumber; i!=game.getInkwell(); i=(i+1)%playerNumber) {
-            synchronized(clients.get(i)){
-                clients.get(i).setState(ClientHandler.ClientHandlerState.finishingSetup);
-            }
+
+            clients.get(i).setState(ClientHandler.ClientHandlerState.finishingSetup);
+
             if (k == 1 || k == 2) {
                 clients.get(i).sendStandardMessage(StandardMessages.chooseOneResource);
             } else if (k == 3) {
@@ -207,37 +233,48 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
         boolean lastRound = false;
         boolean endGame = false;
-        synchronized (clients) {
-            turn = game.getInkwell();
-        }
+        int turn;
+        turn = game.getInkwell();
+
         while(!endGame || !lastRound){
-            if (!disconnectedPlayers.containsValue(turn)) {
+            boolean isDisconnected = false;
+            synchronized (clients){
+                isDisconnected = disconnectedPlayers.containsValue(turn);
+            }
+            if (!isDisconnected) {
                 ClientHandler CH;
-                synchronized(clients) {
+                synchronized (clients) {
                     CH = clients.get(turn);
                 }
-                ClientHandler.ClientHandlerState state;
-                synchronized (CH) {
-                    CH.setState(ClientHandler.ClientHandlerState.myTurn);
-                    CH.sendStandardMessage(StandardMessages.yourTurn);
-                    state = ClientHandler.ClientHandlerState.myTurn;
+
+
+                CH.setState(ClientHandler.ClientHandlerState.myTurn);
+                CH.sendStandardMessage(StandardMessages.yourTurn);
+
+
+                while (!CH.getState().equals(ClientHandler.ClientHandlerState.disconnected) && !CH.getState().equals(ClientHandler.ClientHandlerState.notMyTurn)) {
                 }
 
-                while (!state.equals(ClientHandler.ClientHandlerState.disconnected) && !state.equals(ClientHandler.ClientHandlerState.notMyTurn)) {
-                    synchronized (CH) {
-                        state = CH.getState();
-                        if(state.equals(ClientHandler.ClientHandlerState.disconnected)) {CH.notify();}
-                    }
-                }
+                /*synchronized (CH) {
+                    if(CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)) {CH.notify();}
+                }*/
+
                 endGame = game.checkEndGame(turn);
-                synchronized (clients) {
-                    turn = (turn + 1) % playerNumber;
-                }
+                turn = (turn + 1) % playerNumber;
+
                 if (endGame && turn == game.getInkwell()) {
                     lastRound = true;
                 }
             }
-            else{ synchronized (clients) {turn = (turn+1)%playerNumber;}}
+            else {
+                synchronized (Lock){
+                    if(state.equals(Lobby.LobbyState.fatalError)) {
+                        lobbyNotify();
+                        return;
+                    }
+                }
+                turn = (turn+1)%playerNumber;
+            }
         }
 
         //checking who won
@@ -255,7 +292,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
             CH.sendObject(new VictoryMessage(game.getPlayers(victoryIndex),max));
         }
 
-        for(ClientHandler CH : clients){
+        for(ClientHandler CH : clients) {
             CH.setState(ClientHandler.ClientHandlerState.disconnected);
             CH.closeConnection();
         }
@@ -280,30 +317,35 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                 state = LobbyState.fatalError;
             }
         } else {
-            for (ClientHandler CH : clients) {
-                synchronized (clients) {
+            synchronized (clients) {
+                for (ClientHandler CH : clients) {
                     if (CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)) {
                         disconnectedPlayers.put(CH.getNickname(), clientMap.get(CH).getValue());
                         clientMap.remove(CH);
                     }
                 }
+
+                ArrayList<String> DP = new ArrayList<>(disconnectedPlayers.keySet());
+                for (ClientHandler CH : clients) {
+                    if (!disconnectedPlayers.containsKey(CH.getNickname())) {
+                        CH.sendObject(new DisconnectedMessage(DP));
+                    }
+                }
             }
 
-            ArrayList<String> DP = new ArrayList<>(disconnectedPlayers.keySet());
-            for (ClientHandler CH : clients) {
-                if(!disconnectedPlayers.containsKey(CH.getNickname())) {
-                    CH.sendObject(new DisconnectedMessage(DP));
+            synchronized (Lock){
+                if(disconnectedPlayers.size() == playerNumber){
+                    state = Lobby.LobbyState.fatalError;
                 }
             }
         }
     }
 
     @Override
-    public void updateLCDiscard(CHObservable obs, SetupLCDiscardMessage message){
+    public void updateLCDiscard(CHObservable obs, SetupLCDiscardMessage message) {
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
             try {
                 game.discardSelectedLC(player, message.getDiscardedLC());
                 client.setState(ClientHandler.ClientHandlerState.wait);
@@ -319,9 +361,8 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     @Override
     public void updateFinishSetup(CHObservable obs, FinishSetupMessage message){
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
             try {
                 game.finishingSetup(player, message.getUserChoice());
                 client.setState(ClientHandler.ClientHandlerState.wait);
@@ -337,14 +378,14 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     @Override
     public void updateBuyResources(CHObservable obs, BuyResourcesMessage message){
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
             try {
                 game.BuyMarketResourcesAction(player, message.getRow(), message.getN(), message.getRequestedWMConversion());
             } catch (Exception e) {
                 client.sendStandardMessage(StandardMessages.wrongObject);
             }
+
             //after getting the resources, the user needs to say where he wants to deposit them
             client.setLastActionMarket(true);
             client.setState(ClientHandler.ClientHandlerState.moveNeeded);
@@ -352,16 +393,16 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     }
 
     @Override
-    public void updateBuyDC(CHObservable obs, BuyDevelopmentCardMessage message){
+    public void updateBuyDC(CHObservable obs, BuyDevelopmentCardMessage message) {
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
             try {
                 game.BuyDevelopmentCardAction(message.getC(), message.getLevel(), player, message.getSlotNumber(), message.getUserChoice());
             } catch (Exception e) {
                 client.sendStandardMessage(StandardMessages.wrongObject);
             }
+
             client.setState(ClientHandler.ClientHandlerState.actionDone);
         }
     }
@@ -369,24 +410,25 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     @Override
     public void updateProduction(CHObservable obs, ProductionMessage message){
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
+
+
             try {
                 game.activateProductionAction(player, message.getUserChoice());
             } catch (Exception e) {
                 client.sendStandardMessage(StandardMessages.wrongObject);
             }
+
             client.setState(ClientHandler.ClientHandlerState.actionDone);
         }
     }
 
     @Override
-    public void updateMoveResources(CHObservable obs, MoveResourcesMessage message){
+    public void updateMoveResources(CHObservable obs, MoveResourcesMessage message) {
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
             try {
                 game.moveResources(player, message.getUserChoice());
                 if (client.getLastActionMarket()) {
@@ -399,8 +441,8 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                 client.sendStandardMessage(StandardMessages.wrongObject);
             } catch (ResourcesLeftInHandException e) {
                 if (client.getLastActionMarket()) {
-                    client.setLastActionMarket(false);
                     game.discardRemainingResources(player);
+                    client.setLastActionMarket(false);
                     client.setState(ClientHandler.ClientHandlerState.actionDone);
                 } else {
                     client.sendStandardMessage(StandardMessages.wrongObject);
@@ -412,9 +454,8 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     @Override
     public void updatePlayLeaderCard(CHObservable obs, PlayLeaderCardMessage message){
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
             try {
                 game.playLeaderCard(player, message.getN());
             } catch (RequirementsNotMetException | IndexOutOfBoundsException e) {
@@ -424,11 +465,10 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     }
 
     @Override
-    public void updateDiscardLeaderCard(CHObservable obs, DiscardLeaderCardMessage message){
+    public void updateDiscardLeaderCard(CHObservable obs, DiscardLeaderCardMessage message) {
         ClientHandler client = (ClientHandler) obs;
-        int player = clientMap.get(client).getValue();
-
         synchronized (clients) {
+            int player = clientMap.get(client).getValue();
             try {
                 game.discardLeaderCard(player, message.getN());
             } catch (IndexOutOfBoundsException e) {
@@ -440,7 +480,6 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     @Override
     public void updateTurnDone(CHObservable obs, TurnDoneMessage message){
         ClientHandler client = (ClientHandler) obs;
-
         client.setState(ClientHandler.ClientHandlerState.notMyTurn);
     }
 }

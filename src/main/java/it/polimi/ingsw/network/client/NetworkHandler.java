@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+
+/*TODO: spostare le system.out nella CLI (View interface) in modo da modificare solo quella classe
+       una volta che ci sarà la GUI*/
 public class NetworkHandler implements Runnable{
     private Socket socket;
     private final View view;
@@ -76,8 +79,6 @@ public class NetworkHandler implements Runnable{
         }
     }
 
-    /*TODO: spostare le system.out nella CLI (View interface) in modo da modificare solo quella classe
-       una volta che ci sarà la GUI*/
     private boolean buildStandardMessage(StandardMessages message, String inputMessage) {
         view.setMessageReady(false);
 

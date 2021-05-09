@@ -40,11 +40,11 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         }
     }
 
-    public ClientHandlerState getState(){
+    public synchronized ClientHandlerState getState(){
         return state;
     }
 
-    public void setState(ClientHandlerState state) { this.state = state; }
+    public synchronized void setState(ClientHandlerState state) { this.state = state; }
 
     public boolean getLastActionMarket() {
         return lastActionMarket;
@@ -72,15 +72,15 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     processMessage((Message) message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                synchronized (state) {
+                synchronized (this) {
                     state = ClientHandlerState.disconnected;
                     notifyServerDisconnection();
                     notifyDisconnected();
-                    try {
+                    /*try {
                         state.wait();
                     } catch (InterruptedException interruptedException) {
                         interruptedException.printStackTrace();
-                    }
+                    }*/
                 }
                 return;
             }
@@ -88,7 +88,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     }
 
-    public void processMessage(Message message) {
+    public synchronized void processMessage(Message message) {
         switch (state) {
             case nickname: {
                 if (message instanceof NicknameMessage) {

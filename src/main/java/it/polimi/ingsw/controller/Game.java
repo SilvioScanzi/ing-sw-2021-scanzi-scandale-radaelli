@@ -161,7 +161,7 @@ public class Game extends ModelObservable {
     }
 
     //Adds the resources from the market to the hand, ignoring white marbles
-    public void BuyMarketResourcesAction(int player, boolean row, int i, ArrayList<Integer> requestedWMConversion) throws ActionAlreadyDoneException, IllegalArgumentException, IndexOutOfBoundsException {
+    public synchronized void BuyMarketResourcesAction(int player, boolean row, int i, ArrayList<Integer> requestedWMConversion) throws ActionAlreadyDoneException, IllegalArgumentException, IndexOutOfBoundsException {
         Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
         if((row && (i<1 || i>3)) || (!row && (i<1 || i>4))) throw new IndexOutOfBoundsException();
@@ -221,7 +221,7 @@ public class Game extends ModelObservable {
     }
 
     //Discard resources and advance other players
-    public void discardRemainingResources(int player){
+    public synchronized void discardRemainingResources(int player){
         Board playerBoard = players.get(player);
         for(Resources ignored : playerBoard.getHand()){
             for(int i = 0; i< playerNumber; i++){
@@ -242,7 +242,7 @@ public class Game extends ModelObservable {
     }
 
     //Player selects colour and level; method checks for costs and adds to the board the development card
-    public void BuyDevelopmentCardAction(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice)
+    public synchronized void BuyDevelopmentCardAction(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice)
             throws ActionAlreadyDoneException,EmptyException,InvalidPlacementException,RequirementsNotMetException,ResourceErrorException,LeaderCardNotCompatibleException,IndexOutOfBoundsException,IllegalArgumentException{
         Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
@@ -285,7 +285,7 @@ public class Game extends ModelObservable {
 
     //if player chooses to activate a leader card or the base production, the last position of the ArrayList
     //contained in userChoice is the to-be-produced resource
-    public void activateProductionAction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice)
+    public synchronized void activateProductionAction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice)
             throws ActionAlreadyDoneException,LeaderCardNotCompatibleException,IllegalArgumentException,EmptyException,ResourceErrorException,RequirementsNotMetException,BadRequestException {
         Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
@@ -407,7 +407,7 @@ public class Game extends ModelObservable {
     //the first Integer (_2) represents the source (FROM), the last Integer (_3) represents the destination (TO)
     //1-3 for the depots, 4-5 for the Leader Cards (Extra slot only), 0 to the hand which is used to make the swaps
     //In the end, if there are resources left in the hand, there needs to be a check from the caller of this method.
-    public void moveResources(int player, ArrayList<Triplet<String,Integer,Integer>> userChoice) throws BadRequestException, LeaderCardNotCompatibleException,
+    public synchronized void moveResources(int player, ArrayList<Triplet<String,Integer,Integer>> userChoice) throws BadRequestException, LeaderCardNotCompatibleException,
             ResourceErrorException, InvalidPlacementException, IllegalArgumentException, IncompatibleResourceException, ResourcesLeftInHandException{
         Board playerBoard = players.get(player);
         Warehouse wr = playerBoard.getWarehouse().clone();
@@ -507,7 +507,7 @@ public class Game extends ModelObservable {
         if(tmpHand.size()>0) throw new ResourcesLeftInHandException("There are still some resources in the hand");
     }
 
-    public void discardLeaderCard(int player, int leaderCardIndex) throws IndexOutOfBoundsException{
+    public synchronized void discardLeaderCard(int player, int leaderCardIndex) throws IndexOutOfBoundsException{
         if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).discardLeaderCard(leaderCardIndex);
         players.get(player).getFaithtrack().advanceTrack();
@@ -518,7 +518,7 @@ public class Game extends ModelObservable {
         notifyLCHand(players.get(player).getLeadercards(),players.get(player).getNickname());
     }
 
-    public void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
+    public synchronized void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
         if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).playLeaderCard(leaderCardIndex);
 
