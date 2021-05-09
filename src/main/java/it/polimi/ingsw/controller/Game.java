@@ -2,6 +2,7 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.network.server.ClientHandler;
 import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
@@ -262,7 +263,6 @@ public class Game extends ModelObservable {
             cost = LC.getAbility().doDiscount(cost);
         }
 
-        //TODO: controllare, prima di consumeResources, che effettivamente gli slot del warehouse siano corretti
         //Getting the slot requested by the player
         Slot requestedSlot = playerBoard.getSlot(slotNumber);
         //Try to consume the resources needed
@@ -634,4 +634,5 @@ public class Game extends ModelObservable {
         if(lorenzo.getBlackCross() == 24) return true;
         return developmentCardMarket.lorenzoWin();
     }
+
 }

@@ -91,7 +91,7 @@ public class CLI implements View, Runnable {
     }
 
     public void printMarket(Marbles[][] grid, Marbles remainingMarble){
-        String tmp = "Mercato delle risorse:\n";
+        String tmp = "MERCATO DELLE RISORSE:\n";
         for(int i=0;i<3;i++){
             for(int j=0;j<4;j++){
                 tmp=tmp.concat(grid[i][j].abbreviation() + " ");
@@ -104,8 +104,11 @@ public class CLI implements View, Runnable {
 
     public void printLC(ArrayList<Triplet<Resources,Integer,Integer>> leaderCards){
         LeaderCardParser LCP = new LeaderCardParser("");
+        System.out.println("LEADER CARDS");
+        int i = 1;
         for(Triplet<Resources,Integer,Integer> t : leaderCards){
-            System.out.println(LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
+            System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
+            i++;
         }
     }
 

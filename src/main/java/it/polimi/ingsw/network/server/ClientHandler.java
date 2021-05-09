@@ -3,7 +3,6 @@ package it.polimi.ingsw.network.server;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.CHObservable;
-import it.polimi.ingsw.observers.ModelObservable;
 import it.polimi.ingsw.observers.ModelObserver;
 
 import java.io.*;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
     public enum ClientHandlerState{nickname, playerNumber, lobbyNotReady, discardLeaderCard, finishingSetup, wait, myTurn, moveNeeded, actionDone, notMyTurn, endGame, disconnected}
     private ClientHandlerState state = ClientHandlerState.nickname;
-    private Object message;
     private String nickname = null;
     private final Socket socket;
     private ObjectOutputStream socketOut;
@@ -62,6 +60,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     @Override
     public void run() {
+        Object message;
         sendStandardMessage(StandardMessages.chooseNickName);
         while(!state.equals(ClientHandlerState.disconnected)) {
             try {
@@ -75,7 +74,8 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (state) {
                     state = ClientHandlerState.disconnected;
-                    notify(this);
+                    notifyServerDisconnection();
+                    notifyDisconnected();
                     try {
                         state.wait();
                     } catch (InterruptedException interruptedException) {
@@ -92,7 +92,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         switch (state) {
             case nickname: {
                 if (message instanceof NicknameMessage) {
-                    notify(message);
+                    notifyServerNickname((NicknameMessage) message);
                 } else {
                     sendStandardMessage(StandardMessages.wrongObject);
                 }
@@ -108,7 +108,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                         sendStandardMessage(StandardMessages.choosePlayerNumber);
                     } else {
                         state = ClientHandlerState.lobbyNotReady;
-                        notify(message);
+                        notifyServerPlayerNumber((ChoosePlayerNumberMessage) message);
                     }
                 }
                 break;
@@ -121,25 +121,26 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
             case discardLeaderCard: {
                 if (message instanceof SetupLCDiscardMessage) {
-                    notify(message);
+                    notifyLCDiscard((SetupLCDiscardMessage) message);
                 } else sendStandardMessage(StandardMessages.wrongObject);
                 break;
             }
 
             case finishingSetup: {
                 if (message instanceof FinishSetupMessage) {
-                    notify(message);
+                    notifyFinishSetup((FinishSetupMessage) message);
                 } else sendStandardMessage(StandardMessages.wrongObject);
                 break;
             }
 
             case myTurn: {
-                if (!(message instanceof BuyResourcesMessage) && !(message instanceof BuyDevelopmentCardMessage) && !(message instanceof ProductionMessage)
-                        && !(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage)) {
-                    sendStandardMessage(StandardMessages.wrongObject);
-                } else {
-                    notify(message);
-                }
+                if(message instanceof BuyResourcesMessage) notifyBuyResources((BuyResourcesMessage) message);
+                else if(message instanceof BuyDevelopmentCardMessage) notifyBuyDevelopmentCard((BuyDevelopmentCardMessage) message);
+                else if(message instanceof ProductionMessage) notifyProduction((ProductionMessage) message);
+                else if(message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
+                else if(message instanceof PlayLeaderCardMessage) notifyPlayLeaderCard((PlayLeaderCardMessage) message);
+                else if(message instanceof DiscardLeaderCardMessage) notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
+                else sendStandardMessage(StandardMessages.wrongObject);
                 break;
             }
 
@@ -147,18 +148,16 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 if (!(message instanceof MoveResourcesMessage)) {
                     sendStandardMessage(StandardMessages.moveActionNeeded);
                 } else {
-                    notify(message);
+                    notifyMoveResources((MoveResourcesMessage) message);
                 }
                 break;
             }
 
             case actionDone: {
-                if (!(message instanceof MoveResourcesMessage) && !(message instanceof PlayLeaderCardMessage) && !(message instanceof DiscardLeaderCardMessage) &&
-                        !(message instanceof TurnDoneMessage)) {
-                    sendStandardMessage(StandardMessages.wrongObject);
-                } else {
-                    notify(message);
-                }
+                if(message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
+                else if(message instanceof PlayLeaderCardMessage) notifyPlayLeaderCard((PlayLeaderCardMessage) message);
+                else if(message instanceof DiscardLeaderCardMessage) notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
+                else sendStandardMessage(StandardMessages.wrongObject);
                 break;
             }
 
@@ -178,11 +177,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             }
         }
 
-    }
-
-    //Not message error handled above
-    public Message getMessage() {
-        return (Message)message;
     }
 
     public void setNickname(String nickname){

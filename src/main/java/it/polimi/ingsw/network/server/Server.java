@@ -17,7 +17,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 
-public class Server implements CHObserver, LobbyObserver {
+public class Server implements CH_ServerObserver, LobbyObserver {
 
     private Lobby currentLobby;
     //ArrayList clientHandlers also used as Lock when accessing lobbyMap
@@ -25,7 +25,7 @@ public class Server implements CHObserver, LobbyObserver {
     //Hashmap contains the nickname of the player as the key and a pair which defines his lobby and the current state (true if connected, false if disconnected)
     private final HashMap<String, Pair<Lobby,Boolean>> lobbyMap = new HashMap<>();
     private boolean lobbyRequired = true;
-    private boolean numberChosen = false;
+    private int numberChosen = 0;
 
     public void startServer() {
         ExecutorService executor = Executors.newCachedThreadPool();
@@ -43,7 +43,7 @@ public class Server implements CHObserver, LobbyObserver {
                 Socket socket = serverSocket.accept();
                 System.out.println("[SERVER] Connection Established");
                 ClientHandler CH = new ClientHandler(socket);
-                CH.addObserver(this);
+                CH.addServerObserver(this);
                 executor.submit(CH);
             } catch(IOException e) {
                 System.out.println("[SERVER] Fatal Error");
@@ -56,24 +56,19 @@ public class Server implements CHObserver, LobbyObserver {
     public void lobbyManager() {
         int players;
         ClientHandler CH = clientHandlers.get(0);
+        currentLobby = null;
+        numberChosen = 0;
 
         //first player to connect gets to choose how many are the players
         synchronized (CH) {
             CH.sendStandardMessage(StandardMessages.choosePlayerNumber);
             if(!CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)) CH.setState(ClientHandler.ClientHandlerState.playerNumber);
         }
-        ClientHandler.ClientHandlerState state;
 
-        do{
-            synchronized (CH){
-                 state = CH.getState();
-            }
-        }while(!(state.equals(ClientHandler.ClientHandlerState.disconnected) || numberChosen));
+        while(!(CH.getState().equals(ClientHandler.ClientHandlerState.disconnected) || numberChosen!=0)){}
 
-        if(numberChosen && !state.equals(ClientHandler.ClientHandlerState.disconnected)){
-            synchronized (CH){
-                players = ((ChoosePlayerNumberMessage) CH.getMessage()).getN();
-            }
+        if(numberChosen!=0 && !CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)){
+            players = numberChosen;
             System.out.println("[SERVER] Player number chosen");
 
             //starting the lobby with the requested number of players
@@ -96,7 +91,6 @@ public class Server implements CHObserver, LobbyObserver {
                 }
             }
             new Thread(currentLobby).start();
-            currentLobby = null;
             System.out.println("[SERVER] Lobby started");
         }
         else{
@@ -128,13 +122,13 @@ public class Server implements CHObserver, LobbyObserver {
                 }
             }
         }
-        System.out.println("[SERVER] " + ((CH.getNickname()==null)? "Anonymous client":"Client "+CH.getNickname()) + " has disconnected from the game");
-
+        System.out.println("[SERVER] " + ((CH.getNickname()==null)? "Anonymous client":"Client " +
+                CH.getNickname()) + " has disconnected from the game");
     }
 
     @Override
     public void updateServerPlayerNumber(CHObservable obs,ChoosePlayerNumberMessage message){
-        numberChosen = true;
+        numberChosen = message.getN();
     }
 
     @Override
@@ -162,63 +156,6 @@ public class Server implements CHObserver, LobbyObserver {
                 }
                 lobbyRequired = false;
                 clientHandlers.notifyAll();
-            }
-        }
-    }
-
-
-    public void updateServer(CHObservable obs, Object obj) {
-
-        if (obs instanceof ClientHandler) {
-            ClientHandler CH = (ClientHandler) obs;
-
-            //Disconnection
-            if (obj instanceof ClientHandler) {
-                synchronized (clientHandlers) {
-                    if (!clientHandlers.remove(obj)) {
-                        Pair<Lobby, Boolean> P = lobbyMap.get(CH.getNickname());
-                        if (P.getKey().equals(currentLobby)) {
-                            lobbyMap.remove(CH.getNickname());
-                            currentLobby.removePlayer(CH);
-                        } else {
-                            P.setValue(false);
-                            lobbyMap.put(CH.getNickname(), P);
-                        }
-                    }
-                }
-                System.out.println("[SERVER] " + ((CH.getNickname()==null)? "Anonymous client":"Client "+CH.getNickname()) + " has disconnected from the game");
-            }
-
-            //Player Number is chosen for the current lobby
-            else if (obj instanceof ChoosePlayerNumberMessage) {
-                numberChosen = true;
-            }
-
-            //Player has chosen a nickname
-            else if (obj instanceof NicknameMessage) {
-                ArrayList<String> currPlayers;
-                synchronized (clientHandlers) {
-                    currPlayers = new ArrayList<>(clientHandlers.stream().map(ClientHandler::getNickname).collect(Collectors.toList()));
-                    String S = ((NicknameMessage) obj).getNickname();
-                    if ((lobbyMap.containsKey(S) && lobbyMap.get(S).getValue()) || currPlayers.contains(S)) {
-                        ((ClientHandler) obs).sendStandardMessage(StandardMessages.nicknameAlreadyInUse);
-                    } else if (lobbyMap.containsKey(S)) {
-                        lobbyMap.get(S).setValue(true);
-                        CH.setNickname(S);
-                        lobbyMap.get(S).getKey().addPlayer(CH);
-                        System.out.println("[SERVER] Client " + S + " is trying to reconnect");
-                    } else {
-                        System.out.println("[SERVER] Client " + S + " is ready to play");
-                        CH.setState(ClientHandler.ClientHandlerState.lobbyNotReady);
-                        CH.setNickname(S);
-                        clientHandlers.add((ClientHandler) obs);
-                        if (lobbyRequired) {
-                            new Thread(this::lobbyManager).start();
-                        }
-                        lobbyRequired = false;
-                        clientHandlers.notifyAll();
-                    }
-                }
             }
         }
     }

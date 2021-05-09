@@ -11,6 +11,8 @@ public enum StandardMessages implements Serializable {
     chooseTwoResource("Scegli due risorse extra da ottenere"),  //setup
     chooseDiscardedLC("Scegli le Leader Card da scartare"),
     yourTurn("É il tuo turno"),
+    lorenzoWin("Lorenzo ha vinto!"),
+    endGame("La partita è conclusa"),
 
     //Error messages
     wrongObject("Hai inviato dei dati non validi"),
@@ -37,8 +39,7 @@ public enum StandardMessages implements Serializable {
     requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
     notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione"),
     actionNotDone("Non hai ancora compiuto un'azione per questo turno"),
-    disconnectedMessage("Il giocatore si è disconnesso"),
-    endGame("La partita è conclusa");
+    disconnectedMessage("Il giocatore si è disconnesso");
     //...
 
     private final String message;
