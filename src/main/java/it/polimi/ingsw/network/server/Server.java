@@ -178,6 +178,7 @@ public class Server implements CHObserver, LobbyObserver {
             synchronized (clientHandlers){
                 lobbyMap.remove(obs);
             }
+            System.out.println("[SERVER] A Lobby is being demolished");
         }
     }
 }

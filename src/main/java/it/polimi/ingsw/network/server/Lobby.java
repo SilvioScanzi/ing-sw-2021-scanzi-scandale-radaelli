@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Lobby extends LobbyObservable implements Runnable, CHObserver {
-    public enum LobbyState{start, discardedLCSetup, finishingSetup, play, end, fatalError}
+    public enum LobbyState{start, discardedLCSetup, finishingSetup, play, fatalError}
     private final Object Lock = new Object();
     private LobbyState state = LobbyState.start;
     private final Game game;
@@ -22,7 +22,6 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     private final ArrayList<ClientHandler> clients = new ArrayList<>();
     private final HashMap<String, Integer> disconnectedPlayers = new HashMap<>();
     private int playersDone = 0;
-    private int turn;
 
     public Lobby(int playerNumber){
         this.playerNumber = playerNumber;
@@ -50,7 +49,6 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                 clients.set(n,CH);
                 clientMap.put(CH, new Pair<>(name,disconnectedPlayers.get(name)));
                 disconnectedPlayers.remove(name);
-                if (n < turn) turn = (turn + 1) % playerNumber;
             }
         }
         else{
@@ -157,6 +155,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
         boolean lastRound = false;
         boolean endGame = false;
+        int turn;
         synchronized (clients) {
             turn = game.getInkwell();
         }
@@ -166,13 +165,13 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                 synchronized(clients) {
                     CH = clients.get(turn);
                 }
-                ClientHandler.ClientHandlerState state;
+
                 synchronized (CH) {
                     CH.setState(ClientHandler.ClientHandlerState.myTurn);
                     CH.sendStandardMessage(StandardMessages.yourTurn);
-                    state = ClientHandler.ClientHandlerState.myTurn;
                 }
 
+                ClientHandler.ClientHandlerState state = ClientHandler.ClientHandlerState.myTurn;
                 while (!state.equals(ClientHandler.ClientHandlerState.disconnected) && !state.equals(ClientHandler.ClientHandlerState.notMyTurn)) {
                     synchronized (CH) {
                         state = CH.getState();
@@ -180,14 +179,20 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                     }
                 }
                 endGame = game.checkEndGame(turn);
-                synchronized (clients) {
-                    turn = (turn + 1) % playerNumber;
-                }
+                turn = (turn + 1) % playerNumber;
                 if (endGame && turn == game.getInkwell()) {
                     lastRound = true;
                 }
             }
-            else{ synchronized (clients) {turn = (turn+1)%playerNumber;}}
+            else {
+                synchronized (Lock){
+                    if(state.equals(LobbyState.fatalError)) {
+                        lobbyNotify();
+                        return;
+                    }
+                }
+                turn = (turn+1)%playerNumber;
+            }
         }
 
         //checking who won
@@ -206,17 +211,6 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
         //TODO: Sistemare la notify
         lobbyNotify();
-    }
-
-    private void handleExceptions(Exception e, int player){
-        if(e instanceof ActionAlreadyDoneException) clients.get(player).sendStandardMessage(StandardMessages.actionAlreadyDone);
-        else if(e instanceof IndexOutOfBoundsException) clients.get(player).sendStandardMessage(StandardMessages.indexOutOfBound);
-        else if(e instanceof IncompatibleResourceException) clients.get(player).sendStandardMessage(StandardMessages.incompatibleResources);
-        else if(e instanceof InvalidPlacementException) clients.get(player).sendStandardMessage(StandardMessages.invalidChoice);
-        else if(e instanceof LeaderCardNotCompatibleException) clients.get(player).sendStandardMessage(StandardMessages.leaderCardWrongAbility);
-        else if(e instanceof RequirementsNotMetException) clients.get(player).sendStandardMessage(StandardMessages.requirementsNotMet);
-        else if(e instanceof ResourceErrorException) clients.get(player).sendStandardMessage(StandardMessages.notEnoughResources);
-        else clients.get(player).sendStandardMessage(StandardMessages.wrongObject);
     }
 
     @Override
@@ -255,6 +249,12 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                     for (ClientHandler CH : clients) {
                         if(!disconnectedPlayers.containsKey(CH.getNickname())) {
                             CH.sendObject(new DisconnectedMessage(DP));
+                        }
+                    }
+
+                    synchronized (Lock){
+                        if(disconnectedPlayers.size() == playerNumber){
+                            state = LobbyState.fatalError;
                         }
                     }
                 }
