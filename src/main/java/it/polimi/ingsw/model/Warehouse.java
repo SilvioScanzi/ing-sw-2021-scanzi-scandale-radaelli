@@ -6,14 +6,29 @@ import it.polimi.ingsw.exceptions.ResourceErrorException;
 import java.util.*;
 
 public class Warehouse implements Cloneable {
-    private  Pair<Optional<Resources>,Integer> depot1;
-    private  Pair<Optional<Resources>,Integer> depot2;
-    private  Pair<Optional<Resources>,Integer> depot3;
+    private Pair<Optional<Resources>,Integer> depot1;
+    private Pair<Optional<Resources>,Integer> depot2;
+    private Pair<Optional<Resources>,Integer> depot3;
 
     public Warehouse(){
         depot1 = new Pair<>(Optional.empty(),0);
         depot2 = new Pair<>(Optional.empty(),0);
         depot3 = new Pair<>(Optional.empty(),0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Warehouse)) {
+            return false;
+        }
+        Warehouse w = (Warehouse) o;
+        if(!depot1.equals(w.depot1)) return false;
+        if(!depot2.equals(w.depot2)) return false;
+        if(!depot3.equals(w.depot3)) return false;
+        return true;
     }
 
     @Override

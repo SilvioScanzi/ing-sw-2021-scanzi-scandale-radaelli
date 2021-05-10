@@ -1,20 +1,34 @@
 package it.polimi.ingsw.network.messages;
 
+import it.polimi.ingsw.model.Colours;
+import it.polimi.ingsw.model.DevelopmentCard;
 import it.polimi.ingsw.model.Slot;
 
 import java.io.Serializable;
 
 public class SlotMessage extends Message implements Serializable {
-    private Slot slot;
-    private String nickname;
+    private final int slotIndex;
+    private final int victoryPoints;
+    private final Colours colour;
+    private final String nickname;
 
-    public SlotMessage(Slot slot, String s) {
-        this.slot = slot;
-        nickname = s;
+    public SlotMessage(DevelopmentCard DC, int slotIndex, String nickname) {
+        this.nickname = nickname;
+        this.slotIndex = slotIndex;
+        victoryPoints = DC.getVictoryPoints();
+        colour = DC.getColour();
     }
 
-    public Slot getSlot() {
-        return slot;
+    public int getSlotIndex() {
+        return slotIndex;
+    }
+
+    public int getVictoryPoints() {
+        return victoryPoints;
+    }
+
+    public Colours getColour() {
+        return colour;
     }
 
     public String getNickname() {

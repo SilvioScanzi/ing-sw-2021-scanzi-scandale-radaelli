@@ -1,52 +1,101 @@
-package it.polimi.ingsw.view.CLI;
+package it.polimi.ingsw.view;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.client.NetworkHandler;
+
 import it.polimi.ingsw.network.messages.StandardMessages;
+import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.utils.LeaderCardParser;
-import it.polimi.ingsw.view.View;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-//ASKPROF: va bene avere un attributo networkHandler come attributo o meglio fare altro?
-//ASKPROF: salviamo una classe model (lato client) con LC e poco altro per fare controlli e mandare meno messaggi
 
-public class CLI implements View, Runnable {
-    private String message;
-    private boolean messageReady = false;
+public class CLI extends ViewObservable implements View, Runnable {
+    public enum ViewState{connected,chooseNickName,choosePlayerNumber,discardLeaderCard,finishSetupOneResource,finishSetupTwoResources,myTurn,notMyTurn,disconnected}
+    private ViewState state;
     private boolean canInput = false;
-    private boolean yourTurn = false;
     private final Scanner scanner;
-    private final NetworkHandler networkHandler;
 
-    public CLI(NetworkHandler NH) {
+    public CLI() {
         scanner = new Scanner(System.in);
-        this.networkHandler = NH;
     }
 
     @Override
     public void run(){
-        while(true){
-            String tmpMessage = scanner.nextLine();
-            if(canInput && !messageReady){
-                synchronized (this){
-                    message = tmpMessage;
-                    messageReady = true;
-                    canInput = false;
-                    this.notifyAll();
+        while(!state.equals(ViewState.disconnected)){
+            String message = scanner.nextLine();
+
+            if(canInput) {
+                if(state.equals(ViewState.chooseNickName)){
+                    notifyNickname(message);
+                }
+                else if(state.equals(ViewState.choosePlayerNumber)) {
+                    int i;
+                    try {
+                        i = Integer.parseInt(message);
+                        if(i<1 || i>4){
+                            System.out.println("Numero di giocatori non supportato");
+                        }
+                        else notifyPlayerNumber(i);
+                    }catch(NumberFormatException e) { System.out.println("Devi inserire un numero valido"); }
+                }
+                else if(state.equals(ViewState.discardLeaderCard)){
+                    int[] i = new int[2];
+                    String[] s = message.split(" ");
+                    if(s.length!=2){
+                        System.out.println("Devi inserire due indici");
+                    }
+                    else{
+                        try {
+                            boolean flag = true;
+                            for (int j = 0; j < 2; j++) {
+                                i[j] = Integer.parseInt(s[j]);
+                                if (i[j] < 1 || i[j] > 4) {
+                                    System.out.println("Devi scegliere un indice tra 1 e 4");
+                                    flag = false;
+                                }
+                            }
+                            if(flag) {
+                                notifyDiscardLC(i);
+                            }
+                        }catch(NumberFormatException e) {
+                            System.out.println("Devi inserire un numero valido");
+                        }
+                    }
+                }
+                else if(state.equals(ViewState.finishSetupOneResource)){
+                    if(!message.equals("SE") && !message.equals("MO") && !message.equals("SC") && !message.equals("PI"))
+                        System.out.println("Scegli delle risorse esistenti");
+                    else notifyFinishSetup(new ArrayList<String>(){{add(message);}});
+                }
+                else if(state.equals(ViewState.finishSetupTwoResources)){
+                    String[] s = message.split(" ");
+                    if(s.length!=2) System.out.println("Devi scegliere due risorse");
+                    else {
+                        boolean flag = true;
+                        for(int i=0;i<2;i++) {
+                            if (!s[i].equals("SE") && !s[i].equals("MO") && !s[i].equals("SC") && !s[i].equals("PI")) {
+                                System.out.println("Scegli delle risorse esistenti");
+                                flag = false;
+                            }
+                        }
+                        if(flag) notifyFinishSetup(new ArrayList<String>(){{add(s[0]); add(s[1]);}});
+                    }
+                }
+                else if(state.equals(ViewState.myTurn)) {
+                    notifyTurn(message);
+                }
+                else if(state.equals(ViewState.notMyTurn)){
+                    System.out.println("Non è il tuo turno");
                 }
             }
-            else if(!yourTurn){
-                System.out.println(StandardMessages.waitALittleMore.toString());
-            }
             else {
-                message = tmpMessage;
-                playerTurn();
+                System.out.println("Non puoi inviare dati in questo momento");
             }
         }
+        System.out.println("L'applicazione sta terminando");
     }
 
-    public void playerTurn() {
+    /*public void playerTurn() {
         //TODO: actionDone da implementare nel caso delle prime 3 azioni
         int userChoice = getChoice();
         while(userChoice < 0 || userChoice > 6){
@@ -70,27 +119,12 @@ public class CLI implements View, Runnable {
         }
     }
 
-    public boolean getMessageReady() {
-        return messageReady;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessageReady(boolean messageReady) {
-        this.messageReady = messageReady;
-    }
-
     public void setCanInput(boolean canInput) {
         this.canInput = canInput;
     }
 
-    public void setYourTurn(boolean yourTurn) {
-        this.yourTurn = yourTurn;
-    }
 
-    public void printMarket(Marbles[][] grid, Marbles remainingMarble){
+    public void printResourceMarket(Marbles[][] grid, Marbles remainingMarble){
         String tmp = "MERCATO DELLE RISORSE:\n";
         for(int i=0;i<3;i++){
             for(int j=0;j<4;j++){
@@ -102,7 +136,7 @@ public class CLI implements View, Runnable {
         System.out.println(tmp);
     }
 
-    public void printLC(ArrayList<Triplet<Resources,Integer,Integer>> leaderCards){
+    public void printLeaderCardHand(ArrayList<Triplet<Resources,Integer,Integer>> leaderCards){
         LeaderCardParser LCP = new LeaderCardParser("");
         System.out.println("LEADER CARDS");
         int i = 1;
@@ -332,7 +366,7 @@ public class CLI implements View, Runnable {
         }while(!ok);
 
         networkHandler.buildDiscardLC(userChoice);
-    }
+    }*/
 
     /*e se invece unissimo le due funzioni cosi?
     private void LeaderCardAction(n){
@@ -352,6 +386,96 @@ public class CLI implements View, Runnable {
         if (n==5){networkHandler.buildActivateLC(userChoice);}
         else if (n==6){networkHandler.buildDiscardLC(userChoice);}
     }*/
+
+    @Override
+    public void setCanInput(boolean a) {
+
+    }
+
+    @Override
+    public boolean getMessageReady() {
+        return false;
+    }
+
+    @Override
+    public String getMessage() {
+        return null;
+    }
+
+    @Override
+    public void setMessageReady(boolean a) {
+
+    }
+
+    @Override
+    public void playerTurn() {
+
+    }
+
+    @Override
+    public void setYourTurn(boolean a) {
+
+    }
+
+    @Override
+    public void yourTurnPrint() {
+
+    }
+
+    @Override
+    public void printResourceMarket(Marbles[][] a, Marbles b) {
+
+    }
+
+    @Override
+    public void printLeaderCardHand(ArrayList<Triplet<Resources, Integer, Integer>> LC) {
+
+    }
+
+    @Override
+    public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
+
+    }
+
+    @Override
+    public void printResourceHand(ArrayList<Resources> H, String nickname) {
+
+    }
+
+    @Override
+    public void printAT(ActionToken AT) {
+
+    }
+
+    @Override
+    public void printBlackCross(int BC) {
+
+    }
+
+    @Override
+    public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
+
+    }
+
+    @Override
+    public void printFaithTrack(int FM, boolean[] PF, String nickname) {
+
+    }
+
+    @Override
+    public void printSlot(int I, Colours C, int VP, String nickname) {
+
+    }
+
+    @Override
+    public void printStrongBox(HashMap<Resources, Integer> SB, String nickname) {
+
+    }
+
+    @Override
+    public void printWarehouse(HashMap<Integer, Pair<Resources, Integer>> WH, String nickname) {
+
+    }
 
     private void clearScreen(){
         System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");

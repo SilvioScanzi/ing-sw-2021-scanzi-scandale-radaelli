@@ -13,7 +13,7 @@ import java.util.Stack;
 
 
 public class DevelopmentCardMarket {
-    private final Map<Pair<Colours,Integer>,Stack<DevelopmentCard>> cardMarket; //attributes: colour, level, cards
+    private final HashMap<Pair<Colours,Integer>,Stack<DevelopmentCard>> cardMarket; //attributes: colour, level, cards
 
     public DevelopmentCardMarket() {
         //Instantiating one stack for every card deck (One for every combination of Color-Level)

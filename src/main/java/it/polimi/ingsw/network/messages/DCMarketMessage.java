@@ -4,12 +4,13 @@ import it.polimi.ingsw.exceptions.EmptyException;
 import it.polimi.ingsw.model.Colours;
 import it.polimi.ingsw.model.DevelopmentCard;
 import it.polimi.ingsw.model.DevelopmentCardMarket;
+import it.polimi.ingsw.model.Pair;
 
 import java.io.Serializable;
 import java.util.HashMap;
 
 public class DCMarketMessage extends Message implements Serializable {
-    private final HashMap<Colours, Integer> market;
+    private final HashMap<Pair<Colours,Integer>, Integer> market;
 
     public DCMarketMessage(DevelopmentCardMarket DM){
         market = new HashMap<>();
@@ -18,13 +19,13 @@ public class DCMarketMessage extends Message implements Serializable {
                 DevelopmentCard DC;
                 try{
                     DC = DM.peekFirstCard(C,L);
-                    market.put(C,DC.getVictoryPoints());
+                    market.put(new Pair<>(C,L),DC.getVictoryPoints());
                 }catch(EmptyException e){}
             }
         }
     }
 
-    public HashMap<Colours, Integer> getMarket() {
+    public HashMap<Pair<Colours,Integer>, Integer> getMarket() {
         return market;
     }
 }

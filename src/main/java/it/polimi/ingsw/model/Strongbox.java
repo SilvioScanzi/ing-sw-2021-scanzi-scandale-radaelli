@@ -5,7 +5,7 @@ import it.polimi.ingsw.exceptions.ResourceErrorException;
 import java.util.*;
 
 public class Strongbox implements Cloneable {
-    private HashMap<Resources,Integer> storage;
+    private final HashMap<Resources,Integer> storage;
 
     public Strongbox() {
         storage = new HashMap<>();
@@ -14,6 +14,22 @@ public class Strongbox implements Cloneable {
         storage.put(Resources.Servants,0);
         storage.put(Resources.Shields,0);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == this) {
+            return true;
+        }
+        if (!(o instanceof Strongbox)) {
+            return false;
+        }
+        Strongbox s = (Strongbox) o;
+        for(Resources R : Resources.values()){
+            if(!storage.get(R).equals(s.storage.get(R))) return false;
+        }
+        return true;
+    }
+
 
     @Override
     public Strongbox clone() {

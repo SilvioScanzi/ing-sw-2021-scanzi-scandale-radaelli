@@ -38,8 +38,8 @@ public class LeaderCardPlayAndDiscardTest {
         HashMap<Colours,Pair<Integer,Integer>> rc = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Purple,new Pair<>(1,0)); put(Colours.Green,new Pair<>(1,2)); put(Colours.Yellow,new Pair<>(1,0));}};
         HashMap<Resources,Integer> rr = new HashMap<>();
         LeaderCard LC = new LeaderCard(5,rc,rr,"WhiteMarbleAbility",Resources.Shields,0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -58,8 +58,8 @@ public class LeaderCardPlayAndDiscardTest {
         }catch(Exception e) {e.printStackTrace();}
         playerBoard.getStrongbox().addResource(Resources.Shields,2);
         LeaderCard LC = new LeaderCard(3,rc,rr,"ExtraSlotAbility",Resources.Servants,2);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -86,8 +86,8 @@ public class LeaderCardPlayAndDiscardTest {
         }catch(Exception e) {e.printStackTrace();}
         playerBoard.getStrongbox().addResource(Resources.Shields,2);
         LeaderCard LC = new LeaderCard(5,rc,rr,"DiscountAbility",Resources.Shields,-1);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -112,8 +112,8 @@ public class LeaderCardPlayAndDiscardTest {
         }
         playerBoard.getStrongbox().addResource(Resources.Shields, 2);
         LeaderCard LC = new LeaderCard(3, rc, rr, "ExtraSlotAbility", Resources.Servants, 2);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC);
         assertThrows(Exception.class, () -> game.playLeaderCard(0, 1));
 
         //Lack of DC
@@ -131,8 +131,8 @@ public class LeaderCardPlayAndDiscardTest {
         }};
         rr = new HashMap<>();
         LC = new LeaderCard(5, rc, rr, "WhiteMarbleAbility", Resources.Shields, 0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC);
         assertThrows(Exception.class, () -> game.playLeaderCard(0, 1));
     }
 
@@ -142,8 +142,8 @@ public class LeaderCardPlayAndDiscardTest {
         try {
             game.discardLeaderCard(0, 1);
         }catch (Exception e){e.printStackTrace();}
-        assert(playerBoard.getFaithtrack().getFaithMarker()==1);
-        assert(playerBoard.getLeadercards().size()==3);
+        assert(playerBoard.getFaithTrack().getFaithMarker()==1);
+        assert(playerBoard.getLeaderCardsHand().size()==3);
         assert(playerBoard.getLeaderCardsPlayed().size()==0);
     }
 
@@ -158,16 +158,16 @@ public class LeaderCardPlayAndDiscardTest {
     @DisplayName("Ensure discard grants popeFavor")
     void testDiscardFavor(){
         for(int i=0;i<7;i++) {
-            playerBoard.getFaithtrack().advanceTrack();
+            playerBoard.getFaithTrack().advanceTrack();
         }
-        assert(playerBoard.getFaithtrack().getFaithMarker()==7);
+        assert(playerBoard.getFaithTrack().getFaithMarker()==7);
         try {
             game.discardLeaderCard(0, 1);
         }catch (Exception e){e.printStackTrace();}
-        assert(playerBoard.getFaithtrack().getFaithMarker()==8);
-        assert(playerBoard.getLeadercards().size()==3);
+        assert(playerBoard.getFaithTrack().getFaithMarker()==8);
+        assert(playerBoard.getLeaderCardsHand().size()==3);
         assert(playerBoard.getLeaderCardsPlayed().size()==0);
-        assert(playerBoard.getFaithtrack().getPopeFavor()[0] && !playerBoard.getFaithtrack().getPopeFavor()[1] && !playerBoard.getFaithtrack().getPopeFavor()[2]);
+        assert(playerBoard.getFaithTrack().getPopeFavor()[0] && !playerBoard.getFaithTrack().getPopeFavor()[1] && !playerBoard.getFaithTrack().getPopeFavor()[2]);
     }
 
     @Test
@@ -181,21 +181,21 @@ public class LeaderCardPlayAndDiscardTest {
         LeaderCard LC3 = new LeaderCard(3,rc,rr,"ExtraSlotAbility",Resources.Servants,0);
         LeaderCard LC4 = new LeaderCard(4,rc,rr,"ProductionPowerAbility",Resources.Coins,-1);
 
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC1);
-        playerBoard.getLeadercards().add(LC2);
-        playerBoard.getLeadercards().add(LC3);
-        playerBoard.getLeadercards().add(LC4);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC1);
+        playerBoard.getLeaderCardsHand().add(LC2);
+        playerBoard.getLeaderCardsHand().add(LC3);
+        playerBoard.getLeaderCardsHand().add(LC4);
 
         int[] selection = {1,2};
         try{
             game.discardSelectedLC(0,selection);
         }catch(Exception e) {e.printStackTrace();}
 
-        assert(playerBoard.getLeadercards().get(0).getAbility().getResType().equals(Resources.Servants));
-        assert(playerBoard.getLeadercards().get(0).getVictoryPoints()==3);
-        assert(playerBoard.getLeadercards().get(1).getAbility().getResType().equals(Resources.Coins));
-        assert(playerBoard.getLeadercards().get(1).getVictoryPoints()==4);
+        assert(playerBoard.getLeaderCardsHand().get(0).getAbility().getResType().equals(Resources.Servants));
+        assert(playerBoard.getLeaderCardsHand().get(0).getVictoryPoints()==3);
+        assert(playerBoard.getLeaderCardsHand().get(1).getAbility().getResType().equals(Resources.Coins));
+        assert(playerBoard.getLeaderCardsHand().get(1).getVictoryPoints()==4);
     }
 
     @Test
@@ -209,11 +209,11 @@ public class LeaderCardPlayAndDiscardTest {
         LeaderCard LC3 = new LeaderCard(3,rc,rr,"ExtraSlotAbility",Resources.Servants,0);
         LeaderCard LC4 = new LeaderCard(4,rc,rr,"ProductionPowerAbility",Resources.Coins,-1);
 
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC1);
-        playerBoard.getLeadercards().add(LC2);
-        playerBoard.getLeadercards().add(LC3);
-        playerBoard.getLeadercards().add(LC4);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC1);
+        playerBoard.getLeaderCardsHand().add(LC2);
+        playerBoard.getLeaderCardsHand().add(LC3);
+        playerBoard.getLeaderCardsHand().add(LC4);
 
         int[] selection = {6,2};
         assertThrows(Exception.class, () -> game.discardSelectedLC(0,selection));
@@ -230,11 +230,11 @@ public class LeaderCardPlayAndDiscardTest {
         LeaderCard LC3 = new LeaderCard(3,rc,rr,"ExtraSlotAbility",Resources.Servants,0);
         LeaderCard LC4 = new LeaderCard(4,rc,rr,"ProductionPowerAbility",Resources.Coins,-1);
 
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC1);
-        playerBoard.getLeadercards().add(LC2);
-        playerBoard.getLeadercards().add(LC3);
-        playerBoard.getLeadercards().add(LC4);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC1);
+        playerBoard.getLeaderCardsHand().add(LC2);
+        playerBoard.getLeaderCardsHand().add(LC3);
+        playerBoard.getLeaderCardsHand().add(LC4);
 
         int[] selection = {69,42,119};
         assertThrows(Exception.class, () -> game.discardSelectedLC(0,selection));

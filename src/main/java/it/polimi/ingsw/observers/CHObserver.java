@@ -4,7 +4,7 @@ import it.polimi.ingsw.network.messages.*;
 
 public interface CHObserver {
     void updateDisconnected(CHObservable obs);
-    void updateLCDiscard(CHObservable obs, SetupLCDiscardMessage message);
+    void updateLCDiscard(CHObservable obs, DiscardLeaderCardSetupMessage message);
     void updateFinishSetup(CHObservable obs, FinishSetupMessage message);
     void updateBuyResources(CHObservable obs, BuyResourcesMessage message);
     void updateBuyDC(CHObservable obs, BuyDevelopmentCardMessage message);

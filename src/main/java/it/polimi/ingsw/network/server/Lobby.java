@@ -56,7 +56,8 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
 
             for (ClientHandler clientHandler : clients) {
-                if (!clientHandler.equals(CH) && !(disconnectedPlayers.containsKey(clientHandler.getNickname()))) clientHandler.sendObject(new ReconnectMessage(CH.getNickname()));
+                if (!clientHandler.equals(CH) && !(disconnectedPlayers.containsKey(clientHandler.getNickname())))
+                    clientHandler.sendObject(new ReconnectMessage(CH.getNickname()));
             }
 
             //attaching observers
@@ -65,16 +66,22 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
             //sending game status to the reconnected player
             synchronized (game){
-                CH.sendObject(new MarketMessage(game.getMarket()));
+                CH.sendObject(new ResourceMarketMessage(game.getMarket()));
                 CH.sendObject(new DCMarketMessage(game.getDevelopmentCardMarket()));
                 for(int i=0; i<playerNumber; i++){
                     Board playerBoard = game.getBoard(i);
-                    CH.sendObject(new FaithTrackMessage(playerBoard.getFaithtrack(),playerBoard.getNickname()));
+                    CH.sendObject(new FaithTrackMessage(playerBoard.getFaithTrack(),playerBoard.getNickname()));
                     CH.sendObject(new WarehouseMessage(playerBoard.getWarehouse(),playerBoard.getNickname()));
                     CH.sendObject(new StrongboxMessage(playerBoard.getStrongbox(),playerBoard.getNickname()));
-                    CH.sendObject(new SlotMessage(playerBoard.getSlot(1),playerBoard.getNickname()));
-                    CH.sendObject(new SlotMessage(playerBoard.getSlot(2),playerBoard.getNickname()));
-                    CH.sendObject(new SlotMessage(playerBoard.getSlot(3),playerBoard.getNickname()));
+                    try {
+                        CH.sendObject(new SlotMessage(playerBoard.getSlot(1).getFirstCard(), 1,playerBoard.getNickname()));
+                    }catch(EmptyException e){}
+                    try {
+                        CH.sendObject(new SlotMessage(playerBoard.getSlot(2).getFirstCard(), 2,playerBoard.getNickname()));
+                    }catch(EmptyException e){}
+                    try {
+                        CH.sendObject(new SlotMessage(playerBoard.getSlot(3).getFirstCard(), 3,playerBoard.getNickname()));
+                    }catch(EmptyException e){}
                     CH.sendObject(new LeaderCardPlayedMessage(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname()));
                 }
             }
@@ -196,7 +203,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
         ClientHandler CH = clients.get(0);
         clients.get(0).sendStandardMessage(StandardMessages.endGame);
         if (endGame)
-            CH.sendObject(new VictoryMessage(clients.get(0).getNickname(), game.getBoard(0).getVictoryPoints()));
+            CH.sendObject(new VictoryPointsMessage(game.getBoard(0).getVictoryPoints(),clients.get(0).getNickname()));
         else CH.sendStandardMessage(StandardMessages.lorenzoWin);
 
 
@@ -279,18 +286,6 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
         //checking who won
         game.countVictoryPoints();
-        int victoryIndex = 0;
-        int max = -1;
-        for(int j=0;j<playerNumber;j++){
-            if(max < game.getBoard(j).getVictoryPoints()){
-                max = game.getBoard(j).getVictoryPoints();
-                victoryIndex = j;
-            }
-        }
-
-        for(ClientHandler CH : clients){
-            CH.sendObject(new VictoryMessage(game.getPlayers(victoryIndex),max));
-        }
 
         for(ClientHandler CH : clients) {
             CH.setState(ClientHandler.ClientHandlerState.disconnected);
@@ -318,17 +313,12 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
             }
         } else {
             synchronized (clients) {
-                for (ClientHandler CH : clients) {
-                    if (CH.getState().equals(ClientHandler.ClientHandlerState.disconnected)) {
-                        disconnectedPlayers.put(CH.getNickname(), clientMap.get(CH).getValue());
-                        clientMap.remove(CH);
-                    }
-                }
-
-                ArrayList<String> DP = new ArrayList<>(disconnectedPlayers.keySet());
+                ClientHandler client = (ClientHandler) obs;
+                disconnectedPlayers.put(client.getNickname(), clientMap.get(client).getValue());
+                clientMap.remove(client);
                 for (ClientHandler CH : clients) {
                     if (!disconnectedPlayers.containsKey(CH.getNickname())) {
-                        CH.sendObject(new DisconnectedMessage(DP));
+                        CH.sendObject(new DisconnectedMessage(client.getNickname()));
                     }
                 }
             }
@@ -342,7 +332,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
     }
 
     @Override
-    public void updateLCDiscard(CHObservable obs, SetupLCDiscardMessage message) {
+    public void updateLCDiscard(CHObservable obs, DiscardLeaderCardSetupMessage message) {
         ClientHandler client = (ClientHandler) obs;
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
@@ -457,7 +447,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
             try {
-                game.playLeaderCard(player, message.getN());
+                game.playLeaderCard(player, message.getIndex());
             } catch (RequirementsNotMetException | IndexOutOfBoundsException e) {
                 client.sendStandardMessage(StandardMessages.wrongObject);
             }
@@ -470,7 +460,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
             try {
-                game.discardLeaderCard(player, message.getN());
+                game.discardLeaderCard(player, message.getIndex());
             } catch (IndexOutOfBoundsException e) {
                 client.sendStandardMessage(StandardMessages.wrongObject);
             }

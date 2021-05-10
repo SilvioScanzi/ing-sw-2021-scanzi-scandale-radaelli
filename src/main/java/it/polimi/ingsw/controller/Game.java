@@ -2,7 +2,6 @@ package it.polimi.ingsw.controller;
 
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.network.server.ClientHandler;
 import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
@@ -49,17 +48,6 @@ public class Game extends ModelObservable {
         return inkwell;
     }
 
-    public String getPlayers(int i) {
-        return players.get(i).getNickname();
-    }
-
-    public Board getBoard(String s){
-        for(Board B : players){
-            if(B.getNickname().equals(s)) return B;
-        }
-        return null;
-    }
-
     public Board getBoard(int i){return players.get(i);}
 
     public ResourceMarket getMarket() {
@@ -79,7 +67,7 @@ public class Game extends ModelObservable {
         inkwell = (int)(Math.random() * playerNumber);
         for(int i = 0; i< playerNumber; i++){
             players.add(new Board(leaderCardDeck.getLeaderCards(), names.get(i)));
-            notifyLCHand(players.get(i).getLeadercards(),players.get(i).getNickname());
+            notifyLCHand(players.get(i).getLeaderCardsHand(),players.get(i).getNickname());
         }
         //send to the players both the markets
         notifyDCMarket(developmentCardMarket);
@@ -103,7 +91,7 @@ public class Game extends ModelObservable {
         if(playerNumber >2){
             //player 3
             if(player == (inkwell + 2)% playerNumber) {
-                players.get(player).getFaithtrack().advanceTrack();
+                players.get(player).getFaithTrack().advanceTrack();
                 try{
                     players.get(player).getWarehouse().addDepot(1,R.get(0),1);
                 }catch(Exception e){e.printStackTrace();}
@@ -112,7 +100,7 @@ public class Game extends ModelObservable {
         if(playerNumber >3){
             //player 3
             if(player == (inkwell + 3)% playerNumber) {
-                players.get(player).getFaithtrack().advanceTrack();
+                players.get(player).getFaithTrack().advanceTrack();
                 try{
                     if(R.get(0).equals(R.get(1)))
                         players.get(player).getWarehouse().addDepot(2,R.get(0),2);
@@ -145,7 +133,7 @@ public class Game extends ModelObservable {
             players.get(player).discardLeaderCard(i);
         }
 
-        notifyLCHand(players.get(player).getLeadercards(),players.get(player).getNickname());
+        notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
     }
 
 
@@ -153,8 +141,8 @@ public class Game extends ModelObservable {
     private void popeEvent(int index){
         if(!(vaticanReport[index-1])) {
             for(int i = 0; i< playerNumber; i++){
-                players.get(i).getFaithtrack().setPopeFavor(index);
-                notifyFT(players.get(i).getFaithtrack(),players.get(i).getNickname());
+                players.get(i).getFaithTrack().setPopeFavor(index);
+                notifyFT(players.get(i).getFaithTrack(),players.get(i).getNickname());
             }
             vaticanReport[index-1] = true;
         }
@@ -209,9 +197,9 @@ public class Game extends ModelObservable {
                 case Purple: tmp.add(Resources.Servants); break;
                 case Yellow: tmp.add(Resources.Coins); break;
                 case Red: {
-                    playerBoard.getFaithtrack().advanceTrack();
-                    notifyFT(playerBoard.getFaithtrack(),playerBoard.getNickname());
-                    if(playerBoard.getFaithtrack().checkPopeFavor()!=-1) popeEvent(playerBoard.getFaithtrack().checkPopeFavor());
+                    playerBoard.getFaithTrack().advanceTrack();
+                    if(playerBoard.getFaithTrack().checkPopeFavor()!=-1) popeEvent(playerBoard.getFaithTrack().checkPopeFavor());
+                    else notifyFT(playerBoard.getFaithTrack(),playerBoard.getNickname());
                     break;
                 }
                 default: break;
@@ -226,16 +214,20 @@ public class Game extends ModelObservable {
         for(Resources ignored : playerBoard.getHand()){
             for(int i = 0; i< playerNumber; i++){
                 if(i!=player){
-                    players.get(i).getFaithtrack().advanceTrack();
-                    notifyFT(players.get(i).getFaithtrack(),players.get(i).getNickname());
+                    players.get(i).getFaithTrack().advanceTrack();
                 }
             }
             //Checking if any player got to a Pope tile
             int cell=-1;
             for(int i = 0; i< playerNumber; i++){
-                cell = Math.max(players.get(i).getFaithtrack().checkPopeFavor(),cell);
+                cell = Math.max(players.get(i).getFaithTrack().checkPopeFavor(),cell);
             }
             if(cell!=-1) popeEvent(cell);
+            else{
+                for(int i=0;i<playerNumber;i++){
+                    if(i!=player) notifyFT(players.get(i).getFaithTrack(),players.get(i).getNickname());
+                }
+            }
         }
         playerBoard.getHand().clear();
         notifyHand(playerBoard.getHand(), playerBoard.getNickname());
@@ -263,23 +255,33 @@ public class Game extends ModelObservable {
             cost = LC.getAbility().doDiscount(cost);
         }
 
-        //Getting the slot requested by the player
-        Slot requestedSlot = playerBoard.getSlot(slotNumber);
+
         //Try to consume the resources needed
         consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice);
+
+        //Getting the slot requested by the player
+        Slot requestedSlot = playerBoard.getSlot(slotNumber);
         requestedSlot.addCard(DC);
-        playerBoard.setWarehouse(wr);
-        playerBoard.setStrongbox(sb);
-        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()){
-            L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L)-L.getAbility().getStashedResources());
+        notifySlot(DC, slotNumber, playerBoard.getNickname());
+
+        if(!wr.equals(playerBoard.getWarehouse())) {
+            playerBoard.setWarehouse(wr);
+            notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
         }
+
+        if(!sb.equals(playerBoard.getStrongbox())){
+            playerBoard.setStrongbox(sb);
+            notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
+        }
+
+        if(LCCapacity.size()>0) {
+            for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+                L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
+            }
+            notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
+        }
+
         developmentCardMarket.getFirstCard(c, level);
-
-        notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
-        notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
-        notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
-        notifySlot(requestedSlot, playerBoard.getNickname());
-
         playerBoard.setActionDone(true);
     }
 
@@ -335,24 +337,33 @@ public class Game extends ModelObservable {
         }
 
         //Actually modifying the model (no errors)
-        playerBoard.setStrongbox(sb);
-        playerBoard.setWarehouse(wr);
-        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
-            L.getAbility().doUpdateSlot(L.getAbility().getResType(),
-                    LCCapacity.get(L)-L.getAbility().getStashedResources());
-        }
-        playerBoard.getHand().addAll(tmpHand);
-        playerBoard.dumpHandIntoStrongbox();
-        for(int i=0; i<producedFaith; i++){
-            players.get(player).getFaithtrack().advanceTrack();
-            notifyFT(players.get(player).getFaithtrack(),players.get(player).getNickname());
-            int tmp = players.get(player).getFaithtrack().checkPopeFavor();
-            if(tmp!=-1) popeEvent(tmp);
+        if(tmpHand.size()>0) {
+            playerBoard.getHand().addAll(tmpHand);
+            playerBoard.dumpHandIntoStrongbox();
+            notifySB(playerBoard.getStrongbox(), playerBoard.getNickname());
         }
 
-        notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
-        notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
-        notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
+        if(producedFaith>0) {
+            for (int i = 0; i < producedFaith; i++) {
+                players.get(player).getFaithTrack().advanceTrack();
+                int tmp = players.get(player).getFaithTrack().checkPopeFavor();
+                if (tmp != -1) popeEvent(tmp);
+            }
+            notifyFT(players.get(player).getFaithTrack(),players.get(player).getNickname());
+        }
+
+
+        if(!wr.equals(playerBoard.getWarehouse())) {
+            playerBoard.setWarehouse(wr);
+            notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
+        }
+
+        if(LCCapacity.size()>0) {
+            for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+                L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
+            }
+            notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
+        }
 
         playerBoard.setActionDone(true);
     }
@@ -508,22 +519,22 @@ public class Game extends ModelObservable {
     }
 
     public synchronized void discardLeaderCard(int player, int leaderCardIndex) throws IndexOutOfBoundsException{
-        if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
+        if(leaderCardIndex>players.get(player).getLeaderCardsHand().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).discardLeaderCard(leaderCardIndex);
-        players.get(player).getFaithtrack().advanceTrack();
-        notifyFT(players.get(player).getFaithtrack(), players.get(player).getNickname());
-        int tmp = players.get(player).getFaithtrack().checkPopeFavor();
+        players.get(player).getFaithTrack().advanceTrack();
+        notifyFT(players.get(player).getFaithTrack(), players.get(player).getNickname());
+        int tmp = players.get(player).getFaithTrack().checkPopeFavor();
         if(tmp!=-1) popeEvent(tmp);
 
-        notifyLCHand(players.get(player).getLeadercards(),players.get(player).getNickname());
+        notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
     }
 
     public synchronized void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
-        if(leaderCardIndex>players.get(player).getLeadercards().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
+        if(leaderCardIndex>players.get(player).getLeaderCardsHand().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).playLeaderCard(leaderCardIndex);
 
         notifyLCPlayed(players.get(player).getLeaderCardsPlayed(),players.get(player).getNickname());
-        notifyLCHand(players.get(player).getLeadercards(),players.get(player).getNickname());
+        notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
     }
 
     public boolean checkEndGame(int player){
@@ -549,7 +560,7 @@ public class Game extends ModelObservable {
             tmp=0;
 
             //faithTrack points
-            int faithMarker = playerBoard.getFaithtrack().getFaithMarker();
+            int faithMarker = playerBoard.getFaithTrack().getFaithMarker();
             if(3<=faithMarker && faithMarker<=5) tmp+=1;
             else if(faithMarker<=8) tmp+=2;
             else if(faithMarker<=11) tmp+=4;
@@ -560,7 +571,7 @@ public class Game extends ModelObservable {
             else if(faithMarker==24) tmp+=20;
 
             for(int j=0;j<3;j++){
-                if(playerBoard.getFaithtrack().getPopeFavor()[j]) tmp+=2+j;
+                if(playerBoard.getFaithTrack().getPopeFavor()[j]) tmp+=2+j;
             }
 
             //leadercard points

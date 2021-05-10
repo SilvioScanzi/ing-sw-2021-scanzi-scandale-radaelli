@@ -41,17 +41,17 @@ public class CountVictoryPointsTest {
 
         //Adding one LC which counts for 5 VP
         LeaderCard LC = new LeaderCard(5,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Shields,2);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
 
         //Advancing Faith Track until the 8th space which provides Pope favor Tile
         for(int i=0;i<8;i++){
-            playerBoard.getFaithtrack().advanceTrack();
+            playerBoard.getFaithTrack().advanceTrack();
         }
-        playerBoard.getFaithtrack().setPopeFavor(1);
+        playerBoard.getFaithTrack().setPopeFavor(1);
 
         //Adding 11 resources in various places
         try {

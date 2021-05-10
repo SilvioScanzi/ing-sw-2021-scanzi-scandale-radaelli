@@ -7,10 +7,10 @@ import it.polimi.ingsw.model.Triplet;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class LeaderCardMessage extends Message implements Serializable {
-    ArrayList<Triplet<Resources,Integer,Integer>> LC;
+public class LeaderCardHandMessage extends Message implements Serializable {
+    private final ArrayList<Triplet<Resources,Integer,Integer>> LC;
 
-    public LeaderCardMessage(ArrayList<LeaderCard> leaderCards) {
+    public LeaderCardHandMessage(ArrayList<LeaderCard> leaderCards) {
         LC = new ArrayList<>();
         for(LeaderCard leadCard : leaderCards){
             LC.add(new Triplet<>(leadCard.getAbility().getResType(),

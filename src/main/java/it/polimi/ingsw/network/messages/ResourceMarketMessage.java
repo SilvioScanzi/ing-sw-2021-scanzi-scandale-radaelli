@@ -5,16 +5,16 @@ import it.polimi.ingsw.model.ResourceMarket;
 
 import java.io.Serializable;
 
-public class MarketMessage extends Message implements Serializable {
-    Marbles[][] grid;
-    Marbles remainingMarble;
+public class ResourceMarketMessage extends Message implements Serializable {
+    private final Marbles[][] grid;
+    private final Marbles remainingMarble;
 
-    public MarketMessage(Marbles[][] grid,Marbles RM) {
+    public ResourceMarketMessage(Marbles[][] grid, Marbles remainingMarble) {
         this.grid = grid;
-        remainingMarble = RM;
+        this.remainingMarble = remainingMarble;
     }
 
-    public MarketMessage(ResourceMarket resourceMarket){
+    public ResourceMarketMessage(ResourceMarket resourceMarket){
         grid = resourceMarket.getGrid();
         remainingMarble = resourceMarket.getRemainingMarble();
     }

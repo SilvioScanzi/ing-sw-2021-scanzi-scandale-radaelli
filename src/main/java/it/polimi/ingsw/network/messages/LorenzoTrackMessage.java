@@ -5,13 +5,13 @@ import it.polimi.ingsw.model.LorenzoTrack;
 import java.io.Serializable;
 
 public class LorenzoTrackMessage extends Message implements Serializable {
-    private LorenzoTrack lorenzoTrack;
+    private final int blackCross;
 
     public LorenzoTrackMessage(LorenzoTrack lorenzoTrack) {
-        this.lorenzoTrack = lorenzoTrack;
+        blackCross = lorenzoTrack.getBlackCross();
     }
 
-    public LorenzoTrack getLorenzoTrack() {
-        return lorenzoTrack;
+    public int getBlackCross() {
+        return blackCross;
     }
 }

@@ -5,7 +5,7 @@ import it.polimi.ingsw.model.ActionToken;
 import java.io.Serializable;
 
 public class ActionTokenMessage extends Message implements Serializable {
-    private ActionToken AT;
+    private final ActionToken AT;
 
     public ActionTokenMessage(ActionToken AT) {
         this.AT = AT;

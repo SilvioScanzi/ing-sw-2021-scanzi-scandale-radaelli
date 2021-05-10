@@ -3,19 +3,19 @@ package it.polimi.ingsw.network.messages;
 import java.io.Serializable;
 
 public class VictoryPointsMessage extends Message implements Serializable {
-    private int vp;
-    private String nickname;
+    private final String nickname;
+    private final int victoryPoints;
 
-    public VictoryPointsMessage(int vp, String nickname) {
-        this.vp = vp;
+    public VictoryPointsMessage(int victoryPoints, String nickname){
         this.nickname = nickname;
-    }
-
-    public int getVp() {
-        return vp;
+        this.victoryPoints = victoryPoints;
     }
 
     public String getNickname() {
         return nickname;
+    }
+
+    public int getVictoryPoints() {
+        return victoryPoints;
     }
 }

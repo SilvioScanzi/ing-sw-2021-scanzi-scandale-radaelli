@@ -120,8 +120,8 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             }
 
             case discardLeaderCard: {
-                if (message instanceof SetupLCDiscardMessage) {
-                    notifyLCDiscard((SetupLCDiscardMessage) message);
+                if (message instanceof DiscardLeaderCardSetupMessage) {
+                    notifyLCDiscard((DiscardLeaderCardSetupMessage) message);
                 } else sendStandardMessage(StandardMessages.wrongObject);
                 break;
             }
@@ -197,7 +197,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     @Override
     public void updateMarket(ResourceMarket m){
-        sendObject(new MarketMessage(m.getGrid(),m.getRemainingMarble()));
+        sendObject(new ResourceMarketMessage(m.getGrid(),m.getRemainingMarble()));
     }
 
     @Override
@@ -218,8 +218,8 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     //if you are playing, the cards are showed to you, otherwise it's just to show something to other players
     @Override
     public void updateLCHand(ArrayList<LeaderCard> LCHand, String s){
-        if(nickname.equals(s)) sendObject(new LeaderCardMessage(LCHand));
-        else sendObject(new LCHandUpdateMessage(s));
+        if(nickname.equals(s)) sendObject(new LeaderCardHandMessage(LCHand));
+        else sendObject(new LeaderCardHandUpdateMessage(s));
     }
 
     @Override
@@ -228,13 +228,13 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void updateSlots(Slot slot, String s){
-        sendObject(new SlotMessage(slot,s));
+    public void updateSlots(DevelopmentCard DC, int slotIndex, String nickname){
+        sendObject(new SlotMessage(DC, slotIndex, nickname));
     }
 
     @Override
     public void updateHand(ArrayList<Resources> hand, String s){
-        sendObject(new HandMessage(hand,s));
+        sendObject(new ResourceHandMessage(hand,s));
     }
 
     @Override

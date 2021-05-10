@@ -68,7 +68,7 @@ public class ActivateProductionTest {
         assert(playerBoard.getStrongbox().getResource(Resources.Coins)==2);
         assert(playerBoard.getStrongbox().getResource(Resources.Servants)==2);
         assert(playerBoard.getStrongbox().getResource(Resources.Stones)==3);
-        assert(playerBoard.getFaithtrack().getFaithMarker()==6);
+        assert(playerBoard.getFaithTrack().getFaithMarker()==6);
     }
 
     @Test
@@ -106,8 +106,8 @@ public class ActivateProductionTest {
     @DisplayName("Ensure Correct activation with resources got from LC")
     void testCanActivateWithLC(){
         LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Shields,2);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LCSlot);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LCSlot);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -128,8 +128,8 @@ public class ActivateProductionTest {
     @DisplayName("Ensure correct activation of LC")
     void testCanActivateLCProduction(){
         LeaderCard LCProduction = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ProductionPowerAbility",Resources.Servants,0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LCProduction);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LCProduction);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -141,15 +141,15 @@ public class ActivateProductionTest {
         }catch(Exception e){e.printStackTrace();}
 
         assert(playerBoard.getStrongbox().getResource(Resources.Coins)==1);
-        assert(playerBoard.getFaithtrack().getFaithMarker()==1);
+        assert(playerBoard.getFaithTrack().getFaithMarker()==1);
     }
 
     @Test
     @DisplayName("Ensure exception is thrown when trying to produce with a LC that has a different ability")
     void testWrongLC(){
         LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Servants,0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LCSlot);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LCSlot);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}

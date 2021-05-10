@@ -56,7 +56,7 @@ public class ResourceConversionTest {
         assert(playerBoard.getHand().get(0).equals(Resources.Shields));
         assert(playerBoard.getHand().get(1).equals(Resources.Shields));
         assert(playerBoard.getHand().get(2).equals(Resources.Stones));
-        assert(playerBoard.getFaithtrack().getFaithMarker()==1);
+        assert(playerBoard.getFaithTrack().getFaithMarker()==1);
     }
 
     @Test
@@ -72,8 +72,8 @@ public class ResourceConversionTest {
     @DisplayName("Ensure correct conversion of White marble when player has one Leader Card that interfere")
     void testCanConversionWhiteWithLC(){
         LeaderCard LC = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LC);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -94,9 +94,9 @@ public class ResourceConversionTest {
     void testCanConversionWhiteWithTwoLC(){
         LeaderCard LCServants = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
         LeaderCard LCCoins = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Coins,0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LCServants);
-        playerBoard.getLeadercards().add(LCCoins);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LCServants);
+        playerBoard.getLeaderCardsHand().add(LCCoins);
         try {
             game.playLeaderCard(0, 1);
             game.playLeaderCard(0, 1);
@@ -121,9 +121,9 @@ public class ResourceConversionTest {
     void testCannotConversionWhiteWithTwoLC(){
         LeaderCard LCServants = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
         LeaderCard LCCoins = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Coins,0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LCServants);
-        playerBoard.getLeadercards().add(LCCoins);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LCServants);
+        playerBoard.getLeaderCardsHand().add(LCCoins);
         try {
             game.playLeaderCard(0, 1);
             game.playLeaderCard(0, 1);
@@ -140,9 +140,9 @@ public class ResourceConversionTest {
     void testCannotConversionWhiteIndexOutOfBound(){
         LeaderCard LCServants = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
         LeaderCard LCCoins = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Coins,0);
-        playerBoard.getLeadercards().clear();
-        playerBoard.getLeadercards().add(LCServants);
-        playerBoard.getLeadercards().add(LCCoins);
+        playerBoard.getLeaderCardsHand().clear();
+        playerBoard.getLeaderCardsHand().add(LCServants);
+        playerBoard.getLeaderCardsHand().add(LCCoins);
         try {
             game.playLeaderCard(0, 1);
             game.playLeaderCard(0, 1);

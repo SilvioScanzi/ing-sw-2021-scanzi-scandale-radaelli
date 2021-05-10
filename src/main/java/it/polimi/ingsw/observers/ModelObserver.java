@@ -11,7 +11,7 @@ public interface ModelObserver {
     void updateLCHand(ArrayList<LeaderCard> LCHand, String s);
     void updateSB(Strongbox sb, String s);
     void updateFT(FaithTrack ft, String s);
-    void updateSlots(Slot slot,String s);
+    void updateSlots(DevelopmentCard DC, int slotIndex, String nickname);
     void updateHand(ArrayList<Resources> hand, String s);
     void updateLCPlayed(ArrayList<LeaderCard> lcp, String s);
     void updateVP(int victoryPoints,String s);

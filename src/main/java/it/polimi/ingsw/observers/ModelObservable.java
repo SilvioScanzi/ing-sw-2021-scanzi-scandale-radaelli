@@ -33,9 +33,9 @@ public class ModelObservable {
         }
     }
 
-    public void notifySlot(Slot slot, String s){
+    public void notifySlot(DevelopmentCard DC, int slotIndex, String nickname){
         for(ModelObserver obs : observers){
-            obs.updateSlots(slot,s);
+            obs.updateSlots(DC, slotIndex, nickname);
         }
     }
 

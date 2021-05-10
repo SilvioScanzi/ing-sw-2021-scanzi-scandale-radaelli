@@ -2,7 +2,6 @@ package it.polimi.ingsw.model;
 
 import it.polimi.ingsw.exceptions.EmptyException;
 import it.polimi.ingsw.exceptions.RequirementsNotMetException;
-import it.polimi.ingsw.observers.ModelObservable;
 
 import java.util.*;
 
@@ -18,7 +17,7 @@ public class Board{
     private boolean actionDone;
     private int victoryPoints;
 
-    public Board(ArrayList<LeaderCard> leadercards, String nickname) {
+    public Board(ArrayList<LeaderCard> leaderCards, String nickname) {
         this.nickname = nickname;
         faithtrack = new FaithTrack();
         warehouse = new Warehouse();
@@ -27,7 +26,7 @@ public class Board{
         for(int i=0;i<3;i++){
             slots[i] = new Slot();
         }
-        leaderCardsHand = new ArrayList<> (leadercards);
+        leaderCardsHand = new ArrayList<> (leaderCards);
         leaderCardsPlayed = new ArrayList<>();
         hand = new ArrayList<>();
         actionDone = false;
@@ -82,7 +81,7 @@ public class Board{
         return leaderCardsPlayed;
     }
 
-    public FaithTrack getFaithtrack() {
+    public FaithTrack getFaithTrack() {
         return faithtrack;
     }
 
@@ -91,7 +90,7 @@ public class Board{
         return slots[index-1];
     }
 
-    public ArrayList<LeaderCard> getLeadercards() {
+    public ArrayList<LeaderCard> getLeaderCardsHand() {
         return leaderCardsHand;
     }
 
@@ -159,29 +158,27 @@ public class Board{
         Map<Colours,Pair<Integer,Integer>> requiredColours = new HashMap<>(LC.getRequiredColours());
         Map<Resources,Integer> requiredResources = new HashMap<>(LC.getRequiredResources());
         ArrayList<Pair<Colours,Integer>> tmp1 = new ArrayList<>();
-        Map<Resources,Integer> tmp2 = new HashMap<>();
 
         for(int j=0;j<3;j++){
             tmp1.addAll(slots[j].getList());
         }
         //Checking level and number of requested card
-        for(int j=0;j<tmp1.size();j++){
-            if(requiredColours.get(tmp1.get(j).getKey())!=null){
-                if(tmp1.get(j).getValue() >= requiredColours.get(tmp1.get(j).getKey()).getValue()){
-                    if(requiredColours.get(tmp1.get(j).getKey()).getKey()-1<=0){
-                        requiredColours.remove(tmp1.get(j).getKey());
-                    }
-                    else{
-                        requiredColours.put(tmp1.get(j).getKey(),
-                                new Pair<>(requiredColours.get(tmp1.get(j).getKey()).getKey()-1,
-                                        requiredColours.get(tmp1.get(j).getKey()).getValue()));
+        for (Pair<Colours, Integer> coloursIntegerPair : tmp1) {
+            if (requiredColours.get(coloursIntegerPair.getKey()) != null) {
+                if (coloursIntegerPair.getValue() >= requiredColours.get(coloursIntegerPair.getKey()).getValue()) {
+                    if (requiredColours.get(coloursIntegerPair.getKey()).getKey() - 1 <= 0) {
+                        requiredColours.remove(coloursIntegerPair.getKey());
+                    } else {
+                        requiredColours.put(coloursIntegerPair.getKey(),
+                                new Pair<>(requiredColours.get(coloursIntegerPair.getKey()).getKey() - 1,
+                                        requiredColours.get(coloursIntegerPair.getKey()).getValue()));
                     }
                 }
             }
         }
 
         //Checking resources and number of requested card
-        tmp2.putAll(getAllResources());
+        Map<Resources, Integer> tmp2 = new HashMap<>(getAllResources());
         for(Resources r : requiredResources.keySet()){
             if(requiredResources.get(r) <= tmp2.get(r)) requiredResources.remove(r);
         }

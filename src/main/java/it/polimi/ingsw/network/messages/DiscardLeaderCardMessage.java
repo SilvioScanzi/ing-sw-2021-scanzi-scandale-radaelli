@@ -3,13 +3,13 @@ package it.polimi.ingsw.network.messages;
 import java.io.Serializable;
 
 public class DiscardLeaderCardMessage extends Message implements Serializable {
-    private final int n;
+    private final int index;
 
-    public DiscardLeaderCardMessage(int i){
-        n = i;
+    public DiscardLeaderCardMessage(int index){
+        this.index = index;
     }
 
-    public int getN() {
-        return n;
+    public int getIndex() {
+        return index;
     }
 }

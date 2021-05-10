@@ -7,12 +7,12 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class StrongboxMessage extends Message implements Serializable {
-    private HashMap<Resources,Integer> storage;
-    private String nickname;
+    private final HashMap<Resources,Integer> storage;
+    private final String nickname;
 
-    public StrongboxMessage(Strongbox sb, String s) {
+    public StrongboxMessage(Strongbox sb, String nickname) {
         this.storage = sb.getStorage();
-        nickname = s;
+        this.nickname = nickname;
     }
 
     public HashMap<Resources, Integer> getStorage() {

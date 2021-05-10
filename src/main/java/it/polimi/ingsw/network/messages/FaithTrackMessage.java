@@ -5,14 +5,14 @@ import it.polimi.ingsw.model.FaithTrack;
 import java.io.Serializable;
 
 public class FaithTrackMessage extends Message implements Serializable {
-    private int FaithMarker;
-    private boolean[] PopeFavor;
-    private String nickname;
+    private final int FaithMarker;
+    private final boolean[] PopeFavor;
+    private final String nickname;
 
-    public FaithTrackMessage(FaithTrack ft,String s) {
+    public FaithTrackMessage(FaithTrack ft, String nickname) {
         FaithMarker = ft.getFaithMarker();
         PopeFavor = ft.getPopeFavor();
-        nickname = s;
+        this.nickname = nickname;
     }
 
     public int getFaithMarker() {

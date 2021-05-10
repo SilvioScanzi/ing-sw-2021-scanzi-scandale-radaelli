@@ -45,7 +45,7 @@ public class CHObservable {
         }
     }
 
-    public void notifyLCDiscard(SetupLCDiscardMessage message){
+    public void notifyLCDiscard(DiscardLeaderCardSetupMessage message){
         for(CHObserver obs : observers){
             obs.updateLCDiscard(this,message);
         }

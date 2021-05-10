@@ -5,13 +5,13 @@ import it.polimi.ingsw.model.Resources;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class HandMessage extends Message implements Serializable {
-    private ArrayList<Resources> hand;
-    private String nickname;
+public class ResourceHandMessage extends Message implements Serializable {
+    private final ArrayList<Resources> hand;
+    private final String nickname;
 
-    public HandMessage(ArrayList<Resources> hand,String s) {
+    public ResourceHandMessage(ArrayList<Resources> hand, String nickname) {
         this.hand = hand;
-        nickname = s;
+        this.nickname = nickname;
     }
 
     public ArrayList<Resources> getHand() {
