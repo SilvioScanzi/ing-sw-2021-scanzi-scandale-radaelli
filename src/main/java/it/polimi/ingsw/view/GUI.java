@@ -18,6 +18,11 @@ public class GUI extends ViewObservable implements View, Runnable{
     }
 
     @Override
+    public void print(String string) {
+
+    }
+
+    @Override
     public void printStandardMessage(StandardMessages message) {
 
     }
