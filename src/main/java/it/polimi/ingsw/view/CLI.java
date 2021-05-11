@@ -1,10 +1,12 @@
 package it.polimi.ingsw.view;
 import it.polimi.ingsw.model.*;
 
+import it.polimi.ingsw.network.client.NetworkHandler;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.utils.LeaderCardParser;
 
+import java.awt.font.NumericShaper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,10 +14,11 @@ import java.util.Scanner;
 public class CLI extends ViewObservable implements View, Runnable {
     public enum ViewState{connected,chooseNickName,choosePlayerNumber,discardLeaderCard,finishSetupOneResource,finishSetupTwoResources,myTurn,notMyTurn,disconnected}
     private ViewState state;
-    private boolean canInput = false;
+    private boolean canInput = false;   //TODO: implementare questo solo con uno stato di wait
     private final Scanner scanner;
 
-    public CLI() {
+    public CLI(NetworkHandler NH) {
+        addObserver(NH);
         scanner = new Scanner(System.in);
     }
 
@@ -55,7 +58,7 @@ public class CLI extends ViewObservable implements View, Runnable {
                                 }
                             }
                             if(flag) {
-                                notifyDiscardLC(i);
+                                notifySetupDiscardLC(i);
                             }
                         }catch(NumberFormatException e) {
                             System.out.println("Devi inserire un numero valido");
@@ -82,7 +85,21 @@ public class CLI extends ViewObservable implements View, Runnable {
                     }
                 }
                 else if(state.equals(ViewState.myTurn)) {
-                    notifyTurn(message);
+                    try{
+                        int userChoice = Integer.parseInt(message);
+                        switch (userChoice) {
+                            //TODO: NH controlla i dati: se non li ha corretti si ritorna da capo con la scelta della mossa
+                            case 1: buyResources(); break;
+                            case 2: buyDevelopmentCard(); break;
+                            case 3: activateProduction(); break;
+                            case 4: moveResources(); break;
+                            case 5: LeaderCardAction(5); break;
+                            case 6: LeaderCardAction(6); break;
+                            case 0: notifyEndTurn(); break;
+                        }
+                    }catch(NumberFormatException e) {
+                        System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
+                    }
                 }
                 else if(state.equals(ViewState.notMyTurn)){
                     System.out.println("Non è il tuo turno");
@@ -95,36 +112,24 @@ public class CLI extends ViewObservable implements View, Runnable {
         System.out.println("L'applicazione sta terminando");
     }
 
-    /*public void playerTurn() {
-        //TODO: actionDone da implementare nel caso delle prime 3 azioni
-        int userChoice = getChoice();
-        while(userChoice < 0 || userChoice > 6){
-            System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
-            message = scanner.nextLine();
-            userChoice = getChoice();
-        }
-
-        switch (userChoice) {
-            case 1: buyResources(); break;
-            case 2: buyDevelopmentCard(); break;
-            case 3: activateProduction(); break;
-            case 4: moveResources(); break;
-            case 5: playLeaderCard(); break;
-            case 6: discardLeaderCard(); break;
-            case 0: networkHandler.buildEndTurnMessage(); break;
-        }
-        if(userChoice!=0) {
-            clearScreen();
-            yourTurnPrint();
-        }
+    public void setState(ViewState state) {
+        this.state = state;
     }
 
-    public void setCanInput(boolean canInput) {
-        this.canInput = canInput;
+    @Override
+    public void print(String string){
+        System.out.println(string);
+    }
+
+    @Override
+    public void printStandardMessage(StandardMessages message){
+        System.out.println(message.toString());
+
+        if(message.equals(StandardMessages.yourTurn)){yourTurnPrint();}
     }
 
 
-    public void printResourceMarket(Marbles[][] grid, Marbles remainingMarble){
+    /*public void printResourceMarket(Marbles[][] grid, Marbles remainingMarble){
         String tmp = "MERCATO DELLE RISORSE:\n";
         for(int i=0;i<3;i++){
             for(int j=0;j<4;j++){
@@ -144,7 +149,7 @@ public class CLI extends ViewObservable implements View, Runnable {
             System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
             i++;
         }
-    }
+    }*/
 
     public void yourTurnPrint(){
         System.out.println("È arrivato il tuo turno! ");
@@ -157,20 +162,10 @@ public class CLI extends ViewObservable implements View, Runnable {
         System.out.println("5 - Gioca una carta leader");
         System.out.println("6 - Scarta una carta leader");
         System.out.println("0 - Fine turno");
-        //TODO: server manda le cose necessarie: board e market
-    }
-
-    private int getChoice(){
-        int n;
-        try{
-            n = Integer.parseInt(message);
-        }catch(NumberFormatException e){return -1;}
-
-        return n;
     }
 
     private void buyResources(){
-        System.out.println("Hai scelto di comprare le risorse dal mercato");
+        System.out.println("Hai scelto di comprare le risorse dal mercato.");
         System.out.println("Seleziona una riga o una colonna (R per riga e C per colonna): ");
         String RC;
         boolean r = false;
@@ -202,19 +197,40 @@ public class CLI extends ViewObservable implements View, Runnable {
         //conversion of white marbles
         ArrayList<Integer> requestedWMConversion = new ArrayList<>();
         System.out.println("Quali carte vuoi usare per le biglie bianche? (indice 1-2 della leader card)");
-        String[] choice = scanner.nextLine().split(" ");
-        if(choice.length!=0) {
-            for (String s : choice) {
-                message = s;
-                requestedWMConversion.add(getChoice());
+        String[] choice;
+        boolean flag;
+        do{
+            flag = false;
+            requestedWMConversion.clear();
+            choice = scanner.nextLine().split(" ");
+            if(choice.length<4) {
+                for (String s : choice) {
+                    try{
+                        int userChoice = Integer.parseInt(s);
+                        if(userChoice==1 || userChoice==2){
+                            requestedWMConversion.add(userChoice);
+                        }
+                        else {
+                            flag=true;
+                            System.out.println("Le leader card hanno come indici solo 1 e 2");
+                        }
+                    }catch(NumberFormatException e){
+                        flag = true;
+                        System.out.println("Inserisci un numero valido");
+                    }
+                }
             }
-        }
+            else {
+                System.out.println("Ci sono al massimo 4 biglie bianche!");
+                flag = true;
+            }
+        }while(flag);
 
-        networkHandler.buildBuyResources(r,n,requestedWMConversion);
+        notifyBuyResources(r,n,requestedWMConversion);
     }
 
     private void buyDevelopmentCard() {
-        System.out.println("Hai deciso di comprare una carta sviluppo. ");
+        System.out.println("Hai deciso di comprare una carta sviluppo.");
         Colours colour = null;
         boolean ok = false;
         do {
@@ -228,20 +244,22 @@ public class CLI extends ViewObservable implements View, Runnable {
             }
         } while (!ok);
 
-        int level;
+        int level=0;
         do {
             System.out.println("Scegli il livello tra 1, 2 e 3: ");
-            message = scanner.nextLine();
-            level = getChoice();
-            ok = 1 <= level && level <= 3;
+            try{
+                level = Integer.parseInt(scanner.nextLine());
+                ok = level >= 1 && level <= 3;
+            }catch(NumberFormatException e){ok=false;}
         } while (!ok);
 
-        int slot;
+        int slot=0;
         do {
             System.out.println("Scegli lo slot tra 1, 2 e 3: ");
-            message = scanner.nextLine();
-            slot = getChoice();
-            ok = slot == 1 || slot == 2 || slot == 3;
+            try{
+                slot = Integer.parseInt(scanner.nextLine());
+                ok = slot >= 1 && slot <= 3;
+            }catch(NumberFormatException e){ok=false;}
         } while (!ok);
 
         System.out.println("Scegli che risorse vuoi usare e da dove le vuoi prendere.");
@@ -249,29 +267,45 @@ public class CLI extends ViewObservable implements View, Runnable {
         System.out.println("1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Fine");
         System.out.println("SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
         ArrayList<Pair<String, Integer>> userChoice = new ArrayList<>();
-        int n;
+        int n=0;
         do {
             String[] s = scanner.nextLine().split(" ");
-            message = s[0];
-            n = getChoice();
-            if(1<=n && n<=5) userChoice.add(new Pair<>(s[1], n));
-            else if(n!=6) System.out.println("Devi inserire dati validi!");
+            if(s.length==1){
+                try{
+                    n = Integer.parseInt(s[0]);
+                    if(n!=6) System.out.println("Selezione errata");
+                }catch(NumberFormatException e){
+                    System.out.println("Devi inserire un numero");
+                }
+            }
+            else if(s.length==2){
+                try{
+                    n = Integer.parseInt(s[0]);
+                    if(!s[1].equals("SE") && !s[1].equals("MO") && !s[1].equals("SC") && !s[1].equals("PI"))
+                        System.out.println("Scegli delle risorse esistenti");
+                    else if(1<=n && n<=5) userChoice.add(new Pair<>(s[1], n));
+                }catch(NumberFormatException e){
+                    System.out.println("Devi inserire un numero");
+                }
+            }
+            else System.out.println("Selezione errata");
+
         } while (n != 6);
 
-        networkHandler.buildBuyDC(colour,level,slot,userChoice);
+        notifyBuyDC(colour,level,slot,userChoice);
     }
 
     private void activateProduction() {
         System.out.println("Hai deciso di attivare la produzione. ");
         int index;
+        //HashMap: production index, ArrayList: Resource and where they come from
         HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice = new HashMap<>();
         do {
             System.out.println("Seleziona la carta che desideri. Per chiudere la selezione digita 0");
             System.out.println("1, 2, 3 - Carte sviluppo negli slot");
             System.out.println("4 - Potere di base");
-            System.out.println("5, 6 - Carte leader");  //TODO: show only for leader cards actually available
-            message = scanner.nextLine();
-            index = getChoice();
+            System.out.println("5, 6 - Carte leader");
+            index = Integer.parseInt(scanner.nextLine());
             boolean leap = false;
             if(1<=index && index<=6){
                 if(userChoice.get(index) != null){
@@ -283,7 +317,7 @@ public class CLI extends ViewObservable implements View, Runnable {
                     if(m.equals("N")) leap = true;
                 }
                 if(!leap){
-                    int n;
+                    int n=0;
                     ArrayList<Pair<String, Integer>> resourceArray = new ArrayList<>();
                     System.out.println("Scegli che risorse vuoi usare e da dove le vuoi prendere.");
                     System.out.println("Inserisci i valori a coppie (es: 2 SE)");
@@ -291,20 +325,34 @@ public class CLI extends ViewObservable implements View, Runnable {
                     System.out.println("Risorse: SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
                     do {
                         String[] s = scanner.nextLine().split(" ");
-                        message = s[0];
-                        n = getChoice();
-                        if(1<=n && n<=5) resourceArray.add(new Pair<>(s[1], n));
-                        else if(n!=6) System.out.println("Devi inserire dati validi!");
+                        if(s.length==1){
+                            try{
+                                n = Integer.parseInt(s[0]);
+                                if(n!=6) System.out.println("Selezione errata");
+                            }catch(NumberFormatException e){
+                                System.out.println("Devi inserire un numero");
+                            }
+                        }
+                        else if(s.length==2){
+                            try{
+                                n = Integer.parseInt(s[0]);
+                                if(!s[1].equals("SE") && !s[1].equals("MO") && !s[1].equals("SC") && !s[1].equals("PI"))
+                                    System.out.println("Scegli delle risorse esistenti");
+                                else if(1<=n && n<=5) resourceArray.add(new Pair<>(s[1], n));
+                            }catch(NumberFormatException e){
+                                System.out.println("Devi inserire un numero");
+                            }
+                        }
+                        else System.out.println("Selezione errata");
                     }while(n != 6);
                     userChoice.put(index,resourceArray);
                 }
             }
         }while(index!=0);
 
-        networkHandler.buildActivateProduction(userChoice);
+        notifyActivateProduction(userChoice);
     }
 
-    //TODO: avendo un model, potremmo stampare ogni volta la sua board
     private void moveResources(){
         System.out.println("Hai deciso di spostare le risorse. ");
         System.out.println("Scegli la risorsa, il luogo da dove prendela e il luogo dove metterla.");
@@ -316,46 +364,42 @@ public class CLI extends ViewObservable implements View, Runnable {
         String[] s;
         do{
            s = scanner.nextLine().split(" ");
-           if(s[0].equals("7")) ;
-           else if(!s[0].equals("SE") && !s[0].equals("MO") && !s[0].equals("SC") && !s[0].equals("PI"))
-               System.out.println("Risorsa inestitente. Inserisci di nuovo la tripletta: ");
-           else{
-               int[] tmp = new int[2];
-               message = s[1];
-               tmp[0] = getChoice();
-               message = s[2];
-               tmp[1] = getChoice();
-               if(tmp[0]<0 || tmp[0]>6 || tmp[1]<0 || tmp[1]>6){
-                   System.out.println("Posto inesistente. Inserisci di nuovo la tripletta:  ");
+           if(s.length==1){
+               try{
+                   if(Integer.parseInt(s[0]) != 7) System.out.println("Inserisci dati validi");
+               }catch(NumberFormatException e){
+                   System.out.println("Inserisci dati validi");
                }
-               else userChoice.add(new Triplet<>(s[1],tmp[0],tmp[1]));
            }
+           else if(s.length==3) {
+               if (!s[0].equals("SE") && !s[0].equals("MO") && !s[0].equals("SC") && !s[0].equals("PI"))
+                   System.out.println("Risorsa inestitente. Inserisci di nuovo la tripletta: ");
+               else{
+                   int[] tmp = new int[2];
+                   try{
+                       tmp[0] = Integer.parseInt(s[1]);
+                       tmp[1] = Integer.parseInt(s[2]);
+                       if(tmp[0]<0 || tmp[0]>6 || tmp[1]<0 || tmp[1]>6){
+                           System.out.println("Posto inesistente. Inserisci di nuovo la tripletta:  ");
+                       }
+                       else userChoice.add(new Triplet<>(s[0],tmp[0],tmp[1]));
+                   }catch(NumberFormatException e){
+                       System.out.println("Inserisci dati validi");
+                   }
+               }
+           }
+           else System.out.println("Inserisci dati validi");
+
         }while(!s[0].equals("7"));
 
-        networkHandler.buildMoveResources(userChoice);
+        notifyMoveResources(userChoice);
     }
 
-    //needs update: show only for leader cards actually available
-    private void playLeaderCard(){
-        System.out.println("Hai deciso di attivare una carta leader");
+    private void LeaderCardAction(int n){
+        if (n==5){System.out.println("Hai deciso di attivare una carta leader.");}
+        else if (n==6){System.out.println("Hai deciso di scartare una carta leader.");}
         boolean ok = false;
-        int userChoice = -1;
-        System.out.println("Seleziona la carta leader che vuoi attivare");
-        do {
-            int c = Integer.parseInt(scanner.nextLine());
-            if (c == 1 || c == 2) {
-                userChoice = c;
-                ok = true;
-            } else {System.out.println("Devi inserire un indice valido!");}
-        }while(!ok);
-
-        networkHandler.buildActivateLC(userChoice);
-    }
-
-    private void discardLeaderCard(){
-        System.out.println("Hai deciso di scartare una carta leader");
-        boolean ok = false;
-        int userChoice = -1;
+        int userChoice = 0;
         System.out.println("Seleziona la carta leader che vuoi scartare");
         do {
             int c = Integer.parseInt(scanner.nextLine());
@@ -365,61 +409,8 @@ public class CLI extends ViewObservable implements View, Runnable {
             } else {System.out.println("Devi inserire un indice valido!");}
         }while(!ok);
 
-        networkHandler.buildDiscardLC(userChoice);
-    }*/
-
-    /*e se invece unissimo le due funzioni cosi?
-    private void LeaderCardAction(n){
-        if (n==5){System.out.println("Hai deciso di attivare una carta leader");}
-        else if (n==6){System.out.println("Hai deciso di scartare una carta leader");}
-        boolean ok = false;
-        int userChoice = -1;
-        System.out.println("Seleziona la carta leader che vuoi scartare");
-        do {
-            int c = Integer.parseInt(scanner.nextLine());
-            if (c == 1 || c == 2) {
-                userChoice = c;
-                ok = true;
-            } else {System.out.println("Devi inserire un indice valido!");}
-        }while(!ok);
-
-        if (n==5){networkHandler.buildActivateLC(userChoice);}
-        else if (n==6){networkHandler.buildDiscardLC(userChoice);}
-    }*/
-
-    @Override
-    public void setCanInput(boolean a) {
-
-    }
-
-    @Override
-    public boolean getMessageReady() {
-        return false;
-    }
-
-    @Override
-    public String getMessage() {
-        return null;
-    }
-
-    @Override
-    public void setMessageReady(boolean a) {
-
-    }
-
-    @Override
-    public void playerTurn() {
-
-    }
-
-    @Override
-    public void setYourTurn(boolean a) {
-
-    }
-
-    @Override
-    public void yourTurnPrint() {
-
+        if (n==5){notifyActivateLC(userChoice);}
+        else if (n==6){notifyDiscardLC(userChoice);}
     }
 
     @Override

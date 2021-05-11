@@ -1,6 +1,7 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
 
 import java.util.ArrayList;
@@ -12,37 +13,12 @@ public class GUI extends ViewObservable implements View, Runnable{
     }
 
     @Override
-    public void setCanInput(boolean a) {
+    public void setState(CLI.ViewState state) {
 
     }
 
     @Override
-    public boolean getMessageReady() {
-        return false;
-    }
-
-    @Override
-    public String getMessage() {
-        return null;
-    }
-
-    @Override
-    public void setMessageReady(boolean a) {
-
-    }
-
-    @Override
-    public void playerTurn() {
-
-    }
-
-    @Override
-    public void setYourTurn(boolean a) {
-
-    }
-
-    @Override
-    public void yourTurnPrint() {
+    public void printStandardMessage(StandardMessages message) {
 
     }
 

@@ -1,12 +1,23 @@
 package it.polimi.ingsw.observers;
 
+import it.polimi.ingsw.model.Colours;
+import it.polimi.ingsw.model.Pair;
+import it.polimi.ingsw.model.Triplet;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface ViewObserver {
     void updateNickname(ViewObservable obs, String message);
     void updatePlayerNumber(ViewObservable obs, int num);
-    void updateDiscardLC(ViewObservable obs, int index[]);
+    void updateSetupDiscardLC(ViewObservable obs, int index[]);
     void updateFinishSetup(ViewObservable obs, ArrayList<String> message);
-    void updateMyTurn(ViewObservable obs, String message);
-    void updateDisconnected(ViewObservable obs);
+    void updateDisconnected(ViewObservable obs);    //TODO: fargli scegliere se disconnettersi
+    void updateBuyResources(boolean r,int n,ArrayList<Integer> requestedWMConversion);
+    void updateBuyDC(Colours colour, int level, int slot, ArrayList<Pair<String, Integer>> userChoice);
+    void updateActivateProduction(HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice);
+    void updateMoveResources(ArrayList<Triplet<String,Integer,Integer>> userChoice);
+    void updateActivateLC(int userChoice);
+    void updateDiscardLC(int userChoice);
+    void updateEndTurn();
 }

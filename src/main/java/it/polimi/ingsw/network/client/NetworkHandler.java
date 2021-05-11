@@ -42,7 +42,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             new Thread((GUI) view).start();
         }
         else {
-            view = new CLI();
+            view = new CLI(this);
             new Thread((CLI) view).start();
         }
     }
@@ -67,7 +67,31 @@ public class NetworkHandler implements Runnable, ViewObserver {
         boolean redo;
 
         //Standard Messages
-        if(message instanceof StandardMessages) {
+        if(message instanceof StandardMessages){
+            switch((StandardMessages) message){
+                case chooseNickName:
+                    view.setState(CLI.ViewState.chooseNickName);
+                    break;
+                case choosePlayerNumber:
+                    view.setState(CLI.ViewState.choosePlayerNumber);
+                    break;
+                case chooseDiscardedLC:
+                    view.setState(CLI.ViewState.discardLeaderCard);
+                    break;
+                case chooseOneResource:
+                    view.setState(CLI.ViewState.finishSetupOneResource);
+                    break;
+                case chooseTwoResource:
+                    view.setState(CLI.ViewState.finishSetupTwoResources);
+                    break;
+                case yourTurn:
+                    view.setState(CLI.ViewState.myTurn);
+                    break;
+            }
+
+            view.printStandardMessage((StandardMessages) message);
+        }
+        /*if(message instanceof StandardMessages) {
             System.out.println(message.toString());
             if(message.equals(StandardMessages.choosePlayerNumber) || message.equals(StandardMessages.chooseNickName)
                 || message.equals(StandardMessages.chooseOneResource) || message.equals(StandardMessages.chooseTwoResource)
@@ -89,7 +113,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 view.setMessageReady(false);
                 view.yourTurnPrint();
             }
-        }
+        }*/
 
         //Messages
         else if(message instanceof Message){
@@ -149,7 +173,6 @@ public class NetworkHandler implements Runnable, ViewObserver {
     }
 
     private boolean buildStandardMessage(StandardMessages message, String inputMessage) {
-        view.setMessageReady(false);
 
         if (message.equals(StandardMessages.chooseNickName) || message.equals(StandardMessages.nicknameAlreadyInUse)) {
             sendObject(new NicknameMessage(inputMessage));
@@ -222,16 +245,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
             sendObject(new DiscardLeaderCardSetupMessage(inputChoice));
         }
-
         return true;
-    }
-
-    private void printMessage(Message message){
-        if(message instanceof ResourceMarketMessage){
-            view.printResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
-        }
-        else if(message instanceof LeaderCardHandMessage)
-            view.printLeaderCardHand(((LeaderCardHandMessage) message).getLC());
     }
 
     public void sendObject(Object o){
@@ -251,7 +265,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
     }
 
     @Override
-    public void updateDiscardLC(ViewObservable obs, int[] index){
+    public void updateSetupDiscardLC(ViewObservable obs, int[] index){
         sendObject(new DiscardLeaderCardSetupMessage(index));
     }
 
@@ -261,41 +275,89 @@ public class NetworkHandler implements Runnable, ViewObserver {
     }
 
     @Override
-    public void updateMyTurn(ViewObservable obs, String message){
-
-    }
-
-    @Override
     public void updateDisconnected(ViewObservable obs){
 
     }
 
-    /*public void buildBuyResources(boolean r,int n,ArrayList<Integer> requestedWMConversion){
+    @Override
+    public void updateBuyResources(boolean r, int n, ArrayList<Integer> requestedWMConversion) {
+        if(requestedWMConversion.size() == clientModel.getWhiteMarbles(r,n)){
+            //TODO: prendere le LC e controllare se ha l'abilità di conversione
+            if(true){}
+            else {
+                view.print("Le leader card selezionate non hanno l'abilità di conversione");
+                return;
+            }
+        }
+        else {
+            view.print("Selezione errata nel numero di Leader Card");
+            return;
+        }
+
         sendObject(new BuyResourcesMessage(r,n,requestedWMConversion));
     }
 
-    public void buildEndTurnMessage(){
-        sendObject(new TurnDoneMessage(true));
-        view.setYourTurn(false);
-    }
+    @Override
+    public void updateBuyDC(Colours colour, int level, int slot, ArrayList<Pair<String, Integer>> userChoice) {
+        if(clientModel.getSlots(slot-1) == -1){
+            if(level != 1) {
+                view.print("In questo slot puoi posizionare solo una carta di livello 1");
+                //TODO: ristampa i dati necessari
+                return;
+            }
+        }
+        else if(clientModel.getSlots(slot-1) < 5){
+            if(level != 2) {
+                view.print("In questo slot puoi posizionare solo una carta di livello 2");
+                //TODO: ristampa i dati necessari
+                return;
+            }
+        }
+        else if(clientModel.getSlots(slot-1) < 9){
+            if(level != 3) {
+                view.print("In questo slot puoi posizionare solo una carta di livello 3");
+                //TODO: ristampa i dati necessari
+                return;
+            }
+        }
+        else {
+            view.print("Non puoi posizionare ulteriori carte in questo slot");
+            //TODO: ristampa i dati necessari
+            return;
+        }
 
-    public void buildBuyDC(Colours colour,int level,int slot,ArrayList<Pair<String,Integer>> userChoice){
+        //TODO
+        /*if(!checkEnoughResources(userChoice) || !checkRightResources(colour,level,userChoice)){
+            view.print("Non hai abbastanza risorse");
+            //TODO: ristampa i dati necessari
+            return;
+        }*/
+
         sendObject(new BuyDevelopmentCardMessage(colour,level,slot,userChoice));
     }
 
-    public void buildMoveResources(ArrayList<Triplet<String, Integer, Integer>> userChoice){
-        sendObject(new MoveResourcesMessage(userChoice));
+    @Override
+    public void updateActivateProduction(HashMap<Integer, ArrayList<Pair<String, Integer>>> userChoice) {
+
     }
 
-    public void buildActivateLC (int userChoice){
-        sendObject(new PlayLeaderCardMessage(userChoice));
+    @Override
+    public void updateMoveResources(ArrayList<Triplet<String, Integer, Integer>> userChoice) {
+
     }
 
-    public void buildDiscardLC (int userChoice){
-        sendObject(new DiscardLeaderCardMessage(userChoice));
+    @Override
+    public void updateActivateLC(int userChoice) {
+
     }
 
-    public void buildActivateProduction(HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice){
-        sendObject(new ProductionMessage(userChoice));
-    }*/
+    @Override
+    public void updateDiscardLC(int userChoice) {
+
+    }
+
+    @Override
+    public void updateEndTurn() {
+
+    }
 }

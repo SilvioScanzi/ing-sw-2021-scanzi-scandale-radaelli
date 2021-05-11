@@ -1,6 +1,12 @@
 package it.polimi.ingsw.observers;
 
+import it.polimi.ingsw.model.Colours;
+import it.polimi.ingsw.model.Pair;
+import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.model.Triplet;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ViewObservable {
@@ -24,9 +30,9 @@ public class ViewObservable {
         }
     }
 
-    public void notifyDiscardLC(int[] index){
+    public void notifySetupDiscardLC(int[] index){
         for(ViewObserver obs : observers){
-            obs.updateDiscardLC(this,index);
+            obs.updateSetupDiscardLC(this,index);
         }
     }
 
@@ -36,15 +42,45 @@ public class ViewObservable {
         }
     }
 
-    public void notifyTurn(String message){
+    public void notifyBuyResources(boolean r,int n,ArrayList<Integer> requestedWMConversion){
         for(ViewObserver obs : observers){
-            obs.updateMyTurn(this,message);
+            obs.updateBuyResources(r,n,requestedWMConversion);
         }
     }
 
-    public void notifyDisconnected(){
+    public void notifyBuyDC(Colours colour, int level, int slot,ArrayList<Pair<String, Integer>> userChoice){
         for(ViewObserver obs : observers){
-            obs.updateDisconnected(this);
+            obs.updateBuyDC(colour,level,slot,userChoice);
+        }
+    }
+
+    public void notifyActivateProduction(HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice){
+        for(ViewObserver obs : observers){
+            obs.updateActivateProduction(userChoice);
+        }
+    }
+
+    public void notifyMoveResources(ArrayList<Triplet<String,Integer,Integer>> userChoice){
+        for(ViewObserver obs : observers){
+            obs.updateMoveResources(userChoice);
+        }
+    }
+
+    public void notifyActivateLC(int userChoice){
+        for(ViewObserver obs : observers){
+            obs.updateActivateLC(userChoice);
+        }
+    }
+
+    public void notifyDiscardLC(int userChoice){
+        for(ViewObserver obs : observers){
+            obs.updateDiscardLC(userChoice);
+        }
+    }
+
+    public void notifyEndTurn(){
+        for(ViewObserver obs : observers){
+            obs.updateEndTurn();
         }
     }
 }

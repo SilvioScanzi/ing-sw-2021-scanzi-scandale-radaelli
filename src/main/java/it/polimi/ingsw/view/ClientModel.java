@@ -4,7 +4,6 @@ import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Optional;
 
 public class ClientModel {
     private final String myNickname;
@@ -17,6 +16,7 @@ public class ClientModel {
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsHand;
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed;
     private ArrayList<Resources> hand;
+    private boolean actionDone;
 
     public ClientModel(HashMap<String,Integer> playerMap, String myNickname){
         this.myNickname = myNickname;
@@ -31,6 +31,14 @@ public class ClientModel {
         slots.add(new Pair<>(Colours.Purple,-1));
         slots.add(new Pair<>(Colours.Purple,-1));
         slots.add(new Pair<>(Colours.Purple,-1));
+    }
+
+    public boolean getActionDone() {
+        return actionDone;
+    }
+
+    public void setActionDone(boolean actionDone) {
+        this.actionDone = actionDone;
     }
 
     public void setCardMarket(HashMap<Pair<Colours, Integer>, Integer> cardMarket) {
@@ -99,5 +107,9 @@ public class ClientModel {
 
     public HashMap<Integer, Pair<Resources, Integer>> getWarehouse() {
         return warehouse;
+    }
+
+    public Integer getSlots(int i) {
+        return slots.get(i).getValue();
     }
 }

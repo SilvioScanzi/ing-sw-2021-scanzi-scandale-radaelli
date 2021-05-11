@@ -1,20 +1,16 @@
 package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.network.messages.StandardMessages;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface View {
-    void setCanInput(boolean a);
-    boolean getMessageReady();
-    String getMessage();
-    void setMessageReady(boolean a);
-    void playerTurn();
-    void setYourTurn(boolean a);
-    void yourTurnPrint();
+    void setState(CLI.ViewState state);
 
     //print
+    void printStandardMessage(StandardMessages message);
     void printResourceMarket(Marbles[][] a, Marbles b);
     void printLeaderCardHand(ArrayList<Triplet<Resources,Integer,Integer>> LC);
     void printLeaderCardPlayed(ArrayList<Triplet<Resources,Integer,Integer>> LC, String nickname);
@@ -26,4 +22,5 @@ public interface View {
     void printSlot(int I, Colours C, int VP, String nickname);
     void printStrongBox(HashMap<Resources,Integer> SB, String nickname);
     void printWarehouse(HashMap<Integer,Pair<Resources,Integer>> WH, String nickname);
+    void print(String string);
 }
