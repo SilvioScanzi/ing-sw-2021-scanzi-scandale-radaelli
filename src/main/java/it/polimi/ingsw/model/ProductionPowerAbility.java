@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.commons.Resources;
+
 public class ProductionPowerAbility extends Ability{
     private Resources resType;
 

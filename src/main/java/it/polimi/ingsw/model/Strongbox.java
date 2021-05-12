@@ -1,5 +1,6 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.exceptions.ResourceErrorException;
 
 import java.util.*;

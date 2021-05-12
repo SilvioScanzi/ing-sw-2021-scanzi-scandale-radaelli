@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.server;
 
-import it.polimi.ingsw.model.Pair;
+import it.polimi.ingsw.commons.Pair;
 import it.polimi.ingsw.network.messages.ChoosePlayerNumberMessage;
 import it.polimi.ingsw.network.messages.NicknameMessage;
 import it.polimi.ingsw.network.messages.StandardMessages;

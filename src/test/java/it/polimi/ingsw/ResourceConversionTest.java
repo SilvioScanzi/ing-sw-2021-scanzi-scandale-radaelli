@@ -3,7 +3,7 @@ package it.polimi.ingsw;
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.model.Board;
 import it.polimi.ingsw.model.LeaderCard;
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.commons.Resources;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

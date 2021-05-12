@@ -1,4 +1,7 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.commons.Colours;
+import it.polimi.ingsw.commons.Resources;
+
 import java.util.*;
 
 public class DevelopmentCard {

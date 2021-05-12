@@ -1,8 +1,7 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.model.*;
-import it.polimi.ingsw.utils.DevelopmentCardParser;
-import it.polimi.ingsw.utils.LeaderCardParser;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -84,7 +83,7 @@ public class ParsingTest {
         LCD = new LeaderCardDeck(0);
         LeaderCard LC;
         LC = LCD.getFirstCard();
-        HashMap<Colours,Pair<Integer,Integer>> RC = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Yellow,new Pair<>(2,0));put(Colours.Blue,new Pair<>(1,0));}};
+        HashMap<Colours, Pair<Integer,Integer>> RC = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Yellow,new Pair<>(2,0));put(Colours.Blue,new Pair<>(1,0));}};
         assert(LC.getVictoryPoints()==5 && LC.getRequiredColours().equals(RC) && LC.getRequiredResources().equals(new HashMap<>())
                 && LC.getAbility().getResType().equals(Resources.Servants) && LC.getAbility().getCapacity()==0 && LC.getAbility().doConvert());
     }

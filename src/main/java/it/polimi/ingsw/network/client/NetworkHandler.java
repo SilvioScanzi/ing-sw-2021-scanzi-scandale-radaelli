@@ -1,18 +1,10 @@
 package it.polimi.ingsw.network.client;
 
-import it.polimi.ingsw.model.Colours;
-import it.polimi.ingsw.model.Pair;
-import it.polimi.ingsw.model.Resources;
-import it.polimi.ingsw.model.Triplet;
+import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.observers.ViewObserver;
-import it.polimi.ingsw.utils.DevelopmentCardParser;
-import it.polimi.ingsw.utils.LeaderCardParser;
-import it.polimi.ingsw.view.CLI;
-import it.polimi.ingsw.view.ClientModel;
-import it.polimi.ingsw.view.GUI;
-import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

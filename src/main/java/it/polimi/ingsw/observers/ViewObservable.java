@@ -1,9 +1,8 @@
 package it.polimi.ingsw.observers;
 
-import it.polimi.ingsw.model.Colours;
-import it.polimi.ingsw.model.Pair;
-import it.polimi.ingsw.model.Resources;
-import it.polimi.ingsw.model.Triplet;
+import it.polimi.ingsw.commons.Colours;
+import it.polimi.ingsw.commons.Pair;
+import it.polimi.ingsw.commons.Triplet;
 
 import java.util.ArrayList;
 import java.util.HashMap;

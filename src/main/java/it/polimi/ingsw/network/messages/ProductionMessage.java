@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Pair;
+import it.polimi.ingsw.commons.Pair;
 
 import java.io.Serializable;
 import java.util.ArrayList;

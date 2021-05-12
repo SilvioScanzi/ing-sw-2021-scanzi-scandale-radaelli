@@ -1,10 +1,14 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.commons.Colours;
+import it.polimi.ingsw.commons.Pair;
+import it.polimi.ingsw.commons.Resources;
+
 import java.util.*;
 
 public class LeaderCard {
     private int victoryPoints;
-    private Map<Colours,Pair<Integer,Integer>> requiredColours; //Key = Colour of the required Card, Value: Pair. First element is the number of cards required, second element is the level of the cards required
+    private Map<Colours, Pair<Integer,Integer>> requiredColours; //Key = Colour of the required Card, Value: Pair. First element is the number of cards required, second element is the level of the cards required
     private Map<Resources,Integer> requiredResources;
     private Ability ability;
 

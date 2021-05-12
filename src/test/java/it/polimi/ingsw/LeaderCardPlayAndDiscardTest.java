@@ -1,5 +1,8 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.commons.Colours;
+import it.polimi.ingsw.commons.Pair;
+import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.model.*;
 import org.junit.jupiter.api.*;
@@ -27,7 +30,7 @@ public class LeaderCardPlayAndDiscardTest {
     @Test
     @DisplayName("Ensure Leader Card played with enough DC played")
     void testCanPlayLCardWithDC(){
-        DevelopmentCard DCP1 = new DevelopmentCard(1,Colours.Purple,5,new HashMap<>(),new HashMap<>(),new HashMap<>(),0);
+        DevelopmentCard DCP1 = new DevelopmentCard(1, Colours.Purple,5,new HashMap<>(),new HashMap<>(),new HashMap<>(),0);
         DevelopmentCard DCP2 = new DevelopmentCard(2,Colours.Green,5,new HashMap<>(),new HashMap<>(),new HashMap<>(),0);
         DevelopmentCard DCY1 = new DevelopmentCard(1,Colours.Yellow,5,new HashMap<>(),new HashMap<>(),new HashMap<>(),0);
         try{
@@ -35,7 +38,7 @@ public class LeaderCardPlayAndDiscardTest {
             playerBoard.getSlot(1).addCard(DCP2);
             playerBoard.getSlot(3).addCard(DCY1);
         }catch (Exception e){e.printStackTrace();}
-        HashMap<Colours,Pair<Integer,Integer>> rc = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Purple,new Pair<>(1,0)); put(Colours.Green,new Pair<>(1,2)); put(Colours.Yellow,new Pair<>(1,0));}};
+        HashMap<Colours, Pair<Integer,Integer>> rc = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Purple,new Pair<>(1,0)); put(Colours.Green,new Pair<>(1,2)); put(Colours.Yellow,new Pair<>(1,0));}};
         HashMap<Resources,Integer> rr = new HashMap<>();
         LeaderCard LC = new LeaderCard(5,rc,rr,"WhiteMarbleAbility",Resources.Shields,0);
         playerBoard.getLeaderCardsHand().clear();

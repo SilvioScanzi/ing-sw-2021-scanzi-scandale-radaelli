@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Marbles;
+import it.polimi.ingsw.commons.Marbles;
 import it.polimi.ingsw.model.ResourceMarket;
 
 import java.io.Serializable;

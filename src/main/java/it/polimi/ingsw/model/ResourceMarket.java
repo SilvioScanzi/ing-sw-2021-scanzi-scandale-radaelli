@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.observers.ModelObservable;
+import it.polimi.ingsw.commons.Marbles;
 
 import java.util.*;
 

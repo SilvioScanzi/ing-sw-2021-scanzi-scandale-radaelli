@@ -1,10 +1,9 @@
 package it.polimi.ingsw.view;
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.commons.*;
 
 import it.polimi.ingsw.network.client.NetworkHandler;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
-import it.polimi.ingsw.utils.LeaderCardParser;
 
 import java.util.ArrayList;
 import java.util.HashMap;

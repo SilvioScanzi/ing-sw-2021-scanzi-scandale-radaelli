@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.Strongbox;
 
 import java.io.Serializable;

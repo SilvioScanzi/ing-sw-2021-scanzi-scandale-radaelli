@@ -1,8 +1,8 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.model.Pair;
-import it.polimi.ingsw.model.Resources;
-import it.polimi.ingsw.model.Triplet;
+import it.polimi.ingsw.commons.Pair;
+import it.polimi.ingsw.commons.Resources;
+import it.polimi.ingsw.commons.Triplet;
 import it.polimi.ingsw.model.Warehouse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -1,14 +1,14 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.commons.Colours;
+import it.polimi.ingsw.commons.Pair;
 import it.polimi.ingsw.exceptions.EmptyException;
-import it.polimi.ingsw.observers.ModelObservable;
-import it.polimi.ingsw.utils.DevelopmentCardParser;
+import it.polimi.ingsw.commons.DevelopmentCardParser;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Stack;
 
 

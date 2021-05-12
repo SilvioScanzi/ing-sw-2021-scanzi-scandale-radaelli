@@ -1,8 +1,7 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Colours;
+import it.polimi.ingsw.commons.Colours;
 import it.polimi.ingsw.model.DevelopmentCard;
-import it.polimi.ingsw.model.Slot;
 
 import java.io.Serializable;
 

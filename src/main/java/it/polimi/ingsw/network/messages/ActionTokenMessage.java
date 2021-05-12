@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.ActionToken;
+import it.polimi.ingsw.commons.ActionToken;
 
 import java.io.Serializable;
 

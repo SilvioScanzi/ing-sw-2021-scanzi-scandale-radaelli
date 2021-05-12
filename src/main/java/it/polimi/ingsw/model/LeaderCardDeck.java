@@ -1,6 +1,6 @@
 package it.polimi.ingsw.model;
 
-import it.polimi.ingsw.utils.LeaderCardParser;
+import it.polimi.ingsw.commons.LeaderCardParser;
 import org.xml.sax.SAXException;
 
 import java.io.IOException;

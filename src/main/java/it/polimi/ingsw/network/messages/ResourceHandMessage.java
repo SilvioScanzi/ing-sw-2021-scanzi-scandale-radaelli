@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Resources;
+import it.polimi.ingsw.commons.Resources;
 
 import java.io.Serializable;
 import java.util.ArrayList;

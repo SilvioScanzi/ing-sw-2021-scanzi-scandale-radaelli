@@ -1,5 +1,7 @@
 package it.polimi.ingsw.observers;
 
+import it.polimi.ingsw.commons.ActionToken;
+import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;

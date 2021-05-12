@@ -1,8 +1,8 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.model.LeaderCard;
-import it.polimi.ingsw.model.Resources;
-import it.polimi.ingsw.model.Triplet;
+import it.polimi.ingsw.commons.Resources;
+import it.polimi.ingsw.commons.Triplet;
 
 import java.io.Serializable;
 import java.util.ArrayList;

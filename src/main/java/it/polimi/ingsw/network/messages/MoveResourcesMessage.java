@@ -1,6 +1,6 @@
 package it.polimi.ingsw.network.messages;
 
-import it.polimi.ingsw.model.Triplet;
+import it.polimi.ingsw.commons.Triplet;
 
 import java.io.Serializable;
 import java.util.ArrayList;

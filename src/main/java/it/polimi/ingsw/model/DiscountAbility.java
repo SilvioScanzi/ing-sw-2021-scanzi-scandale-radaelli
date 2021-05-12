@@ -1,4 +1,6 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.commons.Resources;
+
 import java.util.HashMap;
 
 public class DiscountAbility extends Ability{

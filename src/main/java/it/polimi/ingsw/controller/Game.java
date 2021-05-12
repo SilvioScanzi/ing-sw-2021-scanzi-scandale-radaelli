@@ -1,5 +1,6 @@
 package it.polimi.ingsw.controller;
 
+import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.exceptions.*;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.observers.ModelObservable;
@@ -49,6 +50,14 @@ public class Game extends ModelObservable {
     }
 
     public Board getBoard(int i){return players.get(i);}
+
+    public Board getBoard(String nickname){
+        for(int i=0;i<playerNumber;i++){
+            if(getBoard(i).getNickname().equals(nickname))
+                return getBoard(i);
+        }
+        return null;
+    }
 
     public ResourceMarket getMarket() {
         return resourceMarket;

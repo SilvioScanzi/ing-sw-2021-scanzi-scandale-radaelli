@@ -1,10 +1,10 @@
 package it.polimi.ingsw.network.messages;
 
 import it.polimi.ingsw.exceptions.EmptyException;
-import it.polimi.ingsw.model.Colours;
+import it.polimi.ingsw.commons.Colours;
 import it.polimi.ingsw.model.DevelopmentCard;
 import it.polimi.ingsw.model.DevelopmentCardMarket;
-import it.polimi.ingsw.model.Pair;
+import it.polimi.ingsw.commons.Pair;
 
 import java.io.Serializable;
 import java.util.HashMap;

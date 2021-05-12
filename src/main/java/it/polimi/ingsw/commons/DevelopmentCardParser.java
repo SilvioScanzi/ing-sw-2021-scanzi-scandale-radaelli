@@ -1,4 +1,4 @@
-package it.polimi.ingsw.utils;
+package it.polimi.ingsw.commons;
 
 import it.polimi.ingsw.model.*;
 import org.w3c.dom.Document;

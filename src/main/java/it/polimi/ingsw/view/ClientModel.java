@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.commons.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;

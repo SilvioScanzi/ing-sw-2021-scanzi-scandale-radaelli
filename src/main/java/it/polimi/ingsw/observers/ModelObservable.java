@@ -1,8 +1,9 @@
 package it.polimi.ingsw.observers;
 
+import it.polimi.ingsw.commons.ActionToken;
+import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.*;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 

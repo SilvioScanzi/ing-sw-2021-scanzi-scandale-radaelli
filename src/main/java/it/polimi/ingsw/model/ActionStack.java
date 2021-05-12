@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import it.polimi.ingsw.commons.ActionToken;
+
 import java.util.*;
 
 public class ActionStack {

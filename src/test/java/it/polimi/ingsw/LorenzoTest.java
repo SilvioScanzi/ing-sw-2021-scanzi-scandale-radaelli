@@ -1,7 +1,7 @@
 package it.polimi.ingsw;
 
 import it.polimi.ingsw.controller.Game;
-import it.polimi.ingsw.model.Colours;
+import it.polimi.ingsw.commons.Colours;
 import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;

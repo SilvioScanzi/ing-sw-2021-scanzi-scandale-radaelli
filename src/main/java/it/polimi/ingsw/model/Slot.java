@@ -1,4 +1,6 @@
 package it.polimi.ingsw.model;
+import it.polimi.ingsw.commons.Colours;
+import it.polimi.ingsw.commons.Pair;
 import it.polimi.ingsw.exceptions.EmptyException;
 import it.polimi.ingsw.exceptions.InvalidPlacementException;
 

@@ -1,6 +1,6 @@
 package it.polimi.ingsw.view;
 
-import it.polimi.ingsw.model.*;
+import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.messages.StandardMessages;
 
 import java.util.ArrayList;
