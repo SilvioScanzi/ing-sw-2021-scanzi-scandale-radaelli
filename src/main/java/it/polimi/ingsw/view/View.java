@@ -11,7 +11,8 @@ public interface View {
 
     //print
     void printStandardMessage(StandardMessages message);
-    void printResourceMarket(Marbles[][] a, Marbles b);
+    void printNames(HashMap<Integer, String> names, int inkwell);
+    void printResourceMarket(Marbles[][] M, Marbles RM);
     void printLeaderCardHand(ArrayList<Triplet<Resources,Integer,Integer>> LC);
     void printLeaderCardPlayed(ArrayList<Triplet<Resources,Integer,Integer>> LC, String nickname);
     void printResourceHand(ArrayList<Resources> H, String nickname);

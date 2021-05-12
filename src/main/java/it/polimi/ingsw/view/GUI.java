@@ -28,6 +28,11 @@ public class GUI extends ViewObservable implements View, Runnable{
     }
 
     @Override
+    public void printNames(HashMap<Integer, String> names, int inkwell) {
+
+    }
+
+    @Override
     public void printResourceMarket(Marbles[][] a, Marbles b) {
 
     }

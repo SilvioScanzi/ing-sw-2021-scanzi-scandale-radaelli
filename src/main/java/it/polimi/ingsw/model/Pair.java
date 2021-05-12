@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 import java.io.Serializable;
 import java.util.Objects;
 
-public class Pair<A, B> implements Serializable {
+public class Pair<A, B> implements Serializable{
     private A key;
     private B value;
 
@@ -20,10 +20,6 @@ public class Pair<A, B> implements Serializable {
     public void setPair(A key, B value){
         this.key=key;
         this.value=value;
-    }
-
-    public void setKey(A key) {
-        this.key = key;
     }
 
     public void setValue(B value) {

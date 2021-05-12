@@ -7,10 +7,10 @@ import java.util.HashMap;
 
 public class ClientModel {
     private final String myNickname;
-    private final HashMap<String,Integer> playerMap;
-    private HashMap<Pair<Colours,Integer>, Boolean> cardMarket;
+    private final HashMap<Integer,String> playerMap;
+    private final HashMap<Pair<Colours,Integer>, Boolean> cardMarket;
     private final Boolean[][] whiteMarbles;
-    private HashMap<Integer, Pair<Resources,Integer>> warehouse;
+    private final HashMap<Integer, Pair<Resources,Integer>> warehouse;
     private final ArrayList<Pair<Colours, Integer>> slots;
     private HashMap<Resources,Integer> strongBox;
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsHand;
@@ -18,11 +18,15 @@ public class ClientModel {
     private ArrayList<Resources> hand;
     private boolean actionDone;
 
-    public ClientModel(HashMap<String,Integer> playerMap, String myNickname){
+    public ClientModel(HashMap<Integer,String> playerMap, String myNickname){
         this.myNickname = myNickname;
         this.playerMap = playerMap;
         cardMarket = new HashMap<>();
         whiteMarbles = new Boolean[3][4];
+        strongBox = new HashMap<>();
+        leaderCardsHand = new ArrayList<>();
+        leaderCardsPlayed = new ArrayList<>();
+        warehouse = new HashMap<>();
         strongBox = new HashMap<>();
         leaderCardsHand = new ArrayList<>();
         leaderCardsPlayed = new ArrayList<>();
@@ -33,9 +37,7 @@ public class ClientModel {
         slots.add(new Pair<>(Colours.Purple,-1));
     }
 
-    public boolean getActionDone() {
-        return actionDone;
-    }
+    //setters
 
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
@@ -86,6 +88,8 @@ public class ClientModel {
         }
     }
 
+    //getters
+
     public HashMap<Pair<Colours, Integer>, Boolean> getCardMarket() {
         return cardMarket;
     }
@@ -111,5 +115,21 @@ public class ClientModel {
 
     public Integer getSlots(int i) {
         return slots.get(i).getValue();
+    }
+
+    public boolean getActionDone() {
+        return actionDone;
+    }
+
+    public ArrayList<Triplet<Resources, Integer, Integer>> getLeaderCardsHand() {
+        return leaderCardsHand;
+    }
+
+    public ArrayList<Triplet<Resources, Integer, Integer>> getLeaderCardsPlayed() {
+        return leaderCardsPlayed;
+    }
+
+    public HashMap<Resources, Integer> getStrongBox() {
+        return strongBox;
     }
 }

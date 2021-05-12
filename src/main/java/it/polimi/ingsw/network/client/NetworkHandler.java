@@ -2,10 +2,13 @@ package it.polimi.ingsw.network.client;
 
 import it.polimi.ingsw.model.Colours;
 import it.polimi.ingsw.model.Pair;
+import it.polimi.ingsw.model.Resources;
 import it.polimi.ingsw.model.Triplet;
 import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.observers.ViewObserver;
+import it.polimi.ingsw.utils.DevelopmentCardParser;
+import it.polimi.ingsw.utils.LeaderCardParser;
 import it.polimi.ingsw.view.CLI;
 import it.polimi.ingsw.view.ClientModel;
 import it.polimi.ingsw.view.GUI;
@@ -64,7 +67,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
     }
 
     private void handleMessage(Object message){
-        boolean redo;
+        //boolean redo;
 
         //Standard Messages
         if(message instanceof StandardMessages){
@@ -119,8 +122,14 @@ public class NetworkHandler implements Runnable, ViewObserver {
         else if(message instanceof Message){
             //Model related Messages
 
+            //Nicknames
+            if(message instanceof NicknameMapMessage){
+                clientModel = new ClientModel(((NicknameMapMessage) message).getPlayerMap(), ((NicknameMapMessage) message).getMyNickname());
+                view.printNames(((NicknameMapMessage) message).getPlayerMap(), ((NicknameMapMessage) message).getInkwell());
+            }
+
             //Solo play
-            if(message instanceof ActionTokenMessage){
+            else if(message instanceof ActionTokenMessage){
                 view.printAT(((ActionTokenMessage) message).getAT());
             }
             else if(message instanceof LorenzoTrackMessage){ ;
@@ -172,7 +181,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
         }
     }
 
-    private boolean buildStandardMessage(StandardMessages message, String inputMessage) {
+    /*private boolean buildStandardMessage(StandardMessages message, String inputMessage) {
 
         if (message.equals(StandardMessages.chooseNickName) || message.equals(StandardMessages.nicknameAlreadyInUse)) {
             sendObject(new NicknameMessage(inputMessage));
@@ -246,6 +255,64 @@ public class NetworkHandler implements Runnable, ViewObserver {
             sendObject(new DiscardLeaderCardSetupMessage(inputChoice));
         }
         return true;
+    }*/
+
+    private boolean checkGotResources(ArrayList<Pair<String, Integer>> userChoice){
+        HashMap<Integer, Pair<Resources,Integer>> warehouse = new HashMap<>(clientModel.getWarehouse());
+        HashMap<Resources,Integer> strongbox = new HashMap<>(clientModel.getStrongBox());
+        ArrayList<Triplet<Resources,Integer,Integer>> leaderCards = new ArrayList<>(clientModel.getLeaderCardsPlayed());
+        for(Pair<String,Integer> P : userChoice){
+            Resources R = Resources.getResourceFromString(P.getKey());
+            if(P.getValue()>=1 && P.getValue()<=3) {
+                try {
+                    Pair<Resources, Integer> depot = warehouse.get(P.getValue());
+                    if (depot.getKey().equals(R)) {
+                        if (depot.getValue() > 0) {
+                            depot.setValue(depot.getValue() - 1);
+                        }
+                        else return false;
+                    }
+                    else return false;
+                } catch (NullPointerException e) {
+                    return false;
+                }
+            }
+            else if(P.getValue() == 4 || P.getValue() == 5){
+                Triplet<Resources,Integer,Integer> LC = leaderCards.get(P.getValue()-4);
+                if(R.equals(LC.get_1())){
+                    if(LC.get_3()>0){
+                        LC.set_3(LC.get_3()-1);
+                    }
+                    else return false;
+                }
+                else return false;
+            }
+            else if(P.getValue() == 6){
+                try{
+                    int n = strongbox.get(R);
+                    if(n>0){
+                        strongbox.replace(R, n-1);
+                    }
+                    else return false;
+                }catch (NullPointerException e) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean checkRightResources(Colours colour, int level, ArrayList<Pair<String, Integer>> userChoice){
+        DevelopmentCardParser DCP = new DevelopmentCardParser("");
+        HashMap<Resources,Integer> uc = new HashMap<>();
+        for(Resources R : Resources.values()){
+            uc.put(R,0);
+        }
+        for(Pair<String,Integer> P : userChoice){
+            uc.replace(Resources.getResourceFromString(P.getKey()),uc.get(Resources.getResourceFromString(P.getKey()))+1);
+        }
+        HashMap<Resources,Integer> cost = DCP.findCostByID(colour,level);
+        return cost.equals(uc);
     }
 
     public void sendObject(Object o){
@@ -281,19 +348,24 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateBuyResources(boolean r, int n, ArrayList<Integer> requestedWMConversion) {
-        if(requestedWMConversion.size() == clientModel.getWhiteMarbles(r,n)){
-            //TODO: prendere le LC e controllare se ha l'abilità di conversione
-            if(true){}
-            else {
-                view.print("Le leader card selezionate non hanno l'abilità di conversione");
-                return;
+        LeaderCardParser LCP = new LeaderCardParser("");
+        if(clientModel.getLeaderCardsPlayed().size()==2) {
+            if (LCP.findTypeByID(clientModel.getLeaderCardsPlayed().get(0).get_1(), clientModel.getLeaderCardsPlayed().get(0).get_2()).equals("WhiteMarbleAbility")
+                    && LCP.findTypeByID(clientModel.getLeaderCardsPlayed().get(1).get_1(), clientModel.getLeaderCardsPlayed().get(1).get_2()).equals("WhiteMarbleAbility")) {
+                if (requestedWMConversion.size() != clientModel.getWhiteMarbles(r, n)) {
+                    view.print("Selezione errata nel numero di Leader Card");
+                    return;
+                }
+            }
+            else{
+                view.print("La conversione avverrà in automatico");
+                requestedWMConversion = new ArrayList<>();
             }
         }
         else {
-            view.print("Selezione errata nel numero di Leader Card");
-            return;
+            view.print("La conversione avverrà in automatico");
+            requestedWMConversion = new ArrayList<>();
         }
-
         sendObject(new BuyResourcesMessage(r,n,requestedWMConversion));
     }
 
@@ -302,43 +374,37 @@ public class NetworkHandler implements Runnable, ViewObserver {
         if(clientModel.getSlots(slot-1) == -1){
             if(level != 1) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 1");
-                //TODO: ristampa i dati necessari
                 return;
             }
         }
         else if(clientModel.getSlots(slot-1) < 5){
             if(level != 2) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 2");
-                //TODO: ristampa i dati necessari
                 return;
             }
         }
         else if(clientModel.getSlots(slot-1) < 9){
             if(level != 3) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 3");
-                //TODO: ristampa i dati necessari
                 return;
             }
         }
         else {
             view.print("Non puoi posizionare ulteriori carte in questo slot");
-            //TODO: ristampa i dati necessari
             return;
         }
 
-        //TODO
-        /*if(!checkEnoughResources(userChoice) || !checkRightResources(colour,level,userChoice)){
-            view.print("Non hai abbastanza risorse");
-            //TODO: ristampa i dati necessari
+
+        if(!checkGotResources(userChoice) || !checkRightResources(colour,level,userChoice)){
+            view.print("La scelta delle risorse non è corretta");
             return;
-        }*/
+        }
 
         sendObject(new BuyDevelopmentCardMessage(colour,level,slot,userChoice));
     }
 
     @Override
     public void updateActivateProduction(HashMap<Integer, ArrayList<Pair<String, Integer>>> userChoice) {
-
     }
 
     @Override

@@ -6,15 +6,13 @@ import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.utils.LeaderCardParser;
 
-import java.awt.font.NumericShaper;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
 public class CLI extends ViewObservable implements View, Runnable {
-    public enum ViewState{connected,chooseNickName,choosePlayerNumber,discardLeaderCard,finishSetupOneResource,finishSetupTwoResources,myTurn,notMyTurn,disconnected}
-    private ViewState state;
-    private boolean canInput = false;   //TODO: implementare questo solo con uno stato di wait
+    public enum ViewState{start,chooseNickName,choosePlayerNumber,discardLeaderCard,finishSetupOneResource,finishSetupTwoResources,myTurn,notMyTurn,disconnected}
+    private ViewState state = ViewState.start;
     private final Scanner scanner;
 
     public CLI(NetworkHandler NH) {
@@ -27,7 +25,6 @@ public class CLI extends ViewObservable implements View, Runnable {
         while(!state.equals(ViewState.disconnected)){
             String message = scanner.nextLine();
 
-            if(canInput) {
                 if(state.equals(ViewState.chooseNickName)){
                     notifyNickname(message);
                 }
@@ -68,7 +65,11 @@ public class CLI extends ViewObservable implements View, Runnable {
                 else if(state.equals(ViewState.finishSetupOneResource)){
                     if(!message.equals("SE") && !message.equals("MO") && !message.equals("SC") && !message.equals("PI"))
                         System.out.println("Scegli delle risorse esistenti");
-                    else notifyFinishSetup(new ArrayList<String>(){{add(message);}});
+                    else {
+                        ArrayList<String> tmp = new ArrayList<>();
+                        tmp.add(message);
+                        notifyFinishSetup(tmp);
+                    }
                 }
                 else if(state.equals(ViewState.finishSetupTwoResources)){
                     String[] s = message.split(" ");
@@ -81,14 +82,18 @@ public class CLI extends ViewObservable implements View, Runnable {
                                 flag = false;
                             }
                         }
-                        if(flag) notifyFinishSetup(new ArrayList<String>(){{add(s[0]); add(s[1]);}});
+                        if(flag) {
+                            ArrayList<String> tmp = new ArrayList<>();
+                            tmp.add(s[0]);
+                            tmp.add(s[1]);
+                            notifyFinishSetup(tmp);
+                        }
                     }
                 }
                 else if(state.equals(ViewState.myTurn)) {
                     try{
                         int userChoice = Integer.parseInt(message);
                         switch (userChoice) {
-                            //TODO: NH controlla i dati: se non li ha corretti si ritorna da capo con la scelta della mossa
                             case 1: buyResources(); break;
                             case 2: buyDevelopmentCard(); break;
                             case 3: activateProduction(); break;
@@ -104,7 +109,6 @@ public class CLI extends ViewObservable implements View, Runnable {
                 else if(state.equals(ViewState.notMyTurn)){
                     System.out.println("Non è il tuo turno");
                 }
-            }
             else {
                 System.out.println("Non puoi inviare dati in questo momento");
             }
@@ -114,54 +118,6 @@ public class CLI extends ViewObservable implements View, Runnable {
 
     public void setState(ViewState state) {
         this.state = state;
-    }
-
-    @Override
-    public void print(String string){
-        System.out.println(string);
-    }
-
-    @Override
-    public void printStandardMessage(StandardMessages message){
-        System.out.println(message.toString());
-
-        if(message.equals(StandardMessages.yourTurn)){yourTurnPrint();}
-    }
-
-
-    /*public void printResourceMarket(Marbles[][] grid, Marbles remainingMarble){
-        String tmp = "MERCATO DELLE RISORSE:\n";
-        for(int i=0;i<3;i++){
-            for(int j=0;j<4;j++){
-                tmp=tmp.concat(grid[i][j].abbreviation() + " ");
-            }
-            tmp=tmp.concat("\n");
-        }
-        tmp=tmp.concat("La biglia rimanente è: "+remainingMarble.toString());
-        System.out.println(tmp);
-    }
-
-    public void printLeaderCardHand(ArrayList<Triplet<Resources,Integer,Integer>> leaderCards){
-        LeaderCardParser LCP = new LeaderCardParser("");
-        System.out.println("LEADER CARDS");
-        int i = 1;
-        for(Triplet<Resources,Integer,Integer> t : leaderCards){
-            System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
-            i++;
-        }
-    }*/
-
-    public void yourTurnPrint(){
-        System.out.println("È arrivato il tuo turno! ");
-        System.out.println("Scegli l'azione che vuoi compiere: ");
-        System.out.println("1 - Compra Risorse dal mercato");
-        System.out.println("2 - Compra una Carta sviluppo");
-        System.out.println("3 - Attiva la produzione delle tue carte");
-        System.out.println("Oppure scegli un'azione bonus: ");
-        System.out.println("4 - Sposta le risorse dal magazzino");
-        System.out.println("5 - Gioca una carta leader");
-        System.out.println("6 - Scarta una carta leader");
-        System.out.println("0 - Fine turno");
     }
 
     private void buyResources(){
@@ -264,33 +220,11 @@ public class CLI extends ViewObservable implements View, Runnable {
 
         System.out.println("Scegli che risorse vuoi usare e da dove le vuoi prendere.");
         System.out.println("Inserisci i valori a coppie (es: 2 SE)");
-        System.out.println("1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Fine");
+        System.out.println("1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Forziere; 7 - Fine");
         System.out.println("SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
         ArrayList<Pair<String, Integer>> userChoice = new ArrayList<>();
         int n=0;
-        do {
-            String[] s = scanner.nextLine().split(" ");
-            if(s.length==1){
-                try{
-                    n = Integer.parseInt(s[0]);
-                    if(n!=6) System.out.println("Selezione errata");
-                }catch(NumberFormatException e){
-                    System.out.println("Devi inserire un numero");
-                }
-            }
-            else if(s.length==2){
-                try{
-                    n = Integer.parseInt(s[0]);
-                    if(!s[1].equals("SE") && !s[1].equals("MO") && !s[1].equals("SC") && !s[1].equals("PI"))
-                        System.out.println("Scegli delle risorse esistenti");
-                    else if(1<=n && n<=5) userChoice.add(new Pair<>(s[1], n));
-                }catch(NumberFormatException e){
-                    System.out.println("Devi inserire un numero");
-                }
-            }
-            else System.out.println("Selezione errata");
-
-        } while (n != 6);
+        getUserChoice(n, userChoice);
 
         notifyBuyDC(colour,level,slot,userChoice);
     }
@@ -321,30 +255,9 @@ public class CLI extends ViewObservable implements View, Runnable {
                     ArrayList<Pair<String, Integer>> resourceArray = new ArrayList<>();
                     System.out.println("Scegli che risorse vuoi usare e da dove le vuoi prendere.");
                     System.out.println("Inserisci i valori a coppie (es: 2 SE)");
-                    System.out.println("Posti: 1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Fine");
+                    System.out.println("Posti: 1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 6 - Forziere; 7 - Fine");
                     System.out.println("Risorse: SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
-                    do {
-                        String[] s = scanner.nextLine().split(" ");
-                        if(s.length==1){
-                            try{
-                                n = Integer.parseInt(s[0]);
-                                if(n!=6) System.out.println("Selezione errata");
-                            }catch(NumberFormatException e){
-                                System.out.println("Devi inserire un numero");
-                            }
-                        }
-                        else if(s.length==2){
-                            try{
-                                n = Integer.parseInt(s[0]);
-                                if(!s[1].equals("SE") && !s[1].equals("MO") && !s[1].equals("SC") && !s[1].equals("PI"))
-                                    System.out.println("Scegli delle risorse esistenti");
-                                else if(1<=n && n<=5) resourceArray.add(new Pair<>(s[1], n));
-                            }catch(NumberFormatException e){
-                                System.out.println("Devi inserire un numero");
-                            }
-                        }
-                        else System.out.println("Selezione errata");
-                    }while(n != 6);
+                    getUserChoice(n, resourceArray);
                     userChoice.put(index,resourceArray);
                 }
             }
@@ -353,12 +266,37 @@ public class CLI extends ViewObservable implements View, Runnable {
         notifyActivateProduction(userChoice);
     }
 
+    private void getUserChoice(int n, ArrayList<Pair<String, Integer>> resourceArray) {
+        do {
+            String[] s = scanner.nextLine().split(" ");
+            if(s.length==1){
+                try{
+                    n = Integer.parseInt(s[0]);
+                    if(n!=7) System.out.println("Selezione errata");
+                }catch(NumberFormatException e){
+                    System.out.println("Devi inserire un numero");
+                }
+            }
+            else if(s.length==2){
+                try{
+                    n = Integer.parseInt(s[0]);
+                    if(!s[1].equals("SE") && !s[1].equals("MO") && !s[1].equals("SC") && !s[1].equals("PI"))
+                        System.out.println("Scegli delle risorse esistenti");
+                    else if(1<=n && n<=6) resourceArray.add(new Pair<>(s[1], n));
+                }catch(NumberFormatException e){
+                    System.out.println("Devi inserire un numero");
+                }
+            }
+            else System.out.println("Selezione errata");
+        }while(n != 7);
+    }
+
     private void moveResources(){
         System.out.println("Hai deciso di spostare le risorse. ");
         System.out.println("Scegli la risorsa, il luogo da dove prendela e il luogo dove metterla.");
         System.out.println("La mano serve solo a fare scambi, quindi non lasciarci risorse!");
         System.out.println("Inserisci i valori a triplette (es: SE 2 3); per finire digita solo il numero richiesto.");
-        System.out.println("Posti: 1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 0 - hand; 7 - Fine");
+        System.out.println("Posti: 1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 0 - Mano; 7 - Fine");
         System.out.println("Risorse: SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
         ArrayList<Triplet<String,Integer,Integer>> userChoice = new ArrayList<>();
         String[] s;
@@ -414,12 +352,61 @@ public class CLI extends ViewObservable implements View, Runnable {
     }
 
     @Override
-    public void printResourceMarket(Marbles[][] a, Marbles b) {
+    public void print(String string){
+        System.out.println(string);
+    }
 
+    @Override
+    public void printStandardMessage(StandardMessages message){
+        System.out.println(message.toString());
+
+        if(message.equals(StandardMessages.yourTurn)){
+            clearScreen();
+            System.out.println("Scegli l'azione che vuoi compiere: ");
+            System.out.println("1 - Compra Risorse dal mercato");
+            System.out.println("2 - Compra una Carta sviluppo");
+            System.out.println("3 - Attiva la produzione delle tue carte");
+            System.out.println("Oppure scegli un'azione bonus: ");
+            System.out.println("4 - Sposta le risorse dal magazzino");
+            System.out.println("5 - Gioca una carta leader");
+            System.out.println("6 - Scarta una carta leader");
+            System.out.println("0 - Fine turno");
+        }
+    }
+
+    @Override
+    public void printNames(HashMap<Integer, String> names, int inkwell) {
+        int i = inkwell;
+        int j = 1;
+        do{
+            System.out.println("Giocatore "+j+" - "+names.get(i));
+            i=(i+1)%(names.size());
+            j++;
+        }while(i!=inkwell);
+    }
+
+    @Override
+    public void printResourceMarket(Marbles[][] grid, Marbles remainingMarble) {
+        String tmp = "MERCATO DELLE RISORSE:\n";
+        for(int i=0;i<3;i++){
+            for(int j=0;j<4;j++){
+                tmp=tmp.concat(grid[i][j].abbreviation() + " ");
+            }
+            tmp=tmp.concat("\n");
+        }
+        tmp=tmp.concat("La biglia rimanente è: "+remainingMarble.toString());
+        System.out.println(tmp);
     }
 
     @Override
     public void printLeaderCardHand(ArrayList<Triplet<Resources, Integer, Integer>> LC) {
+        LeaderCardParser LCP = new LeaderCardParser("");
+        System.out.println("CARTE LEADER");
+        int i = 1;
+        for(Triplet<Resources,Integer,Integer> t : LC){
+            System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
+            i++;
+        }
 
     }
 

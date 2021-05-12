@@ -149,4 +149,64 @@ public class DevelopmentCardParser {
         }
         return "";
     }
+
+    public HashMap<Resources, Integer> findRequiredResourcesByID(Colours c, int vp) {
+        NodeList developmentcards = document.getElementsByTagName("developmentcard");
+        //Iterating on the nodelist previously got, single node for every DCCard
+        for (int i = 0; i < developmentcards.getLength(); i++) {
+            Node developmentcardnode = developmentcards.item(i);
+            if (developmentcardnode.getNodeType() == Node.ELEMENT_NODE) {
+                Element developmentcardElement = (Element) developmentcardnode;
+                int victorypoints = Integer.parseInt(developmentcardElement.getElementsByTagName("victorypoints").item(0).getTextContent());
+                if (victorypoints == vp) {
+                    Colours colour = Colours.valueOf(developmentcardElement.getElementsByTagName("colour").item(0).getTextContent());
+                    if (colour.equals(c)) {
+
+                        //Getting the requiredresources String, splitting it into multiple strings
+                        String[] requiredresourcesString = (developmentcardElement.getElementsByTagName("requiredresources").item(0).getTextContent()).split("-");
+
+                        //Generating the HashMap from requiredresourcesString
+                        HashMap<Resources, Integer> requiredresources = new HashMap<>();
+                        for (int j = 0; j < requiredresourcesString.length; j = j + 2) {
+                            requiredresources.put(Resources.valueOf(requiredresourcesString[j]), Integer.parseInt(requiredresourcesString[j + 1]));
+                        }
+                        return requiredresources;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public HashMap<Resources, Integer> findCostByID(Colours c, int vp){
+        NodeList developmentcards = document.getElementsByTagName("developmentcard");
+        //Iterating on the nodelist previously got, single node for every DCCard
+        for (int i = 0; i < developmentcards.getLength(); i++) {
+            Node developmentcardnode = developmentcards.item(i);
+            if (developmentcardnode.getNodeType() == Node.ELEMENT_NODE) {
+                Element developmentcardElement = (Element) developmentcardnode;
+                int victorypoints = Integer.parseInt(developmentcardElement.getElementsByTagName("victorypoints").item(0).getTextContent());
+                if (victorypoints == vp) {
+                    Colours colour = Colours.valueOf(developmentcardElement.getElementsByTagName("colour").item(0).getTextContent());
+                    if (colour.equals(c)) {
+
+                        //Getting the cost String, splitting it into multiple strings
+                        String[] costString = (developmentcardElement.getElementsByTagName("cost").item(0).getTextContent()).split("-");
+
+                        //Generating the HashMap from costString
+                        HashMap<Resources, Integer> cost = new HashMap<>();
+                        for(Resources R : Resources.values()){
+                            cost.put(R,0);
+                        }
+                        for (int j = 0; j < costString.length; j = j + 2) {
+                            cost.replace(Resources.valueOf(costString[j]), Integer.parseInt(costString[j + 1]));
+                        }
+                        return cost;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
 }

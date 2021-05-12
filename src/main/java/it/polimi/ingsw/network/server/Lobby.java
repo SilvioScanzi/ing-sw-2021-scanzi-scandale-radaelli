@@ -66,6 +66,16 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
             //sending game status to the reconnected player
             synchronized (game){
+                HashMap<Integer,String> nameMap = new HashMap<>();
+                synchronized (clients) {
+                    for (ClientHandler C : clientMap.keySet()) {
+                        nameMap.put(clientMap.get(C).getValue(),clientMap.get(C).getKey());
+                    }
+                    for (String S : disconnectedPlayers.keySet()){
+                        nameMap.put(disconnectedPlayers.get(S),S);
+                    }
+                }
+                CH.sendObject(new NicknameMapMessage(CH.getNickname(),nameMap, game.getInkwell()));
                 CH.sendObject(new ResourceMarketMessage(game.getMarket()));
                 CH.sendObject(new DCMarketMessage(game.getDevelopmentCardMarket()));
                 for(int i=0; i<playerNumber; i++){
@@ -75,13 +85,13 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                     CH.sendObject(new StrongboxMessage(playerBoard.getStrongbox(),playerBoard.getNickname()));
                     try {
                         CH.sendObject(new SlotMessage(playerBoard.getSlot(1).getFirstCard(), 1,playerBoard.getNickname()));
-                    }catch(EmptyException e){}
+                    }catch(EmptyException ignored){}
                     try {
                         CH.sendObject(new SlotMessage(playerBoard.getSlot(2).getFirstCard(), 2,playerBoard.getNickname()));
-                    }catch(EmptyException e){}
+                    }catch(EmptyException ignored){}
                     try {
                         CH.sendObject(new SlotMessage(playerBoard.getSlot(3).getFirstCard(), 3,playerBoard.getNickname()));
-                    }catch(EmptyException e){}
+                    }catch(EmptyException ignored){}
                     CH.sendObject(new LeaderCardPlayedMessage(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname()));
                 }
             }
@@ -122,6 +132,17 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
         for (int i = 0; i < playerNumber; i++) {
             clientMap.put(clients.get(i), new Pair<>(clients.get(i).getNickname(), i));
+        }
+
+        for(ClientHandler CH : clients) {
+            HashMap<Integer, String> nameMap = new HashMap<>();
+            for (ClientHandler C : clientMap.keySet()) {
+                nameMap.put(clientMap.get(C).getValue(), clientMap.get(C).getKey());
+            }
+            for (String S : disconnectedPlayers.keySet()) {
+                nameMap.put(disconnectedPlayers.get(S), S);
+            }
+            CH.sendObject(new NicknameMapMessage(CH.getNickname(),nameMap, game.getInkwell()));
         }
 
         for (ClientHandler CH : clients) {

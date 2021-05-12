@@ -152,4 +152,24 @@ public class LeaderCardParser {
         }
         return "";
     }
+
+    public String findTypeByID(Resources r, int vp){
+        NodeList leadercards = document.getElementsByTagName("leadercard");
+        //Iterating on the nodelist previously got, single node for every LCCard
+        for (int i = 0; i < leadercards.getLength(); i++) {
+            Node leadercardnode = leadercards.item(i);
+            if (leadercardnode.getNodeType() == Node.ELEMENT_NODE) {
+                Element leadercardElement = (Element) leadercardnode;
+
+                int victorypoints = Integer.parseInt(leadercardElement.getElementsByTagName("victorypoints").item(0).getTextContent());
+                if(victorypoints == vp) {
+                    Resources restype = Resources.valueOf(leadercardElement.getElementsByTagName("restype").item(0).getTextContent());
+                    if (restype.equals(r)) {
+                       return leadercardElement.getElementsByTagName("abilitytype").item(0).getTextContent();
+                    }
+                }
+            }
+        }
+        return "";
+    }
 }
