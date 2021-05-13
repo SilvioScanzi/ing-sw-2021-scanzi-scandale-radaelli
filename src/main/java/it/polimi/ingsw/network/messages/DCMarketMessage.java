@@ -11,6 +11,7 @@ import java.util.HashMap;
 
 public class DCMarketMessage extends Message implements Serializable {
     private final HashMap<Pair<Colours,Integer>, Integer> market;
+    //Hashmap: Pair(color, level), victory points
 
     public DCMarketMessage(DevelopmentCardMarket DM){
         market = new HashMap<>();

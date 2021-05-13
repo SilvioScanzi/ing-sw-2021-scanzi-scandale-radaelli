@@ -8,11 +8,17 @@ import it.polimi.ingsw.observers.ViewObservable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class CLI extends ViewObservable implements View, Runnable {
     public enum ViewState{start,chooseNickName,choosePlayerNumber,discardLeaderCard,finishSetupOneResource,finishSetupTwoResources,myTurn,notMyTurn,disconnected}
     private ViewState state = ViewState.start;
     private final Scanner scanner;
+
+    //for testing
+    public CLI(){
+        scanner = new Scanner(System.in);
+    }
 
     public CLI(NetworkHandler NH) {
         addObserver(NH);
@@ -356,6 +362,8 @@ public class CLI extends ViewObservable implements View, Runnable {
     @Override
     public void print(String string){
         System.out.println(string);
+
+        System.out.println("\n");
     }
 
     @Override
@@ -374,6 +382,8 @@ public class CLI extends ViewObservable implements View, Runnable {
             System.out.println("0 - Fine turno");
         }
         else System.out.println(message.toString());
+
+        System.out.println("\n");
     }
 
     @Override
@@ -385,6 +395,8 @@ public class CLI extends ViewObservable implements View, Runnable {
             i=(i+1)%(names.size());
             j++;
         }while(i!=inkwell);
+
+        System.out.println("\n");
     }
 
     @Override
@@ -398,6 +410,8 @@ public class CLI extends ViewObservable implements View, Runnable {
         }
         tmp=tmp.concat("La biglia rimanente è: "+remainingMarble.toString());
         System.out.println(tmp);
+
+        System.out.println("\n");
     }
 
     @Override
@@ -410,51 +424,98 @@ public class CLI extends ViewObservable implements View, Runnable {
             i++;
         }
 
+        System.out.println("\n");
     }
 
     @Override
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
-
+        LeaderCardParser LCP = new LeaderCardParser("");
+        System.out.println("CARTE LEADER GIOCATE");
+        int i = 1;
+        for(Triplet<Resources,Integer,Integer> t : LC){
+            System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
+            i++;
+        }
     }
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
+        System.out.println("MANO DELLE RISORSE DI " + nickname);
+        HashMap<Resources, Integer> hand = new HashMap<>();
+        for(Resources r : Resources.values()){
+            hand.put(r,H.stream().filter(x -> x.equals(r)).collect(Collectors.toList()).size());
+            if(hand.get(r) <= 0) hand.remove(r);
+        }
+        for(Resources r : hand.keySet()){
+             System.out.println("Risorsa: " + r + ", quantità: " + hand.get(r));
+        }
 
+        System.out.println("\n");
     }
 
     @Override
     public void printAT(ActionToken AT) {
+        System.out.println("AZIONE DI LORENZO IL MAGNIFICO: " + AT.toString());
 
+        System.out.println("\n");
     }
 
     @Override
     public void printBlackCross(int BC) {
+        System.out.print("POSIZIONE DELLA CROCE NERA DI LORENZO IL MAGNIFICO: "+ BC);
 
+        System.out.println("\n");
     }
 
     @Override
     public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
-
+        System.out.println("MERCATO DELLE CARTE");
+        DevelopmentCardParser DCP = new DevelopmentCardParser("");
+        int i = 1;
+        for(Pair<Colours,Integer> p : CM.keySet()){
+            System.out.println(i + ") " + DCP.findCardByID(p.getKey(),CM.get(p)));
+            i++;
+        }
     }
 
     @Override
     public void printFaithTrack(int FM, boolean[] PF, String nickname) {
+        System.out.println("FAITH TRACK DI " + nickname);
+        System.out.println("Posizione dell'indicatore fede: " + FM);
+        System.out.print("Tessere di favore papale attivate: ");
+        for(int i = 0; i<PF.length; i++){
+            if(PF[i]) System.out.println((i+1) + ", ");
+        }
 
+        System.out.println("\n\n");
     }
 
     @Override
     public void printSlot(int I, Colours C, int VP, String nickname) {
+        System.out.println("SLOT " + I + " DELLA PLANCIA DI " + nickname);
+        DevelopmentCardParser DCP = new DevelopmentCardParser("");
+        System.out.println(DCP.findCardByID(C,VP));
 
     }
 
     @Override
     public void printStrongBox(HashMap<Resources, Integer> SB, String nickname) {
+        System.out.println("STRONGBOX DI " + nickname);
+        for(Resources r : SB.keySet()){
+            System.out.println(r.toString() + ": " + SB.get(r));
+        }
 
+        System.out.println("\n");
     }
 
     @Override
     public void printWarehouse(HashMap<Integer, Pair<Resources, Integer>> WH, String nickname) {
+        System.out.println("WAREHOUSE DI " + nickname);
+        for(Integer i : WH.keySet()){
+            System.out.println("Deposito " + i + ": " + "risorsa: " + WH.get(i).getKey().toString() + ", quantità: " + WH.get(i).getValue());
+        }
 
+        System.out.println("\n");
     }
 
     private void clearScreen(){
