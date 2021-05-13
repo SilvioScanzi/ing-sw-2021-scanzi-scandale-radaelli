@@ -151,7 +151,7 @@ public class CLI extends ViewObservable implements View, Runnable {
 
         //conversion of white marbles
         ArrayList<Integer> requestedWMConversion = new ArrayList<>();
-        System.out.println("Quali carte vuoi usare per le biglie bianche? (indice 1-2 della leader card)");
+        System.out.println("Quali carte vuoi usare per le biglie bianche? Indice 1-2 della leader card; -1 se non vuoi usare nulla");
         String[] choice;
         boolean flag;
         do{
@@ -164,6 +164,9 @@ public class CLI extends ViewObservable implements View, Runnable {
                         int userChoice = Integer.parseInt(s);
                         if(userChoice==1 || userChoice==2){
                             requestedWMConversion.add(userChoice);
+                        }
+                        else if(userChoice==-1){
+                            break;
                         }
                         else {
                             flag=true;
@@ -357,10 +360,9 @@ public class CLI extends ViewObservable implements View, Runnable {
 
     @Override
     public void printStandardMessage(StandardMessages message){
-        System.out.println(message.toString());
-
         if(message.equals(StandardMessages.yourTurn)){
             clearScreen();
+            System.out.println(message.toString());
             System.out.println("Scegli l'azione che vuoi compiere: ");
             System.out.println("1 - Compra Risorse dal mercato");
             System.out.println("2 - Compra una Carta sviluppo");
@@ -371,6 +373,7 @@ public class CLI extends ViewObservable implements View, Runnable {
             System.out.println("6 - Scarta una carta leader");
             System.out.println("0 - Fine turno");
         }
+        else System.out.println(message.toString());
     }
 
     @Override

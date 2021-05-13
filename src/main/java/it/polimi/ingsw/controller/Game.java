@@ -151,7 +151,6 @@ public class Game extends ModelObservable {
         if(!(vaticanReport[index-1])) {
             for(int i = 0; i< playerNumber; i++){
                 players.get(i).getFaithTrack().setPopeFavor(index);
-                notifyFT(players.get(i).getFaithTrack(),players.get(i).getNickname());
             }
             vaticanReport[index-1] = true;
         }
@@ -208,7 +207,7 @@ public class Game extends ModelObservable {
                 case Red: {
                     playerBoard.getFaithTrack().advanceTrack();
                     if(playerBoard.getFaithTrack().checkPopeFavor()!=-1) popeEvent(playerBoard.getFaithTrack().checkPopeFavor());
-                    else notifyFT(playerBoard.getFaithTrack(),playerBoard.getNickname());
+                    notifyFT(playerBoard.getFaithTrack(),playerBoard.getNickname());
                     break;
                 }
                 default: break;
@@ -218,25 +217,31 @@ public class Game extends ModelObservable {
     }
 
     //Discard resources and advance other players
-    public synchronized void discardRemainingResources(int player){
+    public synchronized void discardRemainingResources(int player) {
         Board playerBoard = players.get(player);
-        for(Resources ignored : playerBoard.getHand()){
-            for(int i = 0; i< playerNumber; i++){
-                if(i!=player){
-                    players.get(i).getFaithTrack().advanceTrack();
+        if (playerNumber > 1) {
+            for (Resources ignored : playerBoard.getHand()) {
+                for (int i = 0; i < playerNumber; i++) {
+                    if (i != player) {
+                        players.get(i).getFaithTrack().advanceTrack();
+                    }
+                    //Checking if any player got to a Pope tile
+                    int cell = -1;
+                    for (int j = 0; j < playerNumber; j++) {
+                        cell = Math.max(players.get(j).getFaithTrack().checkPopeFavor(), cell);
+                    }
+                    if (cell != -1) popeEvent(cell);
+                }
+                for (int i = 0; i < playerNumber; i++) {
+                    if (i != player) notifyFT(players.get(i).getFaithTrack(), players.get(i).getNickname());
                 }
             }
-            //Checking if any player got to a Pope tile
-            int cell=-1;
-            for(int i = 0; i< playerNumber; i++){
-                cell = Math.max(players.get(i).getFaithTrack().checkPopeFavor(),cell);
+        } else {
+            for (Resources ignored : playerBoard.getHand()) {
+                lorenzo.advanceBlackCross();
+                if (lorenzo.checkPopeFavor() != -1) popeEvent(lorenzo.checkPopeFavor());
             }
-            if(cell!=-1) popeEvent(cell);
-            else{
-                for(int i=0;i<playerNumber;i++){
-                    if(i!=player) notifyFT(players.get(i).getFaithTrack(),players.get(i).getNickname());
-                }
-            }
+            notifyLorenzo(lorenzo);
         }
         playerBoard.getHand().clear();
         notifyHand(playerBoard.getHand(), playerBoard.getNickname());
@@ -531,10 +536,9 @@ public class Game extends ModelObservable {
         if(leaderCardIndex>players.get(player).getLeaderCardsHand().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).discardLeaderCard(leaderCardIndex);
         players.get(player).getFaithTrack().advanceTrack();
-        notifyFT(players.get(player).getFaithTrack(), players.get(player).getNickname());
         int tmp = players.get(player).getFaithTrack().checkPopeFavor();
         if(tmp!=-1) popeEvent(tmp);
-
+        notifyFT(players.get(player).getFaithTrack(), players.get(player).getNickname());
         notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
     }
 
