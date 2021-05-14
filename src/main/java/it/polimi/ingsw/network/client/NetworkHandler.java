@@ -15,8 +15,12 @@ import java.util.HashMap;
 
 
 public class NetworkHandler implements Runnable, ViewObserver {
+
+    //TODO: elimina
     public enum NetworkState{connected,disconnected,end}
     private NetworkState state = NetworkState.disconnected;
+
+
     private Socket socket;
     private final View view;
     private ObjectOutputStream socketOut;
@@ -59,8 +63,6 @@ public class NetworkHandler implements Runnable, ViewObserver {
     }
 
     private void handleMessage(Object message){
-        //boolean redo;
-
         //Standard Messages
         if(message instanceof StandardMessages){
             switch((StandardMessages) message){
@@ -80,35 +82,15 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     view.setState(CLI.ViewState.finishSetupTwoResources);
                     break;
                 case yourTurn:
+                    clientModel.setActionDone(false);
                     view.setState(CLI.ViewState.myTurn);
                     break;
+                case actionDone:
+                    clientModel.setActionDone(true);
             }
 
             view.printStandardMessage((StandardMessages) message);
         }
-        /*if(message instanceof StandardMessages) {
-            System.out.println(message.toString());
-            if(message.equals(StandardMessages.choosePlayerNumber) || message.equals(StandardMessages.chooseNickName)
-                || message.equals(StandardMessages.chooseOneResource) || message.equals(StandardMessages.chooseTwoResource)
-                || message.equals(StandardMessages.nicknameAlreadyInUse) || message.equals(StandardMessages.chooseDiscardedLC)){
-                        do {
-                            view.setCanInput(true);
-                            synchronized (view) {
-                                while (!view.getMessageReady()) {
-                                    try { view.wait(); } catch (InterruptedException e) { e.printStackTrace(); }
-                                }
-                            }
-                            String inputMessage = view.getMessage();
-                            redo = buildStandardMessage((StandardMessages) message, inputMessage);
-                        }while(!redo);
-            }
-            else if(message.equals(StandardMessages.yourTurn)){
-                view.setYourTurn(true);
-                view.setCanInput(false);
-                view.setMessageReady(false);
-                view.yourTurnPrint();
-            }
-        }*/
 
         //Messages
         else if(message instanceof Message){
@@ -124,7 +106,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             else if(message instanceof ActionTokenMessage){
                 view.printAT(((ActionTokenMessage) message).getAT());
             }
-            else if(message instanceof LorenzoTrackMessage){ ;
+            else if(message instanceof LorenzoTrackMessage){
                 view.printBlackCross(((LorenzoTrackMessage) message).getBlackCross());
             }
 
@@ -173,82 +155,6 @@ public class NetworkHandler implements Runnable, ViewObserver {
         }
     }
 
-    /*private boolean buildStandardMessage(StandardMessages message, String inputMessage) {
-
-        if (message.equals(StandardMessages.chooseNickName) || message.equals(StandardMessages.nicknameAlreadyInUse)) {
-            sendObject(new NicknameMessage(inputMessage));
-
-        } else if (message.equals(StandardMessages.choosePlayerNumber)) {
-            int n = 0;
-            try {
-                n = Integer.parseInt(inputMessage);
-            } catch (NumberFormatException e) {
-                System.out.println(StandardMessages.wrongObject.toString());
-                return false;
-            }
-
-            if (n < 1 || n > 4) {
-                System.out.println("Numero di giocatori non supportato.");
-                return false;
-            } else {
-                sendObject(new ChoosePlayerNumberMessage(n));
-            }
-
-        } else if (message.equals(StandardMessages.chooseOneResource)) {
-            if (!inputMessage.equals("SC") && !inputMessage.equals("SE") && !inputMessage.equals("PI") && !inputMessage.equals("MO")) {
-                System.out.println("Risorsa non supportata: inseriscine una valida");
-                return false;
-            }
-            ArrayList<String> tmp = new ArrayList<>();
-            tmp.add(inputMessage);
-            sendObject(new FinishSetupMessage(tmp));
-
-        } else if (message.equals(StandardMessages.chooseTwoResource)) {
-            ArrayList<String> tmp = new ArrayList<>();
-            String[] s = inputMessage.split(" ");
-            for (String a : s) {
-                if (!a.equals("SC") && !a.equals("SE") && !a.equals("PI") && !a.equals("MO")) {
-                    System.out.println("Risorsa non supportata: inseriscine una valida");
-                    return false;
-                }
-                else tmp.add(a);
-            }
-
-            if (s.length != 2) {
-                System.out.println("Numero errato di risorse: riscrivile");
-                return false;
-            }
-            sendObject(new FinishSetupMessage(tmp));
-
-        } else if (message.equals(StandardMessages.chooseDiscardedLC)) {
-            int[] inputChoice = new int[2];
-            try {
-                String[] s = inputMessage.split(" ");
-                if (s.length != 2) {
-                    System.out.println("Devi inserire 2 Leader Card da scartare! ");
-                    return false;
-                }
-                for (int i = 0; i < 2; i++) {
-                    inputChoice[i] = Integer.parseInt(s[i]);
-                    if (inputChoice[i] < 1 || inputChoice[i] > 4) {
-                        System.out.println("Errore nella scelta, scegli indici compresi tra 1 e 4.");
-                        return false;
-                    }
-                }
-                if (inputChoice[0] == inputChoice[1]) {
-                    System.out.println("Errore nella scelta, servono due indici diversi");
-                    return false;
-                }
-            } catch (Exception e) {
-                System.out.println("Errore nella scelta!");
-                return false;
-            }
-
-            sendObject(new DiscardLeaderCardSetupMessage(inputChoice));
-        }
-        return true;
-    }*/
-
     private boolean checkGotResources(ArrayList<Pair<String, Integer>> userChoice){
         HashMap<Integer, Pair<Resources,Integer>> warehouse = new HashMap<>(clientModel.getWarehouse());
         HashMap<Resources,Integer> strongbox = new HashMap<>(clientModel.getStrongBox());
@@ -294,8 +200,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
         return true;
     }
 
-    private boolean checkRightResources(Colours colour, int level, ArrayList<Pair<String, Integer>> userChoice){
-        DevelopmentCardParser DCP = new DevelopmentCardParser("");
+    private boolean checkRightResources(HashMap<Resources, Integer> cost, ArrayList<Pair<String, Integer>> userChoice){
         HashMap<Resources,Integer> uc = new HashMap<>();
         for(Resources R : Resources.values()){
             uc.put(R,0);
@@ -303,7 +208,6 @@ public class NetworkHandler implements Runnable, ViewObserver {
         for(Pair<String,Integer> P : userChoice){
             uc.replace(Resources.getResourceFromString(P.getKey()),uc.get(Resources.getResourceFromString(P.getKey()))+1);
         }
-        HashMap<Resources,Integer> cost = DCP.findCostByID(colour,level);
         return cost.equals(uc);
     }
 
@@ -335,11 +239,15 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateDisconnected(ViewObservable obs){
-
+        sendObject(new DisconnectedMessage(clientModel.getMyNickname()));
     }
 
     @Override
     public void updateBuyResources(boolean r, int n, ArrayList<Integer> requestedWMConversion) {
+        if(clientModel.getActionDone()){
+            view.print("Hai già eseguito un'azione per questo turno");
+            return;
+        }
         LeaderCardParser LCP = new LeaderCardParser("");
         if(clientModel.getLeaderCardsPlayed().size()==2) {
             if (LCP.findTypeByID(clientModel.getLeaderCardsPlayed().get(0).get_1(), clientModel.getLeaderCardsPlayed().get(0).get_2()).equals("WhiteMarbleAbility")
@@ -363,19 +271,23 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateBuyDC(Colours colour, int level, int slot, ArrayList<Pair<String, Integer>> userChoice) {
-        if(clientModel.getSlots(slot-1) == -1){
+        if(clientModel.getActionDone()){
+            view.print("Hai già eseguito un'azione per questo turno");
+            return;
+        }
+        if(clientModel.getSlotsVP(slot-1) == -1){
             if(level != 1) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 1");
                 return;
             }
         }
-        else if(clientModel.getSlots(slot-1) < 5){
+        else if(clientModel.getSlotsVP(slot-1) < 5){
             if(level != 2) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 2");
                 return;
             }
         }
-        else if(clientModel.getSlots(slot-1) < 9){
+        else if(clientModel.getSlotsVP(slot-1) < 9){
             if(level != 3) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 3");
                 return;
@@ -386,8 +298,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
             return;
         }
 
-
-        if(!checkGotResources(userChoice) || !checkRightResources(colour,level,userChoice)){
+        DevelopmentCardParser DCP = new DevelopmentCardParser("");
+        HashMap<Resources, Integer> cost = DCP.findCostByID(colour,level);
+        if(!checkGotResources(userChoice) || !checkRightResources(cost,userChoice)){
             view.print("La scelta delle risorse non è corretta");
             return;
         }
@@ -397,25 +310,88 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateActivateProduction(HashMap<Integer, ArrayList<Pair<String, Integer>>> userChoice) {
+        if(clientModel.getActionDone()){
+            view.print("Hai già eseguito un'azione per questo turno");
+            return;
+        }
+        for(Integer I : userChoice.keySet()){
+            if(I>=1 && I<=3){
+                if (clientModel.getSlotsVP(I) == -1){
+                    view.print("La carta sviluppo scelta non esiste");
+                    return;
+                }
+                Pair<Colours, Integer> P = clientModel.getSlots(I);
+                DevelopmentCardParser DCP = new DevelopmentCardParser("");
+                HashMap<Resources, Integer> requiredResources = DCP.findRequiredResourcesByID(P.getKey(),P.getValue());
+                if(!checkGotResources(userChoice.get(I)) || !checkRightResources(requiredResources,userChoice.get(I))){
+                    view.print("La tua scelta delle risorse è errata");
+                    return;
+                }
+            }
+            else if(I==4 || I==5){
+                try{
+                    clientModel.getLeaderCardsPlayed().get(I-4);
+                    if(userChoice.get(I).size() == 2){
+                        ArrayList<Pair<String,Integer>> c = new ArrayList<>(userChoice.get(I));
+                        c.remove(1);
+                        if(!checkGotResources(c)){
+                            view.print("Hai sbagliato a scegliere le risorse");
+                            return;
+                        }
+                    }
+                    else {
+                        view.print("Hai sbagliato a scegliere le risorse");
+                        return;
+                    }
+                }catch(IndexOutOfBoundsException e){
+                    view.print("Non hai questa leader card");
+                    return;
+                }
+            }
+            else{
+                if(userChoice.get(I).size() == 3){
+                    ArrayList<Pair<String,Integer>> c = new ArrayList<>(userChoice.get(I));
+                    c.remove(2);
+                    if(!checkGotResources(c)){
+                        view.print("Hai sbagliato a scegliere le risorse");
+                        return;
+                    }
+                }
+            }
+        }
+        sendObject(new ProductionMessage(userChoice));
     }
 
     @Override
     public void updateMoveResources(ArrayList<Triplet<String, Integer, Integer>> userChoice) {
-
+        sendObject(new MoveResourcesMessage(userChoice));
     }
 
     @Override
     public void updateActivateLC(int userChoice) {
-
+        try{
+            clientModel.getLeaderCardsHand().get(userChoice-1);
+            sendObject(new PlayLeaderCardMessage(userChoice));
+        }catch(IndexOutOfBoundsException e){
+            view.print("La leader card selezionata non esiste");
+        }
     }
 
     @Override
     public void updateDiscardLC(int userChoice) {
-
+        try{
+            clientModel.getLeaderCardsHand().get(userChoice-1);
+            sendObject(new DiscardLeaderCardMessage(userChoice));
+        }catch(IndexOutOfBoundsException e){
+            view.print("La leader card selezionata non esiste");
+        }
     }
 
     @Override
     public void updateEndTurn() {
-
+        if(clientModel.getActionDone()){
+            sendObject(new TurnDoneMessage(true));
+        }
+        else view.print("Non hai ancora svolto l'azione per questo turno");
     }
 }

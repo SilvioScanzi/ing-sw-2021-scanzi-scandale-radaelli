@@ -12,10 +12,8 @@ import it.polimi.ingsw.observers.LobbyObservable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//ASK: Sincronizzazione, quando è necessaria? (se leggo...)
-
 public class Lobby extends LobbyObservable implements Runnable, CHObserver {
-    public enum LobbyState{setup, discardedLCSetup, finishingSetup, playMultiplayer, playSolo, lorenzoTurn, demolishing, demolished}
+    public enum LobbyState{setup, discardedLCSetup, finishingSetup, playMultiplayer, playSolo, lorenzoTurn, demolished}
     private int playersDone = 0;
     private LobbyState state = LobbyState.setup;
     //Used to access Lobby State (synchronization)
@@ -121,8 +119,12 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
         boolean endGame = false;
         boolean lorenzoWin = false;
         int turn = 0;
-        while (!state.equals(LobbyState.demolished)) {
-            switch (state) {
+        LobbyState LS;
+        do{
+            synchronized (Lock){
+                LS = state;
+            }
+            switch (LS) {
 
                 case setup: {
                     //attaching client handler observers
@@ -162,15 +164,15 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                     }
 
                     synchronized (Lock) {
-                        if (!state.equals(LobbyState.demolishing)) state = LobbyState.discardedLCSetup;
+                        if (!state.equals(LobbyState.demolished)) state = LobbyState.discardedLCSetup;
                     }
                     break;
                 }
 
                 case discardedLCSetup: {
                     synchronized (Lock) {
-                        if (playersDone == playerNumber && playerNumber == 1) state = LobbyState.playSolo;
-                        else if (playersDone == playerNumber) {
+                        if (playersDone == playerNumber && playerNumber == 1 && state != LobbyState.demolished) state = LobbyState.playSolo;
+                        else if (playersDone == playerNumber && state != LobbyState.demolished) {
                             state = LobbyState.finishingSetup;
                             playersDone = 0;
 
@@ -193,7 +195,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
                 case finishingSetup: {
                     synchronized (Lock){
-                        if(playersDone == playerNumber - 1){
+                        if(playersDone == playerNumber - 1 && state != LobbyState.demolished){
                             state = LobbyState.playMultiplayer;
                         }
                     }
@@ -216,6 +218,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                             CH.setState(ClientHandler.ClientHandlerState.myTurn);
                             CH.sendStandardMessage(StandardMessages.yourTurn);
 
+                            //TODO: Observer che dice in che stato si è NOTIFICA
                             while (!CH.getState().equals(ClientHandler.ClientHandlerState.disconnected) && !CH.getState().equals(ClientHandler.ClientHandlerState.notMyTurn)) {}
 
                             endGame = game.checkEndGame(turn);
@@ -240,7 +243,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                             }
                         }
                         synchronized (Lock){
-                            state = LobbyState.demolishing;
+                            state = LobbyState.demolished;
                         }
                     }
                     break;
@@ -277,7 +280,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                             else CH.sendStandardMessage(StandardMessages.lorenzoWin);
                         }
                         synchronized (Lock){
-                            state = LobbyState.demolishing;
+                            state = LobbyState.demolished;
                         }
                     }
                     break;
@@ -292,7 +295,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                     break;
                 }
 
-                case demolishing:{
+                case demolished:{
                     for (ClientHandler CH : clients) {
                         CH.setState(ClientHandler.ClientHandlerState.disconnected);
                         CH.closeConnection();
@@ -304,7 +307,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                     break;
                 }
             }
-        }
+        }while(LS!=LobbyState.demolished);
     }
 
 
@@ -323,7 +326,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
             }
             synchronized (Lock) {
                 playersDone = playerNumber;
-                state = LobbyState.demolishing;
+                state = LobbyState.demolished;
             }
         } else {
             synchronized (clients) {
@@ -339,7 +342,7 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
 
             synchronized (Lock){
                 if(disconnectedPlayers.size() == playerNumber){
-                    state = Lobby.LobbyState.demolishing;
+                    state = LobbyState.demolished;
                 }
             }
         }
@@ -386,13 +389,13 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
             int player = clientMap.get(client).getValue();
             try {
                 game.BuyMarketResourcesAction(player, message.getRow(), message.getN(), message.getRequestedWMConversion());
+
+                //after getting the resources, the user needs to say where he wants to deposit them
+                client.setLastActionMarket(true);
+                client.setState(ClientHandler.ClientHandlerState.moveNeeded);
             } catch (Exception e) {
                 client.sendStandardMessage(StandardMessages.wrongObject);
             }
-
-            //after getting the resources, the user needs to say where he wants to deposit them
-            client.setLastActionMarket(true);
-            client.setState(ClientHandler.ClientHandlerState.moveNeeded);
         }
     }
 

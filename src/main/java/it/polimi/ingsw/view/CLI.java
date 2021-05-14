@@ -15,11 +15,6 @@ public class CLI extends ViewObservable implements View, Runnable {
     private ViewState state = ViewState.start;
     private final Scanner scanner;
 
-    //for testing
-    public CLI(){
-        scanner = new Scanner(System.in);
-    }
-
     public CLI(NetworkHandler NH) {
         addObserver(NH);
         scanner = new Scanner(System.in);
@@ -245,8 +240,8 @@ public class CLI extends ViewObservable implements View, Runnable {
         do {
             System.out.println("Seleziona la carta che desideri. Per chiudere la selezione digita 0");
             System.out.println("1, 2, 3 - Carte sviluppo negli slot");
-            System.out.println("4 - Potere di base");
-            System.out.println("5, 6 - Carte leader");
+            System.out.println("4, 5 - Carte leader");
+            System.out.println("6 - Potere di base");
             index = Integer.parseInt(scanner.nextLine());
             boolean leap = false;
             if(1<=index && index<=6){
@@ -267,6 +262,15 @@ public class CLI extends ViewObservable implements View, Runnable {
                     System.out.println("Risorse: SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
                     getUserChoice(n, resourceArray);
                     userChoice.put(index,resourceArray);
+                    if(index >= 4){
+                        String s;
+                        do{
+                            System.out.println("Scegli la risorsa che vuoi ottenere dalla produzione\nRisorse: SE - Servitori; MO - Monete; SC - Scudi; PI - Pietre");
+                            s = scanner.nextLine();
+                        }while(!s.equals("SE") && !s.equals("MO") && !s.equals("SC") && !s.equals("PI"));
+                        resourceArray.add(new Pair<>(s,-1));
+                        userChoice.replace(index,resourceArray);
+                    }
                 }
             }
         }while(index!=0);

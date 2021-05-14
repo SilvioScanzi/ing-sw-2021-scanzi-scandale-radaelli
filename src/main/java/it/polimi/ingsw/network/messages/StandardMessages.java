@@ -11,6 +11,7 @@ public enum StandardMessages implements Serializable {
     chooseTwoResource("Scegli due risorse extra da ottenere"),  //setup
     chooseDiscardedLC("Scegli le Leader Card da scartare"),
     yourTurn("É il tuo turno"),
+    actionDone("Hai eseguito l'azione per il turno"),
     lorenzoWin("Lorenzo ha vinto!"),
     endGame("La partita è conclusa"),
 

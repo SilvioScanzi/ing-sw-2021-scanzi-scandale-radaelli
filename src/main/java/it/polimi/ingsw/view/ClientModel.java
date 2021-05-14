@@ -113,8 +113,12 @@ public class ClientModel {
         return warehouse;
     }
 
-    public Integer getSlots(int i) {
-        return slots.get(i).getValue();
+    public Integer getSlotsVP(int i) {
+        return slots.get(i-1).getValue();
+    }
+
+    public Pair<Colours,Integer> getSlots(int i) throws IndexOutOfBoundsException {
+        return slots.get(i-1);
     }
 
     public boolean getActionDone() {

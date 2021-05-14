@@ -191,6 +191,7 @@ public class Game extends ModelObservable {
 
         notifyResourceMarket(resourceMarket);
         notifyHand(playerBoard.getHand(), playerBoard.getNickname());
+        notifyActionDone(playerBoard.getNickname());
 
         playerBoard.setActionDone(true);
     }
@@ -297,6 +298,7 @@ public class Game extends ModelObservable {
 
         developmentCardMarket.getFirstCard(c, level);
         playerBoard.setActionDone(true);
+        notifyActionDone(playerBoard.getNickname());
     }
 
     //if player chooses to activate a leader card or the base production, the last position of the ArrayList
@@ -380,6 +382,7 @@ public class Game extends ModelObservable {
         }
 
         playerBoard.setActionDone(true);
+        notifyActionDone(playerBoard.getNickname());
     }
 
     //Helper method used to modify the board of a player regarding his resources.

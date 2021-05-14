@@ -11,7 +11,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-
+//TODO: ping per verificare disconnessione
 //server side
 public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
     public enum ClientHandlerState{nickname, playerNumber, lobbyNotReady, discardLeaderCard, finishingSetup, wait, myTurn, moveNeeded, actionDone, notMyTurn, endGame, disconnected}
@@ -78,16 +78,10 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     state = ClientHandlerState.disconnected;
                     notifyServerDisconnection();
                     notifyDisconnected();
-                    /*try {
-                        state.wait();
-                    } catch (InterruptedException interruptedException) {
-                        interruptedException.printStackTrace();
-                    }*/
                 }
                 return;
             }
         }
-
     }
 
     public synchronized void processMessage(Message message) {
@@ -257,5 +251,12 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     @Override
     public void updateActionToken(ActionToken AT){
         sendObject(new ActionTokenMessage(AT));
+    }
+
+    @Override
+    public void updateActionDone(String s) {
+        if(s.equals(nickname)){
+            sendStandardMessage(StandardMessages.actionDone);
+        }
     }
 }

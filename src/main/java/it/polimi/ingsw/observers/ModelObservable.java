@@ -87,4 +87,10 @@ public class ModelObservable {
             obs.updateVP(victoryPoints,s);
         }
     }
+
+    public void notifyActionDone(String s){
+        for(ModelObserver obs : observers){
+            obs.updateActionDone(s);
+        }
+    }
 }

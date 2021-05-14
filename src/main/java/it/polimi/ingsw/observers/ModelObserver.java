@@ -19,4 +19,5 @@ public interface ModelObserver {
     void updateVP(int victoryPoints,String s);
     void updateLorenzo(LorenzoTrack lorenzo);
     void updateActionToken(ActionToken AT);
+    void updateActionDone(String s);
 }
