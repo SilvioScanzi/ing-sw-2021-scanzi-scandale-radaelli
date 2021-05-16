@@ -11,8 +11,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-//TODO: ping per verificare disconnessione
-//server side
 public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
     public enum ClientHandlerState{nickname, playerNumber, lobbyNotReady, discardLeaderCard, finishingSetup, wait, myTurn, moveNeeded, actionDone, notMyTurn, endGame, disconnected}
     private ClientHandlerState state = ClientHandlerState.nickname;
@@ -21,6 +19,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
     private boolean lastActionMarket = false;
+    private Thread timeout;
 
     public ClientHandler(Socket socket) {
         this.socket = socket;
@@ -30,6 +29,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             socketOut.writeObject(StandardMessages.connectionEstablished);
         }
         catch(Exception e){e.printStackTrace();}
+        timeout = new Thread();
     }
 
     public void closeConnection(){
@@ -42,11 +42,28 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         }
     }
 
+    public void setTimeout() {
+        try {
+            Thread.sleep(5000);
+            synchronized (this){
+                closeConnection();
+            }
+        } catch (InterruptedException e) {
+        }
+    }
+
     public synchronized ClientHandlerState getState(){
         return state;
     }
 
-    public synchronized void setState(ClientHandlerState state) { this.state = state; }
+    public synchronized void setState(ClientHandlerState state) {
+        if(state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup) ||
+                state.equals(ClientHandlerState.myTurn)){
+            timeout = new Thread(this::setTimeout);
+            timeout.start();
+        }
+        this.state = state;
+    }
 
     public boolean getLastActionMarket() {
         return lastActionMarket;
@@ -66,8 +83,18 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         sendStandardMessage(StandardMessages.chooseNickName);
         while(!state.equals(ClientHandlerState.disconnected)) {
             try {
-                socket.setSoTimeout(60000);
+                //ASK: OK?
+                if(state.equals(ClientHandlerState.playerNumber) || state.equals(ClientHandlerState.discardLeaderCard) ||
+                        state.equals(ClientHandlerState.finishingSetup) || state.equals(ClientHandlerState.myTurn) ||
+                        state.equals(ClientHandlerState.moveNeeded) || state.equals(ClientHandlerState.actionDone)){
+                    timeout = new Thread(this::setTimeout);
+                    timeout.start();
+                }
+
                 message = socketIn.readObject();
+                if(timeout.isAlive()) {
+                    timeout.interrupt();
+                }
                 if (!(message instanceof Message)) {
                     sendStandardMessage(StandardMessages.wrongObject);
                 } else {
@@ -81,6 +108,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 }
                 return;
             }
+
         }
     }
 

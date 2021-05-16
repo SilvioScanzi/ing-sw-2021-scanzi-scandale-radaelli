@@ -152,6 +152,7 @@ public class Server implements CH_ServerObserver, LobbyObserver {
                 CH.setNickname(S);
                 clientHandlers.add((ClientHandler) obs);
                 if (lobbyRequired) {
+                    CH.setState(ClientHandler.ClientHandlerState.playerNumber);
                     new Thread(this::lobbyManager).start();
                 }
                 lobbyRequired = false;

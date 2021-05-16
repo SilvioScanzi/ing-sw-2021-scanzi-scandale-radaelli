@@ -125,7 +125,6 @@ public class Lobby extends LobbyObservable implements Runnable, CHObserver {
                 LS = state;
             }
             switch (LS) {
-
                 case setup: {
                     //attaching client handler observers
                     for (ClientHandler CH : clients) {

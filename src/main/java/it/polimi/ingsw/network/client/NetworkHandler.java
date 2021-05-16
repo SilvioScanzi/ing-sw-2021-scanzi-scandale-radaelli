@@ -46,6 +46,16 @@ public class NetworkHandler implements Runnable, ViewObserver {
         }
     }
 
+    public void closeConnection(){
+        try {
+            socketOut.close();
+            socketIn.close();
+            socket.close();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         while(!state.equals(NetworkState.disconnected)){
@@ -57,7 +67,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     handleMessage(message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                //TODO: gestisci la disconnessione
+                state = NetworkState.disconnected;
+                closeConnection();
             }
         }
     }
