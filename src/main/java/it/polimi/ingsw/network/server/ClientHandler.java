@@ -43,13 +43,13 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     public void setTimeout() {
-        try {
+        /*try {
             Thread.sleep(5000);
             synchronized (this){
                 closeConnection();
             }
         } catch (InterruptedException e) {
-        }
+        }*/
     }
 
     public synchronized ClientHandlerState getState(){
@@ -77,13 +77,14 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         return nickname;
     }
 
+
+    //TODO:Java util timer
     @Override
     public void run() {
         Object message;
         sendStandardMessage(StandardMessages.chooseNickName);
         while(!state.equals(ClientHandlerState.disconnected)) {
             try {
-                //ASK: OK?
                 if(state.equals(ClientHandlerState.playerNumber) || state.equals(ClientHandlerState.discardLeaderCard) ||
                         state.equals(ClientHandlerState.finishingSetup) || state.equals(ClientHandlerState.myTurn) ||
                         state.equals(ClientHandlerState.moveNeeded) || state.equals(ClientHandlerState.actionDone)){
@@ -108,7 +109,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 }
                 return;
             }
-
         }
     }
 
@@ -181,6 +181,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 if(message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
                 else if(message instanceof PlayLeaderCardMessage) notifyPlayLeaderCard((PlayLeaderCardMessage) message);
                 else if(message instanceof DiscardLeaderCardMessage) notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
+                else if(message instanceof TurnDoneMessage) notifyTurnDone((TurnDoneMessage) message);
                 else sendStandardMessage(StandardMessages.wrongObject);
                 break;
             }

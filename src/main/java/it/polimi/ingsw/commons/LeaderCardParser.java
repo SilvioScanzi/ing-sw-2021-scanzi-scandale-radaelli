@@ -117,33 +117,51 @@ public class LeaderCardParser {
                                 requiredresources.put(Resources.valueOf(requiredresourcesString[j]), Integer.parseInt(requiredresourcesString[j + 1]));
                             }
                         }
-                        Ability ability = null;
 
-                        if(type.equals("DiscountAbility")){
-                            ability = new DiscountAbility(restype,capacity);
-                        }
-                        else if(type.equals("ExtraSlotAbility")){
-                            ability = new ExtraSlotAbility(restype,capacity);
-                            try {
-                                ability.doUpdateSlot(r,sr);
-                            }catch(Exception e){e.printStackTrace();}
-                        }
-                        else if(type.equals("ProductionPowerAbility")){
-                            ability = new ProductionPowerAbility(restype);
-                        }
-                        else if(type.equals("WhiteMarbleAbility")){
-                            ability = new WhiteMarbleAbility(restype);
-                        }
-
-                        String tmp = "Punti vittoria: "+vp+"\n";
+                        String tmp = "╔═══════════════════╗\n";
+                        tmp = tmp + "║ Punti vittoria: "+vp+" ║\n";
+                        tmp = tmp + "║ Requisiti         ║";
                         for(Colours c: requiredcolours.keySet()){
-                            tmp=tmp.concat("Colore richiesto: "+c.toString()+"; Numero di carte richiesto: "+requiredcolours.get(c).getKey()+"; Livello richiesto: "+requiredcolours.get(c).getValue()+"\n");
+                            tmp=tmp.concat("\n║ Colore "+c.toString());
+                            if(c.equals(Colours.Blue)){
+                                tmp = tmp+"        ║";
+                            }
+                            else if(c.equals(Colours.Yellow)){
+                                tmp = tmp+"     ║";
+                            }
+                            else if(c.equals(Colours.Purple) || c.equals(Colours.Green)){
+                                tmp = tmp+"      ║";
+                            }
+                            tmp = tmp + "\n║ Carte richieste "+requiredcolours.get(c).getKey() + " ║";
+                            if(requiredcolours.get(c).getValue()>1)
+                                tmp = tmp + "\n║ Livello "+requiredcolours.get(c).getValue()+"         ║";
                         }
+                        tmp = tmp+"\n";
                         for(Resources res:requiredresources.keySet()){
-                            tmp=tmp.concat("Risorsa richiesta: "+res.toString()+"; Numero: "+requiredresources.get(res)+"\n");
+                            tmp=tmp + "║ Risorsa "+res.abbreviation()+ "        ║\n";
+                            tmp=tmp + "║ Numero richiesto "+requiredresources.get(res)+"║\n";
                         }
 
-                        tmp=tmp.concat(ability.toString()+"\n");
+                        tmp = tmp+"║ Abilità           ║\n";
+
+                        switch (type) {
+                            case "DiscountAbility":
+                                tmp = tmp + "║ Sconto di 1 "+r.abbreviation()+"    ║\n";
+                                break;
+                            case "ExtraSlotAbility":
+                                tmp = tmp + "║ Deposito di "+capacity+" "+r.abbreviation()+"  ║\n";
+                                tmp = tmp + "║ Sono presenti "+sr+" "+r.abbreviation()+"║\n";
+                                break;
+                            case "ProductionPowerAbility":
+                                tmp = tmp + "║ Produzione        ║\n";
+                                tmp = tmp + "║ 1 punto fede e "+r.abbreviation()+" ║\n";
+                                break;
+                            case "WhiteMarbleAbility":
+                                tmp = tmp + "║ Conversione bilia ║\n";
+                                tmp = tmp + "║ " + r.abbreviation() + "                ║\n";
+                                break;
+                        }
+                        tmp = tmp + "╚═══════════════════╝";
                         return tmp;
                     }
                 }

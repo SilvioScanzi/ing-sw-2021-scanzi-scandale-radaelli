@@ -15,6 +15,16 @@ public class CLI extends ViewObservable implements View, Runnable {
     private ViewState state = ViewState.start;
     private final Scanner scanner;
 
+    public static final String	BACKGROUND_BLACK	= "\u001B[40m";
+    public static final String	BACKGROUND_RED		= "\u001B[41m";
+    public static final String	BACKGROUND_GREEN	= "\u001B[42m";
+    public static final String	BACKGROUND_YELLOW	= "\u001B[43m";
+    public static final String	BACKGROUND_BLUE		= "\u001B[44m";
+    public static final String	BACKGROUND_MAGENTA	= "\u001B[45m";
+    public static final String	BACKGROUND_CYAN		= "\u001B[46m";
+    public static final String	BACKGROUND_WHITE	= "\u001B[47m";
+    public static final String  RESET               = "\u001B[0m";
+
     public CLI(NetworkHandler NH) {
         addObserver(NH);
         scanner = new Scanner(System.in);
@@ -23,6 +33,7 @@ public class CLI extends ViewObservable implements View, Runnable {
     @Override
     public void run(){
         while(!state.equals(ViewState.disconnected)){
+            if(state.equals(ViewState.myTurn)) printYourTurn();
             String message = scanner.nextLine();
 
                 if(state.equals(ViewState.chooseNickName)){
@@ -372,22 +383,20 @@ public class CLI extends ViewObservable implements View, Runnable {
 
     @Override
     public void printStandardMessage(StandardMessages message){
-        if(message.equals(StandardMessages.yourTurn)){
-            clearScreen();
-            System.out.println(message.toString());
-            System.out.println("Scegli l'azione che vuoi compiere: ");
-            System.out.println("1 - Compra Risorse dal mercato");
-            System.out.println("2 - Compra una Carta sviluppo");
-            System.out.println("3 - Attiva la produzione delle tue carte");
-            System.out.println("Oppure scegli un'azione bonus: ");
-            System.out.println("4 - Sposta le risorse dal magazzino");
-            System.out.println("5 - Gioca una carta leader");
-            System.out.println("6 - Scarta una carta leader");
-            System.out.println("0 - Fine turno");
-        }
-        else System.out.println(message.toString());
+        System.out.println(message.toString());
+        if(message.equals(StandardMessages.yourTurn)) printYourTurn();
+    }
 
-        System.out.println("\n");
+    public void printYourTurn(){
+        System.out.println("Scegli l'azione che vuoi compiere: ");
+        System.out.println("1 - Compra Risorse dal mercato");
+        System.out.println("2 - Compra una Carta sviluppo");
+        System.out.println("3 - Attiva la produzione delle tue carte");
+        System.out.println("Oppure scegli un'azione bonus: ");
+        System.out.println("4 - Sposta le risorse dal magazzino");
+        System.out.println("5 - Gioca una carta leader");
+        System.out.println("6 - Scarta una carta leader");
+        System.out.println("0 - Fine turno");
     }
 
     @Override
@@ -405,14 +414,37 @@ public class CLI extends ViewObservable implements View, Runnable {
 
     @Override
     public void printResourceMarket(Marbles[][] grid, Marbles remainingMarble) {
-        String tmp = "MERCATO DELLE RISORSE:\n";
+        StringBuilder tmp = new StringBuilder("MERCATO DELLE RISORSE:\n");
+        tmp.append("  1  2  3  4 \n");
+        tmp.append(RESET+"╔══╦══╦══╦══╗\n");
         for(int i=0;i<3;i++){
+            tmp.append("║");
             for(int j=0;j<4;j++){
-                tmp=tmp.concat(grid[i][j].abbreviation() + " ");
+                if(grid[i][j].equals(Marbles.Yellow)){
+                    tmp.append(BACKGROUND_YELLOW);
+                }
+                else if(grid[i][j].equals(Marbles.Blue)){
+                    tmp.append(BACKGROUND_BLUE);
+                }
+                else if(grid[i][j].equals(Marbles.Red)){
+                    tmp.append(BACKGROUND_RED);
+                }
+                else if(grid[i][j].equals(Marbles.Purple)){
+                    tmp.append(BACKGROUND_MAGENTA);
+                }
+                else if(grid[i][j].equals(Marbles.Grey)){
+                    tmp.append(BACKGROUND_WHITE);
+                }
+                else if(grid[i][j].equals(Marbles.White)){
+                    tmp.append(BACKGROUND_BLACK);
+                }
+                tmp.append(grid[i][j].abbreviation()).append(RESET).append("║");
             }
-            tmp=tmp.concat("\n");
+            tmp.append(" ").append(i + 1);
+            if(i!=2) tmp.append("\n╠══╬══╬══╬══╣\n");
+            else tmp.append("\n╚══╩══╩══╩══╝\n");
         }
-        tmp=tmp.concat("La biglia rimanente è: "+remainingMarble.toString());
+        tmp = new StringBuilder(tmp.toString().concat("La biglia rimanente è: " + remainingMarble.toString()));
         System.out.println(tmp);
 
         System.out.println("\n");
@@ -424,7 +456,7 @@ public class CLI extends ViewObservable implements View, Runnable {
         System.out.println("CARTE LEADER");
         int i = 1;
         for(Triplet<Resources,Integer,Integer> t : LC){
-            System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
+            System.out.println(i + ")\n" + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
             i++;
         }
 
@@ -444,17 +476,22 @@ public class CLI extends ViewObservable implements View, Runnable {
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
-        System.out.println("MANO DELLE RISORSE DI " + nickname);
-        HashMap<Resources, Integer> hand = new HashMap<>();
-        for(Resources r : Resources.values()){
-            hand.put(r,H.stream().filter(x -> x.equals(r)).collect(Collectors.toList()).size());
-            if(hand.get(r) <= 0) hand.remove(r);
+        if(H.size()==0){
+            System.out.println("LA MANO DELLE RISORSE DI " + nickname +" È VUOTA");
         }
-        for(Resources r : hand.keySet()){
-             System.out.println("Risorsa: " + r + ", quantità: " + hand.get(r));
-        }
+        else {
+            System.out.println("MANO DELLE RISORSE DI " + nickname);
+            HashMap<Resources, Integer> hand = new HashMap<>();
+            for (Resources r : Resources.values()) {
+                hand.put(r, H.stream().filter(x -> x.equals(r)).collect(Collectors.toList()).size());
+                if (hand.get(r) <= 0) hand.remove(r);
+            }
+            for (Resources r : hand.keySet()) {
+                System.out.println("Risorsa: " + r + ", quantità: " + hand.get(r));
+            }
 
-        System.out.println("\n");
+            System.out.println("\n");
+        }
     }
 
     @Override
@@ -475,10 +512,12 @@ public class CLI extends ViewObservable implements View, Runnable {
     public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
         System.out.println("MERCATO DELLE CARTE");
         DevelopmentCardParser DCP = new DevelopmentCardParser("");
-        int i = 1;
-        for(Pair<Colours,Integer> p : CM.keySet()){
-            System.out.println(i + ") " + DCP.findCardByID(p.getKey(),CM.get(p)));
-            i++;
+
+        for(Colours c : Colours.values()){
+            for(int i=1;i<4;i++){
+                Pair<Colours,Integer> P = new Pair<>(c,i);
+                System.out.println(DCP.findCardByID(P.getKey(),CM.get(P)));
+            }
         }
     }
 

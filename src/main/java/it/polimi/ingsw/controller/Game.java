@@ -76,11 +76,13 @@ public class Game extends ModelObservable {
         inkwell = (int)(Math.random() * playerNumber);
         for(int i = 0; i< playerNumber; i++){
             players.add(new Board(leaderCardDeck.getLeaderCards(), names.get(i)));
-            notifyLCHand(players.get(i).getLeaderCardsHand(),players.get(i).getNickname());
         }
         //send to the players both the markets
         notifyDCMarket(developmentCardMarket);
         notifyResourceMarket(resourceMarket);
+        for(int i = 0; i< playerNumber; i++){
+            notifyLCHand(players.get(i).getLeaderCardsHand(),players.get(i).getNickname());
+        }
     }
 
     //Called on all players but the first
@@ -233,9 +235,9 @@ public class Game extends ModelObservable {
                     }
                     if (cell != -1) popeEvent(cell);
                 }
-                for (int i = 0; i < playerNumber; i++) {
-                    if (i != player) notifyFT(players.get(i).getFaithTrack(), players.get(i).getNickname());
-                }
+            }
+            for (int i = 0; i < playerNumber; i++) {
+                if (i != player) notifyFT(players.get(i).getFaithTrack(), players.get(i).getNickname());
             }
         } else {
             for (Resources ignored : playerBoard.getHand()) {
@@ -244,8 +246,9 @@ public class Game extends ModelObservable {
             }
             notifyLorenzo(lorenzo);
         }
+
         playerBoard.getHand().clear();
-        notifyHand(playerBoard.getHand(), playerBoard.getNickname());
+        notifyHand(new ArrayList<>(), playerBoard.getNickname());
     }
 
     //Player selects colour and level; method checks for costs and adds to the board the development card
@@ -289,12 +292,17 @@ public class Game extends ModelObservable {
             notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
         }
 
-        if(LCCapacity.size()>0) {
-            for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+        boolean updated = false;
+        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+            if(LCCapacity.get(L)!=L.getAbility().getStashedResources()) {
                 L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
+                updated = true;
             }
+        }
+        if(updated) {
             notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
         }
+
 
         developmentCardMarket.getFirstCard(c, level);
         playerBoard.setActionDone(true);
@@ -374,10 +382,14 @@ public class Game extends ModelObservable {
             notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
         }
 
-        if(LCCapacity.size()>0) {
-            for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+        boolean updated = false;
+        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+            if(LCCapacity.get(L)!=L.getAbility().getStashedResources()) {
                 L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
+                updated = true;
             }
+        }
+        if(updated) {
             notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
         }
 
@@ -522,14 +534,21 @@ public class Game extends ModelObservable {
 
         //if ok, actually modify everything
         playerBoard.setWarehouse(wr);
-        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
-            L.getAbility().doUpdateSlot(L.getAbility().getResType(),
-                    LCCapacity.get(L)-L.getAbility().getStashedResources());
-        }
         playerBoard.setHand(tmpHand);
 
+        boolean updated = false;
+        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+            if(LCCapacity.get(L)!=L.getAbility().getStashedResources()) {
+                L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
+                updated = true;
+            }
+        }
+        if(updated) {
+            notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
+        }
+
+
         notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
-        notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
         notifyHand(playerBoard.getHand(), playerBoard.getNickname());
 
         if(tmpHand.size()>0) throw new ResourcesLeftInHandException("There are still some resources in the hand");

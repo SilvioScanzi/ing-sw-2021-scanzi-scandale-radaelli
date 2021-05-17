@@ -129,19 +129,48 @@ public class DevelopmentCardParser {
                                 producedresources.put(Resources.valueOf(producedresourcesString[j]), Integer.parseInt(producedresourcesString[j + 1]));
                             }
                         }
-                        String tmp = "Livello: "+level+"\nColore: "+colour.toString()+"\nPunti vittoria: "+victorypoints+"\nCosto:";
+                        String asciiReset = "\u001b[0m";
+                        String asciiColor;
+                        switch(colour){
+                            case Blue: asciiColor = "\u001b[34m";break;
+                            case Green: asciiColor = "\u001b[32m";break;
+                            case Purple: asciiColor = "\u001b[35m";break;
+                            case Yellow: asciiColor = "\u001b[33m";break;
+                            default: asciiColor = asciiReset; break;
+                        }
+
+                        String tmp = asciiColor+"╔═══════════════════╗"+asciiReset+"\n"+asciiColor+"║"+
+                                asciiReset+" Livello "+level+"         "+asciiColor+"║"+asciiReset+"\n"+asciiColor+"║"+asciiReset+" Colore "+colour.toString();
+                        if(colour.equals(Colours.Blue)){
+                            tmp = tmp+"        ";
+                        }
+                        else if(colour.equals(Colours.Yellow)){
+                            tmp = tmp+"     ";
+                        }
+                        else if(colour.equals(Colours.Purple) || colour.equals(Colours.Green)){
+                            tmp = tmp+"      ";
+                        }
+                        tmp = tmp+asciiColor+"║"+asciiReset+"\n";
+                        tmp = tmp + asciiColor+"║" +asciiReset+" Punti vittoria "+victorypoints;
+                        if(victorypoints<10){
+                            tmp = tmp+" ";
+                        }
+                        tmp = tmp+" "+asciiColor+"║"+asciiReset+"\n"+asciiColor+"║"+asciiReset+" Costo             "+asciiColor+"║"+asciiReset;
                         for(Resources r:cost.keySet()){
-                            tmp = tmp.concat("\nRisorsa: "+r.toString()+" Quantità: "+cost.get(r));
+                            tmp = tmp.concat("\n"+asciiColor+"║"+asciiReset+" Risorsa "+r.abbreviation()+" "+cost.get(r))+"      "+asciiColor+"║"+asciiReset;
                         }
-                        tmp=tmp.concat("\nRisorse richieste nella produzione:");
+                        tmp = tmp + ("\n"+asciiColor+"║"+asciiReset+" Risorse richieste "+asciiColor+"║"+asciiReset);
                         for(Resources r:requiredresources.keySet()){
-                            tmp = tmp.concat("\nRisorsa: "+r.toString()+" Quantità: "+requiredresources.get(r));
+                            tmp = tmp.concat("\n"+asciiColor+"║"+asciiReset+" Risorsa "+r.abbreviation()+" "+requiredresources.get(r))+"      "+asciiColor+"║"+asciiReset;
                         }
-                        tmp=tmp.concat("\nRisorse prodotte nella produzione:");
+                        tmp=tmp.concat("\n"+asciiColor+"║"+asciiReset+" Risorse prodotte  "+asciiColor+"║"+asciiReset);
                         for(Resources r:producedresources.keySet()){
-                            tmp = tmp.concat("\nRisorsa: "+r.toString()+" Quantità: "+producedresources.get(r));
+                            tmp = tmp.concat("\n"+asciiColor+"║"+asciiReset+" Risorsa "+r.abbreviation()+" "+producedresources.get(r))+"      "+asciiColor+"║"+asciiReset;
                         }
-                        tmp=tmp.concat("\nFede prodotta: "+producedfaith);
+                        if(producedfaith>0) {
+                            tmp = tmp + ("\n"+asciiColor+"║"+asciiReset+" Fede prodotta " + producedfaith + "   "+asciiColor+"║"+asciiReset);
+                        }
+                        tmp = tmp + "\n"+asciiColor+"╚═══════════════════╝"+asciiReset;
                         return tmp;
                     }
                 }

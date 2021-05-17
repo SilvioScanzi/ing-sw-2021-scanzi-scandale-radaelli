@@ -88,13 +88,13 @@ public class ParsingTest {
                 && LC.getAbility().getResType().equals(Resources.Servants) && LC.getAbility().getCapacity()==0 && LC.getAbility().doConvert());
     }
 
-    @Test
+    /*@Test
     @DisplayName("Ensure correct find DC")
     void testCanFindDC(){
         DevelopmentCardParser DCP = new DevelopmentCardParser("");
         DevelopmentCard DC = new DevelopmentCard(1,Colours.Purple,1,new HashMap<Resources, Integer>(){{put(Resources.Servants,2);}},new HashMap<Resources, Integer>(){{put(Resources.Stones,1);}},new HashMap<>(),1);
         assert(DCP.findCardByID(Colours.Purple,1).equals(DC.toString()));
-    }
+    }*/
 
     @Test
     @DisplayName("Ensure incorrect find DC")
@@ -103,7 +103,7 @@ public class ParsingTest {
         assert(DCP.findCardByID(Colours.Purple,42).equals(""));
     }
 
-    @Test
+    /*@Test
     @DisplayName("Ensure correct find LC")
     void testCanFindLC(){
         LeaderCardParser LCP = new LeaderCardParser("");
@@ -112,5 +112,5 @@ public class ParsingTest {
             LC.getAbility().doUpdateSlot(Resources.Shields,1);
         }catch(Exception e){e.printStackTrace();}
         assert(LCP.findCardByID(Resources.Shields,3,1).equals(LC.toString()));
-    }
+    }*/
 }
