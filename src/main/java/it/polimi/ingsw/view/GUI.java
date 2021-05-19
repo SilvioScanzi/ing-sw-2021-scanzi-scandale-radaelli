@@ -3,6 +3,7 @@ package it.polimi.ingsw.view;
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
+import it.polimi.ingsw.view.clientModel.clientBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,12 +24,17 @@ public class GUI extends ViewObservable implements View, Runnable{
     }
 
     @Override
+    public void printBoard(clientBoard board) {
+
+    }
+
+    @Override
     public void printStandardMessage(StandardMessages message) {
 
     }
 
     @Override
-    public void printNames(HashMap<Integer, String> names, int inkwell) {
+    public void printNames(HashMap<String, Integer> names, int inkwell) {
 
     }
 

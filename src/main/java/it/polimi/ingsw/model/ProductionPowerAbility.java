@@ -10,11 +10,6 @@ public class ProductionPowerAbility extends Ability{
     }
 
     @Override
-    public String toString(){
-        return "Potere di produzione: richiesta la risorsa "+ resType.toString();
-    }
-
-    @Override
     public Resources getResType(){
         return resType;
     }

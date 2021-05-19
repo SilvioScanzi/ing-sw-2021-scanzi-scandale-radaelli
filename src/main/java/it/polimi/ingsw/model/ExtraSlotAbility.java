@@ -14,11 +14,6 @@ public class ExtraSlotAbility extends Ability{
     }
 
     @Override
-    public String toString(){
-        return capacity +" Slot extra per "+resType.toString()+" attualmente sono presenti: "+stashedResources+" "+resType.toString();
-    }
-
-    @Override
     public Resources getResType(){
         return resType;
     }

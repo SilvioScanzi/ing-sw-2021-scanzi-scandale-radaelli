@@ -4,9 +4,6 @@ import it.polimi.ingsw.commons.Resources;
 import java.util.HashMap;
 
 public abstract class Ability {
-    public String toString(){
-        return "";
-    }
 
     public Resources getResType(){
         return null;

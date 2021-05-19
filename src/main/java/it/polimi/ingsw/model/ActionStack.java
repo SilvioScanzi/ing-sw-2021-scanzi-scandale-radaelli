@@ -43,11 +43,6 @@ public class ActionStack {
         }
     }
 
-    @Override
-    public String toString(){
-        return "La pila ha: "+stack.size()+" segnalini azione";
-    }
-
     public Stack<ActionToken> getStack() {
         return stack;
     }

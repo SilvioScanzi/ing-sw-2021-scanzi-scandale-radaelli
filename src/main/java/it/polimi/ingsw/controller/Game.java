@@ -44,6 +44,12 @@ public class Game extends ModelObservable {
         actionStack = new ActionStack(Arandom);
     }
 
+    //Setters
+
+    public void setInkwell(int inkwell) {
+        this.inkwell = inkwell;
+    }
+
     //Getters
     public int getInkwell() {
         return inkwell;
@@ -73,7 +79,6 @@ public class Game extends ModelObservable {
     //Initializes variables and boards, assigning nicknames
     public void setup(ArrayList<String> names){
         playerNumber = names.size();
-        inkwell = (int)(Math.random() * playerNumber);
         for(int i = 0; i< playerNumber; i++){
             players.add(new Board(leaderCardDeck.getLeaderCards(), names.get(i)));
         }

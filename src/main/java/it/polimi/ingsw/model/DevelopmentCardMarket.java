@@ -58,19 +58,6 @@ public class DevelopmentCardMarket {
         catch(IOException | SAXException e){e.printStackTrace();}
     }
 
-    @Override
-    public String toString(){
-        String tmp = "Mercato delle carte:\n";
-        for(int i=1;i<=3;i++){
-            for(Colours c : Colours.values()){
-                try {
-                    tmp = tmp.concat(peekFirstCard(c, i).toString() + "\n\n");
-                }
-                catch(EmptyException e){tmp = tmp.concat("Le carte di livello "+i+" e colore "+c.toString()+" sono finite");}
-            }
-        }
-        return tmp;
-    }
 
     //Peek doesn't remove the card from the relative deck, it's used to check the cost of the card
     public DevelopmentCard peekFirstCard(Colours colour, int level) throws EmptyException, IndexOutOfBoundsException {

@@ -42,27 +42,6 @@ public class Warehouse implements Cloneable {
         return tmp;
     }
 
-    @Override
-    public String toString(){
-        String tmp = "Magazzino:\nDeposito 1: ";
-        if(depot1.getKey().isPresent()){
-            tmp=tmp.concat(depot1.getKey().get().abbreviation());
-        }
-        tmp=tmp.concat("\nDeposito 2: ");
-        if(depot2.getKey().isPresent()){
-            for(int i=0;i<depot2.getValue();i++){
-                tmp=tmp.concat(depot2.getKey().get().abbreviation()+" ");
-            }
-        }
-        tmp=tmp.concat("\nDeposito 3: ");
-        if(depot3.getKey().isPresent()){
-            for(int i=0;i<depot3.getValue();i++){
-                tmp=tmp.concat(depot3.getKey().get().abbreviation()+" ");
-            }
-        }
-        return tmp;
-    }
-
     public Pair<Optional<Resources>,Integer> getDepot(int depotNumber) throws IllegalArgumentException{
         if(depotNumber==1)
             return depot1;

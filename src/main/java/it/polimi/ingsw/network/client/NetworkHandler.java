@@ -5,6 +5,8 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.observers.ViewObserver;
 import it.polimi.ingsw.view.*;
+import it.polimi.ingsw.view.clientModel.ClientModel;
+import it.polimi.ingsw.view.clientModel.clientBoard;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -19,7 +21,6 @@ public class NetworkHandler implements Runnable, ViewObserver {
     //TODO: elimina
     public enum NetworkState{connected,disconnected,end}
     private NetworkState state = NetworkState.disconnected;
-
 
     private Socket socket;
     private final View view;
@@ -44,6 +45,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             view = new CLI(this);
             new Thread((CLI) view).start();
         }
+
     }
 
     public void closeConnection(){
@@ -54,6 +56,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
         }catch(IOException e){
             e.printStackTrace();
         }
+        view.setState(CLI.ViewState.disconnected);
     }
 
     @Override
@@ -94,11 +97,16 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     view.setState(CLI.ViewState.finishSetupTwoResources);
                     break;
                 case yourTurn:
-                    clientModel.setActionDone(false);
+                    clientModel.getBoard(clientModel.getMyNickname()).setActionDone(false);
                     view.setState(CLI.ViewState.myTurn);
                     break;
                 case actionDone:
-                    clientModel.setActionDone(true);
+                    clientModel.getBoard(clientModel.getMyNickname()).setActionDone(true);
+                    break;
+                case fatalError:
+                case endGame:
+                    closeConnection();
+                    break;
             }
 
             view.printStandardMessage((StandardMessages) message);
@@ -110,7 +118,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
             //Nicknames
             if(message instanceof NicknameMapMessage){
-                clientModel = new ClientModel(((NicknameMapMessage) message).getPlayerMap(), ((NicknameMapMessage) message).getMyNickname());
+                clientModel = new ClientModel(((NicknameMapMessage) message).getPlayerMap(), ((NicknameMapMessage) message).getMyNickname(), ((NicknameMapMessage) message).getInkwell());
                 view.printNames(((NicknameMapMessage) message).getPlayerMap(), ((NicknameMapMessage) message).getInkwell());
             }
 
@@ -128,38 +136,39 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 view.printCardMarket(((DCMarketMessage) message).getMarket());
             }
             else if(message instanceof ResourceMarketMessage){
-                clientModel.generateWhiteMarbles(((ResourceMarketMessage) message).getGrid());
+                clientModel.setResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
                 view.printResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
             }
 
             //Board objects
             else if(message instanceof FaithTrackMessage){
+                clientModel.getBoard(((FaithTrackMessage) message).getNickname()).setFaithMarker(((FaithTrackMessage) message).getFaithMarker());
+                clientModel.getBoard(((FaithTrackMessage) message).getNickname()).setPopeFavor(((FaithTrackMessage) message).getPopeFavor());
                 view.printFaithTrack(((FaithTrackMessage) message).getFaithMarker(),((FaithTrackMessage) message).getPopeFavor(),((FaithTrackMessage) message).getNickname());
             }
             else if(message instanceof LeaderCardHandMessage){
-                clientModel.setLeaderCardsHand(((LeaderCardHandMessage) message).getLC());
+                clientModel.getBoard(clientModel.getMyNickname()).setLeaderCardsHand(((LeaderCardHandMessage) message).getLC());
                 view.printLeaderCardHand(((LeaderCardHandMessage) message).getLC());
             }
             else if(message instanceof LeaderCardPlayedMessage){
-                if(((LeaderCardPlayedMessage) message).getNickname().equals(clientModel.getMyNickname())) clientModel.setLeaderCardsPlayed(((LeaderCardPlayedMessage) message).getLC());
+                clientModel.getBoard(((LeaderCardPlayedMessage) message).getNickname()).setLeaderCardsPlayed(((LeaderCardPlayedMessage) message).getLC());
                 view.printLeaderCardPlayed(((LeaderCardPlayedMessage) message).getLC(),((LeaderCardPlayedMessage) message).getNickname());
             }
             else if(message instanceof ResourceHandMessage){
-                if(((ResourceHandMessage) message).getNickname().equals(clientModel.getMyNickname())) clientModel.setHand(((ResourceHandMessage) message).getHand());
+                clientModel.getBoard(((ResourceHandMessage) message).getNickname()).setHand(((ResourceHandMessage) message).getHand());
                 view.printResourceHand(((ResourceHandMessage) message).getHand(),((ResourceHandMessage) message).getNickname());
             }
             else if(message instanceof SlotMessage){
-                if(((SlotMessage) message).getNickname().equals(clientModel.getMyNickname()))
-                    clientModel.setSlot(((SlotMessage) message).getSlotIndex(),((SlotMessage) message).getColour(), ((SlotMessage) message).getVictoryPoints());
+                clientModel.getBoard(((SlotMessage) message).getNickname()).setSlot(((SlotMessage) message).getSlotIndex(),((SlotMessage) message).getColour(), ((SlotMessage) message).getVictoryPoints());
                 view.printSlot(((SlotMessage) message).getSlotIndex(),((SlotMessage) message).getColour(), ((SlotMessage) message).getVictoryPoints(), ((SlotMessage) message).getNickname());
             }
             else if(message instanceof StrongboxMessage){
-                if(((StrongboxMessage) message).getNickname().equals(clientModel.getMyNickname())) clientModel.setStrongBox(((StrongboxMessage) message).getStorage());
+                clientModel.getBoard(((StrongboxMessage) message).getNickname()).setStrongBox(((StrongboxMessage) message).getStorage());
                 view.printStrongBox(((StrongboxMessage) message).getStorage(),((StrongboxMessage) message).getNickname());
             }
             else if(message instanceof WarehouseMessage){
-                if(((WarehouseMessage) message).getNickname().equals(clientModel.getMyNickname())) clientModel.setWarehouse(((WarehouseMessage) message).getWarehouse());
-                view.printWarehouse(clientModel.getWarehouse(),((WarehouseMessage) message).getNickname());
+                clientModel.getBoard(((WarehouseMessage) message).getNickname()).setWarehouse(((WarehouseMessage) message).getWarehouse());
+                view.printWarehouse(clientModel.getBoard(((WarehouseMessage) message).getNickname()).getWarehouse(),((WarehouseMessage) message).getNickname());
             }
 
             //Not Model Related Messages
@@ -168,9 +177,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
     }
 
     private boolean checkGotResources(ArrayList<Pair<String, Integer>> userChoice){
-        HashMap<Integer, Pair<Resources,Integer>> warehouse = new HashMap<>(clientModel.getWarehouse());
-        HashMap<Resources,Integer> strongbox = new HashMap<>(clientModel.getStrongBox());
-        ArrayList<Triplet<Resources,Integer,Integer>> leaderCards = new ArrayList<>(clientModel.getLeaderCardsPlayed());
+        HashMap<Integer, Pair<Resources,Integer>> warehouse = new HashMap<>(clientModel.getBoard(clientModel.getMyNickname()).getWarehouse());
+        HashMap<Resources,Integer> strongbox = new HashMap<>(clientModel.getBoard(clientModel.getMyNickname()).getStrongBox());
+        ArrayList<Triplet<Resources,Integer,Integer>> leaderCards = new ArrayList<>(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed());
         for(Pair<String,Integer> P : userChoice){
             Resources R = Resources.getResourceFromString(P.getKey());
             if(P.getValue()>=1 && P.getValue()<=3) {
@@ -256,14 +265,14 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateBuyResources(boolean r, int n, ArrayList<Integer> requestedWMConversion) {
-        if(clientModel.getActionDone()){
+        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
         LeaderCardParser LCP = new LeaderCardParser("");
-        if(clientModel.getLeaderCardsPlayed().size()==2) {
-            if (LCP.findTypeByID(clientModel.getLeaderCardsPlayed().get(0).get_1(), clientModel.getLeaderCardsPlayed().get(0).get_2()).equals("WhiteMarbleAbility")
-                    && LCP.findTypeByID(clientModel.getLeaderCardsPlayed().get(1).get_1(), clientModel.getLeaderCardsPlayed().get(1).get_2()).equals("WhiteMarbleAbility")) {
+        if(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().size()==2) {
+            if (LCP.findTypeByID(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(0).get_1(), clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(0).get_2()).equals("WhiteMarbleAbility")
+                    && LCP.findTypeByID(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(1).get_1(), clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(1).get_2()).equals("WhiteMarbleAbility")) {
                 if (requestedWMConversion.size() != clientModel.getWhiteMarbles(r, n)) {
                     view.print("Selezione errata nel numero di Leader Card");
                     return;
@@ -283,23 +292,23 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateBuyDC(Colours colour, int level, int slot, ArrayList<Pair<String, Integer>> userChoice) {
-        if(clientModel.getActionDone()){
+        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
-        if(clientModel.getSlotsVP(slot-1) == -1){
+        if(clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(slot-1) == -1){
             if(level != 1) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 1");
                 return;
             }
         }
-        else if(clientModel.getSlotsVP(slot-1) < 5){
+        else if(clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(slot-1) < 5){
             if(level != 2) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 2");
                 return;
             }
         }
-        else if(clientModel.getSlotsVP(slot-1) < 9){
+        else if(clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(slot-1) < 9){
             if(level != 3) {
                 view.print("In questo slot puoi posizionare solo una carta di livello 3");
                 return;
@@ -322,17 +331,17 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateActivateProduction(HashMap<Integer, ArrayList<Pair<String, Integer>>> userChoice) {
-        if(clientModel.getActionDone()){
+        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
         for(Integer I : userChoice.keySet()){
             if(I>=1 && I<=3){
-                if (clientModel.getSlotsVP(I) == -1){
+                if (clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(I) == -1){
                     view.print("La carta sviluppo scelta non esiste");
                     return;
                 }
-                Pair<Colours, Integer> P = clientModel.getSlots(I);
+                Pair<Colours, Integer> P = clientModel.getBoard(clientModel.getMyNickname()).getSlots(I);
                 DevelopmentCardParser DCP = new DevelopmentCardParser("");
                 HashMap<Resources, Integer> requiredResources = DCP.findRequiredResourcesByID(P.getKey(),P.getValue());
                 if(!checkGotResources(userChoice.get(I)) || !checkRightResources(requiredResources,userChoice.get(I))){
@@ -342,7 +351,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             }
             else if(I==4 || I==5){
                 try{
-                    clientModel.getLeaderCardsPlayed().get(I-4);
+                    clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(I-4);
                     if(userChoice.get(I).size() == 2){
                         ArrayList<Pair<String,Integer>> c = new ArrayList<>(userChoice.get(I));
                         c.remove(1);
@@ -382,7 +391,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
     @Override
     public void updateActivateLC(int userChoice) {
         try{
-            clientModel.getLeaderCardsHand().get(userChoice-1);
+            clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsHand().get(userChoice-1);
             sendObject(new PlayLeaderCardMessage(userChoice));
         }catch(IndexOutOfBoundsException e){
             view.print("La leader card selezionata non esiste");
@@ -392,7 +401,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
     @Override
     public void updateDiscardLC(int userChoice) {
         try{
-            clientModel.getLeaderCardsHand().get(userChoice-1);
+            clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsHand().get(userChoice-1);
             sendObject(new DiscardLeaderCardMessage(userChoice));
         }catch(IndexOutOfBoundsException e){
             view.print("La leader card selezionata non esiste");
@@ -401,9 +410,28 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateEndTurn() {
-        if(clientModel.getActionDone()){
+        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             sendObject(new TurnDoneMessage(true));
         }
         else view.print("Non hai ancora svolto l'azione per questo turno");
+    }
+
+    @Override
+    public void updatePrintRequest(String message) {
+        if(message.equals("Plancia comune")){
+            view.printResourceMarket(clientModel.getResourceMarket(),clientModel.getRemainingMarble());
+            view.printCardMarket(clientModel.getCardMarket());
+        }
+        else {
+            clientBoard cb = null;
+            int pos = Integer.parseInt(message.split(" ")[1]);
+            for(String S : clientModel.getBoards().keySet()){
+                if(clientModel.getBoard(S).getPosition()==pos){
+                    cb = clientModel.getBoard(S);
+                }
+            }
+            if(cb==null) view.print("Il giocatore selezionato non esiste");
+            else view.printBoard(cb);
+        }
     }
 }

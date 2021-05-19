@@ -20,4 +20,5 @@ public interface ViewObserver {
     void updateActivateLC(int userChoice);
     void updateDiscardLC(int userChoice);
     void updateEndTurn();
+    void updatePrintRequest(String message);
 }

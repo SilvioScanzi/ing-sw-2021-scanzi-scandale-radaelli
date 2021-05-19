@@ -82,4 +82,10 @@ public class ViewObservable {
             obs.updateEndTurn();
         }
     }
+
+    public void notifyPrintRequest(String message){
+        for(ViewObserver obs : observers){
+            obs.updatePrintRequest(message);
+        }
+    }
 }

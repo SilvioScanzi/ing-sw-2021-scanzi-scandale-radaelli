@@ -36,29 +36,6 @@ public class Board{
         victoryPoints = 0;
     }
 
-    //toString Methods for debugging
-    public String slottoString(){
-        String s = "";
-        for(int i=0;i<3;i++){
-            Slot slot = slots[i];
-            try{
-                slot.getFirstCard();
-                s=s.concat("Slot numero "+(i+1)+":\n"+slot.getFirstCard().toString()+"\n");
-            }catch(EmptyException e) {
-                s=s.concat("Lo slot numero "+(i+1)+" è vuoto\n");
-            }
-        }
-        return s;
-    }
-
-    public String handtoString(){
-        String s = "";
-        for(Resources r : hand){
-            s=s.concat(r.abbreviation() + " ");
-        }
-        return s;
-    }
-
     //getters
     public String getNickname() {
         return nickname;

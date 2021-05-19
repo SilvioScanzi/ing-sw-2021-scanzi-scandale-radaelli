@@ -5,15 +5,17 @@ import java.io.Serializable;
 public enum StandardMessages implements Serializable {
     connectionEstablished("Connessione effettuata al server del gioco"),
     welcomeMessage("Benvenuto al gioco \"Maestri del Rinascimento\"!"),
+    gameIsStarting("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!"),
     choosePlayerNumber("Scegli il numero dei giocatori"),
     chooseNickName("Scegli il nickname che utilizzerai nel gioco"),
-    chooseOneResource("Scegli una risorsa extra da ottenere"),  //setup
-    chooseTwoResource("Scegli due risorse extra da ottenere"),  //setup
+    chooseOneResource("Scegli una risorsa extra da ottenere"),
+    chooseTwoResource("Scegli due risorse extra da ottenere"),
     chooseDiscardedLC("Scegli le Leader Card da scartare"),
     yourTurn("É il tuo turno"),
     actionDone("Hai eseguito l'azione per il turno"),
     lorenzoWin("Lorenzo ha vinto!"),
     endGame("La partita è conclusa"),
+    fatalError("Un giocatore si è disconnesso prima dell'inizio della partita, la partita è terminata"),
 
     //Error messages
     wrongObject("Hai inviato dei dati non validi"),

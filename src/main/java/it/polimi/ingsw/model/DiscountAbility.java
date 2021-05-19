@@ -13,11 +13,6 @@ public class DiscountAbility extends Ability{
     }
 
     @Override
-    public String toString(){
-        return "Sconto su " + resType.toString() +" di: "+ -discount;
-    }
-
-    @Override
     public Resources getResType(){
         return resType;
     }

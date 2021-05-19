@@ -42,15 +42,6 @@ public class Strongbox implements Cloneable {
         return tmp;
     }
 
-    @Override
-    public String toString(){
-        String tmp = "Cassa:";
-        for(Resources r:storage.keySet()){
-            tmp=tmp.concat("\n"+r.toString()+" "+storage.get(r));
-        }
-        return tmp;
-    }
-
     public HashMap<Resources, Integer> getStorage() {
         return storage;
     }

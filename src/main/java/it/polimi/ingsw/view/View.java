@@ -2,6 +2,7 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.messages.StandardMessages;
+import it.polimi.ingsw.view.clientModel.clientBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ public interface View {
 
     //print
     void printStandardMessage(StandardMessages message);
-    void printNames(HashMap<Integer, String> names, int inkwell);
+    void printNames(HashMap<String, Integer> names, int inkwell);
     void printResourceMarket(Marbles[][] M, Marbles RM);
     void printLeaderCardHand(ArrayList<Triplet<Resources,Integer,Integer>> LC);
     void printLeaderCardPlayed(ArrayList<Triplet<Resources,Integer,Integer>> LC, String nickname);
@@ -24,4 +25,5 @@ public interface View {
     void printStrongBox(HashMap<Resources,Integer> SB, String nickname);
     void printWarehouse(HashMap<Integer,Pair<Resources,Integer>> WH, String nickname);
     void print(String string);
+    void printBoard(clientBoard board);
 }

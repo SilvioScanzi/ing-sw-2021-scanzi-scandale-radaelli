@@ -4,6 +4,7 @@ import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.client.NetworkHandler;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
+import it.polimi.ingsw.view.clientModel.clientBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,23 +103,35 @@ public class CLI extends ViewObservable implements View, Runnable {
                     }
                 }
                 else if(state.equals(ViewState.myTurn)) {
-                    try{
-                        int userChoice = Integer.parseInt(message);
-                        switch (userChoice) {
-                            case 1: buyResources(); break;
-                            case 2: buyDevelopmentCard(); break;
-                            case 3: activateProduction(); break;
-                            case 4: moveResources(); break;
-                            case 5: LeaderCardAction(5); break;
-                            case 6: LeaderCardAction(6); break;
-                            case 0: notifyEndTurn(); break;
+                    if(message.equals("Plancia comune")||message.equals("G 1")||message.equals("G 2")||message.equals("G 3")||message.equals("G 4")){
+                        notifyPrintRequest(message);
+                    }
+                    else{
+                        try{
+                            int userChoice = Integer.parseInt(message);
+                            switch (userChoice) {
+                                case 1: buyResources(); break;
+                                case 2: buyDevelopmentCard(); break;
+                                case 3: activateProduction(); break;
+                                case 4: moveResources(); break;
+                                case 5: LeaderCardAction(5); break;
+                                case 6: LeaderCardAction(6); break;
+                                case 0: notifyEndTurn(); break;
+                            }
+                        }catch(NumberFormatException e) {
+                            System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
                         }
-                    }catch(NumberFormatException e) {
-                        System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
                     }
                 }
                 else if(state.equals(ViewState.notMyTurn)){
+                    if(message.equals("Plancia comune")||message.equals("G 1")||message.equals("G 2")||message.equals("G 3")||message.equals("G 4")){
+                        notifyPrintRequest(message);
+                    }
                     System.out.println("Non è il tuo turno");
+                }
+                else if(state.equals(ViewState.disconnected)){
+                    System.out.println("Sei disconnesso dal server, riavvia l'applicazione per ritornare a giocare");
+                    return;
                 }
             else {
                 System.out.println("Non puoi inviare dati in questo momento");
@@ -377,8 +390,19 @@ public class CLI extends ViewObservable implements View, Runnable {
     @Override
     public void print(String string){
         System.out.println(string);
-
         System.out.println("\n");
+    }
+
+    @Override
+    public void printBoard(clientBoard board) {
+        String nickname = board.getNickname();
+        printLeaderCardPlayed(board.getLeaderCardsPlayed(),nickname);
+        for(int i=1;i<=3;i++){
+            printSlot(i,board.getSlots(1).getKey(),board.getSlots(1).getValue(),nickname);
+        }
+        printFaithTrack(board.getFaithMarker(), board.getPopeFavor(), nickname);
+        printStrongBox(board.getStrongBox(),nickname);
+        printWarehouse(board.getWarehouse(),nickname);
     }
 
     @Override
@@ -400,11 +424,13 @@ public class CLI extends ViewObservable implements View, Runnable {
     }
 
     @Override
-    public void printNames(HashMap<Integer, String> names, int inkwell) {
+    public void printNames(HashMap<String, Integer> names, int inkwell) {
         int i = inkwell;
         int j = 1;
         do{
-            System.out.println("Giocatore "+j+" - "+names.get(i));
+            for(String S : names.keySet()){
+                if(names.get(S) == i) System.out.println("Giocatore "+j+" - "+S);
+            }
             i=(i+1)%(names.size());
             j++;
         }while(i!=inkwell);
@@ -465,8 +491,9 @@ public class CLI extends ViewObservable implements View, Runnable {
 
     @Override
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
+        if(LC.isEmpty()) System.out.println(nickname+" NON HA CARTE LEADER IN GIOCO");
         LeaderCardParser LCP = new LeaderCardParser("");
-        System.out.println("CARTE LEADER GIOCATE");
+        System.out.println("CARTE LEADER DI "+nickname+" IN GIOCO");
         int i = 1;
         for(Triplet<Resources,Integer,Integer> t : LC){
             System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
@@ -535,14 +562,19 @@ public class CLI extends ViewObservable implements View, Runnable {
 
     @Override
     public void printSlot(int I, Colours C, int VP, String nickname) {
-        System.out.println("SLOT " + I + " DELLA PLANCIA DI " + nickname);
-        DevelopmentCardParser DCP = new DevelopmentCardParser("");
-        System.out.println(DCP.findCardByID(C,VP));
-
+        if(VP==-1){
+            System.out.println("LO SLOT " + I + " DELLA PLANCIA DI " + nickname+" È VUOTO");
+        }
+        else {
+            System.out.println("SLOT " + I + " DELLA PLANCIA DI " + nickname);
+            DevelopmentCardParser DCP = new DevelopmentCardParser("");
+            System.out.println(DCP.findCardByID(C, VP));
+        }
     }
 
     @Override
     public void printStrongBox(HashMap<Resources, Integer> SB, String nickname) {
+        if(SB.isEmpty()) System.out.println("IL FORZIERE DI " + nickname +" È VUOTO");
         System.out.println("STRONGBOX DI " + nickname);
         for(Resources r : SB.keySet()){
             System.out.println(r.toString() + ": " + SB.get(r));
@@ -559,9 +591,5 @@ public class CLI extends ViewObservable implements View, Runnable {
         }
 
         System.out.println("\n");
-    }
-
-    private void clearScreen(){
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     }
 }

@@ -30,19 +30,6 @@ public class LeaderCard {
         }
     }
 
-    @Override
-    public String toString(){
-        String tmp = "Punti vittoria: "+victoryPoints+"\n";
-        for(Colours c: requiredColours.keySet()){
-            tmp=tmp.concat("Colore richiesto: "+c.toString()+"; Numero di carte richiesto: "+requiredColours.get(c).getKey()+"; Livello richiesto: "+requiredColours.get(c).getValue()+"\n");
-        }
-        for(Resources r:requiredResources.keySet()){
-            tmp=tmp.concat("Risorsa richiesta: "+r.toString()+"; Numero: "+requiredResources.get(r)+"\n");
-        }
-        tmp=tmp.concat(ability.toString()+"\n");
-        return tmp;
-    }
-
     public Ability getAbility() {
         return ability;
     }

@@ -103,9 +103,9 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 }
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (this) {
-                    state = ClientHandlerState.disconnected;
                     notifyServerDisconnection();
                     notifyDisconnected();
+                    state = ClientHandlerState.disconnected;
                 }
                 return;
             }

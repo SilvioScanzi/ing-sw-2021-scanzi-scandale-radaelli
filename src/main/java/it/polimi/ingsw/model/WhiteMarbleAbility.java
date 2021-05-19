@@ -10,11 +10,6 @@ public class WhiteMarbleAbility extends Ability{
     }
 
     @Override
-    public String toString(){
-        return "Conversione della biglia bianca in "+ resType.toString();
-    }
-
-    @Override
     public Resources getResType(){
         return resType;
     }
