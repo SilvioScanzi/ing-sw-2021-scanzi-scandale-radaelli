@@ -1,10 +1,11 @@
 package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.commons.*;
+import it.polimi.ingsw.network.client.NetworkHandler;
 import it.polimi.ingsw.network.messages.StandardMessages;
-import it.polimi.ingsw.observers.ViewObservable;
-import it.polimi.ingsw.view.CLI;
+import it.polimi.ingsw.view.CLI.CLI;
 import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.ViewState;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -19,12 +20,20 @@ import java.util.HashMap;
 
 public class GUI extends Application implements View{
 
+    private ViewState state = ViewState.start;
     private Stage primaryStage;
     private FXMLLoader fxmlLoader;
     private ConnectionScreenController connectionScreenController;
+    private NetworkHandler NH;
+
+    public static void main(String[] args){
+        Application.launch();
+    }
 
     @Override
     public void start(Stage stage) {
+
+        NH = new NetworkHandler(this);
 
         primaryStage = stage;
 
@@ -40,6 +49,7 @@ public class GUI extends Application implements View{
             Scene scene = new Scene(fxmlLoader.load());
             primaryStage.setTitle("Maestri del rinascimento - Connessione al server");
             connectionScreenController = fxmlLoader.getController();
+            connectionScreenController.addObserver(NH);
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.show();
@@ -47,8 +57,9 @@ public class GUI extends Application implements View{
     }
 
     @Override
-    public void setState(CLI.ViewState state) {
-
+    public void setState(ViewState state) {
+        this.state = state;
+        //TODO: modificare lo stage aggiungendo una nuova scena
     }
 
     @Override

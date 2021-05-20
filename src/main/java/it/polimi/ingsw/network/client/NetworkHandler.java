@@ -5,11 +5,9 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.observers.ViewObserver;
 import it.polimi.ingsw.view.*;
-import it.polimi.ingsw.view.GUI.GUI;
+import it.polimi.ingsw.view.CLI.CLI;
 import it.polimi.ingsw.view.clientModel.ClientModel;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
-import javafx.application.Application;
-import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -28,30 +26,8 @@ public class NetworkHandler implements Runnable, ViewObserver {
     private ObjectInputStream socketIn;
     private ClientModel clientModel;
 
-    private String IP;
-    private int port;
-
-    public NetworkHandler(boolean userInterface){
-        //if user chooses to play with the GUI, boolean userInterface is true
-        if(userInterface) {
-            view = new GUI();
-            try {
-                Application.launch(GUI.class);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        else {
-            view = new CLI(this);
-            new Thread((CLI) view).start();
-            view.print("Scegli IP e Porta a cui connetterti");
-        }
-    }
-
-    private void openConnection() throws IOException {
-        socket = new Socket(IP,port);
-        socketOut = new ObjectOutputStream(socket.getOutputStream());
-        socketIn = new ObjectInputStream(socket.getInputStream());
+    public NetworkHandler(View view){
+        this.view = view;
     }
 
     private void closeConnection(){
@@ -62,7 +38,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
         }catch(IOException e){
             e.printStackTrace();
         }
-        view.setState(CLI.ViewState.disconnected);
+        view.setState(ViewState.disconnected);
     }
 
     @Override
@@ -76,7 +52,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     handleMessage(message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                //TODO: gestisci la disconnessione
+                //TODO: gestisci la disconnessione ?
                 demolished = true;
                 closeConnection();
             }
@@ -88,23 +64,23 @@ public class NetworkHandler implements Runnable, ViewObserver {
         if(message instanceof StandardMessages){
             switch((StandardMessages) message){
                 case chooseNickName:
-                    view.setState(CLI.ViewState.chooseNickName);
+                    view.setState(ViewState.chooseNickName);
                     break;
                 case choosePlayerNumber:
-                    view.setState(CLI.ViewState.choosePlayerNumber);
+                    view.setState(ViewState.choosePlayerNumber);
                     break;
                 case chooseDiscardedLC:
-                    view.setState(CLI.ViewState.discardLeaderCard);
+                    view.setState(ViewState.discardLeaderCard);
                     break;
                 case chooseOneResource:
-                    view.setState(CLI.ViewState.finishSetupOneResource);
+                    view.setState(ViewState.finishSetupOneResource);
                     break;
                 case chooseTwoResource:
-                    view.setState(CLI.ViewState.finishSetupTwoResources);
+                    view.setState(ViewState.finishSetupTwoResources);
                     break;
                 case yourTurn:
                     clientModel.getBoard(clientModel.getMyNickname()).setActionDone(false);
-                    view.setState(CLI.ViewState.myTurn);
+                    view.setState(ViewState.myTurn);
                     break;
                 case actionDone:
                     clientModel.getBoard(clientModel.getMyNickname()).setActionDone(true);
@@ -246,10 +222,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateAddress(String IP,int port){
-        this.IP = IP;
-        this.port = port;
         try {
-            openConnection();
+            socket = new Socket(IP,port);
+            socketOut = new ObjectOutputStream(socket.getOutputStream());
+            socketIn = new ObjectInputStream(socket.getInputStream());
             new Thread(this).start();
         }catch(IOException e){view.print("Connessione non disponibile");}
     }

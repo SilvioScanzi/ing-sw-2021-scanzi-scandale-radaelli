@@ -1,20 +1,30 @@
 package it.polimi.ingsw;
 
-import it.polimi.ingsw.network.client.NetworkHandler;
+import it.polimi.ingsw.view.CLI.CLI;
+import it.polimi.ingsw.view.GUI.GUI;
+import javafx.application.Application;
 
 public class ClientApp {
     public static void main(String[] args){
-        boolean UI = true;
         if(args.length>0){
-            if(args[0].equals("cli"))
-                UI = false;
+            if(args[0].equals("cli")) {
+                CLI cli = new CLI();
+                cli.start();
+            }
             else if(!args[0].equals("gui")){
                 System.out.println("Devi scrivere cli se vuoi utilizzare un'interfaccia a linea di comando");
                 System.out.println("Devi scrivere gui se vuoi utilizzare un'interfaccia grafica");
                 System.out.println("Altrimenti, se non scrivi nulla, di default viene utilizzata una GUI");
                 return;
             }
+            else{
+                GUI gui = new GUI();
+                GUI.main(args);
+            }
         }
-        NetworkHandler NH = new NetworkHandler(true);
+        else{
+            GUI gui = new GUI();
+            Application.launch(gui.getClass());
+        }
     }
 }

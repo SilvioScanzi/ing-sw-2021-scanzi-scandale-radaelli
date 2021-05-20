@@ -2,13 +2,14 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.messages.StandardMessages;
+import it.polimi.ingsw.view.CLI.CLI;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface View {
-    void setState(CLI.ViewState state);
+    void setState(ViewState state);
 
     //print
     void printStandardMessage(StandardMessages message);

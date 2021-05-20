@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.UpdateResourceMarketTest" time="0.001" tests="2" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.UpdateResourceMarketTest" time="0" tests="2" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="15"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-15.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire45913095891806874\surefirebooter17327429104424631735.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire45913095891806874 2021-05-20T15-01-08_488-jvmRun1 surefire11942996649508069900tmp surefire_015867558061843437008tmp"/>
+    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire7039735629347846325\surefirebooter13443196000678411636.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire7039735629347846325 2021-05-20T16-14-17_264-jvmRun1 surefire14939235246891976606tmp surefire_06156085140155813737tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\test-classes;C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\classes;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter\5.7.0\junit-jupiter-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.7.0\junit-jupiter-api-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-commons\1.7.0\junit-platform-commons-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.7.0\junit-jupiter-engine-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-engine\1.7.0\junit-platform-engine-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.7.0\junit-jupiter-params-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\apiguardian\apiguardian-api\1.1.0\apiguardian-api-1.1.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16-win.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire45913095891806874\surefirebooter17327429104424631735.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire7039735629347846325\surefirebooter13443196000678411636.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="15.0.2+7-27"/>

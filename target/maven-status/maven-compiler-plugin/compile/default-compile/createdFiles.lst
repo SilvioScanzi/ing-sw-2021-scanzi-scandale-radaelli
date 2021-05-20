@@ -1,4 +1,3 @@
-it\polimi\ingsw\network\server\Lobby.class
 it\polimi\ingsw\commons\Resources.class
 it\polimi\ingsw\view\clientModel\ClientBoard.class
 it\polimi\ingsw\commons\Pair.class
@@ -35,7 +34,6 @@ it\polimi\ingsw\exceptions\InvalidPlacementException.class
 it\polimi\ingsw\view\GUI\ConnectionScreenController.class
 it\polimi\ingsw\model\Strongbox.class
 it\polimi\ingsw\model\ResourceMarket.class
-it\polimi\ingsw\view\CLI.class
 it\polimi\ingsw\network\client\NetworkHandler.class
 it\polimi\ingsw\model\Warehouse.class
 it\polimi\ingsw\exceptions\RequirementsNotMetException.class
@@ -60,17 +58,14 @@ it\polimi\ingsw\network\messages\LeaderCardHandUpdateMessage.class
 it\polimi\ingsw\network\messages\NicknameMessage.class
 it\polimi\ingsw\model\Ability.class
 it\polimi\ingsw\observers\CH_ServerObserver.class
-it\polimi\ingsw\observers\LobbyObservable.class
 it\polimi\ingsw\network\messages\ChoosePlayerNumberMessage.class
 it\polimi\ingsw\commons\Colours$1.class
 it\polimi\ingsw\network\messages\LeaderCardPlayedMessage.class
 it\polimi\ingsw\controller\Game.class
-it\polimi\ingsw\view\CLI$ViewState.class
 it\polimi\ingsw\model\DevelopmentCard.class
 it\polimi\ingsw\view\View.class
 it\polimi\ingsw\observers\ModelObserver.class
 it\polimi\ingsw\network\messages\ProductionMessage.class
-it\polimi\ingsw\observers\LobbyObserver.class
 it\polimi\ingsw\model\LeaderCardDeck.class
 it\polimi\ingsw\network\messages\FinishSetupMessage.class
 it\polimi\ingsw\commons\ActionToken$1.class
@@ -88,8 +83,10 @@ it\polimi\ingsw\network\messages\StrongboxMessage.class
 it\polimi\ingsw\network\messages\LeaderCardHandMessage.class
 it\polimi\ingsw\exceptions\ResourceErrorException.class
 it\polimi\ingsw\network\messages\SlotMessage.class
+it\polimi\ingsw\view\CLI\CLI.class
 it\polimi\ingsw\network\messages\NicknameMapMessage.class
 it\polimi\ingsw\model\WhiteMarbleAbility.class
 it\polimi\ingsw\exceptions\BadRequestException.class
+it\polimi\ingsw\view\ViewState.class
 it\polimi\ingsw\network\messages\LorenzoTrackMessage.class
 it\polimi\ingsw\commons\Marbles.class
