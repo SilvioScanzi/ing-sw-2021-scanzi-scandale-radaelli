@@ -86,15 +86,16 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
     @Override
     public void updateServerPlayerNumber(CHObservable obs,ChoosePlayerNumberMessage message) {
         System.out.println("[SERVER] Player number chosen");
+        ClientHandler CH = (ClientHandler) obs;
         //timer.cancel();
         boolean started = false;
         int playerNumber = message.getN();
         synchronized (Lock) {
             currentGameHandler = new GameHandler(playerNumber);
             currentGameHandler.addObserver(this);
-            gameHandlerMap.put(clientHandlers.get(0).getNickname(), new Pair<>(currentGameHandler, true));
-            currentGameHandler.addPlayer((ClientHandler) obs);
-            ((ClientHandler) obs).sendStandardMessage(StandardMessages.gameIsStarting);
+            gameHandlerMap.put(CH.getNickname(), new Pair<>(currentGameHandler, true));
+            currentGameHandler.addPlayer(CH);
+            CH.sendStandardMessage(StandardMessages.gameIsStarting);
             if (currentGameHandler.getAddedPlayers() == playerNumber) {
                 currentGameHandler.start();
                 currentGameHandler = null;
@@ -103,7 +104,7 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
             }
         }
         synchronized (clientHandlers) {
-            clientHandlers.remove(0);
+            clientHandlers.remove(CH);
             if (!started && clientHandlers.size() > 0) {
                 synchronized (Lock) {
                     while (currentGameHandler.getAddedPlayers() < playerNumber && clientHandlers.size() > 0) {
@@ -134,7 +135,6 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         synchronized (Lock){
              gameHandler = currentGameHandler;
         }
-        //TODO: nick duplicati
         synchronized (clientHandlers) {
             currPlayers = new ArrayList<>(clientHandlers.stream().map(ClientHandler::getNickname).collect(Collectors.toList()));
             String S = message.getNickname();
@@ -156,9 +156,8 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
                 }
                 //if there is already a game which is ready
                 else if(gameHandler != null && gameHandler.getAddedPlayers()< gameHandler.getPlayerNumber()){
-                    gameHandlerMap.put(CH.getNickname(), new Pair<>(currentGameHandler, true));
                     currentGameHandler.addPlayer(CH);
-                    gameHandlerMap.put(clientHandlers.get(0).getNickname(), new Pair<>(currentGameHandler, true));
+                    gameHandlerMap.put(CH.getNickname(), new Pair<>(currentGameHandler, true));
                     clientHandlers.remove(CH);
                     CH.sendStandardMessage(StandardMessages.gameIsStarting);
                     if(gameHandler.getAddedPlayers()== gameHandler.getPlayerNumber()){
