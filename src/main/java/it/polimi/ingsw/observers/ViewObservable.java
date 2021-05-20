@@ -88,4 +88,10 @@ public class ViewObservable {
             obs.updatePrintRequest(message);
         }
     }
+
+    public void notifyAddress(String IP, int port){
+        for(ViewObserver obs : observers){
+            obs.updateAddress(IP,port);
+        }
+    }
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="541.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.ConnectionScreenController">
+   <children>
+      <ImageView fitHeight="290.0" fitWidth="606.0" layoutX="-6.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Title.JPG" />
+         </image>
+      </ImageView>
+      <Label alignment="CENTER" layoutX="77.0" layoutY="453.0" prefHeight="21.0" prefWidth="87.0" text="INDIRIZZO IP" />
+      <Label alignment="CENTER" layoutX="294.0" layoutY="453.0" prefHeight="21.0" prefWidth="87.0" text="PORTA" />
+      <TextField fx:id="IP" layoutX="46.0" layoutY="489.0" />
+      <TextField fx:id="portNr" layoutX="263.0" layoutY="489.0" />
+      <Button fx:id="submit" onAction="#submitOnClickHandler" layoutX="465.0" layoutY="489.0" mnemonicParsing="false" text="CONFERMA" />
+      <Text layoutX="105.0" layoutY="404.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Connettiti ad un server di gioco disponibile indicando indirizzo IP e porta" wrappingWidth="390.13671875" />
+   </children>
+</AnchorPane>

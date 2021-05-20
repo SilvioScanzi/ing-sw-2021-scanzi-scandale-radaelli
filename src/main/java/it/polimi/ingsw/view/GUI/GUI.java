@@ -1,16 +1,49 @@
-package it.polimi.ingsw.view;
+package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
-import it.polimi.ingsw.view.clientModel.clientBoard;
+import it.polimi.ingsw.view.CLI;
+import it.polimi.ingsw.view.View;
+import it.polimi.ingsw.view.clientModel.ClientBoard;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GUI extends ViewObservable implements View, Runnable{
-    public GUI(){
+public class GUI extends Application implements View{
 
+    private Stage primaryStage;
+    private FXMLLoader fxmlLoader;
+    private ConnectionScreenController connectionScreenController;
+
+    @Override
+    public void start(Stage stage) {
+
+        primaryStage = stage;
+
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/fxml/ConnectionScreen.fxml"));
+
+        primaryStage.setOnCloseRequest((WindowEvent t) -> {
+            Platform.exit();
+            System.exit(0);
+        });
+
+        try {
+            Scene scene = new Scene(fxmlLoader.load());
+            primaryStage.setTitle("Maestri del rinascimento - Connessione al server");
+            connectionScreenController = fxmlLoader.getController();
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+        }catch(IOException e){e.printStackTrace();}
     }
 
     @Override
@@ -24,7 +57,7 @@ public class GUI extends ViewObservable implements View, Runnable{
     }
 
     @Override
-    public void printBoard(clientBoard board) {
+    public void printBoard(ClientBoard board) {
 
     }
 
@@ -90,11 +123,6 @@ public class GUI extends ViewObservable implements View, Runnable{
 
     @Override
     public void printWarehouse(HashMap<Integer, Pair<Resources, Integer>> WH, String nickname) {
-
-    }
-
-    @Override
-    public void run() {
 
     }
 }

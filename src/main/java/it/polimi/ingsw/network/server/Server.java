@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 
-public class Server implements CH_ServerObserver, LobbyObserver {
+public class Server implements CH_ServerObserver, LobbyObserver{
 
     private Lobby currentLobby;
     //ArrayList clientHandlers also used as Lock when accessing lobbyMap
@@ -28,7 +28,6 @@ public class Server implements CH_ServerObserver, LobbyObserver {
     private final HashMap<String, Pair<Lobby,Boolean>> lobbyMap = new HashMap<>();
     private boolean lobbyRequired = true;
     private final Object Lock = new Object();
-
 
     public void startServer() {
         ExecutorService executor = Executors.newCachedThreadPool();
@@ -100,6 +99,8 @@ public class Server implements CH_ServerObserver, LobbyObserver {
             ((ClientHandler) obs).sendStandardMessage(StandardMessages.gameIsStarting);
             if (currentLobby.getAddedPlayers() == playerNumber) {
                 currentLobby.start();
+                currentLobby = null;
+                lobbyRequired = true;
                 started = true;
             }
         }
@@ -135,7 +136,7 @@ public class Server implements CH_ServerObserver, LobbyObserver {
         synchronized (Lock){
              lobby = currentLobby;
         }
-
+        //TODO: nick duplicati
         synchronized (clientHandlers) {
             currPlayers = new ArrayList<>(clientHandlers.stream().map(ClientHandler::getNickname).collect(Collectors.toList()));
             String S = message.getNickname();
@@ -156,11 +157,11 @@ public class Server implements CH_ServerObserver, LobbyObserver {
                     startNewLobby(CH);
                 }
                 //if there is already a lobby which is ready
-                else if(lobby != null){
+                else if(lobby != null && lobby.getAddedPlayers()<lobby.getPlayerNumber()){
                     lobbyMap.put(CH.getNickname(), new Pair<>(currentLobby, true));
                     currentLobby.addPlayer(CH);
                     lobbyMap.put(clientHandlers.get(0).getNickname(), new Pair<>(currentLobby, true));
-                    clientHandlers.remove(0);
+                    clientHandlers.remove(CH);
                     CH.sendStandardMessage(StandardMessages.gameIsStarting);
                     if(lobby.getAddedPlayers()==lobby.getPlayerNumber()){
                         synchronized (Lock){
@@ -188,9 +189,13 @@ public class Server implements CH_ServerObserver, LobbyObserver {
     }
 
     private void startNewLobby(ClientHandler CH) {
-        CH.sendStandardMessage(StandardMessages.choosePlayerNumber);
-        CH.setState(ClientHandler.ClientHandlerState.playerNumber);
-        lobbyRequired = false;
+        synchronized (CH) {
+            CH.setState(ClientHandler.ClientHandlerState.playerNumber);
+            CH.sendStandardMessage(StandardMessages.choosePlayerNumber);
+        }
+        synchronized (Lock) {
+            lobbyRequired = false;
+        }
         /*timer.schedule(new TimerTask() {
             @Override
             public void run() {

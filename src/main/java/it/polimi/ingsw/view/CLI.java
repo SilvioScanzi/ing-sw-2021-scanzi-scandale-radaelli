@@ -4,7 +4,7 @@ import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.client.NetworkHandler;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.observers.ViewObservable;
-import it.polimi.ingsw.view.clientModel.clientBoard;
+import it.polimi.ingsw.view.clientModel.ClientBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +36,16 @@ public class CLI extends ViewObservable implements View, Runnable {
         while(!state.equals(ViewState.disconnected)){
             if(state.equals(ViewState.myTurn)) printYourTurn();
             String message = scanner.nextLine();
-
-                if(state.equals(ViewState.chooseNickName)){
+                if(state.equals(ViewState.start)){
+                    try{
+                        String[] s = message.split(" ");
+                        int port = Integer.parseInt(s[1]);
+                        notifyAddress(s[0],port);
+                    }catch(NumberFormatException e){
+                        System.out.println("Devi inserire una porta valida");
+                    }
+                }
+                else if(state.equals(ViewState.chooseNickName)){
                     notifyNickname(message);
                 }
                 else if(state.equals(ViewState.choosePlayerNumber)) {
@@ -390,11 +398,10 @@ public class CLI extends ViewObservable implements View, Runnable {
     @Override
     public void print(String string){
         System.out.println(string);
-        System.out.println("\n");
     }
 
     @Override
-    public void printBoard(clientBoard board) {
+    public void printBoard(ClientBoard board) {
         String nickname = board.getNickname();
         printLeaderCardPlayed(board.getLeaderCardsPlayed(),nickname);
         for(int i=1;i<=3;i++){

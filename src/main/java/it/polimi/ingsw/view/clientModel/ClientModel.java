@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class ClientModel {
     private final String myNickname;
-    private final HashMap<String,clientBoard> boards;
+    private final HashMap<String, ClientBoard> boards;
     private HashMap<Pair<Colours,Integer>, Integer> cardMarket;
     private Marbles[][] resourceMarket;
     private Marbles remainingMarble;
@@ -22,7 +22,7 @@ public class ClientModel {
         while(i<=playerNumber){
             for(String S:playerMap.keySet()){
                 if(playerMap.get(S) == j){
-                    boards.put(S,new clientBoard(i,S));
+                    boards.put(S,new ClientBoard(i,S));
                 }
             }
             i=i+1;
@@ -62,7 +62,7 @@ public class ClientModel {
         return myNickname;
     }
 
-    public clientBoard getBoard(String nickname){
+    public ClientBoard getBoard(String nickname){
         return boards.get(nickname);
     }
 
@@ -78,7 +78,7 @@ public class ClientModel {
         return playerNumber;
     }
 
-    public HashMap<String, clientBoard> getBoards() {
+    public HashMap<String, ClientBoard> getBoards() {
         return boards;
     }
 }

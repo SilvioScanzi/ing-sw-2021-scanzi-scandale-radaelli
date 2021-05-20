@@ -8,7 +8,7 @@ import it.polimi.ingsw.commons.Triplet;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class clientBoard {
+public class ClientBoard {
     private final int position;
     private final String nickname;
     private final HashMap<Integer, Pair<Resources,Integer>> warehouse;
@@ -21,7 +21,7 @@ public class clientBoard {
     private int FaithMarker;
     private boolean[] popeFavor;
 
-    public clientBoard(int position, String nickname){
+    public ClientBoard(int position, String nickname){
         this.position = position;
         this.nickname = nickname;
         strongBox = new HashMap<>();

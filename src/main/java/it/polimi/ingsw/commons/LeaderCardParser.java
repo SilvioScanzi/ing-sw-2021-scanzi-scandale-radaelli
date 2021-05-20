@@ -19,7 +19,7 @@ public class LeaderCardParser {
     public LeaderCardParser(String path){
         Document tmp = null;
         File f = new File(path);
-        if(!f.exists() || f.isDirectory()) f = new File("src/xml_src/leaderCards.xml");
+        if(!f.exists() || f.isDirectory()) f = new File("src/main/resources/xml/leaderCards.xml");
         try {
             tmp = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f);
             tmp.getDocumentElement().normalize();

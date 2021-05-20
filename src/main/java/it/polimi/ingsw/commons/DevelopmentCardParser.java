@@ -20,7 +20,7 @@ public class DevelopmentCardParser {
     public DevelopmentCardParser(String path){
         Document tmp = null;
         File f = new File(path);
-        if(!f.exists() || !f.isDirectory()) f = new File("src/xml_src/developmentCards.xml");
+        if(!f.exists() || !f.isDirectory()) f = new File("src/main/resources/xml/developmentCards.xml");
         try {
             tmp = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f);
             tmp.getDocumentElement().normalize();

@@ -12,6 +12,7 @@ public interface ViewObserver {
     void updatePlayerNumber(ViewObservable obs, int num);
     void updateSetupDiscardLC(ViewObservable obs, int index[]);
     void updateFinishSetup(ViewObservable obs, ArrayList<String> message);
+    void updateAddress(String IP,int port);
     void updateDisconnected(ViewObservable obs);    //TODO: fargli scegliere se disconnettersi
     void updateBuyResources(boolean r,int n,ArrayList<Integer> requestedWMConversion);
     void updateBuyDC(Colours colour, int level, int slot, ArrayList<Pair<String, Integer>> userChoice);

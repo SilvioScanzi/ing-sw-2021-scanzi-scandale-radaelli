@@ -2,7 +2,7 @@ package it.polimi.ingsw.view;
 
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.messages.StandardMessages;
-import it.polimi.ingsw.view.clientModel.clientBoard;
+import it.polimi.ingsw.view.clientModel.ClientBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,5 +25,5 @@ public interface View {
     void printStrongBox(HashMap<Resources,Integer> SB, String nickname);
     void printWarehouse(HashMap<Integer,Pair<Resources,Integer>> WH, String nickname);
     void print(String string);
-    void printBoard(clientBoard board);
+    void printBoard(ClientBoard board);
 }

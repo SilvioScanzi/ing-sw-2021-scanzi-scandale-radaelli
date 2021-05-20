@@ -5,8 +5,11 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.observers.ViewObserver;
 import it.polimi.ingsw.view.*;
+import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.clientModel.ClientModel;
-import it.polimi.ingsw.view.clientModel.clientBoard;
+import it.polimi.ingsw.view.clientModel.ClientBoard;
+import javafx.application.Application;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -18,37 +21,40 @@ import java.util.HashMap;
 
 public class NetworkHandler implements Runnable, ViewObserver {
 
-    //TODO: elimina
-    public enum NetworkState{connected,disconnected,end}
-    private NetworkState state = NetworkState.disconnected;
-
+    private boolean demolished = false;
     private Socket socket;
     private final View view;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
     private ClientModel clientModel;
 
-    public NetworkHandler(boolean userInterface){
-        try{
-            socket = new Socket("127.0.0.1",9090);
-            socketOut = new ObjectOutputStream(socket.getOutputStream());
-            socketIn = new ObjectInputStream(socket.getInputStream());
-            state = NetworkState.connected;
-        }catch(Exception e){System.out.println("Connessione non disponibile"); e.printStackTrace();}
+    private String IP;
+    private int port;
 
+    public NetworkHandler(boolean userInterface){
         //if user chooses to play with the GUI, boolean userInterface is true
         if(userInterface) {
             view = new GUI();
-            new Thread((GUI) view).start();
+            try {
+                Application.launch(GUI.class);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         else {
             view = new CLI(this);
             new Thread((CLI) view).start();
+            view.print("Scegli IP e Porta a cui connetterti");
         }
-
     }
 
-    public void closeConnection(){
+    private void openConnection() throws IOException {
+        socket = new Socket(IP,port);
+        socketOut = new ObjectOutputStream(socket.getOutputStream());
+        socketIn = new ObjectInputStream(socket.getInputStream());
+    }
+
+    private void closeConnection(){
         try {
             socketOut.close();
             socketIn.close();
@@ -61,7 +67,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void run() {
-        while(!state.equals(NetworkState.disconnected)){
+        while(!demolished){
             try {
                 Object message = socketIn.readObject();
                 if(!(message instanceof Message) && !(message instanceof StandardMessages))
@@ -71,7 +77,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 //TODO: gestisci la disconnessione
-                state = NetworkState.disconnected;
+                demolished = true;
                 closeConnection();
             }
         }
@@ -172,7 +178,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             }
 
             //Not Model Related Messages
-            else{System.out.println("[NETWORK] Message not recognized (2) " + message.toString());}
+            else{System.out.println("[NETWORK] Message not recognized (2) " + message);}
         }
     }
 
@@ -236,6 +242,16 @@ public class NetworkHandler implements Runnable, ViewObserver {
         try{
             socketOut.writeObject(o);
         }catch(IOException e){e.printStackTrace();}
+    }
+
+    @Override
+    public void updateAddress(String IP,int port){
+        this.IP = IP;
+        this.port = port;
+        try {
+            openConnection();
+            new Thread(this).start();
+        }catch(IOException e){view.print("Connessione non disponibile");}
     }
 
     @Override
@@ -423,7 +439,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             view.printCardMarket(clientModel.getCardMarket());
         }
         else {
-            clientBoard cb = null;
+            ClientBoard cb = null;
             int pos = Integer.parseInt(message.split(" ")[1]);
             for(String S : clientModel.getBoards().keySet()){
                 if(clientModel.getBoard(S).getPosition()==pos){
