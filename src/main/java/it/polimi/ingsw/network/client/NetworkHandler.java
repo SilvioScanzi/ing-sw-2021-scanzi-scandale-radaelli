@@ -38,6 +38,8 @@ public class NetworkHandler implements Runnable, ViewObserver {
         }catch(IOException e){
             e.printStackTrace();
         }
+
+        view.print("[NETWORK] Sei stato disconnesso dal gioco");
         view.setState(ViewState.disconnected);
     }
 
@@ -52,9 +54,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     handleMessage(message);
                 }
             } catch (IOException | ClassNotFoundException e) {
-                //TODO: gestisci la disconnessione ?
                 demolished = true;
                 closeConnection();
+
+                //TODO: gestisci la disconnessione ?
             }
         }
     }
@@ -154,6 +157,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
             }
 
             //Not Model Related Messages
+            else if(message instanceof DisconnectedMessage){
+                view.setState(ViewState.disconnected);
+            }
             else{System.out.println("[NETWORK] Message not recognized (2) " + message);}
         }
     }

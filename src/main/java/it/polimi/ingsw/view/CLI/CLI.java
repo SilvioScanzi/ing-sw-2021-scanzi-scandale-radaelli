@@ -151,6 +151,9 @@ public class CLI extends ViewObservable implements View {
     }
 
     public void setState(ViewState state) {
+        if(state.equals(ViewState.disconnected) && !this.state.equals(ViewState.disconnected))
+            print("Digita una stringa qualsiasi per terminare l'applicazione.");
+
         this.state = state;
     }
 
@@ -429,6 +432,8 @@ public class CLI extends ViewObservable implements View {
         System.out.println("4 - Sposta le risorse dal magazzino");
         System.out.println("5 - Gioca una carta leader");
         System.out.println("6 - Scarta una carta leader");
+        System.out.println("Plancia comune - Mostrare la plancia della partita");
+        System.out.println("G n - Mostrare la plancia del giocatore n");
         System.out.println("0 - Fine turno");
     }
 

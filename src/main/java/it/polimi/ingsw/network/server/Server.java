@@ -16,7 +16,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-
+/*TODO: UN GIOCATORE CREA LA LOBBY E POI SI DISCONNETTE, INVECE DI DISTRUGGERE LA LOBBY VENGONO AUTOMATICAMENTE
+   INSERITI IN ESSA I GIOCATORI CHE SI CONNETTONO DOPO*/
 public class Server implements CH_ServerObserver, GameHandlerObserver {
 
     private GameHandler currentGameHandler;
@@ -68,7 +69,7 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
                 if(clientHandlers.size()>0) startNewGameHandler(clientHandlers.get(0));
                 else gameHandlerRequired = true;
             }
-            //if disconnected players is in a game
+            //if disconnected player is in a game
             else if (!clientHandlers.remove(CH)) {
                 Pair<GameHandler, Boolean> P = gameHandlerMap.get(CH.getNickname());
                 if (P.getKey().equals(currentGameHandler)) {

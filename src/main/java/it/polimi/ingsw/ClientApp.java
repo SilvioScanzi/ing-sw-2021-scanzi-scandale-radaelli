@@ -23,8 +23,10 @@ public class ClientApp {
             }
         }
         else{
-            GUI gui = new GUI();
-            Application.launch(gui.getClass());
+            CLI cli = new CLI();
+            cli.start();
+            /*GUI gui = new GUI();
+            Application.launch(gui.getClass());*/
         }
     }
 }
