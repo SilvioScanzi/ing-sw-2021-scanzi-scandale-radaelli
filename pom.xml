@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
+  <modelVersion>4.0.0</modelVersion>
   <groupId>it.polimi.ingsw</groupId>
   <artifactId>GC36</artifactId>
   <version>1.0</version>
-
   <name>GC36</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.7</maven.compiler.source>
-    <maven.compiler.target>1.7</maven.compiler.target>
+    <maven.compiler.source>15</maven.compiler.source>
+    <maven.compiler.target>15</maven.compiler.target>
   </properties>
 
   <dependencies>
@@ -84,80 +83,35 @@
           <groupId>org.openjfx</groupId>
           <artifactId>javafx-maven-plugin</artifactId>
           <version>0.0.6</version>
+          <configuration>
+            <mainClass>it.polimi.ingsw.view.GUI.GUI</mainClass>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.2.0</version>
+          <executions>
+            <execution>
+              <phase>package</phase>
+              <goals>
+                <goal>shade</goal>
+              </goals>
+              <configuration>
+                <shadedArtifactAttached>true</shadedArtifactAttached>
+                <shadedClassifierName>project-classifier</shadedClassifierName>
+                <outputFile>shade\${project.artifactId}.jar</outputFile>
+                <transformers>
+                  <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                    <mainClass>it.polimi.ingsw.ClientApp</mainClass>
+                  </transformer>
+                </transformers>
+              </configuration>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <configuration>
-          <source>8</source>
-          <target>8</target>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
-
-  <profiles>
-    <profile>
-      <id>ClientApp</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>3.2.1</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>shade</goal>
-                </goals>
-                <configuration>
-                  <finalName>clientApp</finalName>
-                  <transformers>
-                    <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                      <mainClass>src.main.java.it.polimi.ingsw.ClientApp</mainClass>
-                    </transformer>
-                  </transformers>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-
-    <profile>
-      <id>ServerApp</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-shade-plugin</artifactId>
-            <version>3.2.1</version>
-            <executions>
-              <execution>
-                <phase>package</phase>
-                <goals>
-                  <goal>shade</goal>
-                </goals>
-                <configuration>
-                  <finalName>serverApp</finalName>
-                  <transformers>
-                    <transformer
-                            implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                      <mainClass>src.main.java.it.polimi.ingsw.ServerApp</mainClass>
-                    </transformer>
-                  </transformers>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
 </project>
+
