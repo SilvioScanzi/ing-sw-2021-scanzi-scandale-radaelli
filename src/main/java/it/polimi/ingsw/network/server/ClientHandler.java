@@ -76,8 +76,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         while(!state.equals(ClientHandlerState.disconnected)) {
             try {
                 if(state.equals(ClientHandlerState.playerNumber) || state.equals(ClientHandlerState.discardLeaderCard) ||
-                        state.equals(ClientHandlerState.finishingSetup) || state.equals(ClientHandlerState.myTurn) ||
-                        state.equals(ClientHandlerState.moveNeeded) || state.equals(ClientHandlerState.actionDone)){
+                        state.equals(ClientHandlerState.finishingSetup)){
                     t = new Timer();
                     t.schedule(new TimerTask() {
                         @Override
@@ -86,7 +85,21 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                             closeConnection();
                             t.cancel();
                         }
-                    },60000);
+                    },120000);  //timer set to 2 minutes for setup stages of the game
+                    message = socketIn.readObject();
+                    t.cancel();
+                }
+                else if(state.equals(ClientHandlerState.myTurn) || state.equals(ClientHandlerState.moveNeeded) ||
+                        state.equals(ClientHandlerState.actionDone)){
+                    t = new Timer();
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            sendObject(new DisconnectedMessage(nickname));
+                            closeConnection();
+                            t.cancel();
+                        }
+                    },240000);  //timer set to 4 minutes for every action in the game
                     message = socketIn.readObject();
                     t.cancel();
                 }

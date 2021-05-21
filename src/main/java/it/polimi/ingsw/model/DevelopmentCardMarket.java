@@ -24,7 +24,7 @@ public class DevelopmentCardMarket {
             }
         }
 
-        DevelopmentCardParser DCP = new DevelopmentCardParser("src/xml_src/developmentCards.xml");
+        DevelopmentCardParser DCP = new DevelopmentCardParser();
         try {
             ArrayList<DevelopmentCard> tmp = DCP.parseFromXML();
             //Getting the 48 cards from the arrayList tmp, inserting them into the cardMarket in a random order for every stack
@@ -47,7 +47,7 @@ public class DevelopmentCardMarket {
             }
         }
 
-        DevelopmentCardParser DCP = new DevelopmentCardParser("src/xml_src/developmentCards.xml");
+        DevelopmentCardParser DCP = new DevelopmentCardParser();
         try {
             ArrayList<DevelopmentCard> tmp = DCP.parseFromXML();
             //Getting the 48 cards from the arrayList tmp, inserting them into the cardMarket in a random order for every stack

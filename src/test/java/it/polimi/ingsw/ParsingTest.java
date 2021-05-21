@@ -99,7 +99,7 @@ public class ParsingTest {
     @Test
     @DisplayName("Ensure incorrect find DC")
     void testCannotFindDC(){
-        DevelopmentCardParser DCP = new DevelopmentCardParser("");
+        DevelopmentCardParser DCP = new DevelopmentCardParser();
         assert(DCP.findCardByID(Colours.Purple,42).equals(""));
     }
 

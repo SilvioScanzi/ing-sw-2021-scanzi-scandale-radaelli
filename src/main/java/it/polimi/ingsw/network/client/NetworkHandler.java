@@ -269,7 +269,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
-        LeaderCardParser LCP = new LeaderCardParser("");
+        LeaderCardParser LCP = new LeaderCardParser();
         if(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().size()==2) {
             if (LCP.findTypeByID(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(0).get_1(), clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(0).get_2()).equals("WhiteMarbleAbility")
                     && LCP.findTypeByID(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(1).get_1(), clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(1).get_2()).equals("WhiteMarbleAbility")) {
@@ -319,7 +319,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             return;
         }
 
-        DevelopmentCardParser DCP = new DevelopmentCardParser("");
+        DevelopmentCardParser DCP = new DevelopmentCardParser();
         HashMap<Resources, Integer> cost = DCP.findCostByID(colour,level);
         if(!checkGotResources(userChoice) || !checkRightResources(cost,userChoice)){
             view.print("La scelta delle risorse non è corretta");
@@ -342,7 +342,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     return;
                 }
                 Pair<Colours, Integer> P = clientModel.getBoard(clientModel.getMyNickname()).getSlots(I);
-                DevelopmentCardParser DCP = new DevelopmentCardParser("");
+                DevelopmentCardParser DCP = new DevelopmentCardParser();
                 HashMap<Resources, Integer> requiredResources = DCP.findRequiredResourcesByID(P.getKey(),P.getValue());
                 if(!checkGotResources(userChoice.get(I)) || !checkRightResources(requiredResources,userChoice.get(I))){
                     view.print("La tua scelta delle risorse è errata");

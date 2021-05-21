@@ -492,7 +492,7 @@ public class CLI extends ViewObservable implements View {
 
     @Override
     public void printLeaderCardHand(ArrayList<Triplet<Resources, Integer, Integer>> LC) {
-        LeaderCardParser LCP = new LeaderCardParser("");
+        LeaderCardParser LCP = new LeaderCardParser();
         System.out.println("CARTE LEADER");
         int i = 1;
         for(Triplet<Resources,Integer,Integer> t : LC){
@@ -506,7 +506,7 @@ public class CLI extends ViewObservable implements View {
     @Override
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
         if(LC.isEmpty()) System.out.println(nickname+" NON HA CARTE LEADER IN GIOCO");
-        LeaderCardParser LCP = new LeaderCardParser("");
+        LeaderCardParser LCP = new LeaderCardParser();
         System.out.println("CARTE LEADER DI "+nickname+" IN GIOCO");
         int i = 1;
         for(Triplet<Resources,Integer,Integer> t : LC){
@@ -552,14 +552,8 @@ public class CLI extends ViewObservable implements View {
     @Override
     public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
         System.out.println("MERCATO DELLE CARTE");
-        DevelopmentCardParser DCP = new DevelopmentCardParser("");
-
-        for(Colours c : Colours.values()){
-            for(int i=1;i<4;i++){
-                Pair<Colours,Integer> P = new Pair<>(c,i);
-                System.out.println(DCP.findCardByID(P.getKey(),CM.get(P)));
-            }
-        }
+        DevelopmentCardParser DCP = new DevelopmentCardParser();
+        System.out.println(DCP.findMarketByID(CM));
     }
 
     @Override
@@ -581,7 +575,7 @@ public class CLI extends ViewObservable implements View {
         }
         else {
             System.out.println("SLOT " + I + " DELLA PLANCIA DI " + nickname);
-            DevelopmentCardParser DCP = new DevelopmentCardParser("");
+            DevelopmentCardParser DCP = new DevelopmentCardParser();
             System.out.println(DCP.findCardByID(C, VP));
         }
     }

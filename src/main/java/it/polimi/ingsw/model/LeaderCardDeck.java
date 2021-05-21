@@ -11,7 +11,7 @@ public class LeaderCardDeck {
 
     public LeaderCardDeck() {
         deck = new Stack<>();
-        LeaderCardParser LCP = new LeaderCardParser("src/xml_src/leaderCards.xml");
+        LeaderCardParser LCP = new LeaderCardParser();
         try {
             ArrayList<LeaderCard> tmp = LCP.parseFromXML();
             for (int i = 0; i < 16; i++) {
@@ -24,7 +24,7 @@ public class LeaderCardDeck {
     //Only used for testing
     public LeaderCardDeck(int Arandom){
         deck = new Stack<>();
-        LeaderCardParser LCP = new LeaderCardParser("src/xml_src/leaderCards.xml");
+        LeaderCardParser LCP = new LeaderCardParser();
         try {
             ArrayList<LeaderCard> tmp = LCP.parseFromXML();
             for (int i = 0; i < 16; i++) {
