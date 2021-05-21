@@ -56,10 +56,12 @@ public class GUI extends Application implements View{
         }catch(IOException e){e.printStackTrace();}
     }
 
+    //TODO: scene da fare
     @Override
     public void setState(ViewState state) {
+
+
         this.state = state;
-        //TODO: modificare lo stage aggiungendo una nuova scena
     }
 
     @Override

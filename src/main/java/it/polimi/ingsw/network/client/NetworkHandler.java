@@ -72,6 +72,8 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 case choosePlayerNumber:
                     view.setState(ViewState.choosePlayerNumber);
                     break;
+                case gameIsStarting:
+                    view.setState(ViewState.lobbyNotReady);
                 case chooseDiscardedLC:
                     view.setState(ViewState.discardLeaderCard);
                     break;

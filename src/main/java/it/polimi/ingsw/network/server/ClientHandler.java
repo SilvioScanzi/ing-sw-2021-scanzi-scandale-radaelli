@@ -86,7 +86,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                             closeConnection();
                             t.cancel();
                         }
-                    },5000);
+                    },60000);
                     message = socketIn.readObject();
                     t.cancel();
                 }

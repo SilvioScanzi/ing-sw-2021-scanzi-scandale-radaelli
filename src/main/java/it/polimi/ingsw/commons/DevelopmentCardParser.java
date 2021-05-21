@@ -11,6 +11,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,11 +21,14 @@ public class DevelopmentCardParser {
     private final Document document;
 
     public DevelopmentCardParser(String path){
+        InputStream resource = getClass().getClassLoader().getResourceAsStream("xml/developmentCards.xml");
         Document tmp = null;
         File f = new File(path);
-        if(!f.exists() || !f.isDirectory()) f = new File("src/main/resources/xml/developmentCards.xml");
+        if(!f.exists() || !f.isDirectory()) {
+            //f = new File(resource.toExternalForm());
+        }
         try {
-            tmp = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f);
+            tmp = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(resource);
             tmp.getDocumentElement().normalize();
         }
         catch (ParserConfigurationException |IOException | SAXException e){

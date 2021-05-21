@@ -15,9 +15,6 @@ public class ConnectionScreenController extends ViewObservable {
     private TextField portNr;
 
     @FXML
-    private Button submit;
-
-    @FXML
     public void initialize() {}
 
     @FXML

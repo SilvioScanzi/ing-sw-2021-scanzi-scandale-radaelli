@@ -11,17 +11,23 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
 public class LeaderCardParser {
     private final Document document;
 
     public LeaderCardParser(String path){
+        InputStream resource = getClass().getClassLoader().getResourceAsStream("xml/leaderCards.xml");
         Document tmp = null;
         File f = new File(path);
-        if(!f.exists() || f.isDirectory()) f = new File("src/main/resources/xml/leaderCards.xml");
+        if(!f.exists() || f.isDirectory()) {
+            //f = new File(resource);
+        }
         try {
-            tmp = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(f);
+            tmp = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(resource);
             tmp.getDocumentElement().normalize();
         }
         catch (ParserConfigurationException |IOException | SAXException e){

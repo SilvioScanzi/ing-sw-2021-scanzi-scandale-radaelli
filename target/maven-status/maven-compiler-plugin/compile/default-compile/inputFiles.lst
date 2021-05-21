@@ -77,6 +77,7 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ResourceHandMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Pair.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/ResourcesLeftInHandException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/NicknameScreenController.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/BuyResourcesMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/NicknameMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/ServerApp.java
