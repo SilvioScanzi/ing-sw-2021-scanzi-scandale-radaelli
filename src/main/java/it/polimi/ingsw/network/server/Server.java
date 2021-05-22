@@ -16,8 +16,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-/*TODO: UN GIOCATORE CREA LA LOBBY E POI SI DISCONNETTE, INVECE DI DISTRUGGERE LA LOBBY VENGONO AUTOMATICAMENTE
-   INSERITI IN ESSA I GIOCATORI CHE SI CONNETTONO DOPO*/
 public class Server implements CH_ServerObserver, GameHandlerObserver {
 
     private GameHandler currentGameHandler;
@@ -28,11 +26,12 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
     private boolean gameHandlerRequired = true;
     private final Object Lock = new Object();
 
-    public void startServer() {
+
+    public void startServer(int port) {
         ExecutorService executor = Executors.newCachedThreadPool();
         ServerSocket serverSocket;
         try {
-            serverSocket = new ServerSocket(9090);
+            serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             System.err.println(e.getMessage());
             return;

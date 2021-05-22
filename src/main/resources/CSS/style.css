@@ -1,0 +1,28 @@
+.connection-pane{
+    -fx-background-image: url("../images/Parchment.jpg");
+}
+
+.text{
+    -fx-font-family: "Enchanted Land";
+    -fx-font-size: 18;
+}
+
+.textbody{
+    -fx-font-family: "Enchanted Land";
+    -fx-font-size: 25;
+}
+
+Button{
+    -fx-background-color: #005a75;
+    -fx-border-width: 3,3,3,3;
+    -fx-border-color: #f3c83f;
+    -fx-text-origin: top;
+    -fx-text-alignment: center;
+    -fx-text-fill: white;
+}
+
+
+Button:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+

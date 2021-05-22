@@ -11,6 +11,8 @@ import it.polimi.ingsw.observers.GameHandlerObservable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class GameHandler extends GameHandlerObservable implements CHObserver {
     private int playersDone = 0;
@@ -25,6 +27,8 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     //Map: Name of the disconnected players associated with his Position in the game
     private final HashMap<String, Integer> disconnectedPlayers = new HashMap<>();
     private final HashMap<String,Integer> nameMap = new HashMap<>();
+
+    private Timer t;
 
     private int turn;
     private boolean endGame = false;
@@ -52,6 +56,10 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             clients.add(CH);
         }
         else {
+            if(disconnectedPlayers.size() == playerNumber) {
+                t.cancel();
+            }
+
             String name = CH.getNickname();
 
             CH.setState(ClientHandler.ClientHandlerState.notMyTurn);
@@ -165,6 +173,10 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             synchronized (clients) {
                 synchronized (Lock) {
                     disconnectedPlayers.put(client.getNickname(), clientMap.get(client).getValue());
+                    if(turn == clientMap.get(client).getValue() && disconnectedPlayers.size() != playerNumber){
+                        turn = (turn + 1)%playerNumber;
+                        getNextActivePlayer();
+                    }
                     clientMap.remove(client);
                 }
                 for (ClientHandler CH : clients) {
@@ -176,7 +188,15 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
 
             synchronized (clients){
                 if(disconnectedPlayers.size() == playerNumber){
-                    //TODO:TIMER CHE CANCELLA LA LOBBY A MENO CHE SI RICONNETTANO TUTTI
+                    t = new Timer();
+                    t.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            demolished = true;
+                            gameHandlerNotify();
+                            t.cancel();
+                        }
+                    },600000);  //timer set to 10 minutes for reconnection
                 }
             }
         }
@@ -410,12 +430,13 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     }
 
     private void getNextActivePlayer() {
-        int i = turn;
+        int i = turn - 1;
+        if(i<0){i = playerNumber-1;}
         boolean found = false;
         synchronized (clients) {
             do {
-                if (disconnectedPlayers.containsKey(clients.get(turn).getNickname())) found = true;
-                turn = (turn + 1) % playerNumber;
+                if (!disconnectedPlayers.containsKey(clients.get(turn).getNickname())) found = true;
+                else{ turn = (turn + 1) % playerNumber; }
             } while (turn != i && !found);
         }
         synchronized(clients.get(turn)){

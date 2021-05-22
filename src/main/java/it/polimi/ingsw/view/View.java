@@ -12,6 +12,7 @@ public interface View {
     void setState(ViewState state);
 
     //print
+    void printDisconnected(String name);
     void printStandardMessage(StandardMessages message);
     void printNames(HashMap<String, Integer> names, int inkwell);
     void printResourceMarket(Marbles[][] M, Marbles RM);

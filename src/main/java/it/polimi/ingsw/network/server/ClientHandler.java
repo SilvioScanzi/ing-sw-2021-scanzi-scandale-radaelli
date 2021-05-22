@@ -47,12 +47,28 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         return state;
     }
 
-    //TODO
     public synchronized void setState(ClientHandlerState state) {
-        if(state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup) ||
-                state.equals(ClientHandlerState.myTurn)){
-            //timeout = new Thread(this::setTimeout);
-            //timeout.start();
+        if(state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)){
+            t = new Timer();
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    sendObject(new DisconnectedMessage(nickname));
+                    closeConnection();
+                    t.cancel();
+                }
+            },120000);  //timer set to 2 minutes for setup stages of the game
+        }
+        else if(state.equals(ClientHandlerState.myTurn)){
+            t = new Timer();
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    sendObject(new DisconnectedMessage(nickname));
+                    closeConnection();
+                    t.cancel();
+                }
+            },240000);  //timer set to 4 minutes for every action in the game
         }
         this.state = state;
     }
@@ -99,7 +115,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                             closeConnection();
                             t.cancel();
                         }
-                    },240000);  //timer set to 4 minutes for every action in the game
+                    },600000);  //timer set to 10 minutes for every action in the game
                     message = socketIn.readObject();
                     t.cancel();
                 }
@@ -123,16 +139,14 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     public synchronized void processMessage(Message message) {
         switch (state) {
-            case nickname: {
+            case nickname -> {
                 if (message instanceof NicknameMessage) {
                     notifyServerNickname((NicknameMessage) message);
                 } else {
                     sendStandardMessage(StandardMessages.wrongObject);
                 }
-                break;
             }
-
-            case playerNumber: {
+            case playerNumber -> {
                 if (!(message instanceof ChoosePlayerNumberMessage))
                     sendStandardMessage(StandardMessages.wrongObject);
                 else {
@@ -144,71 +158,49 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                         notifyServerPlayerNumber((ChoosePlayerNumberMessage) message);
                     }
                 }
-                break;
             }
-
-            case lobbyNotReady: {
-                sendStandardMessage(StandardMessages.lobbyNotReady);
-                break;
-            }
-
-            case discardLeaderCard: {
+            case lobbyNotReady -> sendStandardMessage(StandardMessages.lobbyNotReady);
+            case discardLeaderCard -> {
                 if (message instanceof DiscardLeaderCardSetupMessage) {
                     notifyLCDiscard((DiscardLeaderCardSetupMessage) message);
                 } else sendStandardMessage(StandardMessages.wrongObject);
-                break;
             }
-
-            case finishingSetup: {
+            case finishingSetup -> {
                 if (message instanceof FinishSetupMessage) {
                     notifyFinishSetup((FinishSetupMessage) message);
                 } else sendStandardMessage(StandardMessages.wrongObject);
-                break;
             }
-
-            case myTurn: {
-                if(message instanceof BuyResourcesMessage) notifyBuyResources((BuyResourcesMessage) message);
-                else if(message instanceof BuyDevelopmentCardMessage) notifyBuyDevelopmentCard((BuyDevelopmentCardMessage) message);
-                else if(message instanceof ProductionMessage) notifyProduction((ProductionMessage) message);
-                else if(message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
-                else if(message instanceof PlayLeaderCardMessage) notifyPlayLeaderCard((PlayLeaderCardMessage) message);
-                else if(message instanceof DiscardLeaderCardMessage) notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
+            case myTurn -> {
+                if (message instanceof BuyResourcesMessage) notifyBuyResources((BuyResourcesMessage) message);
+                else if (message instanceof BuyDevelopmentCardMessage)
+                    notifyBuyDevelopmentCard((BuyDevelopmentCardMessage) message);
+                else if (message instanceof ProductionMessage) notifyProduction((ProductionMessage) message);
+                else if (message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
+                else if (message instanceof PlayLeaderCardMessage)
+                    notifyPlayLeaderCard((PlayLeaderCardMessage) message);
+                else if (message instanceof DiscardLeaderCardMessage)
+                    notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
                 else sendStandardMessage(StandardMessages.wrongObject);
-                break;
             }
-
-            case moveNeeded: {
+            case moveNeeded -> {
                 if (!(message instanceof MoveResourcesMessage)) {
                     sendStandardMessage(StandardMessages.moveActionNeeded);
                 } else {
                     notifyMoveResources((MoveResourcesMessage) message);
                 }
-                break;
             }
-
-            case actionDone: {
-                if(message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
-                else if(message instanceof PlayLeaderCardMessage) notifyPlayLeaderCard((PlayLeaderCardMessage) message);
-                else if(message instanceof DiscardLeaderCardMessage) notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
-                else if(message instanceof TurnDoneMessage) notifyTurnDone((TurnDoneMessage) message);
+            case actionDone -> {
+                if (message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
+                else if (message instanceof PlayLeaderCardMessage)
+                    notifyPlayLeaderCard((PlayLeaderCardMessage) message);
+                else if (message instanceof DiscardLeaderCardMessage)
+                    notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
+                else if (message instanceof TurnDoneMessage) notifyTurnDone((TurnDoneMessage) message);
                 else sendStandardMessage(StandardMessages.wrongObject);
-                break;
             }
-
-            case notMyTurn: {
-                sendStandardMessage(StandardMessages.notYourTurn);
-                break;
-            }
-
-            case wait: {
-                sendStandardMessage(StandardMessages.waitALittleMore);
-                break;
-            }
-
-            case endGame: {
-                sendStandardMessage(StandardMessages.endGame);
-                break;
-            }
+            case notMyTurn -> sendStandardMessage(StandardMessages.notYourTurn);
+            case wait -> sendStandardMessage(StandardMessages.waitALittleMore);
+            case endGame -> sendStandardMessage(StandardMessages.endGame);
         }
 
     }

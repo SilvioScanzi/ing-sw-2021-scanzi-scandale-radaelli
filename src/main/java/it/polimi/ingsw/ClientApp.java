@@ -18,15 +18,13 @@ public class ClientApp {
                 return;
             }
             else{
-                GUI gui = new GUI();
                 GUI.main(args);
             }
         }
         else{
-            CLI cli = new CLI();
-            cli.start();
-            /*GUI gui = new GUI();
-            Application.launch(gui.getClass());*/
+            //CLI cli = new CLI();
+            //cli.start();
+            GUI.main(args);
         }
     }
 }

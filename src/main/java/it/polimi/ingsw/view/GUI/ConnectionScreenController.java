@@ -2,7 +2,6 @@ package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.observers.ViewObservable;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 
@@ -20,7 +19,7 @@ public class ConnectionScreenController extends ViewObservable {
     @FXML
     public void submitOnClickHandler() {
         String ipAddress = IP.getText();
-        int portNumber = 0;
+        int portNumber;
         try{
             portNumber = Integer.parseInt(portNr.getText());
         }catch (NumberFormatException e){return;}

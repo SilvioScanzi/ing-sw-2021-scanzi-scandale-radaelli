@@ -92,6 +92,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     break;
                 case fatalError:
                 case endGame:
+                    view.setState(ViewState.disconnected);
                     closeConnection();
                     break;
             }
@@ -160,7 +161,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
             //Not Model Related Messages
             else if(message instanceof DisconnectedMessage){
-                view.setState(ViewState.disconnected);
+                if(((DisconnectedMessage) message).getNickname().equals(clientModel.getMyNickname())) view.setState(ViewState.disconnected);
+                else{
+                    view.printDisconnected(((DisconnectedMessage) message).getNickname());
+                }
             }
             else{System.out.println("[NETWORK] Message not recognized (2) " + message);}
         }

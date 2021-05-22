@@ -1,67 +1,72 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.DevelopmentBuyTest" time="0.098" tests="13" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.DevelopmentBuyTest" time="0.065" tests="13" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="15"/>
-    <property name="sun.jnu.encoding" value="UTF-8"/>
-    <property name="java.class.path" value="/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/target/test-classes:/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/target/classes:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter/5.7.0/junit-jupiter-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.7.0/junit-jupiter-api-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/francescoscandale/.m2/repository/org/junit/platform/junit-platform-commons/1.7.0/junit-platform-commons-1.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.7.0/junit-jupiter-engine-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/platform/junit-platform-engine/1.7.0/junit-platform-engine-1.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.7.0/junit-jupiter-params-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-controls/16/javafx-controls-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-controls/16/javafx-controls-16-mac.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-graphics/16/javafx-graphics-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-graphics/16/javafx-graphics-16-mac.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-base/16/javafx-base-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-base/16/javafx-base-16-mac.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-fxml/16/javafx-fxml-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-fxml/16/javafx-fxml-16-mac.jar:"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.class.path" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\test-classes;C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\classes;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter\5.7.0\junit-jupiter-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.7.0\junit-jupiter-api-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-commons\1.7.0\junit-platform-commons-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.7.0\junit-jupiter-engine-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-engine\1.7.0\junit-platform-engine-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.7.0\junit-jupiter-params-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\apiguardian\apiguardian-api\1.1.0\apiguardian-api-1.1.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16-win.jar;"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
     <property name="sun.arch.data.model" value="64"/>
+    <property name="user.variant" value=""/>
     <property name="java.vendor.url" value="https://java.oracle.com/"/>
-    <property name="os.name" value="Mac OS X"/>
+    <property name="user.timezone" value="Europe/Rome"/>
+    <property name="os.name" value="Windows 10"/>
     <property name="java.vm.specification.version" value="15"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
-    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk-15.jdk/Contents/Home/lib"/>
-    <property name="sun.java.command" value="/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/target/surefire/surefirebooter4348469174287038009.jar /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/target/surefire 2021-05-21T17-23-26_461-jvmRun1 surefire16080738676097688839tmp surefire_04920247484287743574tmp"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-15.0.2\bin"/>
+    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire17786469478001759991\surefirebooter15989779211747893478.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire17786469478001759991 2021-05-21T19-22-57_190-jvmRun1 surefire1250362183023958564tmp surefire_018154601194219992600tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/target/test-classes:/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/target/classes:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter/5.7.0/junit-jupiter-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.7.0/junit-jupiter-api-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/Users/francescoscandale/.m2/repository/org/junit/platform/junit-platform-commons/1.7.0/junit-platform-commons-1.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.7.0/junit-jupiter-engine-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/platform/junit-platform-engine/1.7.0/junit-platform-engine-1.7.0.jar:/Users/francescoscandale/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.7.0/junit-jupiter-params-5.7.0.jar:/Users/francescoscandale/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-controls/16/javafx-controls-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-controls/16/javafx-controls-16-mac.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-graphics/16/javafx-graphics-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-graphics/16/javafx-graphics-16-mac.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-base/16/javafx-base-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-base/16/javafx-base-16-mac.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-fxml/16/javafx-fxml-16.jar:/Users/francescoscandale/.m2/repository/org/openjfx/javafx-fxml/16/javafx-fxml-16-mac.jar:"/>
+    <property name="surefire.test.class.path" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\test-classes;C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\classes;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter\5.7.0\junit-jupiter-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.7.0\junit-jupiter-api-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-commons\1.7.0\junit-platform-commons-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.7.0\junit-jupiter-engine-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-engine\1.7.0\junit-platform-engine-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.7.0\junit-jupiter-params-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\apiguardian\apiguardian-api\1.1.0\apiguardian-api-1.1.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16-win.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
-    <property name="user.home" value="/Users/francescoscandale"/>
+    <property name="user.home" value="C:\Users\Ajeje Brazorf"/>
     <property name="user.language" value="it"/>
     <property name="java.specification.vendor" value="Oracle Corporation"/>
-    <property name="java.version.date" value="2020-09-15"/>
-    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk-15.jdk/Contents/Home"/>
-    <property name="file.separator" value="/"/>
-    <property name="basedir" value="/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli"/>
+    <property name="java.version.date" value="2021-01-19"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk-15.0.2"/>
+    <property name="file.separator" value="\"/>
+    <property name="basedir" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli"/>
     <property name="java.vm.compressedOopsMode" value="Zero based"/>
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/target/surefire/surefirebooter4348469174287038009.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire17786469478001759991\surefirebooter15989779211747893478.jar"/>
+    <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
-    <property name="java.runtime.version" value="15+36-1562"/>
-    <property name="user.name" value="francescoscandale"/>
-    <property name="path.separator" value=":"/>
-    <property name="os.version" value="10.16"/>
+    <property name="java.runtime.version" value="15.0.2+7-27"/>
+    <property name="user.name" value="Ajeje Brazorf"/>
+    <property name="path.separator" value=";"/>
+    <property name="os.version" value="10.0"/>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
-    <property name="file.encoding" value="UTF-8"/>
+    <property name="file.encoding" value="Cp1252"/>
     <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
-    <property name="localRepository" value="/Users/francescoscandale/.m2/repository"/>
+    <property name="localRepository" value="C:\Users\Ajeje Brazorf\.m2\repository"/>
     <property name="java.vendor.url.bug" value="https://bugreport.java.com/bugreport/"/>
-    <property name="java.io.tmpdir" value="/var/folders/cr/d5xv7q3j6rj7lb63p_l3vs7h0000gn/T/"/>
+    <property name="java.io.tmpdir" value="C:\Users\AJEJEB~1\AppData\Local\Temp\"/>
     <property name="idea.version" value="2021.1.1"/>
-    <property name="java.version" value="15"/>
-    <property name="user.dir" value="/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli"/>
-    <property name="os.arch" value="x86_64"/>
+    <property name="java.version" value="15.0.2"/>
+    <property name="user.dir" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli"/>
+    <property name="os.arch" value="amd64"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="java.library.path" value="/Users/francescoscandale/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk-15.0.2\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Program Files\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\Git\cmd;C:\Program Files (x86)\nodejs\;C:\Program Files\apache-maven-3.8.1\bin;C:\Program Files\MySQL\MySQL Shell 8.0\bin\;C:\Users\Ajeje Brazorf\AppData\Local\Microsoft\WindowsApps;;C:\Program Files\JetBrains\IntelliJ IDEA 2020.3.2\bin;;C:\Users\Ajeje Brazorf\AppData\Roaming\npm;."/>
     <property name="java.vm.info" value="mixed mode, sharing"/>
     <property name="java.vendor" value="Oracle Corporation"/>
-    <property name="java.vm.version" value="15+36-1562"/>
-    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="java.vm.version" value="15.0.2+7-27"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="59.0"/>
   </properties>
-  <testcase name="testCannotBuyDCCardResources" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.01"/>
-  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[1]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.009"/>
-  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[2]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.007"/>
-  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[3]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.006"/>
-  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[4]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
-  <testcase name="testCanBuyDCardFromSB" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.006"/>
-  <testcase name="testCannotBuyDCEmpty" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.006"/>
-  <testcase name="testCanBuyFromExtraSlot" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.005"/>
+  <testcase name="testCannotBuyDCCardResources" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0"/>
+  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[1]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.016"/>
+  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[2]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
+  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[3]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
+  <testcase name="testCannotBuyDCCardSlot{Colours, int, int, ArrayList}[4]" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.002"/>
+  <testcase name="testCanBuyDCardFromSB" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
+  <testcase name="testCannotBuyDCEmpty" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
+  <testcase name="testCanBuyFromExtraSlot" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.002"/>
   <testcase name="testCanBuyDCCardFromSBAndWH" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
-  <testcase name="testCanBuyFromExtraSlotWithDiscount" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.005"/>
-  <testcase name="testCanBuyDCard" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
-  <testcase name="testCannotBuyDCCardWithDiscount" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.004"/>
+  <testcase name="testCanBuyFromExtraSlotWithDiscount" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
+  <testcase name="testCanBuyDCard" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.002"/>
+  <testcase name="testCannotBuyDCCardWithDiscount" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
   <testcase name="testCanBuyDCCardWithDiscount" classname="it.polimi.ingsw.DevelopmentBuyTest" time="0.003"/>
 </testsuite>

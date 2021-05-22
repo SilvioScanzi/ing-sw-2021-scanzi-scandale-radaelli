@@ -157,6 +157,11 @@ public class CLI extends ViewObservable implements View {
         this.state = state;
     }
 
+    @Override
+    public void printDisconnected(String name) {
+        System.out.println("[NETWORK] Il giocatore "+name+" si è disconnesso");
+    }
+
     private void buyResources(){
         System.out.println("Hai scelto di comprare le risorse dal mercato.");
         System.out.println("Seleziona una riga o una colonna (R per riga e C per colonna): ");
