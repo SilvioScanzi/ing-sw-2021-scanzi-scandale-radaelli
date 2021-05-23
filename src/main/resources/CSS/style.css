@@ -1,5 +1,6 @@
 .connection-pane{
     -fx-background-image: url("../images/Parchment.jpg");
+    -fx-background-size: 100% 100%;
 }
 
 .text{
@@ -10,6 +11,15 @@
 .textbody{
     -fx-font-family: "Enchanted Land";
     -fx-font-size: 25;
+}
+
+.selected{
+    -fx-border-width: 3,3,3,3;
+    -fx-border-color: #f3c83f;
+}
+
+.unselected{
+
 }
 
 Button{
@@ -25,4 +35,5 @@ Button{
 Button:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
+
 

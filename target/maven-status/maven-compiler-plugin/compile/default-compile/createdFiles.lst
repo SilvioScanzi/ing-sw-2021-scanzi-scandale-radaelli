@@ -3,9 +3,11 @@ it\polimi\ingsw\view\clientModel\ClientBoard.class
 it\polimi\ingsw\commons\Pair.class
 it\polimi\ingsw\network\messages\DiscardLeaderCardSetupMessage.class
 it\polimi\ingsw\network\messages\MoveResourcesMessage.class
+it\polimi\ingsw\view\GUI\controllers\ConnectionScreenController.class
 it\polimi\ingsw\commons\DevelopmentCardParser.class
 it\polimi\ingsw\network\messages\PlayLeaderCardMessage.class
 it\polimi\ingsw\commons\DevelopmentCardParser$1.class
+it\polimi\ingsw\view\GUI\controllers\NicknameScreenController.class
 it\polimi\ingsw\model\FaithTrack.class
 it\polimi\ingsw\exceptions\IncompatibleResourceException.class
 it\polimi\ingsw\network\server\ClientHandler.class
@@ -20,7 +22,9 @@ it\polimi\ingsw\network\server\ClientHandler$1.class
 it\polimi\ingsw\commons\Triplet.class
 it\polimi\ingsw\model\ExtraSlotAbility.class
 it\polimi\ingsw\network\messages\BuyDevelopmentCardMessage.class
+it\polimi\ingsw\network\server\GameHandler$1.class
 it\polimi\ingsw\controller\Game$1.class
+it\polimi\ingsw\network\server\ClientHandler$4.class
 it\polimi\ingsw\ClientApp.class
 it\polimi\ingsw\network\messages\WarehouseMessage.class
 it\polimi\ingsw\network\messages\ResourceHandMessage.class
@@ -31,7 +35,6 @@ it\polimi\ingsw\network\messages\ResourceMarketMessage.class
 it\polimi\ingsw\network\messages\BuyResourcesMessage.class
 it\polimi\ingsw\ServerApp.class
 it\polimi\ingsw\exceptions\InvalidPlacementException.class
-it\polimi\ingsw\view\GUI\ConnectionScreenController.class
 it\polimi\ingsw\model\Strongbox.class
 it\polimi\ingsw\model\ResourceMarket.class
 it\polimi\ingsw\network\client\NetworkHandler.class
@@ -45,6 +48,7 @@ it\polimi\ingsw\model\Slot.class
 it\polimi\ingsw\exceptions\EmptyException.class
 it\polimi\ingsw\observers\CHObservable.class
 it\polimi\ingsw\exceptions\ActionAlreadyDoneException.class
+it\polimi\ingsw\view\GUI\controllers\PlayerNumberController.class
 it\polimi\ingsw\network\messages\DisconnectedMessage.class
 it\polimi\ingsw\exceptions\ResourcesLeftInHandException.class
 it\polimi\ingsw\model\DevelopmentCardMarket.class
@@ -60,6 +64,7 @@ it\polimi\ingsw\view\clientModel\ClientModel.class
 it\polimi\ingsw\exceptions\LeaderCardNotCompatibleException.class
 it\polimi\ingsw\network\messages\LeaderCardHandUpdateMessage.class
 it\polimi\ingsw\observers\GameHandlerObserver.class
+it\polimi\ingsw\network\server\ClientHandler$5.class
 it\polimi\ingsw\network\messages\NicknameMessage.class
 it\polimi\ingsw\model\Ability.class
 it\polimi\ingsw\observers\CH_ServerObserver.class
@@ -88,8 +93,8 @@ it\polimi\ingsw\network\messages\StrongboxMessage.class
 it\polimi\ingsw\network\messages\LeaderCardHandMessage.class
 it\polimi\ingsw\exceptions\ResourceErrorException.class
 it\polimi\ingsw\network\messages\SlotMessage.class
-it\polimi\ingsw\view\GUI\NicknameScreenController.class
 it\polimi\ingsw\view\CLI\CLI.class
+it\polimi\ingsw\view\GUI\controllers\DiscardScreenController.class
 it\polimi\ingsw\network\messages\NicknameMapMessage.class
 it\polimi\ingsw\model\WhiteMarbleAbility.class
 it\polimi\ingsw\exceptions\BadRequestException.class

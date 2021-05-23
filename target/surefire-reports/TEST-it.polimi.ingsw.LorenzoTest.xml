@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.LorenzoTest" time="0.008" tests="4" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.LorenzoTest" time="0.013" tests="4" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="15"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-15.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire17786469478001759991\surefirebooter15989779211747893478.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire17786469478001759991 2021-05-21T19-22-57_190-jvmRun1 surefire1250362183023958564tmp surefire_018154601194219992600tmp"/>
+    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire7045544298920454487\surefirebooter140580760471584589.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire7045544298920454487 2021-05-23T11-57-41_500-jvmRun1 surefire1852360215139002851tmp surefire_011363723138104089649tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\test-classes;C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\classes;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter\5.7.0\junit-jupiter-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.7.0\junit-jupiter-api-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-commons\1.7.0\junit-platform-commons-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.7.0\junit-jupiter-engine-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-engine\1.7.0\junit-platform-engine-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.7.0\junit-jupiter-params-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\apiguardian\apiguardian-api\1.1.0\apiguardian-api-1.1.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16-win.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire17786469478001759991\surefirebooter15989779211747893478.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire7045544298920454487\surefirebooter140580760471584589.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="15.0.2+7-27"/>
@@ -56,8 +56,8 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="59.0"/>
   </properties>
-  <testcase name="testRemoveCards" classname="it.polimi.ingsw.LorenzoTest" time="0.001"/>
-  <testcase name="testLorenzoWinBC" classname="it.polimi.ingsw.LorenzoTest" time="0.003"/>
-  <testcase name="testLorenzoWinDC" classname="it.polimi.ingsw.LorenzoTest" time="0.002"/>
-  <testcase name="testActionToken" classname="it.polimi.ingsw.LorenzoTest" time="0.002"/>
+  <testcase name="testRemoveCards" classname="it.polimi.ingsw.LorenzoTest" time="0.002"/>
+  <testcase name="testLorenzoWinBC" classname="it.polimi.ingsw.LorenzoTest" time="0.002"/>
+  <testcase name="testLorenzoWinDC" classname="it.polimi.ingsw.LorenzoTest" time="0.003"/>
+  <testcase name="testActionToken" classname="it.polimi.ingsw.LorenzoTest" time="0.004"/>
 </testsuite>

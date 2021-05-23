@@ -87,7 +87,6 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
     public void updateServerPlayerNumber(CHObservable obs,ChoosePlayerNumberMessage message) {
         System.out.println("[SERVER] Player number chosen");
         ClientHandler CH = (ClientHandler) obs;
-        //timer.cancel();
         boolean started = false;
         int playerNumber = message.getN();
         synchronized (Lock) {
@@ -193,18 +192,5 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         synchronized (Lock) {
             gameHandlerRequired = false;
         }
-        /*timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                synchronized (clientHandlers) {
-                    clientHandlers.get(0).closeConnection();
-                    clientHandlers.remove(0);
-                    if (clientHandlers.size() > 0) {
-                        clientHandlers.get(0).setState(ClientHandler.ClientHandlerState.playerNumber);
-                        clientHandlers.get(0).sendStandardMessage(StandardMessages.choosePlayerNumber);
-                    } else lobbyRequired = true;
-                }
-            }
-        }, 10000);*/
     }
 }

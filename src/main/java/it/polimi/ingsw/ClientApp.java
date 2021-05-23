@@ -15,7 +15,6 @@ public class ClientApp {
                 System.out.println("Devi scrivere cli se vuoi utilizzare un'interfaccia a linea di comando");
                 System.out.println("Devi scrivere gui se vuoi utilizzare un'interfaccia grafica");
                 System.out.println("Altrimenti, se non scrivi nulla, di default viene utilizzata una GUI");
-                return;
             }
             else{
                 GUI.main(args);

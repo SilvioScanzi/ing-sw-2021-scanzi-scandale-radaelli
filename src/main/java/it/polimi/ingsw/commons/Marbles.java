@@ -12,26 +12,35 @@ public enum Marbles implements Serializable {
 
     @Override
     public String toString(){
-        switch(this){
-            case Blue: return "Biglia blu";
-            case Grey: return "Biglia grigia";
-            case Purple: return "Biglia viola";
-            case Yellow: return "Biglia gialla";
-            case White: return "Biglia bianca";
-            case Red: return "Biglia rossa";
-            default: return "Error";
-        }
+        return switch (this) {
+            case Blue -> "Biglia blu";
+            case Grey -> "Biglia grigia";
+            case Purple -> "Biglia viola";
+            case Yellow -> "Biglia gialla";
+            case White -> "Biglia bianca";
+            case Red -> "Biglia rossa";
+        };
     }
 
     public String abbreviation(){
-        switch(this){
-            case Blue: return "BL";
-            case Grey: return "GR";
-            case Purple: return "VI";
-            case Yellow: return "GI";
-            case White: return "BI";
-            case Red: return "RO";
-            default: return "Error";
-        }
+        return switch (this) {
+            case Blue -> "BL";
+            case Grey -> "GR";
+            case Purple -> "VI";
+            case Yellow -> "GI";
+            case White -> "BI";
+            case Red -> "RO";
+        };
+    }
+
+    public String getID(){
+        return switch (this) {
+            case Blue -> "blue";
+            case Grey -> "grey";
+            case Purple -> "purple";
+            case Yellow -> "yellow";
+            case White -> "white";
+            case Red -> "red";
+        };
     }
 }

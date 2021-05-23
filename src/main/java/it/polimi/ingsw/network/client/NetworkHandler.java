@@ -170,6 +170,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
         }
     }
 
+    public ClientModel getClientModel() {
+        return clientModel;
+    }
+
     private boolean checkGotResources(ArrayList<Pair<String, Integer>> userChoice){
         HashMap<Integer, Pair<Resources,Integer>> warehouse = new HashMap<>(clientModel.getBoard(clientModel.getMyNickname()).getWarehouse());
         HashMap<Resources,Integer> strongbox = new HashMap<>(clientModel.getBoard(clientModel.getMyNickname()).getStrongBox());

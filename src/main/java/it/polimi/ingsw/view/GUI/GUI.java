@@ -3,6 +3,10 @@ package it.polimi.ingsw.view.GUI;
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.client.NetworkHandler;
 import it.polimi.ingsw.network.messages.StandardMessages;
+import it.polimi.ingsw.view.GUI.controllers.ConnectionScreenController;
+import it.polimi.ingsw.view.GUI.controllers.DiscardScreenController;
+import it.polimi.ingsw.view.GUI.controllers.NicknameScreenController;
+import it.polimi.ingsw.view.GUI.controllers.PlayerNumberController;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
@@ -22,11 +26,11 @@ public class GUI extends Application implements View{
 
     private ViewState state = ViewState.start;
     private Stage primaryStage;
-    private Scene currentScene;
     private FXMLLoader fxmlLoader;
     private ConnectionScreenController connectionScreenController;
     private NicknameScreenController nicknameScreenController;
-    private PlayerNumberController  playerNumberController;
+    private PlayerNumberController playerNumberController;
+    private DiscardScreenController discardScreenController;
     private NetworkHandler NH;
 
     public static void main(String[] args){
@@ -50,7 +54,7 @@ public class GUI extends Application implements View{
         });
 
         try {
-            currentScene = new Scene(fxmlLoader.load());
+            Scene currentScene = new Scene(fxmlLoader.load());
             primaryStage.setTitle("Maestri del rinascimento - Launcher");
             connectionScreenController = fxmlLoader.getController();
             connectionScreenController.addObserver(NH);
@@ -68,7 +72,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/NicknameScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Scene currentScene = new Scene(fxmlLoader.load());
                     nicknameScreenController = fxmlLoader.getController();
                     nicknameScreenController.addObserver(NH);
                     primaryStage.setScene(currentScene);
@@ -80,7 +84,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerNumberScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Scene currentScene = new Scene(fxmlLoader.load());
                     playerNumberController = fxmlLoader.getController();
                     playerNumberController.addObserver(NH);
                     playerNumberController.addNumbers();
@@ -93,11 +97,31 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Scene currentScene = new Scene(fxmlLoader.load());
                     primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
+        else if(state.equals(ViewState.discardLeaderCard)){
+            Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/DiscardScreen.fxml"));
+                try {
+                    Scene currentScene = new Scene(fxmlLoader.load());
+                    discardScreenController = fxmlLoader.getController();
+                    discardScreenController.initialize();
+                    discardScreenController.addObserver(NH);
+                    discardScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
+                    discardScreenController.addDevelopment();
+                    discardScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                    primaryStage.setScene(currentScene);
+                }catch(IOException e){e.printStackTrace();}
+            });
+        }
+        else if(state.equals(ViewState.finishSetupOneResource) || state.equals(ViewState.finishSetupTwoResources)){
+
+        }
+
         this.state = state;
     }
 

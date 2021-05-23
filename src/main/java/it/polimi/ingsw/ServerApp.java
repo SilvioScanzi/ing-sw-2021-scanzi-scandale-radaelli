@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class ServerApp {
     public static void main(String[] args){
-        System.out.println("\u001B[31mSelect port");
+        System.out.println("Select port");
         Scanner in = new Scanner(System.in);
         int port = -1;
         do{
@@ -19,6 +19,7 @@ public class ServerApp {
                 System.out.println("Insert a valid port number");
             }
         }while(port<1024 || port>65536);
+        System.out.println("\u001B[31mWelcome to the server log");
         Server server = new Server();
         server.startServer(port);
     }
