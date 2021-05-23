@@ -21,8 +21,8 @@ public class ClientApp {
             }
         }
         else{
-            //CLI cli = new CLI();
-            //cli.start();
+            /*CLI cli = new CLI();
+            cli.start();*/
             GUI.main(args);
         }
     }

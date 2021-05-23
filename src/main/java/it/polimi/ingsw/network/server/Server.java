@@ -170,6 +170,10 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
                         }
                     }
                 }
+                else {
+                    CH.sendStandardMessage(StandardMessages.gameNotCreated);
+                    CH.setState(ClientHandler.ClientHandlerState.gameNotCreated);
+                }
             }
         }
     }

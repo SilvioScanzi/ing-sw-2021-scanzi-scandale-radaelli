@@ -2,7 +2,6 @@ package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.client.NetworkHandler;
-import it.polimi.ingsw.network.messages.FinishSetupMessage;
 import it.polimi.ingsw.network.messages.StandardMessages;
 import it.polimi.ingsw.view.GUI.controllers.*;
 import it.polimi.ingsw.view.View;
@@ -28,7 +27,8 @@ public class GUI extends Application implements View{
     private ConnectionScreenController connectionScreenController;
     private NicknameScreenController nicknameScreenController;
     private PlayerNumberController playerNumberController;
-    private DiscardScreenController discardScreenController;
+    private SetupScreenController setupScreenController;
+    private WaitScreenController waitScreenController;
     private NetworkHandler NH;
 
     public static void main(String[] args){
@@ -90,12 +90,38 @@ public class GUI extends Application implements View{
                 }catch(IOException e){e.printStackTrace();}
             });
         }
+        else if(state.equals(ViewState.gameNotCreated)){
+            Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
+                try {
+                    Scene currentScene = new Scene(fxmlLoader.load());
+                    waitScreenController = fxmlLoader.getController();
+                    waitScreenController.changeMessage("Resta in attesa che venga creata una partita");
+                    primaryStage.setScene(currentScene);
+                }catch(IOException e){e.printStackTrace();}
+            });
+        }
         else if(state.equals(ViewState.lobbyNotReady)){
             Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
                     Scene currentScene = new Scene(fxmlLoader.load());
+                    waitScreenController = fxmlLoader.getController();
+                    waitScreenController.changeMessage("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!");
+                    primaryStage.setScene(currentScene);
+                }catch(IOException e){e.printStackTrace();}
+            });
+        }
+        else if(state.equals(ViewState.wait)){
+            Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
+                try {
+                    Scene currentScene = new Scene(fxmlLoader.load());
+                    waitScreenController = fxmlLoader.getController();
+                    waitScreenController.changeMessage("Gli altri giocatori stanno compiendo delle scelte, resta in attesa");
                     primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
@@ -103,15 +129,15 @@ public class GUI extends Application implements View{
         else if(state.equals(ViewState.discardLeaderCard)){
             Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/DiscardScreen.fxml"));
+                fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
                 try {
                     Scene currentScene = new Scene(fxmlLoader.load());
-                    discardScreenController = fxmlLoader.getController();
-                    discardScreenController.initialize();
-                    discardScreenController.addObserver(NH);
-                    discardScreenController.addMarbles(NH.getClientModel().getResourceMarket());
-                    discardScreenController.addDevelopment(NH.getClientModel().getCardMarket());
-                    discardScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                    setupScreenController = fxmlLoader.getController();
+                    setupScreenController.initialize();
+                    setupScreenController.addObserver(NH);
+                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket());
+                    setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
+                    setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
                     //TODO: come si fa ad adattare allo schermo?
                     primaryStage.setResizable(true);
                     primaryStage.setScene(currentScene);
@@ -120,10 +146,19 @@ public class GUI extends Application implements View{
         }
         else if(state.equals(ViewState.finishSetupOneResource) || state.equals(ViewState.finishSetupTwoResources)){
             Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
                 try {
-                    if(state.equals(ViewState.finishSetupOneResource)) discardScreenController.addResources(1);
-                    if(state.equals(ViewState.finishSetupTwoResources)) discardScreenController.addResources(2);
-                }catch(Exception e){e.printStackTrace();}
+                    Scene currentScene = new Scene(fxmlLoader.load());
+                    setupScreenController = fxmlLoader.getController();
+                    setupScreenController.initialize();
+                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket());
+                    setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
+                    if(state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
+                    if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
+                    //TODO: come si fa ad adattare allo schermo?
+                    primaryStage.setScene(currentScene);
+                }catch(IOException e){e.printStackTrace();}
             });
         }
 

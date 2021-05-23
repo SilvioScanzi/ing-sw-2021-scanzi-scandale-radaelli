@@ -14,7 +14,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
-    public enum ClientHandlerState{nickname, playerNumber, lobbyNotReady, discardLeaderCard, finishingSetup, wait, myTurn, moveNeeded, actionDone, notMyTurn, endGame, disconnected}
+    public enum ClientHandlerState{nickname, playerNumber, gameNotCreated, lobbyNotReady, wait, discardLeaderCard, finishingSetup, myTurn, moveNeeded, actionDone, notMyTurn, endGame, disconnected}
     private ClientHandlerState state = ClientHandlerState.nickname;
     private String nickname = null;
     private final Socket socket;
@@ -154,12 +154,14 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                         sendStandardMessage(StandardMessages.wrongObject);
                         sendStandardMessage(StandardMessages.choosePlayerNumber);
                     } else {
-                        state = ClientHandlerState.lobbyNotReady;
+                        state = ClientHandlerState.wait;
                         notifyServerPlayerNumber((ChoosePlayerNumberMessage) message);
                     }
                 }
             }
+            case gameNotCreated -> sendStandardMessage(StandardMessages.gameNotCreated);
             case lobbyNotReady -> sendStandardMessage(StandardMessages.lobbyNotReady);
+            case wait -> sendStandardMessage(StandardMessages.wait);
             case discardLeaderCard -> {
                 if (message instanceof DiscardLeaderCardSetupMessage) {
                     notifyLCDiscard((DiscardLeaderCardSetupMessage) message);
@@ -199,7 +201,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 else sendStandardMessage(StandardMessages.wrongObject);
             }
             case notMyTurn -> sendStandardMessage(StandardMessages.notYourTurn);
-            case wait -> sendStandardMessage(StandardMessages.waitALittleMore);
             case endGame -> sendStandardMessage(StandardMessages.endGame);
         }
 

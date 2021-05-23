@@ -18,11 +18,12 @@ public enum StandardMessages implements Serializable {
     fatalError("Un giocatore si è disconnesso prima dell'inizio della partita, la partita è terminata"),
 
     //Error messages
+    gameNotCreated("Resta in attesa che venga creata una partita"),
     wrongObject("Hai inviato dei dati non validi"),
     developmentCardMarketEmpty("Non ci sono development card in questa pila"),
     nicknameAlreadyInUse("Il nickname scelto è già in uso"),
     lobbyNotReady("Aspetta che inizi il gioco"),
-    waitALittleMore("Aspetta un attimo..."),
+    wait("Gli altri giocatori stanno compiendo delle scelte"),
     notYourTurn("Non è ancora il tuo turno"),
     leaderCardOutOfBounds("La carta leader selezionata non esiste"),
     leaderCardWrongFormat("Non hai selezionato il giusto numero di carte leader da scartare"),

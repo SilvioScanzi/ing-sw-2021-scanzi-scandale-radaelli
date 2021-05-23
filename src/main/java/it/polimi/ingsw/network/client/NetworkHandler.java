@@ -65,36 +65,24 @@ public class NetworkHandler implements Runnable, ViewObserver {
     private void handleMessage(Object message){
         //Standard Messages
         if(message instanceof StandardMessages){
-            switch((StandardMessages) message){
-                case chooseNickName:
-                    view.setState(ViewState.chooseNickName);
-                    break;
-                case choosePlayerNumber:
-                    view.setState(ViewState.choosePlayerNumber);
-                    break;
-                case gameIsStarting:
-                    view.setState(ViewState.lobbyNotReady);
-                case chooseDiscardedLC:
-                    view.setState(ViewState.discardLeaderCard);
-                    break;
-                case chooseOneResource:
-                    view.setState(ViewState.finishSetupOneResource);
-                    break;
-                case chooseTwoResource:
-                    view.setState(ViewState.finishSetupTwoResources);
-                    break;
-                case yourTurn:
+            switch ((StandardMessages) message) {
+                case wait -> view.setState(ViewState.wait);
+                case chooseNickName -> view.setState(ViewState.chooseNickName);
+                case choosePlayerNumber -> view.setState(ViewState.choosePlayerNumber);
+                case gameIsStarting -> view.setState(ViewState.lobbyNotReady);
+                case gameNotCreated -> view.setState(ViewState.gameNotCreated);
+                case chooseDiscardedLC -> view.setState(ViewState.discardLeaderCard);
+                case chooseOneResource -> view.setState(ViewState.finishSetupOneResource);
+                case chooseTwoResource -> view.setState(ViewState.finishSetupTwoResources);
+                case yourTurn -> {
                     clientModel.getBoard(clientModel.getMyNickname()).setActionDone(false);
                     view.setState(ViewState.myTurn);
-                    break;
-                case actionDone:
-                    clientModel.getBoard(clientModel.getMyNickname()).setActionDone(true);
-                    break;
-                case fatalError:
-                case endGame:
+                }
+                case actionDone -> clientModel.getBoard(clientModel.getMyNickname()).setActionDone(true);
+                case fatalError, endGame -> {
                     view.setState(ViewState.disconnected);
                     closeConnection();
-                    break;
+                }
             }
 
             view.printStandardMessage((StandardMessages) message);

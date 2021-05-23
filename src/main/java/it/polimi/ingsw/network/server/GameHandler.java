@@ -232,6 +232,12 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                             }
                             k++;
                         }
+                        clients.get(game.getInkwell()).sendStandardMessage(StandardMessages.wait);
+                        clients.get(game.getInkwell()).setState(ClientHandler.ClientHandlerState.wait);
+                    }
+                    else{
+                        client.sendStandardMessage(StandardMessages.wait);
+                        client.setState(ClientHandler.ClientHandlerState.wait);
                     }
                 }
                 else{
@@ -270,6 +276,9 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                         clients.get(turn).sendStandardMessage(StandardMessages.yourTurn);
                     }
                     started = true;
+                }
+                else{
+                    client.sendStandardMessage(StandardMessages.wait);
                 }
             } catch (Exception e) {
                 client.sendStandardMessage(StandardMessages.wrongObject);

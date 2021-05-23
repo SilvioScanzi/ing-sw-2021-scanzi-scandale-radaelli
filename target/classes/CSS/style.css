@@ -13,15 +13,6 @@
     -fx-font-size: 25;
 }
 
-.selected{
-    -fx-border-width: 3,3,3,3;
-    -fx-border-color: #f3c83f;
-}
-
-.unselected{
-
-}
-
 Button{
     -fx-background-color: #005a75;
     -fx-border-width: 3,3,3,3;

@@ -7,6 +7,8 @@ import it.polimi.ingsw.view.GUI.GUI;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
+import javafx.scene.control.Button;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class DiscardScreenController extends ViewObservable {
+public class SetupScreenController extends ViewObservable {
 
     @FXML
     private GridPane developmentCards;
@@ -27,18 +29,22 @@ public class DiscardScreenController extends ViewObservable {
     @FXML
     private GridPane userChoice;    //2 screens: leader cards and resources
 
+    @FXML
+    private Button button;
+
     private int[] indexes;
     private ArrayList<String> chosenResources = new ArrayList<>();
     private int one_twoResourceSetup;
-    private boolean state; //using same screen for 2 states: true for discardLC, false for finishSetup
+    private int choiceNumber = 1;
+    private boolean state = true; //using same screen for 2 states: true for discardLC, false for finishSetup
 
     private ArrayList<ImageView> leader = new ArrayList<>();
-    private ArrayList<Resources> resources = new ArrayList<>();
+    private ArrayList<ImageView> resources = new ArrayList<>();
 
 
     @FXML
     public void initialize() {
-        state = true;
+        button.setDisable(true);
         indexes = new int[2];
         indexes[0] = -1;
         indexes[1] = -1;
@@ -77,19 +83,20 @@ public class DiscardScreenController extends ViewObservable {
             leader.add(LCView);
             LCView.setFitHeight(274.0);
             LCView.setPreserveRatio(true);
-            LCView.getStyleClass().add("unselected");
             LCView.setId(""+(i+1));
             EventHandler<MouseEvent> eventHandler = e -> {
                 if (indexes[0] != Integer.parseInt(LCView.getId()) && indexes[1] != Integer.parseInt(LCView.getId())) {
-                    LCView.getStyleClass().remove("unselected");
-                    LCView.getStyleClass().add("selected");
+                    ColorAdjust colorAdjust = new ColorAdjust();
+                    colorAdjust.setBrightness(0.5);
+                    LCView.setEffect(colorAdjust);
                     if (indexes[0] == -1) {
                         indexes[0] = Integer.parseInt(LCView.getId());
                     } else if (indexes[1] == -1) {
                         indexes[1] = Integer.parseInt(LCView.getId());
+                        LCView.setEffect(colorAdjust);
+                        button.setDisable(false);
                     } else {
-                        leader.get(indexes[0] - 1).getStyleClass().remove("selected");
-                        leader.get(indexes[0] - 1).getStyleClass().add("unselected");
+                        leader.get(indexes[0] - 1).setEffect(null);
                         int tmp;
                         tmp = indexes[1];
                         indexes[1] = Integer.parseInt(LCView.getId());
@@ -109,16 +116,43 @@ public class DiscardScreenController extends ViewObservable {
     }
 
     public void addResources(int n){
+        state = false;
         userChoice.getChildren().clear();
         one_twoResourceSetup = n;
         int i=0;
         for(Resources R : Resources.values()){
             String path = "/images/resources/" + R.getID() + ".png";
             ImageView resourceView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-            resources.add(R);
+            resources.add(resourceView);
             resourceView.setId(""+(i));
             EventHandler<MouseEvent> eventHandler = e -> {
-                chosenResources.add(resources.get(Integer.parseInt(resourceView.getId())).abbreviation());
+                button.setDisable(false);
+                if(choiceNumber == 1) {
+                    if (indexes[0] != -1) {
+                        resources.get(indexes[0]).setEffect(null);
+                        chosenResources.clear();
+                    }
+                    indexes[0] = Integer.parseInt(resourceView.getId());
+                }
+                else{
+                    if (indexes[1] != -1) {
+                        resources.get(indexes[1]).setEffect(null);
+                        chosenResources.remove(1);
+                    }
+                    indexes[1] = Integer.parseInt(resourceView.getId());
+                }
+                String abbr;
+                switch(resourceView.getId()){
+                    case "0"-> abbr = "MO";
+                    case "1"-> abbr = "PI";
+                    case "2"-> abbr = "SE";
+                    case "3"-> abbr = "SC";
+                    default -> abbr = "";
+                }
+                chosenResources.add(abbr);
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setBrightness(0.5);
+                resourceView.setEffect(colorAdjust);
             };
             resourceView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
             switch(i){
@@ -131,17 +165,19 @@ public class DiscardScreenController extends ViewObservable {
         }
     }
 
+
     public void selectCards(){
         if(state){
-            if(indexes[0]!=-1 && indexes[1]!=-1) notifySetupDiscardLC(indexes);
-            //TODO: else messaggio di errore
+            notifySetupDiscardLC(indexes);
         }
         else{
             if(one_twoResourceSetup == chosenResources.size()){
-                System.out.println("Risorse scelte: " + chosenResources);
                 notifyFinishSetup(chosenResources);
             }
-            //TODO: else messaggio di errore
+            else if(one_twoResourceSetup == 2 && chosenResources.size()==1){
+                resources.get(indexes[0]).setEffect(null);
+                choiceNumber++;
+            }
         }
     }
 }
