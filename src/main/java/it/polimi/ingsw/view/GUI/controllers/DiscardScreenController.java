@@ -1,8 +1,6 @@
 package it.polimi.ingsw.view.GUI.controllers;
 
-import it.polimi.ingsw.commons.Marbles;
-import it.polimi.ingsw.commons.Resources;
-import it.polimi.ingsw.commons.Triplet;
+import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.observers.ViewObservable;
 
 import it.polimi.ingsw.view.GUI.GUI;
@@ -15,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class DiscardScreenController extends ViewObservable {
@@ -39,7 +38,7 @@ public class DiscardScreenController extends ViewObservable {
         indexes[1] = -1;
     }
 
-    public void addMarbles(Marbles[][] market, Marbles remaining){
+    public void addMarbles(Marbles[][] market){
         for(int i=0;i<3;i++) {
             for(int j=0;j<4;j++) {
                 String path = "/images/marbles/" + market[i][j].getID()+".png";
@@ -51,8 +50,17 @@ public class DiscardScreenController extends ViewObservable {
         }
     }
 
-    public void addDevelopment(){
-
+    public void addDevelopment(HashMap<Pair<Colours, Integer>, Integer> DCM){
+        for(Colours C : Colours.values()){
+            for(int i=3;i>=1;i--){
+                Pair<Colours,Integer> P = new Pair<>(C,i);
+                String path = "/images/developmentCards/" + P.getKey().ColourToString() + DCM.get(new Pair<>(P)) +".png";
+                ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                DCView.setFitHeight(274.0);
+                DCView.setPreserveRatio(true);
+                developmentCards.add(DCView,P.getKey().ColourToColumn(),3-P.getValue());
+            }
+        }
     }
 
     public void addLeader(ArrayList<Triplet<Resources, Integer, Integer>> LC){

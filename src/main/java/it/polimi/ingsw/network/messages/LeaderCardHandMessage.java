@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 public class LeaderCardHandMessage extends Message implements Serializable {
     private final ArrayList<Triplet<Resources,Integer,Integer>> LC;
+    //Triplet: resource required, victory points, extra resources allocated (ability)
 
     public LeaderCardHandMessage(ArrayList<LeaderCard> leaderCards) {
         LC = new ArrayList<>();

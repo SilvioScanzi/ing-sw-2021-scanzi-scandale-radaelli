@@ -1,5 +1,7 @@
 package it.polimi.ingsw.commons;
 
+import java.awt.*;
+
 public enum Colours {
     Purple,
     Yellow,
@@ -8,22 +10,39 @@ public enum Colours {
 
     @Override
     public String toString(){
-        switch(this){
-            case Yellow: return "Giallo";
-            case Purple: return "Viola";
-            case Blue: return "Blu";
-            case Green: return "Verde";
-            default: return "Error";
-        }
+        return switch (this) {
+            case Yellow -> "Giallo";
+            case Purple -> "Viola";
+            case Blue -> "Blu";
+            case Green -> "Verde";
+        };
     }
 
     public static Colours getColourFromString(String string) throws IllegalArgumentException {
-        switch(string){
-            case "BL" : return Blue;
-            case "VE" : return Green;
-            case "GI" : return Yellow;
-            case "VI" : return Purple;
-            default : throw new IllegalArgumentException();
-        }
+        return switch (string) {
+            case "BL" -> Blue;
+            case "VE" -> Green;
+            case "GI" -> Yellow;
+            case "VI" -> Purple;
+            default -> throw new IllegalStateException("Unexpected value: " + string);
+        };
+    }
+
+    public String ColourToString(){
+        return switch(this){
+            case Yellow -> "Y";
+            case Purple -> "P";
+            case Blue -> "B";
+            case Green -> "G";
+        };
+    }
+
+    public int ColourToColumn(){
+        return switch(this){
+            case Yellow -> 2;
+            case Purple -> 3;
+            case Blue -> 1;
+            case Green -> 0;
+        };
     }
 }

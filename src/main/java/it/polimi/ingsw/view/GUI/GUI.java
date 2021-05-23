@@ -111,9 +111,11 @@ public class GUI extends Application implements View{
                     discardScreenController = fxmlLoader.getController();
                     discardScreenController.initialize();
                     discardScreenController.addObserver(NH);
-                    discardScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
-                    discardScreenController.addDevelopment();
+                    discardScreenController.addMarbles(NH.getClientModel().getResourceMarket());
+                    discardScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     discardScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                    //TODO: come cazz se fa ad adattare allo schermo?
+                    primaryStage.setResizable(true);
                     primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
