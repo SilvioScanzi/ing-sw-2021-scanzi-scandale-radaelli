@@ -25,14 +25,20 @@ public class DiscardScreenController extends ViewObservable {
     private GridPane marbles;
 
     @FXML
-    private GridPane leaderCards;
+    private GridPane userChoice;    //2 screens: leader cards and resources
 
     private int[] indexes;
+    private ArrayList<String> chosenResources = new ArrayList<>();
+    private int one_twoResourceSetup;
+    private boolean state; //using same screen for 2 states: true for discardLC, false for finishSetup
 
-    public ArrayList<ImageView> leader = new ArrayList<>();
+    private ArrayList<ImageView> leader = new ArrayList<>();
+    private ArrayList<Resources> resources = new ArrayList<>();
+
 
     @FXML
     public void initialize() {
+        state = true;
         indexes = new int[2];
         indexes[0] = -1;
         indexes[1] = -1;
@@ -94,17 +100,48 @@ public class DiscardScreenController extends ViewObservable {
             LCView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
 
             switch(i){
-                case 0-> leaderCards.add(LCView,0,0);
-                case 1-> leaderCards.add(LCView,1,0);
-                case 2-> leaderCards.add(LCView,0,1);
-                case 3-> leaderCards.add(LCView,1,1);
+                case 0-> userChoice.add(LCView,0,0);
+                case 1-> userChoice.add(LCView,1,0);
+                case 2-> userChoice.add(LCView,0,1);
+                case 3-> userChoice.add(LCView,1,1);
             }
         }
     }
 
+    public void addResources(int n){
+        userChoice.getChildren().clear();
+        one_twoResourceSetup = n;
+        int i=0;
+        for(Resources R : Resources.values()){
+            String path = "/images/resources/" + R.getID() + ".png";
+            ImageView resourceView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+            resources.add(R);
+            resourceView.setId(""+(i));
+            EventHandler<MouseEvent> eventHandler = e -> {
+                chosenResources.add(resources.get(Integer.parseInt(resourceView.getId())).abbreviation());
+            };
+            resourceView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+            switch(i){
+                case 0-> userChoice.add(resourceView,0,0);
+                case 1-> userChoice.add(resourceView,1,0);
+                case 2-> userChoice.add(resourceView,0,1);
+                case 3-> userChoice.add(resourceView,1,1);
+            }
+            i++;
+        }
+    }
+
     public void selectCards(){
-        if(indexes[0]!=-1 && indexes[1]!=-1) {
-            notifySetupDiscardLC(indexes);
+        if(state){
+            if(indexes[0]!=-1 && indexes[1]!=-1) notifySetupDiscardLC(indexes);
+            //TODO: else messaggio di errore
+        }
+        else{
+            if(one_twoResourceSetup == chosenResources.size()){
+                System.out.println("Risorse scelte: " + chosenResources);
+                notifyFinishSetup(chosenResources);
+            }
+            //TODO: else messaggio di errore
         }
     }
 }

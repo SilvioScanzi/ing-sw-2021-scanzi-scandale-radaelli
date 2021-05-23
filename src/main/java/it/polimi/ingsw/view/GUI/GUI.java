@@ -2,11 +2,9 @@ package it.polimi.ingsw.view.GUI;
 
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.client.NetworkHandler;
+import it.polimi.ingsw.network.messages.FinishSetupMessage;
 import it.polimi.ingsw.network.messages.StandardMessages;
-import it.polimi.ingsw.view.GUI.controllers.ConnectionScreenController;
-import it.polimi.ingsw.view.GUI.controllers.DiscardScreenController;
-import it.polimi.ingsw.view.GUI.controllers.NicknameScreenController;
-import it.polimi.ingsw.view.GUI.controllers.PlayerNumberController;
+import it.polimi.ingsw.view.GUI.controllers.*;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
@@ -114,14 +112,19 @@ public class GUI extends Application implements View{
                     discardScreenController.addMarbles(NH.getClientModel().getResourceMarket());
                     discardScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     discardScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                    //TODO: come cazz se fa ad adattare allo schermo?
+                    //TODO: come si fa ad adattare allo schermo?
                     primaryStage.setResizable(true);
                     primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
         else if(state.equals(ViewState.finishSetupOneResource) || state.equals(ViewState.finishSetupTwoResources)){
-
+            Platform.runLater(() -> {
+                try {
+                    if(state.equals(ViewState.finishSetupOneResource)) discardScreenController.addResources(1);
+                    if(state.equals(ViewState.finishSetupTwoResources)) discardScreenController.addResources(2);
+                }catch(Exception e){e.printStackTrace();}
+            });
         }
 
         this.state = state;

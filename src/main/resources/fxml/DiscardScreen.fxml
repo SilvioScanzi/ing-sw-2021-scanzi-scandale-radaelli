@@ -36,7 +36,7 @@
         </rowConstraints>
       </GridPane>
 
-      <GridPane fx:id="leaderCards" layoutX="929.0" layoutY="336.0" prefHeight="600.0" prefWidth="392.0">
+      <GridPane fx:id="userChoice" layoutX="929.0" layoutY="336.0" prefHeight="600.0" prefWidth="392.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
