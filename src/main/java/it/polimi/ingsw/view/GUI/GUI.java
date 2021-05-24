@@ -33,6 +33,7 @@ public class GUI extends Application implements View{
     private PlayerNumberController playerNumberController;
     private SetupScreenController setupScreenController;
     private WaitScreenController waitScreenController;
+    private GameScreenController gameScreenController;
     private NetworkHandler NH;
 
     public static void main(String[] args){
@@ -168,6 +169,23 @@ public class GUI extends Application implements View{
                 }catch(IOException e){e.printStackTrace();}
             });
         }
+        else if(state.equals(ViewState.myTurn)){
+            Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
+                try {
+                    currentScene = new Scene(fxmlLoader.load());
+                    gameScreenController = fxmlLoader.getController();
+                    gameScreenController.addMarbles(NH.getClientModel().getResourceMarket());
+                    gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
+                    //gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                    primaryStage.setScene(currentScene);
+                    primaryStage.setMaximized(true);
+                    scale();
+                }catch(IOException e){e.printStackTrace();}
+            });
+        }
+
 
         this.state = state;
     }
