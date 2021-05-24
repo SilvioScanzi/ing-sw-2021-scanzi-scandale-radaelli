@@ -9,11 +9,10 @@ import it.polimi.ingsw.view.ViewState;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
@@ -146,7 +145,7 @@ public class GUI extends Application implements View{
                     setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
                     primaryStage.setScene(currentScene);
                     primaryStage.setMaximized(true);
-                    scale(primaryStage.getHeight());
+                    scale();
 
                 }catch(IOException e){e.printStackTrace();}
             });
@@ -165,7 +164,7 @@ public class GUI extends Application implements View{
                     if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
                     primaryStage.setScene(currentScene);
                     primaryStage.setMaximized(true);
-                    scale(primaryStage.getHeight());
+                    scale();
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -173,12 +172,17 @@ public class GUI extends Application implements View{
         this.state = state;
     }
 
-    private void scale(double height){
-        double scaleFactor = height/900;
+    private void scale(){
+        double scaleFactor = primaryStage.getHeight()/900;
         Scale scale = new Scale(scaleFactor, scaleFactor);
         scale.setPivotX(0);
         scale.setPivotY(0);
         currentScene.getRoot().getTransforms().setAll(scale);
+        var image = new Image(getClass().getResource("/images/Parchment.jpg").toString(),true);
+        var background = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                new BackgroundSize(primaryStage.getWidth(), primaryStage.getHeight(), false, false, false, false)
+        );
+        ((Pane) currentScene.getRoot()).setBackground(new Background(background));
     }
 
     @Override
