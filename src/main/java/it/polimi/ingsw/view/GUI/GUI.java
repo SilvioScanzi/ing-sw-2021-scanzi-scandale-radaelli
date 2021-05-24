@@ -9,9 +9,13 @@ import it.polimi.ingsw.view.ViewState;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
+import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -23,6 +27,7 @@ public class GUI extends Application implements View{
 
     private ViewState state = ViewState.start;
     private Stage primaryStage;
+    private Scene currentScene;
     private FXMLLoader fxmlLoader;
     private ConnectionScreenController connectionScreenController;
     private NicknameScreenController nicknameScreenController;
@@ -52,13 +57,14 @@ public class GUI extends Application implements View{
         });
 
         try {
-            Scene currentScene = new Scene(fxmlLoader.load());
+            Pane root = fxmlLoader.load();
+            currentScene = new Scene(root);
             primaryStage.setTitle("Maestri del rinascimento - Launcher");
             connectionScreenController = fxmlLoader.getController();
             connectionScreenController.addObserver(NH);
             primaryStage.setScene(currentScene);
-            primaryStage.setResizable(false);
             primaryStage.show();
+            primaryStage.setResizable(false);
         }catch(IOException e){e.printStackTrace();}
     }
 
@@ -70,7 +76,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/NicknameScreen.fxml"));
                 try {
-                    Scene currentScene = new Scene(fxmlLoader.load());
+                    currentScene = new Scene(fxmlLoader.load());
                     nicknameScreenController = fxmlLoader.getController();
                     nicknameScreenController.addObserver(NH);
                     primaryStage.setScene(currentScene);
@@ -82,7 +88,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerNumberScreen.fxml"));
                 try {
-                    Scene currentScene = new Scene(fxmlLoader.load());
+                    currentScene = new Scene(fxmlLoader.load());
                     playerNumberController = fxmlLoader.getController();
                     playerNumberController.addObserver(NH);
                     playerNumberController.addNumbers();
@@ -95,7 +101,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
-                    Scene currentScene = new Scene(fxmlLoader.load());
+                    currentScene = new Scene(fxmlLoader.load());
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Resta in attesa che venga creata una partita");
                     primaryStage.setScene(currentScene);
@@ -107,7 +113,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
-                    Scene currentScene = new Scene(fxmlLoader.load());
+                    currentScene = new Scene(fxmlLoader.load());
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!");
                     primaryStage.setScene(currentScene);
@@ -119,7 +125,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
-                    Scene currentScene = new Scene(fxmlLoader.load());
+                    currentScene = new Scene(fxmlLoader.load());
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Gli altri giocatori stanno compiendo delle scelte, resta in attesa");
                     primaryStage.setScene(currentScene);
@@ -131,16 +137,17 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
                 try {
-                    Scene currentScene = new Scene(fxmlLoader.load());
+                    currentScene = new Scene(fxmlLoader.load());
                     setupScreenController = fxmlLoader.getController();
                     setupScreenController.initialize();
                     setupScreenController.addObserver(NH);
                     setupScreenController.addMarbles(NH.getClientModel().getResourceMarket());
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                    //TODO: come si fa ad adattare allo schermo?
-                    primaryStage.setResizable(true);
                     primaryStage.setScene(currentScene);
+                    primaryStage.setMaximized(true);
+                    scale(primaryStage.getHeight());
+
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -149,20 +156,29 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
                 try {
-                    Scene currentScene = new Scene(fxmlLoader.load());
+                    currentScene = new Scene(fxmlLoader.load());
                     setupScreenController = fxmlLoader.getController();
                     setupScreenController.initialize();
                     setupScreenController.addMarbles(NH.getClientModel().getResourceMarket());
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     if(state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
                     if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
-                    //TODO: come si fa ad adattare allo schermo?
                     primaryStage.setScene(currentScene);
+                    primaryStage.setMaximized(true);
+                    scale(primaryStage.getHeight());
                 }catch(IOException e){e.printStackTrace();}
             });
         }
 
         this.state = state;
+    }
+
+    private void scale(double height){
+        double scaleFactor = height/900;
+        Scale scale = new Scale(scaleFactor, scaleFactor);
+        scale.setPivotX(0);
+        scale.setPivotY(0);
+        currentScene.getRoot().getTransforms().setAll(scale);
     }
 
     @Override

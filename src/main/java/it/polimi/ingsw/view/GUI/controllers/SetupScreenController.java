@@ -68,7 +68,7 @@ public class SetupScreenController extends ViewObservable {
                 Pair<Colours,Integer> P = new Pair<>(C,i);
                 String path = "/images/developmentCards/" + P.getKey().ColourToString() + DCM.get(new Pair<>(P)) +".png";
                 ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-                DCView.setFitHeight(274.0);
+                DCView.setFitWidth(175.0);
                 DCView.setPreserveRatio(true);
                 developmentCards.add(DCView,P.getKey().ColourToColumn(),3-P.getValue());
             }
@@ -81,7 +81,7 @@ public class SetupScreenController extends ViewObservable {
             String path = "/images/leaderCards/" + T.get_1().getID()+T.get_2()+".png";
             ImageView LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             leader.add(LCView);
-            LCView.setFitHeight(274.0);
+            LCView.setFitWidth(175.0);
             LCView.setPreserveRatio(true);
             LCView.setId(""+(i+1));
             EventHandler<MouseEvent> eventHandler = e -> {
