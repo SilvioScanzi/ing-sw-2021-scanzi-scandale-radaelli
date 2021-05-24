@@ -65,6 +65,14 @@ public class GUI extends Application implements View{
             primaryStage.setScene(currentScene);
             primaryStage.show();
             primaryStage.setResizable(false);
+
+            currentScene.widthProperty().addListener((obs, oldVal, newVal) -> {
+                scale();
+            });
+
+            currentScene.heightProperty().addListener((obs, oldVal, newVal) -> {
+                scale();
+            });
         }catch(IOException e){e.printStackTrace();}
     }
 
@@ -76,10 +84,10 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/NicknameScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     nicknameScreenController = fxmlLoader.getController();
                     nicknameScreenController.addObserver(NH);
-                    primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -88,11 +96,11 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerNumberScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     playerNumberController = fxmlLoader.getController();
                     playerNumberController.addObserver(NH);
                     playerNumberController.addNumbers();
-                    primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -101,10 +109,10 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Resta in attesa che venga creata una partita");
-                    primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -113,10 +121,10 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!");
-                    primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -125,10 +133,10 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Gli altri giocatori stanno compiendo delle scelte, resta in attesa");
-                    primaryStage.setScene(currentScene);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -137,17 +145,16 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     setupScreenController = fxmlLoader.getController();
                     setupScreenController.initialize();
                     setupScreenController.addObserver(NH);
-                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket());
+                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                    primaryStage.setScene(currentScene);
                     primaryStage.setMaximized(true);
-                    scale();
-
+                    primaryStage.setResizable(true);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -156,16 +163,14 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     setupScreenController = fxmlLoader.getController();
                     setupScreenController.initialize();
-                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket());
+                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     if(state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
                     if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
-                    primaryStage.setScene(currentScene);
-                    primaryStage.setMaximized(true);
-                    scale();
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -174,33 +179,25 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
                 try {
-                    currentScene = new Scene(fxmlLoader.load());
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
                     gameScreenController = fxmlLoader.getController();
                     gameScreenController.addMarbles(NH.getClientModel().getResourceMarket());
                     gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
-                    //gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
-                    primaryStage.setScene(currentScene);
-                    primaryStage.setMaximized(true);
-                    scale();
                 }catch(IOException e){e.printStackTrace();}
             });
         }
-
-
         this.state = state;
     }
 
     private void scale(){
-        double scaleFactor = primaryStage.getHeight()/900;
-        Scale scale = new Scale(scaleFactor, scaleFactor);
+        double scaleFactorX = primaryStage.getWidth()/1600;
+        double scaleFactorY = primaryStage.getHeight()/900;
+
+        Scale scale = new Scale(scaleFactorX, scaleFactorY);
         scale.setPivotX(0);
         scale.setPivotY(0);
         currentScene.getRoot().getTransforms().setAll(scale);
-        var image = new Image(getClass().getResource("/images/Parchment.jpg").toString(),true);
-        var background = new BackgroundImage(image, BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                new BackgroundSize(primaryStage.getWidth(), primaryStage.getHeight(), false, false, false, false)
-        );
-        ((Pane) currentScene.getRoot()).setBackground(new Background(background));
     }
 
     @Override

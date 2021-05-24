@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 
-public class NicknameScreenController extends ViewObservable {
+public class NicknameScreenController extends ViewObservable{
 
     @FXML
     private TextField nicknameID;

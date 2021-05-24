@@ -32,6 +32,9 @@ public class SetupScreenController extends ViewObservable {
     @FXML
     private Button button;
 
+    @FXML
+    private ImageView rm;
+
     private int[] indexes;
     private ArrayList<String> chosenResources = new ArrayList<>();
     private int one_twoResourceSetup;
@@ -50,16 +53,18 @@ public class SetupScreenController extends ViewObservable {
         indexes[1] = -1;
     }
 
-    public void addMarbles(Marbles[][] market){
+    public void addMarbles(Marbles[][] market, Marbles remainingMarble){
         for(int i=0;i<3;i++) {
             for(int j=0;j<4;j++) {
                 String path = "/images/marbles/" + market[i][j].getID()+".png";
                 ImageView marbleView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-                marbleView.setFitHeight(94.0);
+                marbleView.setFitHeight(56.0);
                 marbleView.setPreserveRatio(true);
                 marbles.add(marbleView,j,i);
             }
         }
+        String path = "/images/marbles/" + remainingMarble.getID()+".png";
+        rm.setImage(new Image(GUI.class.getResource(path).toString()));
     }
 
     public void addDevelopment(HashMap<Pair<Colours, Integer>, Integer> DCM){
@@ -106,12 +111,7 @@ public class SetupScreenController extends ViewObservable {
             };
             LCView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
 
-            switch(i){
-                case 0-> userChoice.add(LCView,0,0);
-                case 1-> userChoice.add(LCView,1,0);
-                case 2-> userChoice.add(LCView,0,1);
-                case 3-> userChoice.add(LCView,1,1);
-            }
+            userChoice.add(LCView,i,0);
         }
     }
 
@@ -155,12 +155,7 @@ public class SetupScreenController extends ViewObservable {
                 resourceView.setEffect(colorAdjust);
             };
             resourceView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
-            switch(i){
-                case 0-> userChoice.add(resourceView,0,0);
-                case 1-> userChoice.add(resourceView,1,0);
-                case 2-> userChoice.add(resourceView,0,1);
-                case 3-> userChoice.add(resourceView,1,1);
-            }
+            userChoice.add(resourceView,i,0);
             i++;
         }
     }

@@ -11,6 +11,11 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.GameScreenController">
    <children>
+      <ImageView fitHeight="901.0" fitWidth="1602.0">
+         <image>
+            <Image url="@../images/Parchment.jpg" />
+         </image>
+      </ImageView>
       <Pane layoutX="29.0" layoutY="520.0" prefHeight="376.0" prefWidth="1258.0">
          <children>
             <ImageView fx:id="board" fitHeight="316.0" fitWidth="665.0" layoutX="25.0" layoutY="41.0">

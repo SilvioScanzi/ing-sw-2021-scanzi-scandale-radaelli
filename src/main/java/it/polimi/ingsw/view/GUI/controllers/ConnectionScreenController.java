@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 
 
-public class ConnectionScreenController extends ViewObservable {
+public class ConnectionScreenController extends ViewObservable{
 
     @FXML
     private TextField IP;
