@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="541.0" prefWidth="600.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.NicknameScreenController">
+<AnchorPane onKeyPressed="#handleKeyPressed" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="541.0" prefWidth="600.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.NicknameScreenController">
     <ImageView fitHeight="267.0" fitWidth="576.0" layoutX="12.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
         <image>
             <Image url="@../images/Title.png" />
@@ -19,7 +19,7 @@
       <cursor>
          <Cursor fx:constant="TEXT" />
       </cursor></TextField>
-    <Button layoutX="250.0" layoutY="464.0" mnemonicParsing="false" onAction="#submitOnClickHandler" text="CONFERMA">
+    <Button fx:id="button" layoutX="250.0" layoutY="464.0" mnemonicParsing="false" onAction="#submitOnClickHandler" text="CONFERMA">
       <cursor>
          <Cursor fx:constant="HAND" />
       </cursor></Button>

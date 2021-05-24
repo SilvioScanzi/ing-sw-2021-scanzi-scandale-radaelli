@@ -11,7 +11,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Scale;
@@ -28,9 +28,8 @@ public class GUI extends Application implements View{
     private Stage primaryStage;
     private Scene currentScene;
     private FXMLLoader fxmlLoader;
-    private ConnectionScreenController connectionScreenController;
     private NicknameScreenController nicknameScreenController;
-    private PlayerNumberController playerNumberController;
+    private PlayerNumberScreenController playerNumberScreenController;
     private SetupScreenController setupScreenController;
     private WaitScreenController waitScreenController;
     private GameScreenController gameScreenController;
@@ -60,7 +59,7 @@ public class GUI extends Application implements View{
             Pane root = fxmlLoader.load();
             currentScene = new Scene(root);
             primaryStage.setTitle("Maestri del rinascimento - Launcher");
-            connectionScreenController = fxmlLoader.getController();
+            ConnectionScreenController connectionScreenController = fxmlLoader.getController();
             connectionScreenController.addObserver(NH);
             primaryStage.setScene(currentScene);
             primaryStage.show();
@@ -98,9 +97,8 @@ public class GUI extends Application implements View{
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
-                    playerNumberController = fxmlLoader.getController();
-                    playerNumberController.addObserver(NH);
-                    playerNumberController.addNumbers();
+                    playerNumberScreenController = fxmlLoader.getController();
+                    playerNumberScreenController.addObserver(NH);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -148,11 +146,11 @@ public class GUI extends Application implements View{
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
                     setupScreenController = fxmlLoader.getController();
-                    setupScreenController.initialize();
                     setupScreenController.addObserver(NH);
                     setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                    currentScene.setOnKeyPressed(e -> setupScreenController.handleKeyPressed(e));
                     primaryStage.setMaximized(true);
                     primaryStage.setResizable(true);
                 }catch(IOException e){e.printStackTrace();}
@@ -166,7 +164,6 @@ public class GUI extends Application implements View{
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
                     setupScreenController = fxmlLoader.getController();
-                    setupScreenController.initialize();
                     setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     if(state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
@@ -179,6 +176,7 @@ public class GUI extends Application implements View{
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
                 try {
+                    currentScene.setOnKeyPressed(null);
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
                     gameScreenController = fxmlLoader.getController();

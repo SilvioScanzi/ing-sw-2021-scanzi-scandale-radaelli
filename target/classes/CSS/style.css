@@ -13,6 +13,11 @@
     -fx-font-size: 25;
 }
 
+.textBig{
+    -fx-font-family: "Enchanted Land";
+    -fx-font-size: 40;
+}
+
 Button{
     -fx-background-color: #005a75;
     -fx-border-width: 3,3,3,3;

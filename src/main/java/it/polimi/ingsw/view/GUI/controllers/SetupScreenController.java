@@ -11,6 +11,8 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 
@@ -90,24 +92,7 @@ public class SetupScreenController extends ViewObservable {
             LCView.setPreserveRatio(true);
             LCView.setId(""+(i+1));
             EventHandler<MouseEvent> eventHandler = e -> {
-                if (indexes[0] != Integer.parseInt(LCView.getId()) && indexes[1] != Integer.parseInt(LCView.getId())) {
-                    ColorAdjust colorAdjust = new ColorAdjust();
-                    colorAdjust.setBrightness(0.5);
-                    LCView.setEffect(colorAdjust);
-                    if (indexes[0] == -1) {
-                        indexes[0] = Integer.parseInt(LCView.getId());
-                    } else if (indexes[1] == -1) {
-                        indexes[1] = Integer.parseInt(LCView.getId());
-                        LCView.setEffect(colorAdjust);
-                        button.setDisable(false);
-                    } else {
-                        leader.get(indexes[0] - 1).setEffect(null);
-                        int tmp;
-                        tmp = indexes[1];
-                        indexes[1] = Integer.parseInt(LCView.getId());
-                        indexes[0] = tmp;
-                    }
-                }
+                event(LCView);
             };
             LCView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
 
@@ -126,33 +111,7 @@ public class SetupScreenController extends ViewObservable {
             resources.add(resourceView);
             resourceView.setId(""+(i));
             EventHandler<MouseEvent> eventHandler = e -> {
-                button.setDisable(false);
-                if(choiceNumber == 1) {
-                    if (indexes[0] != -1) {
-                        resources.get(indexes[0]).setEffect(null);
-                        chosenResources.clear();
-                    }
-                    indexes[0] = Integer.parseInt(resourceView.getId());
-                }
-                else{
-                    if (indexes[1] != -1) {
-                        resources.get(indexes[1]).setEffect(null);
-                        chosenResources.remove(1);
-                    }
-                    indexes[1] = Integer.parseInt(resourceView.getId());
-                }
-                String abbr;
-                switch(resourceView.getId()){
-                    case "0"-> abbr = "MO";
-                    case "1"-> abbr = "PI";
-                    case "2"-> abbr = "SE";
-                    case "3"-> abbr = "SC";
-                    default -> abbr = "";
-                }
-                chosenResources.add(abbr);
-                ColorAdjust colorAdjust = new ColorAdjust();
-                colorAdjust.setBrightness(0.5);
-                resourceView.setEffect(colorAdjust);
+                event(resourceView);
             };
             resourceView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
             userChoice.add(resourceView,i,0);
@@ -173,6 +132,96 @@ public class SetupScreenController extends ViewObservable {
                 resources.get(indexes[0]).setEffect(null);
                 choiceNumber++;
             }
+        }
+    }
+
+    public void handleKeyPressed(KeyEvent keyEvent) {
+        if(keyEvent.getCode().equals(KeyCode.ENTER)){
+            selectCards();
+        }
+        else if(keyEvent.getCode().equals(KeyCode.DIGIT1) || keyEvent.getCode().equals(KeyCode.NUMPAD1)){
+            if(state) {
+                event(leader.get(0));
+            }
+            else{
+                event(resources.get(0));
+            }
+        }
+        else if(keyEvent.getCode().equals(KeyCode.DIGIT2) || keyEvent.getCode().equals(KeyCode.NUMPAD2)){
+            if(state) {
+                event(leader.get(1));
+            }
+            else{
+                event(resources.get(1));
+            }
+        }
+        else if(keyEvent.getCode().equals(KeyCode.DIGIT3) || keyEvent.getCode().equals(KeyCode.NUMPAD3)){
+            if(state) {
+                event(leader.get(2));
+            }
+            else{
+                event(resources.get(2));
+            }
+        }
+        else if(keyEvent.getCode().equals(KeyCode.DIGIT4) || keyEvent.getCode().equals(KeyCode.NUMPAD4)){
+            if(state) {
+                event(leader.get(3));
+            }
+            else{
+                event(resources.get(3));
+            }
+        }
+    }
+
+    private void event(ImageView img){
+        if(state){
+            if (indexes[0] != Integer.parseInt(img.getId()) && indexes[1] != Integer.parseInt(img.getId())) {
+                ColorAdjust colorAdjust = new ColorAdjust();
+                colorAdjust.setBrightness(0.5);
+                img.setEffect(colorAdjust);
+                if (indexes[0] == -1) {
+                    indexes[0] = Integer.parseInt(img.getId());
+                } else if (indexes[1] == -1) {
+                    indexes[1] = Integer.parseInt(img.getId());
+                    img.setEffect(colorAdjust);
+                    button.setDisable(false);
+                } else {
+                    leader.get(indexes[0] - 1).setEffect(null);
+                    int tmp;
+                    tmp = indexes[1];
+                    indexes[1] = Integer.parseInt(img.getId());
+                    indexes[0] = tmp;
+                }
+            }
+        }
+        else{
+            button.setDisable(false);
+            if(choiceNumber == 1) {
+                if (indexes[0] != -1) {
+                    resources.get(indexes[0]).setEffect(null);
+                    chosenResources.clear();
+                }
+                indexes[0] = Integer.parseInt(img.getId());
+            }
+            else{
+                if (indexes[1] != -1) {
+                    resources.get(indexes[1]).setEffect(null);
+                    chosenResources.remove(1);
+                }
+                indexes[1] = Integer.parseInt(img.getId());
+            }
+            String abbr;
+            switch(img.getId()){
+                case "0"-> abbr = "MO";
+                case "1"-> abbr = "PI";
+                case "2"-> abbr = "SE";
+                case "3"-> abbr = "SC";
+                default -> abbr = "";
+            }
+            chosenResources.add(abbr);
+            ColorAdjust colorAdjust = new ColorAdjust();
+            colorAdjust.setBrightness(0.5);
+            img.setEffect(colorAdjust);
         }
     }
 }
