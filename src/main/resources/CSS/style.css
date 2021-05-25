@@ -10,12 +10,18 @@
 
 .textbody{
     -fx-font-family: "Enchanted Land";
-    -fx-font-size: 30;
+    -fx-font-size: 35;
 }
 
 .textBig{
     -fx-font-family: "Enchanted Land";
     -fx-font-size: 40;
+}
+
+.textError{
+    -fx-font-family: "Enchanted Land";
+    -fx-font-size: 35;
+    -fx-fill: red;
 }
 
 Button{

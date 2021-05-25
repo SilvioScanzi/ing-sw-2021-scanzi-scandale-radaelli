@@ -73,7 +73,7 @@
             <Image url="@../images/frieze.png" />
          </image>
       </ImageView>
-      <Text layoutX="834.0" layoutY="439.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textBig" text="Scegli le due carte Leader da scartare " textAlignment="CENTER" wrappingWidth="667.1365966796875" />
+      <Text fx:id="message" layoutX="834.0" layoutY="439.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textBig" textAlignment="CENTER" wrappingWidth="667.1365966796875" />
       <ImageView fx:id="rm" fitHeight="58.0" fitWidth="56.0" layoutX="1262.0" layoutY="59.0" />
 </children>
 </AnchorPane>

@@ -10,14 +10,10 @@ import it.polimi.ingsw.view.clientModel.ClientBoard;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Scale;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -31,6 +27,7 @@ public class GUI extends Application implements View{
     private Stage primaryStage;
     private Scene currentScene;
     private FXMLLoader fxmlLoader;
+    private ConnectionScreenController connectionScreenController;
     private NicknameScreenController nicknameScreenController;
     private PlayerNumberScreenController playerNumberScreenController;
     private SetupScreenController setupScreenController;
@@ -62,18 +59,10 @@ public class GUI extends Application implements View{
             Pane root = fxmlLoader.load();
             currentScene = new Scene(root);
             primaryStage.setTitle("Maestri del rinascimento - Launcher");
-            ConnectionScreenController connectionScreenController = fxmlLoader.getController();
+            connectionScreenController = fxmlLoader.getController();
             connectionScreenController.addObserver(NH);
             primaryStage.setScene(currentScene);
             primaryStage.show();
-
-            Rectangle2D screenBounds = Screen.getPrimary().getBounds();
-            if(screenBounds.getHeight() >= 675 && screenBounds.getWidth() >= 1200){
-                primaryStage.setHeight(675);
-                primaryStage.setWidth(1200);
-                scale(800,450);
-            }
-
             primaryStage.setResizable(false);
 
             currentScene.widthProperty().addListener((obs, oldVal, newVal) -> {
@@ -98,7 +87,6 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     nicknameScreenController = fxmlLoader.getController();
                     nicknameScreenController.addObserver(NH);
-                    scale(800,450);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -111,7 +99,6 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     playerNumberScreenController = fxmlLoader.getController();
                     playerNumberScreenController.addObserver(NH);
-                    scale(800,450);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -124,7 +111,9 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Resta in attesa che venga creata una partita");
-                    scale(800,450);
+                    primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
+                    scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -137,7 +126,9 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!");
-                    scale(800,450);
+                    primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
+                    scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -150,12 +141,15 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Gli altri giocatori stanno compiendo delle scelte, resta in attesa");
-                    scale(800,450);
+                    primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
+                    scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
         else if(state.equals(ViewState.discardLeaderCard)){
             Platform.runLater(() -> {
+                primaryStage.setTitle("Maestri del rinascimento - Setup");
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
                 try {
@@ -166,6 +160,7 @@ public class GUI extends Application implements View{
                     setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                    setupScreenController.setMessage("Scegli le due carte Leader da scartare");
                     currentScene.setOnKeyPressed(e -> setupScreenController.handleKeyPressed(e));
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
@@ -185,12 +180,15 @@ public class GUI extends Application implements View{
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     if(state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
                     if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
+                    String message = "Scegli "+((state.equals(ViewState.finishSetupOneResource))?"una":"la prima")+" risorsa da ottenere";
+                    setupScreenController.setMessage(message);
                     scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
         else if(state.equals(ViewState.myTurn)){
             Platform.runLater(() -> {
+                primaryStage.setTitle("Maestri del rinascimento - In gioco");
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
                 try {
@@ -236,10 +234,7 @@ public class GUI extends Application implements View{
     public void printStandardMessage(StandardMessages message) {
         switch(message){
             case nicknameAlreadyInUse: nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
-            case unavailableConnection: {
-                Alert a = new Alert(Alert.AlertType.ERROR, "La connessione al server di gioco specificato non è disponibile");
-                a.show();
-            }
+            case unavailableConnection: connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile");
         }
     }
 

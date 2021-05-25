@@ -5,15 +5,15 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.WaitScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.WaitScreenController">
    <children>
-      <ImageView fitHeight="162.0" fitWidth="350.0" layoutX="225.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="302.0" fitWidth="652.0" layoutX="474.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/Title.png" />
          </image>
       </ImageView>
-      <Text fx:id="message" layoutX="14.0" layoutY="241.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" textAlignment="CENTER" wrappingWidth="772.0" />
-      <ImageView fitHeight="187.0" fitWidth="187.0" layoutX="307.0" layoutY="242.0">
+      <Text fx:id="message" layoutX="200.0" layoutY="393.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" textAlignment="CENTER" wrappingWidth="1200.0" />
+      <ImageView fitHeight="369.0" fitWidth="369.0" layoutX="616.0" layoutY="437.0">
          <image>
             <Image url="@../images/Hourglass.gif" />
          </image>

@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +37,9 @@ public class SetupScreenController extends ViewObservable {
 
     @FXML
     private ImageView rm;
+
+    @FXML
+    private Text message;
 
     private int[] indexes;
     private ArrayList<String> chosenResources = new ArrayList<>();
@@ -131,6 +135,7 @@ public class SetupScreenController extends ViewObservable {
             else if(one_twoResourceSetup == 2 && chosenResources.size()==1){
                 resources.get(indexes[0]).setEffect(null);
                 choiceNumber++;
+                setMessage("Scegli la seconda risorsa da ottenere");
             }
         }
     }
@@ -171,6 +176,10 @@ public class SetupScreenController extends ViewObservable {
                 event(resources.get(3));
             }
         }
+    }
+
+    public void setMessage(String S){
+        message.setText(S);
     }
 
     private void event(ImageView img){

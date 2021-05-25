@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-
+import javafx.scene.text.Text;
 
 
 public class ConnectionScreenController extends ViewObservable{
@@ -19,6 +19,9 @@ public class ConnectionScreenController extends ViewObservable{
 
     @FXML
     private Button button;
+
+    @FXML
+    private Text errormsg;
 
     @FXML
     public void initialize() {
@@ -44,5 +47,9 @@ public class ConnectionScreenController extends ViewObservable{
 
     public void handleKeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)) submitOnClickHandler();
+    }
+
+    public void setErrormsg(String S){
+        errormsg.setText(S);
     }
 }
