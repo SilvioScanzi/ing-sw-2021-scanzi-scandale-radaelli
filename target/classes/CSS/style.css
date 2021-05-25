@@ -10,7 +10,7 @@
 
 .textbody{
     -fx-font-family: "Enchanted Land";
-    -fx-font-size: 25;
+    -fx-font-size: 30;
 }
 
 .textBig{
@@ -19,12 +19,10 @@
 }
 
 Button{
-    -fx-background-color: #005a75;
-    -fx-border-width: 3,3,3,3;
-    -fx-border-color: #f3c83f;
-    -fx-text-origin: top;
-    -fx-text-alignment: center;
-    -fx-text-fill: white;
+    -fx-background-image: url("../images/Banner.png");
+    -fx-background-size: 100% 100%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
 }
 
 

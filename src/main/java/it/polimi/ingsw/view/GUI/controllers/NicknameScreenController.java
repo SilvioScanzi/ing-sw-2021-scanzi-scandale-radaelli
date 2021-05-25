@@ -6,34 +6,41 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.text.Text;
 
 
 public class NicknameScreenController extends ViewObservable{
 
     @FXML
-    private TextField nicknameID;
+    private TextField nickname;
 
     @FXML
     private Button button;
 
     @FXML
+    private Text errormsg;
+
+    @FXML
     public void initialize() {
         button.setDisable(true);
-        nicknameID.setOnKeyTyped(e -> {
-            button.setDisable(nicknameID.getText().equals(""));
+        nickname.setOnKeyTyped(e -> {
+            button.setDisable(nickname.getText().equals(""));
         });
     }
 
     @FXML
     public void submitOnClickHandler() {
-        String nickname = nicknameID.getText();
-        if(!nickname.equals("")) {notifyNickname(nickname);}
+        String nick = nickname.getText();
+        if(!nick.equals("")) {notifyNickname(nick);}
     }
-
 
     public void handleKeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)){
             submitOnClickHandler();
         }
+    }
+
+    public void setErrormsg(String S){
+        errormsg.setText(S);
     }
 }

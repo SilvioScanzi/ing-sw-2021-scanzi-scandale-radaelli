@@ -8,21 +8,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="541.0" prefWidth="600.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.PlayerNumberController">
-    <children>
-        <ImageView fitHeight="267.0" fitWidth="576.0" layoutX="12.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../images/Title.png" />
-            </image>
-        </ImageView>
-        <Button fx:id="submit" layoutX="250.0" layoutY="464.0" mnemonicParsing="false" onAction="#submitOnClickHandler" text="CONFERMA">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyPressed" prefHeight="450.0" prefWidth="800.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.PlayerNumberScreenController">
+   <children>
+      <ImageView fitHeight="162.0" fitWidth="350.0" layoutX="225.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Title.png" />
+         </image>
+      </ImageView>
+      <Text layoutX="-70.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" text="Scegli il numero di giocatori per la partita" textAlignment="CENTER" wrappingWidth="939.0" />
+      <Button fx:id="button" layoutX="210.0" layoutY="333.0" mnemonicParsing="false" onAction="#submitOnClickHandler" prefHeight="87.0" prefWidth="379.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-        <Text layoutX="150.0" layoutY="358.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" text="Scegli il numero di giocatori per la partita" textAlignment="CENTER" wrappingWidth="300.0" />
-      <ComboBox fx:id="choice" layoutX="234.0" layoutY="380.0" prefWidth="150.0">
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor></ComboBox>
-    </children>
+      <ComboBox fx:id="choice" layoutX="288.0" layoutY="266.0" prefHeight="35.0" prefWidth="224.0" />
+   </children>
 </AnchorPane>

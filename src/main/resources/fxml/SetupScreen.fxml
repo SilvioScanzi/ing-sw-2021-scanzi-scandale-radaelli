@@ -63,27 +63,17 @@
             <Cursor fx:constant="HAND" />
         </cursor>
     </GridPane>
-    <Button fx:id="button" layoutX="1061.0" layoutY="442.0" mnemonicParsing="false" onAction="#selectCards" text="CONFERMA SCELTA">
+    <Button fx:id="button" layoutX="940.0" layoutY="450.0" mnemonicParsing="false" onAction="#selectCards" prefHeight="103.78" prefWidth="455.0">
         <cursor>
             <Cursor fx:constant="HAND" />
         </cursor>
     </Button>
-      <ImageView fitHeight="89.0" fitWidth="697.0" layoutX="816.0" layoutY="496.0">
+      <ImageView fitHeight="89.0" fitWidth="697.0" layoutX="819.0" layoutY="333.0">
          <image>
             <Image url="@../images/frieze.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="44.0" fitWidth="114.0" layoutX="1262.0" layoutY="455.0">
-         <image>
-            <Image url="@../images/LittleDecoration.png" />
-         </image>
-      </ImageView>
-      <ImageView fitHeight="44.0" fitWidth="114.0" layoutX="927.0" layoutY="456.0" nodeOrientation="RIGHT_TO_LEFT">
-         <image>
-            <Image url="@../images/LittleDecoration.png" />
-         </image>
-      </ImageView>
-      <Text layoutX="960.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textBig" text="Scegli le due carte Leader da scartare " wrappingWidth="667.1365966796875" />
+      <Text layoutX="834.0" layoutY="439.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textBig" text="Scegli le due carte Leader da scartare " textAlignment="CENTER" wrappingWidth="667.1365966796875" />
       <ImageView fx:id="rm" fitHeight="58.0" fitWidth="56.0" layoutX="1262.0" layoutY="59.0" />
 </children>
 </AnchorPane>

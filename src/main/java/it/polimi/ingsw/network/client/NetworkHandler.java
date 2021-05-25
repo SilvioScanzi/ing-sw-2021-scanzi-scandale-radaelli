@@ -231,7 +231,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             socketOut = new ObjectOutputStream(socket.getOutputStream());
             socketIn = new ObjectInputStream(socket.getInputStream());
             new Thread(this).start();
-        }catch(IOException e){view.print("Connessione non disponibile");}
+        }catch(IOException e){view.printStandardMessage(StandardMessages.unavailableConnection);}
     }
 
     @Override

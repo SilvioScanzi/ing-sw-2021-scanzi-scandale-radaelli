@@ -16,6 +16,7 @@ public enum StandardMessages implements Serializable {
     lorenzoWin("Lorenzo ha vinto!"),
     endGame("La partita è conclusa"),
     fatalError("Un giocatore si è disconnesso prima dell'inizio della partita, la partita è terminata"),
+    unavailableConnection("La connessione al server indicato non è disponibile"),
 
     //Error messages
     gameNotCreated("Resta in attesa che venga creata una partita"),

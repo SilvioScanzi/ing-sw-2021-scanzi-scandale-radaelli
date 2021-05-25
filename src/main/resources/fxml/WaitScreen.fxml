@@ -1,26 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.Cursor?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="541.0" prefWidth="600.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.WaitScreenController">
-    <children>
-        <ImageView fitHeight="267.0" fitWidth="576.0" layoutX="12.0" layoutY="14.0" pickOnBounds="true" preserveRatio="true">
-            <image>
-                <Image url="@../images/Title.png" />
-            </image>
-        </ImageView>
-        <Text fx:id="message" layoutX="150.0" layoutY="325.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" textAlignment="CENTER" wrappingWidth="300.0" />
-      <ImageView fitHeight="128.0" fitWidth="128.0" layoutX="233.0" layoutY="399.0">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="800.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.WaitScreenController">
+   <children>
+      <ImageView fitHeight="162.0" fitWidth="350.0" layoutX="225.0" layoutY="28.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Title.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="message" layoutX="14.0" layoutY="241.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" textAlignment="CENTER" wrappingWidth="772.0" />
+      <ImageView fitHeight="187.0" fitWidth="187.0" layoutX="307.0" layoutY="242.0">
          <image>
             <Image url="@../images/Hourglass.gif" />
          </image>
       </ImageView>
-    </children>
-   <cursor>
-      <Cursor fx:constant="WAIT" />
-   </cursor>
+   </children>
 </AnchorPane>

@@ -10,11 +10,14 @@ import it.polimi.ingsw.view.clientModel.ClientBoard;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyCode;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Scale;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
@@ -63,14 +66,22 @@ public class GUI extends Application implements View{
             connectionScreenController.addObserver(NH);
             primaryStage.setScene(currentScene);
             primaryStage.show();
+
+            Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+            if(screenBounds.getHeight() >= 675 && screenBounds.getWidth() >= 1200){
+                primaryStage.setHeight(675);
+                primaryStage.setWidth(1200);
+                scale(800,450);
+            }
+
             primaryStage.setResizable(false);
 
             currentScene.widthProperty().addListener((obs, oldVal, newVal) -> {
-                scale();
+                scale(1600,900);
             });
 
             currentScene.heightProperty().addListener((obs, oldVal, newVal) -> {
-                scale();
+                scale(1600,900);
             });
         }catch(IOException e){e.printStackTrace();}
     }
@@ -87,6 +98,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     nicknameScreenController = fxmlLoader.getController();
                     nicknameScreenController.addObserver(NH);
+                    scale(800,450);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -99,6 +111,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     playerNumberScreenController = fxmlLoader.getController();
                     playerNumberScreenController.addObserver(NH);
+                    scale(800,450);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -111,6 +124,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Resta in attesa che venga creata una partita");
+                    scale(800,450);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -123,6 +137,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!");
+                    scale(800,450);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -135,6 +150,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     waitScreenController = fxmlLoader.getController();
                     waitScreenController.changeMessage("Gli altri giocatori stanno compiendo delle scelte, resta in attesa");
+                    scale(800,450);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -151,8 +167,9 @@ public class GUI extends Application implements View{
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
                     currentScene.setOnKeyPressed(e -> setupScreenController.handleKeyPressed(e));
-                    primaryStage.setMaximized(true);
                     primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
+                    scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -168,6 +185,7 @@ public class GUI extends Application implements View{
                     setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     if(state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
                     if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
+                    scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -182,15 +200,16 @@ public class GUI extends Application implements View{
                     gameScreenController = fxmlLoader.getController();
                     gameScreenController.addMarbles(NH.getClientModel().getResourceMarket());
                     gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
+                    scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
         this.state = state;
     }
 
-    private void scale(){
-        double scaleFactorX = primaryStage.getWidth()/1600;
-        double scaleFactorY = primaryStage.getHeight()/900;
+    private void scale(double width,double height){
+        double scaleFactorX = primaryStage.getWidth()/width;
+        double scaleFactorY = primaryStage.getHeight()/height;
 
         Scale scale = new Scale(scaleFactorX, scaleFactorY);
         scale.setPivotX(0);
@@ -215,7 +234,13 @@ public class GUI extends Application implements View{
 
     @Override
     public void printStandardMessage(StandardMessages message) {
-
+        switch(message){
+            case nicknameAlreadyInUse: nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
+            case unavailableConnection: {
+                Alert a = new Alert(Alert.AlertType.ERROR, "La connessione al server di gioco specificato non è disponibile");
+                a.show();
+            }
+        }
     }
 
     @Override
