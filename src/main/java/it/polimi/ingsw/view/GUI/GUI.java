@@ -198,6 +198,7 @@ public class GUI extends Application implements View{
                     gameScreenController = fxmlLoader.getController();
                     gameScreenController.addMarbles(NH.getClientModel().getResourceMarket());
                     gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
+                    gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                     scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
