@@ -11,6 +11,7 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.scene.transform.Scale;
@@ -72,6 +73,7 @@ public class GUI extends Application implements View{
             currentScene.heightProperty().addListener((obs, oldVal, newVal) -> {
                 scale(1600,900);
             });
+            currentScene.setOnKeyReleased(e -> {if(e.getCode().equals(KeyCode.F) && primaryStage.isResizable()) primaryStage.setFullScreen(true);});
         }catch(IOException e){e.printStackTrace();}
     }
 
@@ -182,6 +184,8 @@ public class GUI extends Application implements View{
                     if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
                     String message = "Scegli "+((state.equals(ViewState.finishSetupOneResource))?"una":"la prima")+" risorsa da ottenere";
                     setupScreenController.setMessage(message);
+                    primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
                     scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });
@@ -199,6 +203,8 @@ public class GUI extends Application implements View{
                     gameScreenController.addMarbles(NH.getClientModel().getResourceMarket());
                     gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
                     gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                    primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
                     scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
             });

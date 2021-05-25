@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: it.polimi.ingsw.WarehouseTest
 -------------------------------------------------------------------------------
-Tests run: 32, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.02 s - in it.polimi.ingsw.WarehouseTest
+Tests run: 32, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.022 s - in it.polimi.ingsw.WarehouseTest

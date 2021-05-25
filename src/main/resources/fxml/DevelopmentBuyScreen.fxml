@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.DevelopmentBuyScreenController">
+   <children>
+      <ImageView fitHeight="900.0" fitWidth="1600.0">
+         <image>
+            <Image url="@../images/Parchment.jpg" />
+         </image>
+      </ImageView>
+      <Pane layoutX="1231.0" layoutY="164.0" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <ImageView fx:id="DC" fitHeight="301.0" fitWidth="199.0" layoutX="1.0" layoutY="-50.0" />
+         </children>
+      </Pane>
+      <AnchorPane layoutX="1089.0" layoutY="518.0" prefHeight="301.0" prefWidth="199.0">
+         <children>
+            <ImageView fx:id="LC_1" fitHeight="301.0" fitWidth="199.0" layoutX="21.0" layoutY="5.0" />
+            <Pane layoutX="57.0" layoutY="239.0" prefHeight="54.0" prefWidth="54.0">
+               <children>
+                  <ImageView fx:id="LC_1_1" fitHeight="54.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" />
+               </children></Pane>
+            <Pane layoutX="133.0" layoutY="239.0" prefHeight="54.0" prefWidth="54.0">
+               <children>
+                  <ImageView fx:id="LC_1_2" fitHeight="53.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true" />
+               </children></Pane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="1307.0" layoutY="518.0" prefHeight="301.0" prefWidth="199.0">
+         <children>
+            <ImageView fx:id="LC_2" fitHeight="301.0" fitWidth="199.0" layoutX="48.0" layoutY="5.0" />
+            <Pane layoutX="86.0" layoutY="240.0" prefHeight="54.0" prefWidth="54.0">
+               <children>
+                  <ImageView fx:id="LC_2_1" fitHeight="53.0" fitWidth="53.0" pickOnBounds="true" preserveRatio="true" />
+               </children></Pane>
+            <Pane layoutX="158.0" layoutY="237.0" prefHeight="54.0" prefWidth="54.0">
+               <children>
+                  <ImageView fx:id="LC_2_2" fitHeight="53.0" fitWidth="54.0" pickOnBounds="true" preserveRatio="true" />
+               </children></Pane>
+         </children>
+      </AnchorPane>
+      <Text layoutX="93.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="910.0" />
+      <Pane layoutX="87.0" layoutY="317.0" prefHeight="464.0" prefWidth="930.0">
+         <children>
+            <ImageView fitHeight="659.0" fitWidth="928.0" layoutY="-151.0">
+               <image>
+                  <Image url="@../images/Board.png" />
+               </image>
+            </ImageView>
+            <Pane layoutX="106.0" layoutY="136.0" prefHeight="40.0" prefWidth="40.0" >
+               <ImageView fx:id="WH_1_1" fitHeight="40.0" fitWidth="40.0"/>
+            </Pane>
+            <Pane layoutX="83.0" layoutY="191.0" prefHeight="40.0" prefWidth="40.0" >
+               <ImageView fx:id="WH_2_1" fitHeight="40.0" fitWidth="40.0"/>
+            </Pane>
+            <Pane layoutX="121.0" layoutY="191.0" prefHeight="40.0" prefWidth="40.0" >
+               <ImageView fx:id="WH_2_2" fitHeight="40.0" fitWidth="40.0"/>
+            </Pane>
+            <Pane layoutX="63.0" layoutY="250.0" prefHeight="40.0" prefWidth="40.0" >
+               <ImageView fx:id="WH_3_1" fitHeight="40.0" fitWidth="40.0"/>
+            </Pane>
+            <Pane layoutX="100.0" layoutY="250.0" prefHeight="40.0" prefWidth="40.0" >
+               <ImageView fx:id="WH_3_2" fitHeight="40.0" fitWidth="40.0"/>
+            </Pane>
+            <Pane layoutX="133.0" layoutY="250.0" prefHeight="40.0" prefWidth="40.0" >
+               <ImageView fx:id="WH_3_3" fitHeight="40.0" fitWidth="40.0"/>
+            </Pane>
+            <Pane layoutX="38.0" layoutY="411.0" prefHeight="54.0" prefWidth="80.0">
+               <children>
+                  <ImageView fitHeight="47.34" fitWidth="40.0" layoutX="6.0" layoutY="-3.0">
+                     <image>
+                        <Image url="@../images/resources/SH.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="SB_SH" layoutX="65.0" layoutY="32.0" wrappingWidth="1.0" />
+               </children>
+            </Pane>
+            <Pane layoutX="112.0" layoutY="411.0" prefHeight="54.0" prefWidth="80.0">
+               <children>
+                  <ImageView fitHeight="45.0" fitWidth="47.0" layoutX="1.0" layoutY="-6.0">
+                     <image>
+                        <Image url="@../images/resources/ST.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="SB_ST" layoutX="65.0" layoutY="32.0" wrappingWidth="1.0" />
+               </children>
+            </Pane>
+            <Pane layoutX="112.0" layoutY="344.0" prefHeight="54.0" prefWidth="80.0">
+               <children>
+                  <ImageView fitHeight="45.0" fitWidth="47.0" layoutX="1.0">
+                     <image>
+                        <Image url="@../images/resources/SE.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="SB_SE" layoutX="65.0" layoutY="32.0" wrappingWidth="1.0" />
+               </children>
+            </Pane>
+            <Pane layoutX="38.0" layoutY="344.0" prefHeight="54.0" prefWidth="80.0">
+               <children>
+                  <ImageView fitHeight="40.0" fitWidth="47.0" layoutY="3.0">
+                     <image>
+                        <Image url="@../images/resources/CO.png" />
+                     </image>
+                  </ImageView>
+                  <Text fx:id="SB_CO" layoutX="65.0" layoutY="32.0" wrappingWidth="1.0" />
+               </children>
+            </Pane>
+            <Pane layoutX="356.0" layoutY="127.0" prefHeight="280.0" prefWidth="531.0">
+               <children>
+                  <ImageView fx:id="SLOT_1" fitHeight="259.0" fitWidth="158.0" layoutX="4.0" layoutY="41.0"/>
+                  <ImageView fx:id="SLOT_2" fitHeight="259.0" fitWidth="158.0" layoutX="182.0" layoutY="41.0"/>
+                  <ImageView fx:id="SLOT_3" fitHeight="259.0" fitWidth="158.0" layoutX="365.0" layoutY="41.0"/>
+               </children>
+            </Pane>
+            <GridPane fx:id="FaithTrack" layoutX="26.0" layoutY="-116.0" prefHeight="141.0" prefWidth="867.0">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="45.63" minWidth="45.63" prefWidth="45.63" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="47.0" minHeight="47.0" prefHeight="47.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="47.0" minHeight="47.0" prefHeight="47.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="47.0" prefHeight="47.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+            </GridPane>
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>
