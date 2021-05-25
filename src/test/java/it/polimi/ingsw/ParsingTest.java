@@ -83,34 +83,8 @@ public class ParsingTest {
         LCD = new LeaderCardDeck(0);
         LeaderCard LC;
         LC = LCD.getFirstCard();
-        HashMap<Colours, Pair<Integer,Integer>> RC = new HashMap<Colours,Pair<Integer,Integer>>(){{put(Colours.Yellow,new Pair<>(2,0));put(Colours.Blue,new Pair<>(1,0));}};
+        HashMap<Colours, Pair<Integer,Integer>> RC = new HashMap<>(){{put(Colours.Yellow,new Pair<>(2,0));put(Colours.Blue,new Pair<>(1,0));}};
         assert(LC.getVictoryPoints()==5 && LC.getRequiredColours().equals(RC) && LC.getRequiredResources().equals(new HashMap<>())
                 && LC.getAbility().getResType().equals(Resources.Servants) && LC.getAbility().getCapacity()==0 && LC.getAbility().doConvert());
     }
-
-    /*@Test
-    @DisplayName("Ensure correct find DC")
-    void testCanFindDC(){
-        DevelopmentCardParser DCP = new DevelopmentCardParser("");
-        DevelopmentCard DC = new DevelopmentCard(1,Colours.Purple,1,new HashMap<Resources, Integer>(){{put(Resources.Servants,2);}},new HashMap<Resources, Integer>(){{put(Resources.Stones,1);}},new HashMap<>(),1);
-        assert(DCP.findCardByID(Colours.Purple,1).equals(DC.toString()));
-    }*/
-
-    @Test
-    @DisplayName("Ensure incorrect find DC")
-    void testCannotFindDC(){
-        DevelopmentCardParser DCP = new DevelopmentCardParser();
-        assert(DCP.findCardByID(Colours.Purple,42).equals(""));
-    }
-
-    /*@Test
-    @DisplayName("Ensure correct find LC")
-    void testCanFindLC(){
-        LeaderCardParser LCP = new LeaderCardParser("");
-        LeaderCard LC = new LeaderCard(3,new HashMap<>(),new HashMap<Resources,Integer>(){{put(Resources.Servants,5);}},"ExtraSlotAbility",Resources.Shields,2);
-        try{
-            LC.getAbility().doUpdateSlot(Resources.Shields,1);
-        }catch(Exception e){e.printStackTrace();}
-        assert(LCP.findCardByID(Resources.Shields,3,1).equals(LC.toString()));
-    }*/
 }

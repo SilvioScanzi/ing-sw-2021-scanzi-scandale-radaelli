@@ -113,7 +113,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
 
     public void start(){
         game.setInkwell((int)(Math.random() * playerNumber));
-        System.out.println("[SERVER] A lobby containing "+playerNumber+" players is starting");
+        System.out.println("[SERVER] A game containing "+playerNumber+" players is starting");
         for(ClientHandler CH : clients){
             CH.sendStandardMessage(StandardMessages.welcomeMessage);
         }

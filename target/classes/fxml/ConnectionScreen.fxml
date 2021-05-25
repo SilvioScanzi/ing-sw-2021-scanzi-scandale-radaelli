@@ -8,25 +8,26 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyPressed" prefHeight="450.0" prefWidth="800.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.ConnectionScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyPressed" prefHeight="700.0" prefWidth="700.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.ConnectionScreenController">
    <children>
-      <ImageView fitHeight="162.0" fitWidth="350.0" layoutX="225.0" layoutY="24.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="212.0" fitWidth="458.0" layoutX="122.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../images/Title.png" />
          </image>
       </ImageView>
-      <Text layoutX="-70.0" layoutY="217.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" text="Connettiti ad un server di gioco disponibile indicando indirizzo IP e porta" textAlignment="CENTER" wrappingWidth="939.0" />
-      <TextField fx:id="IP" alignment="CENTER" layoutX="288.0" layoutY="232.0" prefHeight="39.0" prefWidth="224.0" promptText="Indirizzo IP" styleClass="text">
+      <Text layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" text="Connettiti ad un server di gioco disponibile indicando indirizzo IP e porta" textAlignment="CENTER" wrappingWidth="700.0" />
+      <TextField fx:id="IP" alignment="CENTER" layoutX="239.0" layoutY="393.0" prefHeight="39.0" prefWidth="224.0" promptText="Indirizzo IP" styleClass="text">
          <cursor>
             <Cursor fx:constant="TEXT" />
          </cursor></TextField>
-      <TextField fx:id="portNr" alignment="CENTER" layoutX="288.0" layoutY="287.0" prefHeight="39.0" prefWidth="224.0" promptText="Porta" styleClass="text">
+      <TextField fx:id="portNr" alignment="CENTER" layoutX="238.0" layoutY="470.0" prefHeight="39.0" prefWidth="224.0" promptText="Porta" styleClass="text">
          <cursor>
             <Cursor fx:constant="TEXT" />
          </cursor></TextField>
-      <Button fx:id="button" layoutX="211.0" layoutY="333.0" mnemonicParsing="false" onAction="#submitOnClickHandler" prefHeight="87.0" prefWidth="379.0">
+      <Button fx:id="button" layoutX="105.0" layoutY="547.0" mnemonicParsing="false" onAction="#submitOnClickHandler" prefHeight="113.0" prefWidth="492.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
+      <Text fx:id="errormsg" layoutX="1.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textError" textAlignment="CENTER" wrappingWidth="700.0" />
    </children>
 </AnchorPane>

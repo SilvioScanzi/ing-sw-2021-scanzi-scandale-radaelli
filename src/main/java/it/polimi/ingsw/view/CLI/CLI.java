@@ -17,17 +17,18 @@ public class CLI extends ViewObservable implements View {
     private ViewState state = ViewState.start;
     private final Scanner scanner;
 
+    private final boolean color;
+
     public static final String	BACKGROUND_BLACK	= "\u001B[40m";
     public static final String	BACKGROUND_RED		= "\u001B[41m";
-    public static final String	BACKGROUND_GREEN	= "\u001B[42m";
     public static final String	BACKGROUND_YELLOW	= "\u001B[43m";
     public static final String	BACKGROUND_BLUE		= "\u001B[44m";
     public static final String	BACKGROUND_MAGENTA	= "\u001B[45m";
-    public static final String	BACKGROUND_CYAN		= "\u001B[46m";
     public static final String	BACKGROUND_WHITE	= "\u001B[47m";
     public static final String  RESET               = "\u001B[0m";
 
-    public CLI() {
+    public CLI(boolean color) {
+        this.color = color;
         NetworkHandler NH = new NetworkHandler(this);
         addObserver(NH);
         scanner = new Scanner(System.in);
@@ -461,32 +462,38 @@ public class CLI extends ViewObservable implements View {
     public void printResourceMarket(Marbles[][] grid, Marbles remainingMarble) {
         StringBuilder tmp = new StringBuilder("MERCATO DELLE RISORSE:\n");
         tmp.append("  1  2  3  4 \n");
-        tmp.append(RESET+"╔══╦══╦══╦══╗\n");
-        for(int i=0;i<3;i++){
+        if(color) {
+            tmp.append(RESET + "╔══╦══╦══╦══╗\n");
+        }
+        else{
+            tmp.append("╔══╦══╦══╦══╗\n");
+        }
+        for(int i=0;i<3;i++) {
             tmp.append("║");
-            for(int j=0;j<4;j++){
-                if(grid[i][j].equals(Marbles.Yellow)){
-                    tmp.append(BACKGROUND_YELLOW);
+            for (int j = 0; j < 4; j++) {
+                if(color) {
+                    if (grid[i][j].equals(Marbles.Yellow)) {
+                        tmp.append(BACKGROUND_YELLOW);
+                    } else if (grid[i][j].equals(Marbles.Blue)) {
+                        tmp.append(BACKGROUND_BLUE);
+                    } else if (grid[i][j].equals(Marbles.Red)) {
+                        tmp.append(BACKGROUND_RED);
+                    } else if (grid[i][j].equals(Marbles.Purple)) {
+                        tmp.append(BACKGROUND_MAGENTA);
+                    } else if (grid[i][j].equals(Marbles.Grey)) {
+                        tmp.append(BACKGROUND_WHITE);
+                    } else if (grid[i][j].equals(Marbles.White)) {
+                        tmp.append(BACKGROUND_BLACK);
+                    }
+                    tmp.append(grid[i][j].abbreviation()).append(RESET).append("║");
                 }
-                else if(grid[i][j].equals(Marbles.Blue)){
-                    tmp.append(BACKGROUND_BLUE);
+                else{
+                    tmp.append(grid[i][j].abbreviation()).append("║");
                 }
-                else if(grid[i][j].equals(Marbles.Red)){
-                    tmp.append(BACKGROUND_RED);
-                }
-                else if(grid[i][j].equals(Marbles.Purple)){
-                    tmp.append(BACKGROUND_MAGENTA);
-                }
-                else if(grid[i][j].equals(Marbles.Grey)){
-                    tmp.append(BACKGROUND_WHITE);
-                }
-                else if(grid[i][j].equals(Marbles.White)){
-                    tmp.append(BACKGROUND_BLACK);
-                }
-                tmp.append(grid[i][j].abbreviation()).append(RESET).append("║");
             }
+
             tmp.append(" ").append(i + 1);
-            if(i!=2) tmp.append("\n╠══╬══╬══╬══╣\n");
+            if (i != 2) tmp.append("\n╠══╬══╬══╬══╣\n");
             else tmp.append("\n╚══╩══╩══╩══╝\n");
         }
         tmp = new StringBuilder(tmp.toString().concat("La biglia rimanente è: " + remainingMarble.toString()));
@@ -558,7 +565,7 @@ public class CLI extends ViewObservable implements View {
     public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
         System.out.println("MERCATO DELLE CARTE");
         DevelopmentCardParser DCP = new DevelopmentCardParser();
-        System.out.println(DCP.findMarketByID(CM));
+        System.out.println(DCP.findMarketByID(CM,color));
     }
 
     @Override
@@ -581,7 +588,7 @@ public class CLI extends ViewObservable implements View {
         else {
             System.out.println("SLOT " + I + " DELLA PLANCIA DI " + nickname);
             DevelopmentCardParser DCP = new DevelopmentCardParser();
-            System.out.println(DCP.findCardByID(C, VP));
+            System.out.println(DCP.findCardByID(C, VP, color));
         }
     }
 

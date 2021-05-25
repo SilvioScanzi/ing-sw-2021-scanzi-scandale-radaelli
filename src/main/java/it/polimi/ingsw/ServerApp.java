@@ -19,7 +19,7 @@ public class ServerApp {
                 System.out.println("Insert a valid port number");
             }
         }while(port<1024 || port>65536);
-        System.out.println("\u001B[31mWelcome to the server log");
+        System.out.println("Welcome to the server log");
         Server server = new Server();
         server.startServer(port);
     }

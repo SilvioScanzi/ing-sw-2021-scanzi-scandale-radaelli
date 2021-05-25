@@ -85,10 +85,10 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
 
     @Override
     public void updateServerPlayerNumber(CHObservable obs,ChoosePlayerNumberMessage message) {
-        System.out.println("[SERVER] Player number chosen");
         ClientHandler CH = (ClientHandler) obs;
         boolean started = false;
         int playerNumber = message.getN();
+        System.out.println("[SERVER] A lobby for "+playerNumber+" players has been built");
         synchronized (Lock) {
             currentGameHandler = new GameHandler(playerNumber);
             currentGameHandler.addObserver(this);

@@ -10,7 +10,7 @@
 
 .textbody{
     -fx-font-family: "Enchanted Land";
-    -fx-font-size: 30;
+    -fx-font-size: 35;
 }
 
 .textBig{
@@ -18,11 +18,22 @@
     -fx-font-size: 40;
 }
 
+.textError{
+    -fx-font-family: "Enchanted Land";
+    -fx-font-size: 35;
+    -fx-fill: red;
+}
+
 Button{
     -fx-background-image: url("../images/Banner.png");
     -fx-background-size: 100% 100%;
     -fx-background-repeat: no-repeat;
     -fx-background-color: transparent;
+}
+
+.selectable:hover{
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
 }
 
 

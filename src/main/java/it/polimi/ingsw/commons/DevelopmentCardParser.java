@@ -84,7 +84,7 @@ public class DevelopmentCardParser {
         return tmp;
     }
 
-    public String findMarketByID(HashMap<Pair<Colours, Integer>, Integer> CM){
+    public String findMarketByID(HashMap<Pair<Colours, Integer>, Integer> CM, boolean color){
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
         //Iterating on the nodelist previously got, single node for every DCCard
         ArrayList<Integer> lvl = new ArrayList<>();
@@ -156,14 +156,18 @@ public class DevelopmentCardParser {
                     }
                 }
             }
+            String asciiReset = "";
+            String asciiColor = "";
             //Generating the string from the cards found previously
-            String asciiReset = "\u001b[0m";
-            String asciiColor = switch (c) {
-                case Blue -> "\u001b[34m";
-                case Green -> "\u001b[32m";
-                case Purple -> "\u001b[35m";
-                case Yellow -> "\u001b[33m";
-            };
+            if(color) {
+                asciiReset = "\u001b[0m";
+                asciiColor = switch (c) {
+                    case Blue -> "\u001b[34m";
+                    case Green -> "\u001b[32m";
+                    case Purple -> "\u001b[35m";
+                    case Yellow -> "\u001b[33m";
+                };
+            }
 
             String space;
             if (c.equals(Colours.Blue)) {
@@ -254,7 +258,7 @@ public class DevelopmentCardParser {
     }
 
 
-    public String findCardByID(Colours c, int vp){
+    public String findCardByID(Colours c, int vp, boolean color){
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
         //Iterating on the nodelist previously got, single node for every DCCard
         for (int i = 0; i < developmentcards.getLength(); i++) {
@@ -298,14 +302,27 @@ public class DevelopmentCardParser {
                                 producedresources.put(Resources.valueOf(producedresourcesString[j]), Integer.parseInt(producedresourcesString[j + 1]));
                             }
                         }
-                        String asciiReset = "\u001b[0m";
-                        String asciiColor;
-                        switch(colour){
-                            case Blue: asciiColor = "\u001b[34m";break;
-                            case Green: asciiColor = "\u001b[32m";break;
-                            case Purple: asciiColor = "\u001b[35m";break;
-                            case Yellow: asciiColor = "\u001b[33m";break;
-                            default: asciiColor = asciiReset; break;
+                        String asciiReset = "";
+                        String asciiColor = "";
+                        if(color) {
+                            asciiReset = "\u001b[0m";
+                            switch (colour) {
+                                case Blue:
+                                    asciiColor = "\u001b[34m";
+                                    break;
+                                case Green:
+                                    asciiColor = "\u001b[32m";
+                                    break;
+                                case Purple:
+                                    asciiColor = "\u001b[35m";
+                                    break;
+                                case Yellow:
+                                    asciiColor = "\u001b[33m";
+                                    break;
+                                default:
+                                    asciiColor = asciiReset;
+                                    break;
+                            }
                         }
 
                         String tmp = asciiColor+"╔═══════════════════╗"+asciiReset+"\n"+asciiColor+"║"+

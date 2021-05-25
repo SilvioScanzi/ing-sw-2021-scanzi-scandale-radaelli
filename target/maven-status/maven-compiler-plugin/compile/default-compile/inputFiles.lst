@@ -60,9 +60,9 @@ C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\mai
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ResourceMarketMessage.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\DiscardLeaderCardMessage.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\LeaderCardHandUpdateMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\PlayerNumberController.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Colours.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Resources.java
+C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\GameScreenController.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\DevelopmentCardParser.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\InvalidPlacementException.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\FinishSetupMessage.java
@@ -72,6 +72,7 @@ C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\mai
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\SlotMessage.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\RequirementsNotMetException.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ActionTokenMessage.java
+C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\PlayerNumberScreenController.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\ActionToken.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Marbles.java
 C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\FaithTrackMessage.java

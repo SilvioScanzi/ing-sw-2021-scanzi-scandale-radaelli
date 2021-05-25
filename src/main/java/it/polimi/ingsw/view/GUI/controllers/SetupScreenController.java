@@ -99,7 +99,7 @@ public class SetupScreenController extends ViewObservable {
                 event(LCView);
             };
             LCView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
-
+            LCView.getStyleClass().add("selectable");
             userChoice.add(LCView,i,0);
         }
     }
@@ -118,6 +118,7 @@ public class SetupScreenController extends ViewObservable {
                 event(resourceView);
             };
             resourceView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
+            resourceView.getStyleClass().add("selectable");
             userChoice.add(resourceView,i,0);
             i++;
         }
@@ -188,6 +189,7 @@ public class SetupScreenController extends ViewObservable {
                 ColorAdjust colorAdjust = new ColorAdjust();
                 colorAdjust.setBrightness(0.5);
                 img.setEffect(colorAdjust);
+                img.getStyleClass().remove("selectable");
                 if (indexes[0] == -1) {
                     indexes[0] = Integer.parseInt(img.getId());
                 } else if (indexes[1] == -1) {
@@ -196,6 +198,7 @@ public class SetupScreenController extends ViewObservable {
                     button.setDisable(false);
                 } else {
                     leader.get(indexes[0] - 1).setEffect(null);
+                    leader.get(indexes[0] - 1).getStyleClass().add("selectable");
                     int tmp;
                     tmp = indexes[1];
                     indexes[1] = Integer.parseInt(img.getId());
@@ -205,9 +208,11 @@ public class SetupScreenController extends ViewObservable {
         }
         else{
             button.setDisable(false);
+            img.getStyleClass().remove("selectable");
             if(choiceNumber == 1) {
                 if (indexes[0] != -1) {
                     resources.get(indexes[0]).setEffect(null);
+                    resources.get(indexes[0]).getStyleClass().add("selectable");
                     chosenResources.clear();
                 }
                 indexes[0] = Integer.parseInt(img.getId());
@@ -215,6 +220,7 @@ public class SetupScreenController extends ViewObservable {
             else{
                 if (indexes[1] != -1) {
                     resources.get(indexes[1]).setEffect(null);
+                    resources.get(indexes[1]).getStyleClass().add("selectable");
                     chosenResources.remove(1);
                 }
                 indexes[1] = Integer.parseInt(img.getId());
