@@ -48,28 +48,25 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     public synchronized void setState(ClientHandlerState state) {
-        if(state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)){
-            t = new Timer();
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    sendObject(new DisconnectedMessage(nickname));
-                    closeConnection();
-                    t.cancel();
-                }
-            },120000);  //timer set to 2 minutes for setup stages of the game
+        int delay;
+        if (state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)) {
+            delay = 120000;
+        } else delay = 600000;
+
+        if(t != null){
+            t.cancel();
+            t.purge();
         }
-        else if(state.equals(ClientHandlerState.myTurn)){
-            t = new Timer();
-            t.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    sendObject(new DisconnectedMessage(nickname));
-                    closeConnection();
-                    t.cancel();
-                }
-            },240000);  //timer set to 4 minutes for every action in the game
-        }
+        t = new Timer();
+        t.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                sendObject(new DisconnectedMessage(nickname));
+                notifyServerDisconnection();
+                notifyDisconnected();
+            }
+        }, delay);  //timer set to 10 minutes for every action in the game
+
         this.state = state;
     }
 
@@ -93,31 +90,48 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             try {
                 if(state.equals(ClientHandlerState.playerNumber) || state.equals(ClientHandlerState.discardLeaderCard) ||
                         state.equals(ClientHandlerState.finishingSetup)){
+                    if(t != null){
+                        t.cancel();
+                        t.purge();
+                    }
                     t = new Timer();
                     t.schedule(new TimerTask() {
                         @Override
                         public void run() {
                             sendObject(new DisconnectedMessage(nickname));
-                            closeConnection();
-                            t.cancel();
+                            notifyServerDisconnection();
+                            if(state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)) {
+                                notifyDisconnected();
+                            }
+                            else closeConnection();
+                            state = ClientHandlerState.disconnected;
                         }
                     },120000);  //timer set to 2 minutes for setup stages of the game
                     message = socketIn.readObject();
                     t.cancel();
+                    t.purge();
+                    t = null;
                 }
                 else if(state.equals(ClientHandlerState.myTurn) || state.equals(ClientHandlerState.moveNeeded) ||
                         state.equals(ClientHandlerState.actionDone)){
+                    if(t != null){
+                        t.cancel();
+                        t.purge();
+                    }
                     t = new Timer();
                     t.schedule(new TimerTask() {
                         @Override
                         public void run() {
                             sendObject(new DisconnectedMessage(nickname));
-                            closeConnection();
-                            t.cancel();
+                            notifyServerDisconnection();
+                            notifyDisconnected();
+                            state = ClientHandlerState.disconnected;
                         }
                     },600000);  //timer set to 10 minutes for every action in the game
                     message = socketIn.readObject();
                     t.cancel();
+                    t.purge();
+                    t = null;
                 }
                 else message = socketIn.readObject();
 
