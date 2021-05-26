@@ -23,7 +23,7 @@
       </ImageView>
       <Pane layoutX="81.0" layoutY="409.0" prefHeight="419.0" prefWidth="632.0" scaleX="1.08" scaleY="1.08">
          <children>
-            <ImageView styleClass="physical" fitHeight="399.0" fitWidth="600.0" layoutX="7.0" layoutY="3.0" scaleX="1.08" scaleY="1.08">
+            <ImageView fitHeight="399.0" fitWidth="600.0" layoutX="7.0" layoutY="3.0" scaleX="1.08" scaleY="1.08" styleClass="physical">
                <image>
                   <Image url="@../images/Board.png" />
                </image>
@@ -34,34 +34,34 @@
             <Pane fx:id="W3_1" layoutX="31.0" layoutY="250.0" prefHeight="20.0" prefWidth="25.0" scaleX="1.08" scaleY="1.08" />
             <Pane fx:id="W3_2" layoutX="55.0" layoutY="249.0" prefHeight="20.0" prefWidth="23.0" scaleX="1.08" scaleY="1.08" />
             <Pane fx:id="W3_3" layoutX="81.0" layoutY="250.0" prefHeight="20.0" prefWidth="25.0" scaleX="1.08" scaleY="1.08" />
-            <Pane layoutX="6.0" layoutY="306.0" prefHeight="41.0" prefWidth="62.0" scaleX="1.08" scaleY="1.08">
+            <Pane layoutX="3.0" layoutY="304.0" prefHeight="41.0" prefWidth="62.0" scaleX="1.08" scaleY="1.08">
                <children>
                   <ImageView fitHeight="31.0" fitWidth="37.0" layoutY="3.0">
                      <image>
                         <Image url="@../images/resources/CO.png" />
                      </image>
                   </ImageView>
-                  <Text fx:id="SB_CO" layoutX="42.0" layoutY="30.0" styleClass="number" />
+                  <Text fx:id="SB_CO" layoutX="42.0" layoutY="25.0" styleClass="number" />
                </children>
             </Pane>
-            <Pane layoutX="60.0" layoutY="303.0" prefHeight="41.0" prefWidth="62.0" scaleX="1.08" scaleY="1.08">
+            <Pane layoutX="63.0" layoutY="303.0" prefHeight="41.0" prefWidth="62.0" scaleX="1.08" scaleY="1.08">
                <children>
                   <ImageView fitHeight="31.0" fitWidth="37.0" layoutY="3.0">
                      <image>
                         <Image url="@../images/resources/SE.png" />
                      </image>
                   </ImageView>
-                  <Text fx:id="SB_SE" layoutX="42.0" layoutY="30.0" styleClass="number" />
+                  <Text fx:id="SB_SE" layoutX="42.0" layoutY="25.0" styleClass="number" />
                </children>
             </Pane>
-            <Pane layoutX="5.0" layoutY="349.0" prefHeight="41.0" prefWidth="62.0" scaleX="1.08" scaleY="1.08">
+            <Pane layoutX="3.0" layoutY="349.0" prefHeight="41.0" prefWidth="62.0" scaleX="1.08" scaleY="1.08">
                <children>
                   <ImageView fitHeight="32.0" fitWidth="33.0" layoutY="3.0">
                      <image>
                         <Image url="@../images/resources/SH.png" />
                      </image>
                   </ImageView>
-                  <Text fx:id="SB_SH" layoutX="42.0" layoutY="30.0" styleClass="number" />
+                  <Text fx:id="SB_SH" layoutX="42.0" layoutY="25.0" styleClass="number" />
                </children>
             </Pane>
             <Pane layoutX="230.0" layoutY="181.0" prefHeight="185.0" prefWidth="118.0" scaleX="1.08" scaleY="1.08">
@@ -110,21 +110,21 @@
                   <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                </rowConstraints>
             </GridPane>
-            <Pane layoutX="62.0" layoutY="344.0" prefHeight="41.0" prefWidth="62.0">
+            <Pane layoutX="63.0" layoutY="346.0" prefHeight="41.0" prefWidth="62.0">
                <children>
                   <ImageView fitHeight="32.0" fitWidth="34.0" layoutX="-3.0" layoutY="5.0">
                      <image>
                         <Image url="@../images/resources/ST.png" />
                      </image>
                   </ImageView>
-                  <Text fx:id="SB_ST" layoutX="42.0" layoutY="30.0" styleClass="number" />
+                  <Text fx:id="SB_ST" layoutX="42.0" layoutY="25.0" styleClass="number" />
                </children>
             </Pane>
          </children>
       </Pane>
       <Pane layoutX="430.0" layoutY="-7.0" prefHeight="399.0" prefWidth="319.0">
          <children>
-            <ImageView styleClass="physical" fitHeight="393.0" fitWidth="307.0" layoutX="14.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9">
+            <ImageView fitHeight="393.0" fitWidth="307.0" layoutX="14.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9" styleClass="physical">
                <image>
                   <Image url="@../images/MarketBoard.png" />
                </image>
@@ -198,12 +198,12 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="788.0" layoutY="280.0">
+      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="786.0" layoutY="280.0">
          <image>
             <Image url="@../images/frieze.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="788.0" layoutY="560.0">
+      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="786.0" layoutY="560.0">
          <image>
             <Image url="@../images/frieze.png" />
          </image>
