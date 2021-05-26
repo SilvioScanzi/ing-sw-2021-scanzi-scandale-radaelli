@@ -8,13 +8,16 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 
 import javafx.scene.control.Button;
+import javafx.scene.effect.BlurType;
 import javafx.scene.effect.ColorAdjust;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -42,13 +45,13 @@ public class SetupScreenController extends ViewObservable {
     private Text message;
 
     private int[] indexes;
-    private ArrayList<String> chosenResources = new ArrayList<>();
+    private final ArrayList<String> chosenResources = new ArrayList<>();
     private int one_twoResourceSetup;
     private int choiceNumber = 1;
     private boolean state = true; //using same screen for 2 states: true for discardLC, false for finishSetup
 
-    private ArrayList<ImageView> leader = new ArrayList<>();
-    private ArrayList<ImageView> resources = new ArrayList<>();
+    private final ArrayList<ImageView> leader = new ArrayList<>();
+    private final ArrayList<ImageView> resources = new ArrayList<>();
 
 
     @FXML
@@ -79,6 +82,7 @@ public class SetupScreenController extends ViewObservable {
                 Pair<Colours,Integer> P = new Pair<>(C,i);
                 String path = "/images/developmentCards/" + P.getKey().ColourToString() + DCM.get(new Pair<>(P)) +".png";
                 ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                DCView.getStyleClass().add("physical");
                 DCView.setFitWidth(175.0);
                 DCView.setPreserveRatio(true);
                 developmentCards.add(DCView,P.getKey().ColourToColumn(),3-P.getValue());
@@ -92,6 +96,7 @@ public class SetupScreenController extends ViewObservable {
             String path = "/images/leaderCards/" + T.get_1().getID()+T.get_2()+".png";
             ImageView LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             leader.add(LCView);
+            LCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             LCView.setFitWidth(175.0);
             LCView.setPreserveRatio(true);
             LCView.setId(""+(i+1));
@@ -114,6 +119,7 @@ public class SetupScreenController extends ViewObservable {
             ImageView resourceView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             resources.add(resourceView);
             resourceView.setId(""+(i));
+            resourceView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             EventHandler<MouseEvent> eventHandler = e -> {
                 event(resourceView);
             };
@@ -199,6 +205,7 @@ public class SetupScreenController extends ViewObservable {
                 } else {
                     leader.get(indexes[0] - 1).setEffect(null);
                     leader.get(indexes[0] - 1).getStyleClass().add("selectable");
+                    leader.get(indexes[0] - 1).setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     int tmp;
                     tmp = indexes[1];
                     indexes[1] = Integer.parseInt(img.getId());
@@ -213,6 +220,7 @@ public class SetupScreenController extends ViewObservable {
                 if (indexes[0] != -1) {
                     resources.get(indexes[0]).setEffect(null);
                     resources.get(indexes[0]).getStyleClass().add("selectable");
+                    resources.get(indexes[0]).setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     chosenResources.clear();
                 }
                 indexes[0] = Integer.parseInt(img.getId());
@@ -221,6 +229,7 @@ public class SetupScreenController extends ViewObservable {
                 if (indexes[1] != -1) {
                     resources.get(indexes[1]).setEffect(null);
                     resources.get(indexes[1]).getStyleClass().add("selectable");
+                    resources.get(indexes[1]).setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     chosenResources.remove(1);
                 }
                 indexes[1] = Integer.parseInt(img.getId());

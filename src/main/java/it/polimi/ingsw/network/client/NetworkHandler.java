@@ -79,6 +79,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     view.setState(ViewState.myTurn);
                 }
                 case actionDone -> clientModel.getBoard(clientModel.getMyNickname()).setActionDone(true);
+                case notYourTurn -> view.setState(ViewState.notMyTurn);
                 case fatalError, endGame -> {
                     view.setState(ViewState.disconnected);
                     closeConnection();

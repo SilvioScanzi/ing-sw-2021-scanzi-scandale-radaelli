@@ -85,7 +85,6 @@ it\polimi\ingsw\model\DiscountAbility.class
 it\polimi\ingsw\view\clientModel\ClientModel.class
 it\polimi\ingsw\network\messages\LeaderCardHandUpdateMessage.class
 it\polimi\ingsw\observers\GameHandlerObserver.class
-it\polimi\ingsw\network\server\ClientHandler$5.class
 it\polimi\ingsw\network\messages\NicknameMessage.class
 it\polimi\ingsw\model\DevelopmentCard.class
 it\polimi\ingsw\observers\ModelObserver.class

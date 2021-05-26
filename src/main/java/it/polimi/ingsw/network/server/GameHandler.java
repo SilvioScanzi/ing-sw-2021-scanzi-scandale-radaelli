@@ -241,6 +241,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                     }
                 }
                 else{
+                    started = true;
                     turn = 0;
                     client.setState(ClientHandler.ClientHandlerState.myTurn);
                     client.sendStandardMessage(StandardMessages.yourTurn);
@@ -276,6 +277,14 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                         clients.get(turn).sendStandardMessage(StandardMessages.yourTurn);
                     }
                     started = true;
+                    for(ClientHandler CH : clients){
+                        if(!CH.equals(clients.get(turn))){
+                            synchronized (CH){
+                                CH.sendStandardMessage(StandardMessages.notYourTurn);
+                                CH.setState(ClientHandler.ClientHandlerState.notMyTurn);
+                            }
+                        }
+                    }
                 }
                 else{
                     client.sendStandardMessage(StandardMessages.wait);
@@ -392,6 +401,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     public void updateTurnDone(CHObservable obs, TurnDoneMessage message){
         ClientHandler client = (ClientHandler) obs;
         synchronized (client) {
+            client.sendStandardMessage(StandardMessages.notYourTurn);
             client.setState(ClientHandler.ClientHandlerState.notMyTurn);
         }
 

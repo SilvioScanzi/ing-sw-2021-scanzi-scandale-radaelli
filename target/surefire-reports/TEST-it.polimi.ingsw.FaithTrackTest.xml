@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-15.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire3263547399077312203\surefirebooter2563914690493520070.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire3263547399077312203 2021-05-25T19-32-51_486-jvmRun1 surefire17929747719926888874tmp surefire_018178526671151683898tmp"/>
+    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire2755985559008792601\surefirebooter9645610237849806359.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire2755985559008792601 2021-05-26T18-38-25_890-jvmRun1 surefire11759441324234400528tmp surefire_011734431951579760726tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\test-classes;C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\classes;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter\5.7.0\junit-jupiter-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.7.0\junit-jupiter-api-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-commons\1.7.0\junit-platform-commons-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.7.0\junit-jupiter-engine-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-engine\1.7.0\junit-platform-engine-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.7.0\junit-jupiter-params-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\apiguardian\apiguardian-api\1.1.0\apiguardian-api-1.1.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\16\javafx-controls-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\16\javafx-graphics-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\16\javafx-base-16-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\16\javafx-fxml-16-win.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire3263547399077312203\surefirebooter2563914690493520070.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire2755985559008792601\surefirebooter9645610237849806359.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="15.0.2+7-27"/>

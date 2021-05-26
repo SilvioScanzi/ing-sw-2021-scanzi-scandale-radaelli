@@ -5,7 +5,7 @@
 
 .text{
     -fx-font-family: "Enchanted Land";
-    -fx-font-size: 18;
+    -fx-font-size: 25;
 }
 
 .textbody{
@@ -24,6 +24,12 @@
     -fx-fill: red;
 }
 
+.number{
+    -fx-font-family: "Medici Text";
+    -fx-font-size: 35;
+    -fx-fill: white;
+}
+
 Button{
     -fx-background-image: url("../images/Banner.png");
     -fx-background-size: 100% 100%;
@@ -36,6 +42,10 @@ Button{
     -fx-scale-x: 1.1;
 }
 
+
+.physical{
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, -5, 5);
+}
 
 Button:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);

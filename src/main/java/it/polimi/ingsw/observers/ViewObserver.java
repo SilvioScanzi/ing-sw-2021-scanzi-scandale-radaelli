@@ -10,7 +10,7 @@ import java.util.HashMap;
 public interface ViewObserver {
     void updateNickname(ViewObservable obs, String message);
     void updatePlayerNumber(ViewObservable obs, int num);
-    void updateSetupDiscardLC(ViewObservable obs, int index[]);
+    void updateSetupDiscardLC(ViewObservable obs, int[] index);
     void updateFinishSetup(ViewObservable obs, ArrayList<String> message);
     void updateAddress(String IP,int port);
     void updateDisconnected(ViewObservable obs);    //TODO: fargli scegliere se disconnettersi
