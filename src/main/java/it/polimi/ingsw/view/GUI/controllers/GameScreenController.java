@@ -10,7 +10,6 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
-import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -98,59 +97,32 @@ public class GameScreenController extends ViewObservable {
     private final boolean[][] grid = new boolean[3][4];
     private final ArrayList<Integer> selectedRMLC = new ArrayList<>();
 
-    private Pair<Colours,Integer> selectedDC;
-    private String selectedMarket;
     private ImageView selected = null;
 
     @FXML
     public void initialize() {
         confirmAction.setDisable(true);
         R_1.setOnMouseClicked(e -> {
-            handleMarketClick(R_1);
+            eventHandle(R_1);
         });
         R_2.setOnMouseClicked(e -> {
-            handleMarketClick(R_2);
+            eventHandle(R_2);
         });
         R_3.setOnMouseClicked(e -> {
-            handleMarketClick(R_3);
+            eventHandle(R_3);
         });
         C_1.setOnMouseClicked(e -> {
-            handleMarketClick(C_1);
+            eventHandle(C_1);
         });
         C_2.setOnMouseClicked(e -> {
-            handleMarketClick(C_2);
+            eventHandle(C_2);
         });
         C_3.setOnMouseClicked(e -> {
-            handleMarketClick(C_3);
+            eventHandle(C_3);
         });
         C_4.setOnMouseClicked(e -> {
-            handleMarketClick(C_4);
+            eventHandle(C_4);
         });
-    }
-
-    private void handleMarketClick(ImageView click){
-        if(!(selected == null)) {
-            String[] split = selected.getId().split("_");
-            if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
-                selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            }
-            else selected.setEffect(null);
-            selected.getStyleClass().add("selectable");
-            confirmAction.setDisable(false);
-        }
-        if(selected == null || !selected.equals(click)){
-            selected = click;
-            DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
-            click.setEffect(DS);
-            String[] s = click.getId().split("_");
-            selectedMarket = s[0] + " " + s[1];
-            confirmAction.setDisable(false);
-        }
-        else if(selected.equals(click)){
-            selected = null;
-            confirmAction.setDisable(true);
-            selectedMarket = null;
-        }
     }
 
     public void addLCMap(ArrayList<Triplet<Resources,Integer,Integer>> L){
@@ -191,29 +163,7 @@ public class GameScreenController extends ViewObservable {
                 DCView.setId(P.getKey().ColourToColumn()+"_"+P.getValue().toString());
                 DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                 DCView.getStyleClass().add("selectable");
-                DCView.setOnMouseClicked(e -> {
-                    if(!(selected == null)) {
-                        selected.getStyleClass().add("selectable");
-                        String[] split = selected.getId().split("_");
-                        if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
-                            selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-                        }
-                        else selected.setEffect(null);
-                    }
-                    if(selected == null || !selected.equals(DCView)){
-                        selected = DCView;
-                        DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
-                        DCView.setEffect(DS);
-                        //DCView.getStyleClass().remove("selectable");
-                        String[] s = DCView.getId().split("_");
-                        selectedDC = new Pair<>(Colours.getColourFromColumn(s[0]),Integer.parseInt(s[1]));
-                    }
-                    else if(selected.equals(DCView)){
-                        selected = null;
-                        confirmAction.setDisable(true);
-                        selectedDC = null;
-                    }
-                });
+                DCView.setOnMouseClicked( e -> eventHandle(DCView));
                 CardMarket.add(DCView,P.getKey().ColourToColumn(),3-P.getValue());
             }
         }
@@ -390,15 +340,38 @@ public class GameScreenController extends ViewObservable {
     public void grayOut(boolean gray){
         if(gray){
             //GrayOut
+            setActionDone();
+            for(Node n : LeaderCardsPlayed.getChildren()){
+                n.getStyleClass().remove("selectable");
+                n.setOnMouseClicked(null);
+            }
         }
         else{
-            setActionDone(false);
             //Clickable board
+            endTurn.setDisable(true);
         }
     }
 
-    public void setActionDone(boolean actionDone){
-        endTurn.setDisable(!actionDone);
+    public void setActionDone(){
+        endTurn.setDisable(false);
+        R_1.getStyleClass().remove("bigselectable");
+        R_1.setOnMouseClicked(null);
+        R_2.getStyleClass().remove("bigselectable");
+        R_2.setOnMouseClicked(null);
+        R_3.getStyleClass().remove("bigselectable");
+        R_3.setOnMouseClicked(null);
+        C_1.getStyleClass().remove("bigselectable");
+        C_1.setOnMouseClicked(null);
+        C_2.getStyleClass().remove("bigselectable");
+        C_2.setOnMouseClicked(null);
+        C_3.getStyleClass().remove("bigselectable");
+        C_3.setOnMouseClicked(null);
+        C_4.getStyleClass().remove("bigselectable");
+        C_4.setOnMouseClicked(null);
+        for(Node n : CardMarket.getChildren()){
+            n.setOnMouseClicked(null);
+            n.getStyleClass().remove("selectable");
+        }
     }
 
     public void handleConfirmClick(){
@@ -411,11 +384,7 @@ public class GameScreenController extends ViewObservable {
                 if(T.get_3() && T.get_2()==5) i++;
             }
             if(i<2){
-                String[] s = selected.getId().split("_");
-                if(s[0].equals("0") || s[0].equals("1") || s[0].equals("2") || s[0].equals("3")){
-                    selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-                }
-                else selected.setEffect(null);
+                unselect();
                 selected = null;
                 notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),new ArrayList<>());
             }
@@ -433,11 +402,7 @@ public class GameScreenController extends ViewObservable {
                                 LC.setOnMouseClicked(null);
                                 LC.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                             }
-                            String[] s = selected.getId().split("_");
-                            if(s[0].equals("0") || s[0].equals("1") || s[0].equals("2") || s[0].equals("3")){
-                                selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-                            }
-                            else selected.setEffect(null);
+                            unselect();
                             selected = null;
                             notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC);
                         }else{
@@ -525,6 +490,31 @@ public class GameScreenController extends ViewObservable {
                     }
                 }
             }
+        }
+    }
+
+    private void unselect() {
+        String[] split = selected.getId().split("_");
+        if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
+            selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+        }
+        else selected.setEffect(null);
+        confirmAction.setDisable(false);
+    }
+
+    private void eventHandle(ImageView n){
+        if(!(selected == null)) {
+            unselect();
+        }
+        if(selected == null || !selected.equals(n)) {
+            selected = n;
+            DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
+            n.setEffect(DS);
+            confirmAction.setDisable(false);
+        }
+        else if(selected.equals(n)){
+            selected = null;
+            confirmAction.setDisable(true);
         }
     }
 }

@@ -101,7 +101,7 @@ public class SetupScreenController extends ViewObservable {
             LCView.setPreserveRatio(true);
             LCView.setId(""+(i+1));
             EventHandler<MouseEvent> eventHandler = e -> {
-                event(LCView);
+                eventHandle(LCView);
             };
             LCView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
             LCView.getStyleClass().add("selectable");
@@ -121,7 +121,7 @@ public class SetupScreenController extends ViewObservable {
             resourceView.setId(""+(i));
             resourceView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             EventHandler<MouseEvent> eventHandler = e -> {
-                event(resourceView);
+                eventHandle(resourceView);
             };
             resourceView.addEventFilter(MouseEvent.MOUSE_CLICKED, eventHandler);
             resourceView.getStyleClass().add("selectable");
@@ -153,34 +153,34 @@ public class SetupScreenController extends ViewObservable {
         }
         else if(keyEvent.getCode().equals(KeyCode.DIGIT1) || keyEvent.getCode().equals(KeyCode.NUMPAD1)){
             if(state) {
-                event(leader.get(0));
+                eventHandle(leader.get(0));
             }
             else{
-                event(resources.get(0));
+                eventHandle(resources.get(0));
             }
         }
         else if(keyEvent.getCode().equals(KeyCode.DIGIT2) || keyEvent.getCode().equals(KeyCode.NUMPAD2)){
             if(state) {
-                event(leader.get(1));
+                eventHandle(leader.get(1));
             }
             else{
-                event(resources.get(1));
+                eventHandle(resources.get(1));
             }
         }
         else if(keyEvent.getCode().equals(KeyCode.DIGIT3) || keyEvent.getCode().equals(KeyCode.NUMPAD3)){
             if(state) {
-                event(leader.get(2));
+                eventHandle(leader.get(2));
             }
             else{
-                event(resources.get(2));
+                eventHandle(resources.get(2));
             }
         }
         else if(keyEvent.getCode().equals(KeyCode.DIGIT4) || keyEvent.getCode().equals(KeyCode.NUMPAD4)){
             if(state) {
-                event(leader.get(3));
+                eventHandle(leader.get(3));
             }
             else{
-                event(resources.get(3));
+                eventHandle(resources.get(3));
             }
         }
     }
@@ -189,7 +189,7 @@ public class SetupScreenController extends ViewObservable {
         message.setText(S);
     }
 
-    private void event(ImageView img){
+    private void eventHandle(ImageView img){
         if(state){
             if (indexes[0] != Integer.parseInt(img.getId()) && indexes[1] != Integer.parseInt(img.getId())) {
                 ColorAdjust colorAdjust = new ColorAdjust();
