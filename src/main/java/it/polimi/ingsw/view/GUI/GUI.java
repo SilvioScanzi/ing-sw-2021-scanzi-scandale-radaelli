@@ -248,7 +248,7 @@ public class GUI extends Application implements View{
         switch(message){
             case nicknameAlreadyInUse -> nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
             case unavailableConnection -> connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile");
-            case actionDone -> gameScreenController.actionDone();
+            case actionDone -> gameScreenController.setActionDone(true);
         }
     }
 

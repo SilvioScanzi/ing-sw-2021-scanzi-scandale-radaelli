@@ -130,7 +130,8 @@ public class GameScreenController extends ViewObservable {
 
     private void handleMarketClick(ImageView click){
         if(!(selected == null)) {
-            if(selected.getId().split("_").length==2){
+            String[] split = selected.getId().split("_");
+            if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
                 selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             }
             else selected.setEffect(null);
@@ -147,6 +148,7 @@ public class GameScreenController extends ViewObservable {
         }
         else if(selected.equals(click)){
             selected = null;
+            confirmAction.setDisable(true);
             selectedMarket = null;
         }
     }
@@ -192,7 +194,8 @@ public class GameScreenController extends ViewObservable {
                 DCView.setOnMouseClicked(e -> {
                     if(!(selected == null)) {
                         selected.getStyleClass().add("selectable");
-                        if(selected.getId().split("_").length==2){
+                        String[] split = selected.getId().split("_");
+                        if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
                             selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                         }
                         else selected.setEffect(null);
@@ -207,6 +210,7 @@ public class GameScreenController extends ViewObservable {
                     }
                     else if(selected.equals(DCView)){
                         selected = null;
+                        confirmAction.setDisable(true);
                         selectedDC = null;
                     }
                 });
@@ -388,12 +392,13 @@ public class GameScreenController extends ViewObservable {
             //GrayOut
         }
         else{
+            setActionDone(false);
             //Clickable board
         }
     }
 
-    public void actionDone(){
-        endTurn.setDisable(false);
+    public void setActionDone(boolean actionDone){
+        endTurn.setDisable(!actionDone);
     }
 
     public void handleConfirmClick(){
@@ -406,17 +411,34 @@ public class GameScreenController extends ViewObservable {
                 if(T.get_3() && T.get_2()==5) i++;
             }
             if(i<2){
+                String[] s = selected.getId().split("_");
+                if(s[0].equals("0") || s[0].equals("1") || s[0].equals("2") || s[0].equals("3")){
+                    selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+                }
+                else selected.setEffect(null);
+                selected = null;
                 notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),new ArrayList<>());
             }
             else if(getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))>0){
                 selectedRMLC.clear();
                 glowNextWhiteMarble(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC.size());
                 for(Node n : LeaderCardsPlayed.getChildren()){
-                    n.setEffect(new Lighting());
+                    n.getStyleClass().add("selectable");
+                    n.setEffect(new Glow());
                     n.setOnMouseClicked(e ->{
                         String[] S = n.getId().split("_");
                         selectedRMLC.add(Integer.parseInt(S[1]));
                         if(selectedRMLC.size() == getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))){
+                            for(Node LC : LeaderCardsPlayed.getChildren()){
+                                LC.setOnMouseClicked(null);
+                                LC.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+                            }
+                            String[] s = selected.getId().split("_");
+                            if(s[0].equals("0") || s[0].equals("1") || s[0].equals("2") || s[0].equals("3")){
+                                selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+                            }
+                            else selected.setEffect(null);
+                            selected = null;
                             notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC);
                         }else{
                             glowNextWhiteMarble(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC.size());
@@ -453,26 +475,28 @@ public class GameScreenController extends ViewObservable {
     private void glowNextWhiteMarble(boolean row, int i, int currentWM){
         int count = 0;
         int lastWhite = 0;
+        i--;
         if(row){
             for(int j=0;j<4;j++) {
                 if(grid[i][j]){
                     if(currentWM == count){
                         for (Node node : ResourceMarket.getChildren()) {
-                            if (GridPane.getColumnIndex(node) == i && GridPane.getRowIndex(node) == j) {
-                                node.setEffect(new Glow());
+                            if (GridPane.getColumnIndex(node) == j && GridPane.getRowIndex(node) == i) {
+                                node.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 2.0, 5.0, 0, 0));
+                                if(currentWM!=0){
+                                    for (Node n : ResourceMarket.getChildren()) {
+                                        if (GridPane.getColumnIndex(n) == lastWhite && GridPane.getRowIndex(n) == i) {
+                                            n.setEffect(null);
+                                        }
+                                    }
+                                }
+                                return;
                             }
                         }
                     }
                     else {
                         lastWhite = j;
                         count++;
-                    }
-                }
-            }
-            if(currentWM!=0){
-                for (Node node : ResourceMarket.getChildren()) {
-                    if (GridPane.getColumnIndex(node) == i && GridPane.getRowIndex(node) == lastWhite) {
-                        node.setEffect(null);
                     }
                 }
             }
@@ -482,21 +506,22 @@ public class GameScreenController extends ViewObservable {
                 if(grid[j][i]){
                     if(currentWM == count){
                         for (Node node : ResourceMarket.getChildren()) {
-                            if (GridPane.getColumnIndex(node) == j && GridPane.getRowIndex(node) == i) {
-                                node.setEffect(new Glow());
+                            if (GridPane.getColumnIndex(node) == i && GridPane.getRowIndex(node) == j) {
+                                node.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 2.0, 5.0, 0, 0));
+                                if(currentWM!=0){
+                                    for (Node n : ResourceMarket.getChildren()) {
+                                        if (GridPane.getColumnIndex(n) == i && GridPane.getRowIndex(n) == lastWhite) {
+                                            n.setEffect(null);
+                                        }
+                                    }
+                                }
+                                return;
                             }
                         }
                     }
                     else {
                         lastWhite = j;
                         count++;
-                    }
-                }
-            }
-            if(currentWM!=0){
-                for (Node node : ResourceMarket.getChildren()) {
-                    if (GridPane.getColumnIndex(node) == lastWhite && GridPane.getRowIndex(node) == i) {
-                        node.setEffect(null);
                     }
                 }
             }
