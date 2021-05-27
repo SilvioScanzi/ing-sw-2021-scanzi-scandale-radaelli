@@ -14,6 +14,7 @@ public class ClientBoard {
     private final HashMap<Integer, Pair<Resources,Integer>> warehouse;
     private final ArrayList<Pair<Colours, Integer>> slots;
     private HashMap<Resources,Integer> strongBox;
+    private final HashMap<Integer,Pair<Integer,Resources>> LCMap = new HashMap<>();
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsHand;
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed;
     private ArrayList<Resources> hand;
@@ -42,6 +43,7 @@ public class ClientBoard {
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
     }
+
     public void setLeaderCardsHand(ArrayList<Triplet<Resources, Integer, Integer>> leaderCardsHand) {
         this.leaderCardsHand = leaderCardsHand;
     }

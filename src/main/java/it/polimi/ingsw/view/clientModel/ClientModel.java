@@ -2,6 +2,7 @@ package it.polimi.ingsw.view.clientModel;
 
 import it.polimi.ingsw.commons.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ClientModel {
@@ -23,6 +24,9 @@ public class ClientModel {
             for(String S:playerMap.keySet()){
                 if(playerMap.get(S) == j){
                     boards.put(S,new ClientBoard(i,S));
+                    if(!S.equals(myNickname)){
+                        boards.get(S).setLeaderCardsHand(new ArrayList<>(){{add(new Triplet<>(Resources.Servants,-1,-1));add(new Triplet<>(Resources.Servants,-1,-1));add(new Triplet<>(Resources.Servants,-1,-1));add(new Triplet<>(Resources.Servants,-1,-1));}});
+                    }
                 }
             }
             i=i+1;
@@ -39,6 +43,16 @@ public class ClientModel {
     public void setResourceMarket(Marbles[][] resourceMarket, Marbles remainingMarble){
         this.resourceMarket = resourceMarket;
         this.remainingMarble = remainingMarble;
+    }
+
+    public void setResourceMarket(String[][] resourceMarket, String remainingMarble){
+        this.resourceMarket = new Marbles[3][4];
+        for(int i=0;i<3;i++){
+            for(int j=0;j<4;j++){
+                this.resourceMarket[i][j] = Marbles.getMarbleFromString(resourceMarket[i][j]);
+            }
+        }
+        this.remainingMarble = Marbles.getMarbleFromString(remainingMarble);
     }
 
     //getters

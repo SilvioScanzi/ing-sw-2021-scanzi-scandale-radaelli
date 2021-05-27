@@ -1,13 +1,15 @@
 package it.polimi.ingsw.observers;
 
 import it.polimi.ingsw.commons.ActionToken;
+import it.polimi.ingsw.commons.Marbles;
 import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
 
 public interface ModelObserver {
-    void updateMarket(ResourceMarket m);
+    //void updateMarket(ResourceMarket m);
+    void updateMarket(Marbles[][] grid, Marbles remainingMarble);
     void updateDCMarket(DevelopmentCardMarket DCM);
     void updateWR(Warehouse wr, String s);
     void updateLCHand(ArrayList<LeaderCard> LCHand, String s);

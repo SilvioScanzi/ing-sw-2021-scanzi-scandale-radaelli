@@ -84,7 +84,7 @@ public class Game extends ModelObservable {
         }
         //send to the players both the markets
         notifyDCMarket(developmentCardMarket);
-        notifyResourceMarket(resourceMarket);
+        notifyResourceMarket(resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
         for(int i = 0; i< playerNumber; i++){
             notifyLCHand(players.get(i).getLeaderCardsHand(),players.get(i).getNickname());
         }
@@ -196,7 +196,7 @@ public class Game extends ModelObservable {
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
         playerBoard.getHand().addAll(tmp);
 
-        notifyResourceMarket(resourceMarket);
+        notifyResourceMarket(resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
         notifyHand(playerBoard.getHand(), playerBoard.getNickname());
         notifyActionDone(playerBoard.getNickname());
 

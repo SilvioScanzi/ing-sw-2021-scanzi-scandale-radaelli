@@ -37,6 +37,17 @@ public class ResourceMarket {
         remainingMarble = tmp.remove(0);
     }
 
+    public String toString(){
+        String s = "";
+        for(int i=0;i<3;i++){
+            for(int j=0;j<4;j++){
+                s = s + grid[i][j].abbreviation();
+            }
+            s = s+"\n";
+        }
+        return s;
+    }
+
     //Only used for testing
     public ResourceMarket(int Arandom){
         ArrayList<Marbles> tmp = new ArrayList<>();

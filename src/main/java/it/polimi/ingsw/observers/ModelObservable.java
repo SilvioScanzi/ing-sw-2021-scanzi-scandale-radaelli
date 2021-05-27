@@ -1,6 +1,7 @@
 package it.polimi.ingsw.observers;
 
 import it.polimi.ingsw.commons.ActionToken;
+import it.polimi.ingsw.commons.Marbles;
 import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.*;
 
@@ -16,9 +17,15 @@ public class ModelObservable {
         }
     }
 
-    public void notifyResourceMarket(ResourceMarket m){
+    /*public void notifyResourceMarket(ResourceMarket m){
         for(ModelObserver obs : observers){
             obs.updateMarket(m);
+        }
+    }*/
+
+    public void notifyResourceMarket(Marbles[][] grid, Marbles remainingMarble){
+        for(ModelObserver obs : observers){
+            obs.updateMarket(grid,remainingMarble);
         }
     }
 

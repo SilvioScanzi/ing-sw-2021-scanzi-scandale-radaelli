@@ -1,7 +1,5 @@
 package it.polimi.ingsw.commons;
 
-import java.awt.*;
-
 public enum Colours {
     Purple,
     Yellow,
@@ -25,6 +23,16 @@ public enum Colours {
             case "GI" -> Yellow;
             case "VI" -> Purple;
             default -> throw new IllegalStateException("Unexpected value: " + string);
+        };
+    }
+
+    public static Colours getColourFromColumn(String s){
+        return switch (s){
+            case "0" -> Green;
+            case "1" -> Blue;
+            case "2" -> Yellow;
+            case "3" -> Purple;
+            default -> throw new IllegalStateException("Unexpected value: " + s);
         };
     }
 

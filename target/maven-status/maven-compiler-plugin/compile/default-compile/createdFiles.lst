@@ -38,6 +38,7 @@ it\polimi\ingsw\network\server\Server.class
 it\polimi\ingsw\commons\LeaderCardParser.class
 it\polimi\ingsw\network\messages\StrongboxMessage.class
 it\polimi\ingsw\network\messages\LeaderCardHandMessage.class
+it\polimi\ingsw\view\clientModel\ClientModel$1.class
 it\polimi\ingsw\view\ViewState.class
 it\polimi\ingsw\view\GUI\controllers\DevelopmentBuyScreenController.class
 it\polimi\ingsw\commons\Pair.class

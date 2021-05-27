@@ -43,4 +43,16 @@ public enum Marbles implements Serializable {
             case Red -> "red";
         };
     }
+
+    public static Marbles getMarbleFromString(String s){
+        return switch (s) {
+            case "BL" ->Blue;
+            case "GR" ->Grey;
+            case "VI" ->Purple;
+            case "GI" ->Yellow;
+            case "BI" ->White;
+            case "RO" ->Red;
+            default -> White;
+        };
+    }
 }

@@ -27,13 +27,14 @@ public class GUI extends Application implements View{
     private ViewState state = ViewState.start;
     private Stage primaryStage;
     private Scene currentScene;
+    private Pane gameScreen;
     private FXMLLoader fxmlLoader;
     private ConnectionScreenController connectionScreenController;
     private NicknameScreenController nicknameScreenController;
     private PlayerNumberScreenController playerNumberScreenController;
     private SetupScreenController setupScreenController;
     private WaitScreenController waitScreenController;
-    private GameScreenController gameScreenController;
+    private GameScreenController gameScreenController = null;
 
     private NetworkHandler NH;
 
@@ -159,6 +160,7 @@ public class GUI extends Application implements View{
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
+                    gameScreen = root;
                     setupScreenController = fxmlLoader.getController();
                     setupScreenController.addObserver(NH);
                     setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
@@ -174,59 +176,39 @@ public class GUI extends Application implements View{
         }
         else if(state.equals(ViewState.finishSetupOneResource) || state.equals(ViewState.finishSetupTwoResources)){
             Platform.runLater(() -> {
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
-                try {
-                    Pane root = fxmlLoader.load();
-                    currentScene.setRoot(root);
-                    setupScreenController = fxmlLoader.getController();
-                    setupScreenController.addObserver(NH);
-                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
-                    setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
-                    if(state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
-                    if(state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
-                    String message = "Scegli "+((state.equals(ViewState.finishSetupOneResource))?"una":"la prima")+" risorsa da ottenere";
-                    setupScreenController.setMessage(message);
-                    primaryStage.setResizable(true);
-                    primaryStage.setMaximized(true);
-                    scale(1600,900);
-                }catch(IOException e){e.printStackTrace();}
+                currentScene.setRoot(gameScreen);
+                if (state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
+                if (state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
+                String message = "Scegli " + ((state.equals(ViewState.finishSetupOneResource)) ? "una" : "la prima") + " risorsa da ottenere";
+                setupScreenController.setMessage(message);
+                primaryStage.setResizable(true);
+                primaryStage.setMaximized(true);
+                scale(1600, 900);
             });
         }
-        else if(state.equals(ViewState.myTurn)){
+        else if(state.equals(ViewState.myTurn) || state.equals(ViewState.notMyTurn)){
             Platform.runLater(() -> {
-                primaryStage.setTitle("Maestri del rinascimento - In gioco");
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
                 try {
-                    currentScene.setOnKeyPressed(null);
-                    Pane root = fxmlLoader.load();
-                    currentScene.setRoot(root);
-                    gameScreenController = fxmlLoader.getController();
-                    gameScreenController.addObserver(NH);
-                    gameScreenController.addMarbles(NH.getClientModel().getResourceMarket(), NH.getClientModel().getRemainingMarble());
-                    gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
-                    gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
-                    primaryStage.setResizable(true);
-                    primaryStage.setMaximized(true);
-                    scale(1600,900);
-                }catch(IOException e){e.printStackTrace();}
-            });
-        }
-        else if(state.equals(ViewState.notMyTurn)){
-            Platform.runLater(() -> {
-                primaryStage.setTitle("Maestri del rinascimento - In gioco");
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
-                try {
-                    currentScene.setOnKeyPressed(null);
-                    Pane root = fxmlLoader.load();
-                    currentScene.setRoot(root);
-                    gameScreenController = fxmlLoader.getController();
-                    gameScreenController.addObserver(NH);
-                    gameScreenController.addMarbles(NH.getClientModel().getResourceMarket(), NH.getClientModel().getRemainingMarble());
-                    gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
-                    gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+
+                    if(gameScreenController == null) {
+                        fxmlLoader = new FXMLLoader();
+                        fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
+                        primaryStage.setTitle("Maestri del rinascimento - In gioco");
+                        gameScreen = fxmlLoader.load();
+                        currentScene.setOnKeyPressed(null);
+                        gameScreenController = fxmlLoader.getController();
+                        gameScreenController.addObserver(NH);
+                        gameScreenController.addLCMap(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                        gameScreenController.addMarbles(NH.getClientModel().getResourceMarket(), NH.getClientModel().getRemainingMarble());
+                        gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
+                        gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                    }
+
+                    currentScene.setRoot(gameScreen);
+
+                    if(state.equals(ViewState.notMyTurn)) gameScreenController.grayOut(true);
+                    else gameScreenController.grayOut(false);
+
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -264,8 +246,9 @@ public class GUI extends Application implements View{
     @Override
     public void printStandardMessage(StandardMessages message) {
         switch(message){
-            case nicknameAlreadyInUse: nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
-            case unavailableConnection: connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile");
+            case nicknameAlreadyInUse -> nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
+            case unavailableConnection -> connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile");
+            case actionDone -> gameScreenController.actionDone();
         }
     }
 
@@ -276,7 +259,9 @@ public class GUI extends Application implements View{
 
     @Override
     public void printResourceMarket(Marbles[][] a, Marbles b) {
-
+        if(gameScreenController!=null) {
+            Platform.runLater(() -> gameScreenController.addMarbles(a, b));
+        }
     }
 
     @Override
@@ -291,7 +276,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
-
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) Platform.runLater(() ->gameScreenController.addHand(H));
     }
 
     @Override
@@ -306,12 +291,14 @@ public class GUI extends Application implements View{
 
     @Override
     public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
-
+        if(gameScreenController!=null) Platform.runLater(() -> gameScreenController.addDevelopment(CM));
     }
 
     @Override
     public void printFaithTrack(int FM, boolean[] PF, String nickname) {
-
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) {
+            Platform.runLater(() -> gameScreenController.addFaithTrack(FM, PF));
+        }
     }
 
     @Override

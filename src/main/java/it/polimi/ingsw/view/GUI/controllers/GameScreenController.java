@@ -5,8 +5,12 @@ import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
+import javafx.scene.effect.Lighting;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -25,11 +29,34 @@ public class GameScreenController extends ViewObservable {
     @FXML
     private ImageView rm;
     @FXML
+    private ImageView R_1;
+    @FXML
+    private ImageView R_2;
+    @FXML
+    private ImageView R_3;
+    @FXML
+    private ImageView C_1;
+    @FXML
+    private ImageView C_2;
+    @FXML
+    private ImageView C_3;
+    @FXML
+    private ImageView C_4;
+
+    @FXML
     private GridPane CardMarket;
+
     @FXML
     private GridPane LeaderCardsPlayed;
+
     @FXML
     private GridPane FaithTrack;
+    @FXML
+    private ImageView PF1;
+    @FXML
+    private ImageView PF2;
+    @FXML
+    private ImageView PF3;
 
     @FXML
     private Text SB_CO;
@@ -61,10 +88,74 @@ public class GameScreenController extends ViewObservable {
     @FXML
     private ImageView SLOT_3;
 
+    @FXML
+    private Button confirmAction;
+    @FXML
+    private Button endTurn;
 
+    //key is the index, value is: Resource of the card, Victory points and if played or not
+    private final HashMap<Integer,Triplet<Resources,Integer,Boolean>> LCMap = new HashMap<>();
+    private final boolean[][] grid = new boolean[3][4];
+    private final ArrayList<Integer> selectedRMLC = new ArrayList<>();
+
+    private Pair<Colours,Integer> selectedDC;
+    private String selectedMarket;
+    private ImageView selected = null;
 
     @FXML
-    public void initialize() {}
+    public void initialize() {
+        confirmAction.setDisable(true);
+        R_1.setOnMouseClicked(e -> {
+            handleMarketClick(R_1);
+        });
+        R_2.setOnMouseClicked(e -> {
+            handleMarketClick(R_2);
+        });
+        R_3.setOnMouseClicked(e -> {
+            handleMarketClick(R_3);
+        });
+        C_1.setOnMouseClicked(e -> {
+            handleMarketClick(C_1);
+        });
+        C_2.setOnMouseClicked(e -> {
+            handleMarketClick(C_2);
+        });
+        C_3.setOnMouseClicked(e -> {
+            handleMarketClick(C_3);
+        });
+        C_4.setOnMouseClicked(e -> {
+            handleMarketClick(C_4);
+        });
+    }
+
+    private void handleMarketClick(ImageView click){
+        if(!(selected == null)) {
+            if(selected.getId().split("_").length==2){
+                selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+            }
+            else selected.setEffect(null);
+            selected.getStyleClass().add("selectable");
+            confirmAction.setDisable(false);
+        }
+        if(selected == null || !selected.equals(click)){
+            selected = click;
+            DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
+            click.setEffect(DS);
+            String[] s = click.getId().split("_");
+            selectedMarket = s[0] + " " + s[1];
+            confirmAction.setDisable(false);
+        }
+        else if(selected.equals(click)){
+            selected = null;
+            selectedMarket = null;
+        }
+    }
+
+    public void addLCMap(ArrayList<Triplet<Resources,Integer,Integer>> L){
+        for(int i=0;i<2;i++){
+            LCMap.put((i+1),new Triplet<>(L.get(i).get_1(),L.get(i).get_2(),false));
+        }
+    }
 
     public void addMarbles(Marbles[][] market, Marbles remainingMarble){
         ResourceMarket.getChildren().clear();
@@ -78,6 +169,7 @@ public class GameScreenController extends ViewObservable {
                 marbleView.setTranslateY(2.0);
                 marbleView.setPreserveRatio(true);
                 ResourceMarket.add(marbleView,j,i);
+                grid[i][j] = market[i][j].equals(Marbles.White);
             }
         }
         String path = "/images/marbles/" + remainingMarble.getID()+".png";
@@ -94,7 +186,30 @@ public class GameScreenController extends ViewObservable {
                 ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
                 DCView.setFitWidth(140.0);
                 DCView.setPreserveRatio(true);
+                DCView.setId(P.getKey().ColourToColumn()+"_"+P.getValue().toString());
                 DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+                DCView.getStyleClass().add("selectable");
+                DCView.setOnMouseClicked(e -> {
+                    if(!(selected == null)) {
+                        selected.getStyleClass().add("selectable");
+                        if(selected.getId().split("_").length==2){
+                            selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+                        }
+                        else selected.setEffect(null);
+                    }
+                    if(selected == null || !selected.equals(DCView)){
+                        selected = DCView;
+                        DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
+                        DCView.setEffect(DS);
+                        //DCView.getStyleClass().remove("selectable");
+                        String[] s = DCView.getId().split("_");
+                        selectedDC = new Pair<>(Colours.getColourFromColumn(s[0]),Integer.parseInt(s[1]));
+                    }
+                    else if(selected.equals(DCView)){
+                        selected = null;
+                        selectedDC = null;
+                    }
+                });
                 CardMarket.add(DCView,P.getKey().ColourToColumn(),3-P.getValue());
             }
         }
@@ -105,11 +220,11 @@ public class GameScreenController extends ViewObservable {
     public void addBoard(ClientBoard board){
         addStrongBox(board.getStrongBox());
         addWarehouse(board.getWarehouse());
-        addFaithTrack(board.getFaithMarker());
+        addFaithTrack(board.getFaithMarker(), board.getPopeFavor());
         addLeaderCards(board.getLeaderCardsPlayed());
     }
 
-    private void addStrongBox(HashMap<Resources, Integer> strongBox) {
+    public void addStrongBox(HashMap<Resources, Integer> strongBox) {
         for (Resources R : Resources.values()) {
             int n = 0;
             if (strongBox.containsKey(R)) {
@@ -124,8 +239,7 @@ public class GameScreenController extends ViewObservable {
         }
     }
 
-
-    private void addWarehouse(HashMap<Integer, Pair<Resources, Integer>> warehouse){
+    public void addWarehouse(HashMap<Integer, Pair<Resources, Integer>> warehouse){
         W1_1.getChildren().clear();
         W2_1.getChildren().clear();
         W2_2.getChildren().clear();
@@ -183,9 +297,9 @@ public class GameScreenController extends ViewObservable {
         }
     }
 
-    private void addFaithTrack(int faithMarker){
+    public void addFaithTrack(int faithMarker, boolean[] popeFavor){
         FaithTrack.getChildren().clear();
-        String path = "/images/FaithMarker.png";
+        String path = "/images/faithTrack/FaithMarker.png";
         ImageView FMImage = new ImageView(new Image(GUI.class.getResource(path).toString()));
         FMImage.setPreserveRatio(true);
         FMImage.setFitWidth(29);
@@ -205,58 +319,187 @@ public class GameScreenController extends ViewObservable {
         else if(faithMarker<25)
             FaithTrack.add(FMImage,faithMarker-6,0);
 
+
+        path = "/images/faithTrack/1";
+        if(popeFavor[0]) path = path + "_F.png";
+        else path = path + "_B.png";
+        PF1.setImage(new Image(GUI.class.getResource(path).toString()));
+        path = "/images/faithTrack/2";
+        if(popeFavor[1]) path = path + "_F.png";
+        else path = path + "_B.png";
+        PF2.setImage(new Image(GUI.class.getResource(path).toString()));
+        path = "/images/faithTrack/3";
+        if(popeFavor[2]) path = path + "_F.png";
+        else path = path + "_B.png";
+        PF3.setImage(new Image(GUI.class.getResource(path).toString()));
     }
 
-    //TODO: mettere un pane con imageView sulle leader card; viene mostrata una risorsa solo se fa parte delle leadercardsPlayed
-    private void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed){
+    public void addHand(ArrayList<Resources> hand){}
 
-        if(LCPlayed.size()==1){
-            //add played leaderCards
-            String path = "/images/leaderCards/" + LCPlayed.get(0).get_1().abbreviation() + LCPlayed.get(0).get_2() + ".png";
+    //TODO: mettere un pane con imageView sulle leader card; viene mostrata una risorsa solo se fa parte delle leadercardsPlayed
+    public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed){
+        int c = 0;
+        boolean[] played = {false,false};
+        for(Triplet<Resources,Integer,Integer> T : LCPlayed){
+            String path = "/images/leaderCards/" + T.get_1().getID() + T.get_2() + ".png";
             ImageView LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             LCView.setFitWidth(140.0);
             LCView.setPreserveRatio(true);
             LCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            LeaderCardsPlayed.add(LCView,0,0);
-
-            //add not played leaderCards
-            path = "/images/LeaderCardBack.png";
-            ImageView backLCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-            backLCView.setFitWidth(140.0);
-            backLCView.setPreserveRatio(true);
-            backLCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            LeaderCardsPlayed.add(backLCView,1,0);
+            LCView.setId("L_"+(c+1));
+            if(T.get_1().equals(LCMap.get(1).get_1()) && T.get_2().equals(LCMap.get(1).get_2())){
+                LeaderCardsPlayed.add(LCView,0,0);
+                played[0]=true;
+            }
+            else{
+                LeaderCardsPlayed.add(LCView,1,0);
+                played[1]=true;
+            }
+            c++;
         }
-        else if(LCPlayed.size()==2){
-            //add played leaderCards
-            String path = "/images/leaderCards/" + LCPlayed.get(0).get_1().abbreviation() + LCPlayed.get(0).get_2() + ".png";
-            ImageView LC1View = new ImageView(new Image(GUI.class.getResource(path).toString()));
-            LC1View.setFitWidth(140.0);
-            LC1View.setPreserveRatio(true);
-            LC1View.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            LeaderCardsPlayed.add(LC1View,0,0);
 
-            //add not played leaderCards
-            path = "/images/leaderCards/" + LCPlayed.get(1).get_1().abbreviation() + LCPlayed.get(1).get_2() + ".png";
-            ImageView LC2View = new ImageView(new Image(GUI.class.getResource(path).toString()));
-            LC2View.setFitWidth(140.0);
-            LC2View.setPreserveRatio(true);
-            LC2View.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            LeaderCardsPlayed.add(LC2View,1,0);
-        }
-        else {
-            //add not played leaderCards
+        int j = 0;
+        for(int i=c; i<2;i++){
             String path = "/images/LeaderCardBack.png";
             ImageView backLCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             backLCView.setFitWidth(140.0);
             backLCView.setPreserveRatio(true);
             backLCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            ImageView back2LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-            back2LCView.setFitWidth(140.0);
-            back2LCView.setPreserveRatio(true);
-            back2LCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            LeaderCardsPlayed.add(backLCView,0,0);
-            LeaderCardsPlayed.add(back2LCView,1,0);
+            backLCView.setId("L_"+(c+1));
+            if (played[j]) {
+                j++;
+            }
+            LeaderCardsPlayed.add(backLCView,j,0);
+            int finalJ = j;
+            backLCView.setOnMouseEntered(e -> {
+                String p = "/images/leaderCards/"+LCMap.get(finalJ +1).get_1().getID()+LCMap.get(finalJ + 1).get_2()+".png";
+                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
+            });
+            backLCView.setOnMouseExited(e ->{
+                String p = "/images/LeaderCardBack.png";
+                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
+            });
+            j++;
+        }
+    }
+
+    public void grayOut(boolean gray){
+        if(gray){
+            //GrayOut
+        }
+        else{
+            //Clickable board
+        }
+    }
+
+    public void actionDone(){
+        endTurn.setDisable(false);
+    }
+
+    public void handleConfirmClick(){
+        String ID = selected.getId();
+        String[] split = ID.split("_");
+        //Resource market action
+        if(split[0].equals("R") || split[0].equals("C")){
+            int i=0;
+            for(Triplet<Resources,Integer,Boolean> T : LCMap.values()){
+                if(T.get_3() && T.get_2()==5) i++;
+            }
+            if(i<2){
+                notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),new ArrayList<>());
+            }
+            else if(getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))>0){
+                selectedRMLC.clear();
+                glowNextWhiteMarble(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC.size());
+                for(Node n : LeaderCardsPlayed.getChildren()){
+                    n.setEffect(new Lighting());
+                    n.setOnMouseClicked(e ->{
+                        String[] S = n.getId().split("_");
+                        selectedRMLC.add(Integer.parseInt(S[1]));
+                        if(selectedRMLC.size() == getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))){
+                            notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC);
+                        }else{
+                            glowNextWhiteMarble(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC.size());
+                        }
+                    });
+                }
+            }
+        }
+        //Development buy action
+        else if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
+
+        }
+        //Activate production
+        else if(split[0].equals("P")){
+
+        }
+    }
+
+    public void handleEndTurnClick(){
+        notifyEndTurn();
+    }
+
+    private int getWhiteMarbles(boolean row, int i){
+        int n=0;
+        if(row){
+            for(int k=0;k<4;k++) n = n + ((grid[i-1][k])?1:0);
+        }
+        else{
+            for(int k=0;k<3;k++) n = n + ((grid[k][i-1])?1:0);
+        }
+        return n;
+    }
+
+    private void glowNextWhiteMarble(boolean row, int i, int currentWM){
+        int count = 0;
+        int lastWhite = 0;
+        if(row){
+            for(int j=0;j<4;j++) {
+                if(grid[i][j]){
+                    if(currentWM == count){
+                        for (Node node : ResourceMarket.getChildren()) {
+                            if (GridPane.getColumnIndex(node) == i && GridPane.getRowIndex(node) == j) {
+                                node.setEffect(new Glow());
+                            }
+                        }
+                    }
+                    else {
+                        lastWhite = j;
+                        count++;
+                    }
+                }
+            }
+            if(currentWM!=0){
+                for (Node node : ResourceMarket.getChildren()) {
+                    if (GridPane.getColumnIndex(node) == i && GridPane.getRowIndex(node) == lastWhite) {
+                        node.setEffect(null);
+                    }
+                }
+            }
+        }
+        else{
+            for(int j=0;j<3;j++) {
+                if(grid[j][i]){
+                    if(currentWM == count){
+                        for (Node node : ResourceMarket.getChildren()) {
+                            if (GridPane.getColumnIndex(node) == j && GridPane.getRowIndex(node) == i) {
+                                node.setEffect(new Glow());
+                            }
+                        }
+                    }
+                    else {
+                        lastWhite = j;
+                        count++;
+                    }
+                }
+            }
+            if(currentWM!=0){
+                for (Node node : ResourceMarket.getChildren()) {
+                    if (GridPane.getColumnIndex(node) == lastWhite && GridPane.getRowIndex(node) == i) {
+                        node.setEffect(null);
+                    }
+                }
+            }
         }
     }
 }

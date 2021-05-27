@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -16,12 +17,12 @@
             <Image url="@../images/Parchment.jpg" />
          </image>
       </ImageView>
-      <ImageView fitHeight="38.0" fitWidth="331.0" layoutX="90.0" layoutY="270.0">
+      <ImageView fitHeight="38.0" fitWidth="331.0" layoutX="318.0" layoutY="280.0">
          <image>
             <Image url="@../images/frieze.png" />
          </image>
       </ImageView>
-      <Pane layoutX="81.0" layoutY="409.0" prefHeight="419.0" prefWidth="632.0" scaleX="1.08" scaleY="1.08">
+      <Pane layoutX="309.0" layoutY="419.0" prefHeight="419.0" prefWidth="632.0" scaleX="1.08" scaleY="1.08">
          <children>
             <ImageView fitHeight="399.0" fitWidth="600.0" layoutX="7.0" layoutY="3.0" scaleX="1.08" scaleY="1.08" styleClass="physical">
                <image>
@@ -79,9 +80,9 @@
                   <ImageView fx:id="SLOT_3" fitHeight="168.0" fitWidth="110.0" translateX="5.0" />
                </children>
             </Pane>
-            <ImageView fx:id="PF1" fitHeight="50.0" fitWidth="54.0" layoutX="136.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="PF2" fitHeight="59.0" fitWidth="54.0" layoutX="297.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
-            <ImageView fx:id="PF3" fitHeight="50.0" fitWidth="54.0" layoutX="486.0" layoutY="46.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="PF1" fitHeight="50.0" fitWidth="50.0" layoutX="139.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="PF2" fitHeight="50.0" fitWidth="50.0" layoutX="299.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="PF3" fitHeight="50.0" fitWidth="50.0" layoutX="489.0" layoutY="45.0" pickOnBounds="true" preserveRatio="true" />
             <GridPane fx:id="FaithTrack" layoutX="31.0" layoutY="15.0" prefHeight="82.0" prefWidth="557.0" scaleX="1.08" scaleY="1.08">
                <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="29.0" minWidth="29.0" prefWidth="29.0" />
@@ -122,7 +123,7 @@
             </Pane>
          </children>
       </Pane>
-      <Pane layoutX="430.0" layoutY="-7.0" prefHeight="399.0" prefWidth="319.0">
+      <Pane layoutX="658.0" layoutY="3.0" prefHeight="399.0" prefWidth="319.0">
          <children>
             <ImageView fitHeight="393.0" fitWidth="307.0" layoutX="14.0" layoutY="3.0" pickOnBounds="true" preserveRatio="true" scaleX="0.9" scaleY="0.9" styleClass="physical">
                <image>
@@ -152,44 +153,44 @@
                   <ImageView fx:id="rm" fitHeight="33.0" fitWidth="33.0" layoutX="7.0" />
                </children>
             </AnchorPane>
-            <ImageView fx:id="R1" fitHeight="25.0" fitWidth="44.0" layoutX="264.0" layoutY="105.0">
+            <ImageView fx:id="R_1" fitHeight="25.0" fitWidth="44.0" layoutX="264.0" layoutY="105.0" styleClass="bigselectable">
                <image>
                   <Image url="@../images/horizontal arrow.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="C1" fitHeight="59.0" fitWidth="29.0" layoutX="109.0" layoutY="224.0">
+            <ImageView fx:id="C_1" fitHeight="59.0" fitWidth="29.0" layoutX="109.0" layoutY="224.0" styleClass="bigselectable">
                <image>
                   <Image url="@../images/vertical arrow.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="C2" fitHeight="59.0" fitWidth="29.0" layoutX="142.0" layoutY="224.0">
+            <ImageView fx:id="C_2" fitHeight="59.0" fitWidth="29.0" layoutX="142.0" layoutY="224.0" styleClass="bigselectable">
                <image>
                   <Image url="@../images/vertical arrow.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="C3" fitHeight="59.0" fitWidth="29.0" layoutX="173.0" layoutY="224.0">
+            <ImageView fx:id="C_3" fitHeight="59.0" fitWidth="29.0" layoutX="173.0" layoutY="224.0" styleClass="bigselectable">
                <image>
                   <Image url="@../images/vertical arrow.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="C4" fitHeight="59.0" fitWidth="29.0" layoutX="204.0" layoutY="224.0">
+            <ImageView fx:id="C_4" fitHeight="59.0" fitWidth="29.0" layoutX="204.0" layoutY="224.0" styleClass="bigselectable">
                <image>
                   <Image url="@../images/vertical arrow.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="R2" fitHeight="25.0" fitWidth="44.0" layoutX="264.0" layoutY="136.0">
+            <ImageView fx:id="R_2" fitHeight="25.0" fitWidth="44.0" layoutX="264.0" layoutY="136.0" styleClass="bigselectable">
                <image>
                   <Image url="@../images/horizontal arrow.png" />
                </image>
             </ImageView>
-            <ImageView fx:id="R3" fitHeight="25.0" fitWidth="44.0" layoutX="264.0" layoutY="167.0">
+            <ImageView fx:id="R_3" fitHeight="25.0" fitWidth="44.0" layoutX="264.0" layoutY="167.0" styleClass="bigselectable">
                <image>
                   <Image url="@../images/horizontal arrow.png" />
                </image>
             </ImageView>
          </children>
       </Pane>
-      <GridPane fx:id="LeaderCardsPlayed" layoutX="100.0" layoutY="28.0" prefHeight="231.0" prefWidth="331.0">
+      <GridPane fx:id="LeaderCardsPlayed" layoutX="328.0" layoutY="38.0" prefHeight="231.0" prefWidth="331.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.5" minWidth="165.5" prefWidth="165.5" />
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="165.5" minWidth="165.5" prefWidth="165.5" />
@@ -198,17 +199,17 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="786.0" layoutY="280.0">
+      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="1014.0" layoutY="290.0">
          <image>
             <Image url="@../images/frieze.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="786.0" layoutY="560.0">
+      <ImageView fitHeight="54.0" fitWidth="545.0" layoutX="1014.0" layoutY="570.0">
          <image>
             <Image url="@../images/frieze.png" />
          </image>
       </ImageView>
-      <GridPane fx:id="CardMarket" layoutX="766.0" layoutY="14.0" prefHeight="856.0" prefWidth="579.0">
+      <GridPane fx:id="CardMarket" layoutX="994.0" layoutY="24.0" prefHeight="856.0" prefWidth="579.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -221,5 +222,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
+      <Button fx:id="confirmAction" onMouseClicked="#handleConfirmClick" layoutX="318.0" layoutY="322.0" mnemonicParsing="false" text="Button" />
+      <Button fx:id="endTurn" onMouseClicked="#handleEndTurnClick" layoutX="549.0" layoutY="322.0" mnemonicParsing="false" text="Button" />
    </children>
 </AnchorPane>

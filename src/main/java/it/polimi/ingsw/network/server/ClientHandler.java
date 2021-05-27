@@ -1,6 +1,7 @@
 package it.polimi.ingsw.network.server;
 
 import it.polimi.ingsw.commons.ActionToken;
+import it.polimi.ingsw.commons.Marbles;
 import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.*;
 import it.polimi.ingsw.network.messages.*;
@@ -237,8 +238,8 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void updateMarket(ResourceMarket m){
-        sendObject(new ResourceMarketMessage(m.getGrid(),m.getRemainingMarble()));
+    public void updateMarket(Marbles[][] grid, Marbles remainingMarble){
+        sendObject(new ResourceMarketMessage(grid,remainingMarble));
     }
 
     @Override

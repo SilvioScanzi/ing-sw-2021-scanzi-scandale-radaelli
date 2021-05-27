@@ -22,7 +22,7 @@ public class ClientApp {
             }
         }
         else{
-            /*CLI cli = new CLI();
+            /*CLI cli = new CLI(false);
             cli.start();*/
             GUI.main(args);
         }

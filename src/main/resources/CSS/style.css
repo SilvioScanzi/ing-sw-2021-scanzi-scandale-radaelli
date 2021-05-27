@@ -42,6 +42,10 @@ Button{
     -fx-scale-x: 1.1;
 }
 
+.bigselectable:hover{
+    -fx-scale-y: 1.4;
+    -fx-scale-x: 1.4;
+}
 
 .physical{
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, -5, 5);

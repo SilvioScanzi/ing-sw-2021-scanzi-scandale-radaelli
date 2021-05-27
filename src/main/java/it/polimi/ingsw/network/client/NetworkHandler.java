@@ -14,6 +14,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -113,8 +114,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 view.printCardMarket(((DCMarketMessage) message).getMarket());
             }
             else if(message instanceof ResourceMarketMessage){
-                clientModel.setResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
-                view.printResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
+                clientModel.setResourceMarket(((ResourceMarketMessage) message).getGridS(),((ResourceMarketMessage) message).getRemainingMarbleS());
+                //clientModel.setResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
+                view.printResourceMarket(clientModel.getResourceMarket(),clientModel.getRemainingMarble());
             }
 
             //Board objects
@@ -146,6 +148,15 @@ public class NetworkHandler implements Runnable, ViewObserver {
             else if(message instanceof WarehouseMessage){
                 clientModel.getBoard(((WarehouseMessage) message).getNickname()).setWarehouse(((WarehouseMessage) message).getWarehouse());
                 view.printWarehouse(clientModel.getBoard(((WarehouseMessage) message).getNickname()).getWarehouse(),((WarehouseMessage) message).getNickname());
+            }
+
+            else if(message instanceof LeaderCardHandUpdateMessage){
+                ArrayList<Triplet<Resources,Integer,Integer>> cards = new ArrayList<>();
+                for(Triplet<Resources,Integer,Integer> T : clientModel.getBoard(((LeaderCardHandUpdateMessage) message).getNickname()).getLeaderCardsHand()){
+                    cards.add(new Triplet<>(Resources.Servants,-1,-1));
+                }
+                if(cards.size()>0) cards.remove(0);
+                clientModel.getBoard(((LeaderCardHandUpdateMessage) message).getNickname()).setLeaderCardsHand(cards);
             }
 
             //Not Model Related Messages

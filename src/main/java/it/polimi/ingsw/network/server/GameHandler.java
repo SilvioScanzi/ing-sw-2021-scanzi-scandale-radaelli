@@ -76,7 +76,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             //sending game status to the reconnected player
             synchronized (game){
                 CH.sendObject(new NicknameMapMessage(CH.getNickname(),nameMap, game.getInkwell()));
-                CH.sendObject(new ResourceMarketMessage(game.getMarket()));
+                CH.sendObject(new ResourceMarketMessage(game.getMarket().getGrid(),game.getMarket().getRemainingMarble()));
                 CH.sendObject(new DCMarketMessage(game.getDevelopmentCardMarket()));
                 for(int i=0; i<playerNumber; i++){
                     Board playerBoard = game.getBoard(i);
