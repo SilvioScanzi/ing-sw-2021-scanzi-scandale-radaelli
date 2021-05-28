@@ -100,30 +100,7 @@ public class GameScreenController extends ViewObservable {
     private ImageView selected = null;
 
     @FXML
-    public void initialize() {
-        confirmAction.setDisable(true);
-        R_1.setOnMouseClicked(e -> {
-            eventHandle(R_1);
-        });
-        R_2.setOnMouseClicked(e -> {
-            eventHandle(R_2);
-        });
-        R_3.setOnMouseClicked(e -> {
-            eventHandle(R_3);
-        });
-        C_1.setOnMouseClicked(e -> {
-            eventHandle(C_1);
-        });
-        C_2.setOnMouseClicked(e -> {
-            eventHandle(C_2);
-        });
-        C_3.setOnMouseClicked(e -> {
-            eventHandle(C_3);
-        });
-        C_4.setOnMouseClicked(e -> {
-            eventHandle(C_4);
-        });
-    }
+    public void initialize() { }
 
     public void addLCMap(ArrayList<Triplet<Resources,Integer,Integer>> L){
         for(int i=0;i<2;i++){
@@ -348,7 +325,26 @@ public class GameScreenController extends ViewObservable {
         }
         else{
             //Clickable board
+            confirmAction.setDisable(true);
             endTurn.setDisable(true);
+            R_1.getStyleClass().add("bigselectable");
+            R_2.getStyleClass().add("bigselectable");
+            R_3.getStyleClass().add("bigselectable");
+            C_1.getStyleClass().add("bigselectable");
+            C_2.getStyleClass().add("bigselectable");
+            C_3.getStyleClass().add("bigselectable");
+            C_4.getStyleClass().add("bigselectable");
+            for(Node n : CardMarket.getChildren()){
+                n.getStyleClass().add("selectable");
+                n.setOnMouseClicked(e -> { eventHandle((ImageView) n); });
+            }
+            R_1.setOnMouseClicked(e -> { eventHandle(R_1); });
+            R_2.setOnMouseClicked(e -> { eventHandle(R_2); });
+            R_3.setOnMouseClicked(e -> { eventHandle(R_3); });
+            C_1.setOnMouseClicked(e -> { eventHandle(C_1); });
+            C_2.setOnMouseClicked(e -> { eventHandle(C_2); });
+            C_3.setOnMouseClicked(e -> { eventHandle(C_3); });
+            C_4.setOnMouseClicked(e -> { eventHandle(C_4); });
         }
     }
 
