@@ -9,6 +9,7 @@ import it.polimi.ingsw.observers.CHObservable;
 import it.polimi.ingsw.observers.CHObserver;
 import it.polimi.ingsw.observers.GameHandlerObservable;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -114,9 +115,6 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     public void start(){
         game.setInkwell((int)(Math.random() * playerNumber));
         System.out.println("[SERVER] A game containing "+playerNumber+" players is starting");
-        for(ClientHandler CH : clients){
-            CH.sendStandardMessage(StandardMessages.welcomeMessage);
-        }
 
         for (ClientHandler CH : clients) {
             CH.addObserver(this);
@@ -246,8 +244,10 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                     client.setState(ClientHandler.ClientHandlerState.myTurn);
                     client.sendStandardMessage(StandardMessages.yourTurn);
                 }
-            }catch (Exception e) {
+            }catch (IndexOutOfBoundsException e) {
                 client.sendStandardMessage(StandardMessages.leaderCardOutOfBounds);
+            }catch(IllegalArgumentException e){
+                client.sendStandardMessage(StandardMessages.leaderCardWrongFormat);
             }
         }
     }
@@ -289,8 +289,8 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 else{
                     client.sendStandardMessage(StandardMessages.wait);
                 }
-            } catch (Exception e) {
-                client.sendStandardMessage(StandardMessages.wrongObject);
+            } catch (IllegalArgumentException e) {
+                client.sendStandardMessage(StandardMessages.resourceParseError);
             }
         }
     }
@@ -306,9 +306,9 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 //after getting the resources, the user needs to say where he wants to deposit them
                 client.setLastActionMarket(true);
                 client.setState(ClientHandler.ClientHandlerState.moveNeeded);
-            } catch (Exception e) {
-                client.sendStandardMessage(StandardMessages.wrongObject);
-            }
+            } catch (ActionAlreadyDoneException e) { client.sendStandardMessage(StandardMessages.actionAlreadyDone); }
+            catch(IndexOutOfBoundsException e) { client.sendStandardMessage(StandardMessages.indexOutOfBound); }
+            catch(IllegalArgumentException e){ client.sendStandardMessage(StandardMessages.whiteMarbleNotCongruent);}
         }
     }
 
@@ -319,11 +319,22 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             int player = clientMap.get(client).getValue();
             try {
                 game.BuyDevelopmentCardAction(message.getC(), message.getLevel(), player, message.getSlotNumber(), message.getUserChoice());
-            } catch (Exception e) {
-                client.sendStandardMessage(StandardMessages.wrongObject);
+                client.setState(ClientHandler.ClientHandlerState.actionDone);
+            }catch (ActionAlreadyDoneException e) {
+                client.sendStandardMessage(StandardMessages.actionAlreadyDone);
+            }catch(ResourceErrorException | RequirementsNotMetException e){
+                client.sendStandardMessage(StandardMessages.notEnoughResources);
+            }catch(LeaderCardNotCompatibleException e) {
+                client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
+            }catch(EmptyException e){
+                client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
+            }catch(InvalidPlacementException e){
+                client.sendStandardMessage(StandardMessages.invalidSlot);
+            }catch(IllegalArgumentException e){
+                client.sendStandardMessage(StandardMessages.resourcesWrong);
+            }catch(IndexOutOfBoundsException e){
+                client.sendStandardMessage(StandardMessages.indexOutOfBound);
             }
-
-            client.setState(ClientHandler.ClientHandlerState.actionDone);
         }
     }
 
@@ -332,15 +343,25 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         ClientHandler client = (ClientHandler) obs;
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
-
-
             try {
                 game.activateProductionAction(player, message.getUserChoice());
-            } catch (Exception e) {
-                client.sendStandardMessage(StandardMessages.wrongObject);
+                client.setState(ClientHandler.ClientHandlerState.actionDone);
+            }catch (ActionAlreadyDoneException e) {
+                client.sendStandardMessage(StandardMessages.actionAlreadyDone);
+            }catch(ResourceErrorException | RequirementsNotMetException e){
+                client.sendStandardMessage(StandardMessages.notEnoughResources);
+            }catch(LeaderCardNotCompatibleException e) {
+                client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
+            }catch(EmptyException e){
+                client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
+            }catch(IllegalArgumentException e){
+                client.sendStandardMessage(StandardMessages.productionError);
+            }catch(IndexOutOfBoundsException e){
+                client.sendStandardMessage(StandardMessages.indexOutOfBound);
+            }catch(BadRequestException e){
+                client.sendStandardMessage(StandardMessages.baseProductionError);
             }
 
-            client.setState(ClientHandler.ClientHandlerState.actionDone);
         }
     }
 
@@ -357,8 +378,16 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 } else {
                     client.setState(ClientHandler.ClientHandlerState.myTurn);
                 }
-            } catch (IllegalArgumentException | BadRequestException | LeaderCardNotCompatibleException | IncompatibleResourceException | InvalidPlacementException | ResourceErrorException e) {
-                client.sendStandardMessage(StandardMessages.wrongObject);
+            }catch (IllegalArgumentException e){
+                client.sendStandardMessage(StandardMessages.indexOutOfBound);
+            }catch (BadRequestException e){
+                client.sendStandardMessage(StandardMessages.resourceParseError);
+            }catch (LeaderCardNotCompatibleException e){
+                client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
+            }catch(IncompatibleResourceException | InvalidPlacementException e) {
+                client.sendStandardMessage(StandardMessages.incompatibleResources);
+            }catch(ResourceErrorException e) {
+                client.sendStandardMessage(StandardMessages.notEnoughResources);
             } catch (ResourcesLeftInHandException e) {
                 if (client.getLastActionMarket()) {
                     game.discardRemainingResources(player);
@@ -378,8 +407,10 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             int player = clientMap.get(client).getValue();
             try {
                 game.playLeaderCard(player, message.getIndex());
-            } catch (RequirementsNotMetException | IndexOutOfBoundsException e) {
-                client.sendStandardMessage(StandardMessages.wrongObject);
+            } catch (RequirementsNotMetException e){
+                client.sendStandardMessage(StandardMessages.requirementsNotMet);
+            }catch(IndexOutOfBoundsException e) {
+                client.sendStandardMessage(StandardMessages.leaderCardOutOfBounds);
             }
         }
     }
@@ -392,7 +423,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             try {
                 game.discardLeaderCard(player, message.getIndex());
             } catch (IndexOutOfBoundsException e) {
-                client.sendStandardMessage(StandardMessages.wrongObject);
+                client.sendStandardMessage(StandardMessages.leaderCardOutOfBounds);
             }
         }
     }

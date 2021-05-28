@@ -3,8 +3,10 @@ package it.polimi.ingsw.network.messages;
 import java.io.Serializable;
 
 public enum StandardMessages implements Serializable {
+
+    //Communication messages
     connectionEstablished("Connessione effettuata al server del gioco"),
-    welcomeMessage("Benvenuto al gioco \"Maestri del Rinascimento\"!"),
+    gameNotCreated("Resta in attesa che venga creata una partita"),
     gameIsStarting("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!"),
     choosePlayerNumber("Scegli il numero dei giocatori"),
     chooseNickName("Scegli il nickname che utilizzerai nel gioco"),
@@ -19,19 +21,20 @@ public enum StandardMessages implements Serializable {
     unavailableConnection("La connessione al server indicato non è disponibile"),
 
     //Error messages
-    gameNotCreated("Resta in attesa che venga creata una partita"),
+    wait("Gli altri giocatori stanno compiendo delle scelte"),
+    notYourTurn("Non è ancora il tuo turno"),
+    actionAlreadyDone("Hai eseguito l'azione per il turno, non puoi eseguirne un'altra!"),
+    leaderCardWrongFormat("Non hai selezionato il giusto numero di carte leader da scartare"),
+    leaderCardOutOfBounds("La carta leader selezionata non esiste"),
+    resourceParseError("I dati inviati non corrispondono a nessuna risorsa esistente"),
+    indexOutOfBound("Hai scelto un elemento non esistente"),
+    whiteMarbleNotCongruent("Hai scelto un numero di biglie bianche da convertire non congruente"),
+    productionError("La produzione non è andata a buon fine"),
     wrongObject("Hai inviato dei dati non validi"),
     developmentCardMarketEmpty("Non ci sono development card in questa pila"),
     nicknameAlreadyInUse("Il nickname scelto è già in uso"),
     lobbyNotReady("Aspetta che inizi il gioco"),
-    wait("Gli altri giocatori stanno compiendo delle scelte"),
-    notYourTurn("Non è ancora il tuo turno"),
-    leaderCardOutOfBounds("La carta leader selezionata non esiste"),
-    leaderCardWrongFormat("Non hai selezionato il giusto numero di carte leader da scartare"),
-    actionAlreadyDone("Hai già fatto un azione per questo turno"),
-    indexOutOfBound("Hai scelto un elemento non esistente"),
-    whiteMarbleNotCongruent("Hai scelto un numero di biglie bianche da convertire non congruente"),
-    emptyDCStack("La carta scelta è già stata acquistata da un altro giocatore"),
+
     invalidSlot("Lo slot scelto non può accogliere questa carta"),
     invalidChoice("La scelta effettuata non è valida"),
     baseProductionError("La scelta della produzione di base non è valida"),
@@ -43,9 +46,8 @@ public enum StandardMessages implements Serializable {
     leaderCardWrongAbility("La carta leader scelta non ha un'abilità compatibile con l'azione svolta"),
     requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
     notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione"),
-    actionNotDone("Non hai ancora compiuto un'azione per questo turno"),
     disconnectedMessage("Il giocatore si è disconnesso");
-    //...
+
 
     private final String message;
     StandardMessages(String message){

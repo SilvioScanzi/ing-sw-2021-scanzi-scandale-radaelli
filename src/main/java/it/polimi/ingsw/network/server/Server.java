@@ -28,7 +28,6 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
 
 
     public void startServer(int port) {
-        ExecutorService executor = Executors.newCachedThreadPool();
         ServerSocket serverSocket;
         try {
             serverSocket = new ServerSocket(port);
@@ -44,13 +43,12 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
                 System.out.println("[SERVER] Connection Established");
                 ClientHandler CH = new ClientHandler(socket);
                 CH.addServerObserver(this);
-                executor.submit(CH);
+                new Thread(CH).start();
             } catch(IOException e) {
                 System.out.println("[SERVER] Fatal Error");
                 break;
             }
         }
-        executor.shutdown();
     }
 
     @Override
