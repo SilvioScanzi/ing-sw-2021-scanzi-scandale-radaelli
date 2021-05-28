@@ -114,7 +114,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 view.printCardMarket(((DCMarketMessage) message).getMarket());
             }
             else if(message instanceof ResourceMarketMessage){
-                clientModel.setResourceMarket(((ResourceMarketMessage) message).getGridS(),((ResourceMarketMessage) message).getRemainingMarbleS());
+                clientModel.setResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
                 //clientModel.setResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
                 view.printResourceMarket(clientModel.getResourceMarket(),clientModel.getRemainingMarble());
             }

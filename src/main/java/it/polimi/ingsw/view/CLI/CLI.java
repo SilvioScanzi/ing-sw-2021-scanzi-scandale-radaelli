@@ -165,11 +165,13 @@ public class CLI extends ViewObservable implements View {
 
     private void buyResources(){
         System.out.println("Hai scelto di comprare le risorse dal mercato.");
+        System.out.println("Se vuoi annullare tutta l'azione digita -1");
         System.out.println("Seleziona una riga o una colonna (R per riga e C per colonna): ");
         String RC;
         boolean r = false;
         do {
             RC = scanner.nextLine();
+            if(RC.equals("-1")) return;
             if (RC.equals("R")) {
                 r = true;
             } else if (!RC.equals("C")) {
@@ -236,10 +238,12 @@ public class CLI extends ViewObservable implements View {
         Colours colour = null;
         boolean ok = false;
         do {
+            System.out.println("Se vuoi annullare tutta l'azione digita -1");
             System.out.println("Quale carta vuoi prendere?");
             System.out.println("Scegli il colore: ");
             System.out.println("BL - Blu\nVE - Verde\nGI - Giallo\nVI - Viola ");
             String c = scanner.nextLine();
+            if(c.equals("-1")) return;
             if (c.equals("BL") || c.equals("VE") || c.equals("GI") || c.equals("VI")) {
                 colour = Colours.getColourFromString(c);
                 ok = true;
@@ -281,6 +285,7 @@ public class CLI extends ViewObservable implements View {
         //HashMap: production index, ArrayList: Resource and where they come from
         HashMap<Integer, ArrayList<Pair<String,Integer>>> userChoice = new HashMap<>();
         do {
+            System.out.println("Se vuoi annullare tutta l'azione digita -1");
             System.out.println("Seleziona la carta che desideri. Per chiudere la selezione digita 0");
             System.out.println("1, 2, 3 - Carte sviluppo negli slot");
             System.out.println("4, 5 - Carte leader");
@@ -316,6 +321,7 @@ public class CLI extends ViewObservable implements View {
                     }
                 }
             }
+            else if(index == -1) return;
         }while(index!=0);
 
         notifyActivateProduction(userChoice);
@@ -391,11 +397,13 @@ public class CLI extends ViewObservable implements View {
     private void LeaderCardAction(int n){
         if (n==5){System.out.println("Hai deciso di attivare una carta leader.");}
         else if (n==6){System.out.println("Hai deciso di scartare una carta leader.");}
+        System.out.println("Se vuoi annullare tutta l'azione digita -1");
         boolean ok = false;
         int userChoice = 0;
         System.out.println("Seleziona la carta leader che vuoi scartare");
         do {
             int c = Integer.parseInt(scanner.nextLine());
+            if(c==-1) return;
             if (c == 1 || c == 2) {
                 userChoice = c;
                 ok = true;

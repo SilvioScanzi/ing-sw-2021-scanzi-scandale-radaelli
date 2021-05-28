@@ -29,12 +29,12 @@ public class GUI extends Application implements View{
     private Scene currentScene;
     private Pane gameScreen;
     private FXMLLoader fxmlLoader;
-    private ConnectionScreenController connectionScreenController;
-    private NicknameScreenController nicknameScreenController;
-    private PlayerNumberScreenController playerNumberScreenController;
-    private SetupScreenController setupScreenController;
-    private WaitScreenController waitScreenController;
-    private GameScreenController gameScreenController = null;
+    private ConnectionScreenView connectionScreenController;
+    private NicknameScreenView nicknameScreenController;
+    private PlayerNumberScreenView playerNumberScreenController;
+    private SetupScreenView setupScreenController;
+    private WaitScreenView waitScreenController;
+    private GameScreenView gameScreenController = null;
 
     private NetworkHandler NH;
 
@@ -80,7 +80,7 @@ public class GUI extends Application implements View{
         }catch(IOException e){e.printStackTrace();}
     }
 
-    //TODO: scene da fare
+    //TODO: scene da finire
     @Override
     public void setState(ViewState state) {
         if(state.equals(ViewState.chooseNickName)){

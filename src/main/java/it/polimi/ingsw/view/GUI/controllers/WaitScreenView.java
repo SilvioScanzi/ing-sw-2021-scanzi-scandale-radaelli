@@ -4,7 +4,7 @@ import it.polimi.ingsw.observers.ViewObservable;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
-public class WaitScreenController{
+public class WaitScreenView {
 
     @FXML
     private Text message;

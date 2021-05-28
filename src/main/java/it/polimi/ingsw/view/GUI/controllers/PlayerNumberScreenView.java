@@ -8,7 +8,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 
-public class PlayerNumberScreenController extends ViewObservable {
+public class PlayerNumberScreenView extends ViewObservable {
 
     @FXML
     private ComboBox<Integer> choice;

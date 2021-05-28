@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 
-public class DevelopmentBuyScreenController extends ViewObservable {
+public class DevelopmentBuyScreenView extends ViewObservable {
 
     @FXML
     private ImageView LC_1;

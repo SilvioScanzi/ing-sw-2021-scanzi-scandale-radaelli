@@ -1,92 +1,92 @@
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\DiscountAbility.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\NicknameScreenController.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\server\Server.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\CHObserver.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\ClientApp.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\ResourceMarket.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\FaithTrack.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\DevelopmentCard.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\LorenzoTrack.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\WarehouseMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\CHObservable.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\PlayLeaderCardMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\GameHandlerObservable.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\ActionAlreadyDoneException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\EmptyException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\server\GameHandler.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\WaitScreenController.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\clientModel\ClientBoard.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ResourceHandMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\ResourceErrorException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Triplet.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\WhiteMarbleAbility.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\MoveResourcesMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\Slot.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\CLI\CLI.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\DevelopmentCardMarket.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\NicknameMapMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\StrongboxMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\ModelObservable.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\ServerApp.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\IncompatibleResourceException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\StandardMessages.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\LeaderCardHandMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\Warehouse.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\Ability.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\ConnectionScreenController.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\DCMarketMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\client\NetworkHandler.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\ViewObservable.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\controller\Game.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\DisconnectedMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ReconnectMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\ResourcesLeftInHandException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\GameHandlerObserver.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ProductionMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\BuyDevelopmentCardMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Pair.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\clientModel\ClientModel.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\Strongbox.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\SetupScreenController.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\LeaderCardDeck.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ChoosePlayerNumberMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\BuyResourcesMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\LeaderCard.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\LeaderCardNotCompatibleException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\DiscardLeaderCardSetupMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\LorenzoTrackMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\Message.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\ActionStack.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ResourceMarketMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\DiscardLeaderCardMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\LeaderCardHandUpdateMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Colours.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Resources.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\GameScreenController.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\DevelopmentCardParser.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\InvalidPlacementException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\FinishSetupMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\LeaderCardPlayedMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\ExtraSlotAbility.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\NicknameMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\SlotMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\RequirementsNotMetException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\ActionTokenMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\PlayerNumberScreenController.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\ActionToken.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\Marbles.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\FaithTrackMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\GUI.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\commons\LeaderCardParser.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\ViewObserver.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\CH_ServerObserver.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\observers\ModelObserver.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\ViewState.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\ProductionPowerAbility.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\VictoryPointsMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\View.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\messages\TurnDoneMessage.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\network\server\ClientHandler.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\model\Board.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\exceptions\BadRequestException.java
-C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\src\main\java\it\polimi\ingsw\view\GUI\controllers\DevelopmentBuyScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/View.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/GUI.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/ProductionPowerAbility.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/LeaderCard.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/TurnDoneMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/ModelObservable.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/DiscountAbility.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/Warehouse.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/ConnectionScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Triplet.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/SetupScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/ActionToken.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/PlayerNumberScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/RequirementsNotMetException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/controller/Game.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/CH_ServerObserver.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/ActionAlreadyDoneException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/server/ClientHandler.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ProductionMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/StandardMessages.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/LeaderCardHandMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/GameScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Marbles.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/MoveResourcesMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/Strongbox.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/CHObserver.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/DevelopmentCard.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/DevelopmentBuyScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/WaitScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/clientModel/ClientModel.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/NicknameMapMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/server/GameHandler.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/LorenzoTrack.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/BuyDevelopmentCardMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/ResourceMarket.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/CLI/CLI.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/SlotMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/LeaderCardNotCompatibleException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/LeaderCardDeck.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/WhiteMarbleAbility.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/DiscardLeaderCardMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/WarehouseMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/server/Server.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/Slot.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/ActionStack.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/FaithTrack.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/PlayLeaderCardMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ChoosePlayerNumberMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Colours.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/DisconnectedMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ReconnectMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/LeaderCardPlayedMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/DiscardLeaderCardSetupMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/IncompatibleResourceException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/ResourceErrorException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/clientModel/ClientBoard.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/LorenzoTrackMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/ClientApp.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/EmptyException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/ViewState.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/ViewObservable.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/LeaderCardHandUpdateMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/GameHandlerObserver.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/GameHandlerObservable.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/InvalidPlacementException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ActionTokenMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/DevelopmentCardMarket.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Resources.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/DCMarketMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/BadRequestException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/ViewObserver.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/VictoryPointsMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/FinishSetupMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/Board.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/ExtraSlotAbility.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/Message.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ResourceMarketMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/LeaderCardParser.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/Ability.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/ModelObserver.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/CHObservable.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ResourceHandMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Pair.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/ResourcesLeftInHandException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/BuyResourcesMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/NicknameMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/ServerApp.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/StrongboxMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/client/NetworkHandler.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/FaithTrackMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/DevelopmentCardParser.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/NicknameScreenController.java

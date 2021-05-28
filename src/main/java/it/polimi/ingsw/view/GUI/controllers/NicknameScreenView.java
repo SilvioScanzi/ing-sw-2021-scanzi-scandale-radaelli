@@ -9,7 +9,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 
-public class NicknameScreenController extends ViewObservable{
+public class NicknameScreenView extends ViewObservable{
 
     @FXML
     private TextField nickname;

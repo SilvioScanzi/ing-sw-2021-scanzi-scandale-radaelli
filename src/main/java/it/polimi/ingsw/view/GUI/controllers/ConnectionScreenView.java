@@ -9,7 +9,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 
 
-public class ConnectionScreenController extends ViewObservable{
+public class ConnectionScreenView extends ViewObservable{
 
     @FXML
     private TextField IP;

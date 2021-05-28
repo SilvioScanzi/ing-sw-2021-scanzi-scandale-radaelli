@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class GameScreenController extends ViewObservable {
+public class GameScreenView extends ViewObservable {
 
     @FXML
     private GridPane ResourceMarket;
@@ -98,6 +98,7 @@ public class GameScreenController extends ViewObservable {
     private final ArrayList<Integer> selectedRMLC = new ArrayList<>();
 
     private ImageView selected = null;
+
 
     @FXML
     public void initialize() { }
@@ -186,6 +187,7 @@ public class GameScreenController extends ViewObservable {
                     if(res_num.getValue() == 1) {
                         path = path + res_num.getKey().getID() + ".png";
                         ImageView IV = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                        IV.setId(res_num.getKey().getID() + "_1");
                         IV.setFitWidth(25.0);
                         IV.setPreserveRatio(true);
                         W1_1.getChildren().add(IV);
@@ -193,35 +195,43 @@ public class GameScreenController extends ViewObservable {
                 }
                 case 2 -> {
                     path = path + res_num.getKey().getID() + ".png";
-                    ImageView IV = new ImageView(new Image(GUI.class.getResource(path).toString()));
                     if(res_num.getValue() >= 1) {
-                        IV.setFitWidth(25.0);
-                        IV.setPreserveRatio(true);
-                        W2_1.getChildren().add(IV);
+                        ImageView IV1 = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                        IV1.setId(res_num.getKey().getID() + "_1");
+                        IV1.setFitWidth(25.0);
+                        IV1.setPreserveRatio(true);
+                        W2_1.getChildren().add(IV1);
                     }
                     if(res_num.getValue() == 2){
-                        IV.setFitWidth(25.0);
-                        IV.setPreserveRatio(true);
-                        W2_2.getChildren().add(IV);
+                        ImageView IV2 = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                        IV2.setId(res_num.getKey().getID()  + "_2");
+                        IV2.setFitWidth(25.0);
+                        IV2.setPreserveRatio(true);
+                        W2_2.getChildren().add(IV2);
                     }
                 }
                 case 3-> {
                     path = path + res_num.getKey().getID() + ".png";
-                    ImageView IV = new ImageView(new Image(GUI.class.getResource(path).toString()));
                     if(res_num.getValue() >= 1){
-                        IV.setFitWidth(25.0);
-                        IV.setPreserveRatio(true);
-                        W3_1.getChildren().add(IV);
+                        ImageView IV1 = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                        IV1.setId(res_num.getKey().getID() + "_1");
+                        IV1.setFitWidth(25.0);
+                        IV1.setPreserveRatio(true);
+                        W3_1.getChildren().add(IV1);
                     }
                     if(res_num.getValue() >= 2){
-                        IV.setFitWidth(25.0);
-                        IV.setPreserveRatio(true);
-                        W3_2.getChildren().add(IV);
+                        ImageView IV2 = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                        IV2.setId(res_num.getKey().getID() + "_2");
+                        IV2.setFitWidth(25.0);
+                        IV2.setPreserveRatio(true);
+                        W3_2.getChildren().add(IV2);
                     }
                     if(res_num.getValue() == 3){
-                        IV.setFitWidth(25.0);
-                        IV.setPreserveRatio(true);
-                        W3_3.getChildren().add(IV);
+                        ImageView IV3 = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                        IV3.setId(res_num.getKey().getID()  + "_3");
+                        IV3.setFitWidth(25.0);
+                        IV3.setPreserveRatio(true);
+                        W3_3.getChildren().add(IV3);
                     }
                 }
             }
@@ -345,11 +355,49 @@ public class GameScreenController extends ViewObservable {
             C_2.setOnMouseClicked(e -> { eventHandle(C_2); });
             C_3.setOnMouseClicked(e -> { eventHandle(C_3); });
             C_4.setOnMouseClicked(e -> { eventHandle(C_4); });
+
+            //Slots
+            SLOT_1.getStyleClass().add("selectable");
+            SLOT_2.getStyleClass().add("selectable");
+            SLOT_3.getStyleClass().add("selectable");
+            SLOT_1.setOnMouseClicked(e -> { eventHandle(SLOT_1); });
+            SLOT_2.setOnMouseClicked(e -> { eventHandle(SLOT_2); });
+            SLOT_3.setOnMouseClicked(e -> { eventHandle(SLOT_3); });
+
+            //Warehouse
+            if(W1_1.getChildren().size()>0){
+                W1_1.getChildren().get(0).getStyleClass().add("selectable");
+                W1_1.getChildren().get(0).setOnMouseClicked(e -> {
+                    eventHandle((ImageView) W1_1.getChildren().get(0));
+                });
+            }
+            if(W2_1.getChildren().size()>0){
+                W2_1.getChildren().get(0).getStyleClass().add("selectable");
+                W2_1.getChildren().get(0).setOnMouseClicked(e -> { eventHandle((ImageView) W2_1.getChildren().get(0)); });
+            }
+            if(W2_2.getChildren().size()>0){
+                W2_2.getChildren().get(0).getStyleClass().add("selectable");
+                W2_2.getChildren().get(0).setOnMouseClicked(e -> { eventHandle((ImageView) W2_2.getChildren().get(0)); });
+            }
+            if(W3_1.getChildren().size()>0){
+                W3_1.getChildren().get(0).getStyleClass().add("selectable");
+                W3_1.getChildren().get(0).setOnMouseClicked(e -> { eventHandle((ImageView) W3_1.getChildren().get(0)); });
+            }
+            if(W3_2.getChildren().size()>0){
+                W3_2.getChildren().get(0).getStyleClass().add("selectable");
+                W3_2.getChildren().get(0).setOnMouseClicked(e -> { eventHandle((ImageView) W3_2.getChildren().get(0)); });
+            }
+            if(W3_3.getChildren().size()>0){
+                W3_3.getChildren().get(0).getStyleClass().add("selectable");
+                W3_3.getChildren().get(0).setOnMouseClicked(e -> { eventHandle((ImageView) W3_3.getChildren().get(0)); });
+            }
         }
     }
 
     public void setActionDone(){
         endTurn.setDisable(false);
+
+        //resource market
         R_1.getStyleClass().remove("bigselectable");
         R_1.setOnMouseClicked(null);
         R_2.getStyleClass().remove("bigselectable");
@@ -364,9 +412,45 @@ public class GameScreenController extends ViewObservable {
         C_3.setOnMouseClicked(null);
         C_4.getStyleClass().remove("bigselectable");
         C_4.setOnMouseClicked(null);
+
+        //card market
         for(Node n : CardMarket.getChildren()){
             n.setOnMouseClicked(null);
             n.getStyleClass().remove("selectable");
+        }
+
+        //slots
+        SLOT_1.getStyleClass().remove("selectable");
+        SLOT_1.setOnMouseClicked(null);
+        SLOT_2.getStyleClass().remove("selectable");
+        SLOT_2.setOnMouseClicked(null);
+        SLOT_3.getStyleClass().remove("selectable");
+        SLOT_3.setOnMouseClicked(null);
+
+        //Warehouse
+        if(W1_1.getChildren().size()>0){
+            W1_1.getChildren().get(0).getStyleClass().remove("selectable");
+            W1_1.getChildren().get(0).setOnMouseClicked(null);
+        }
+        if(W2_1.getChildren().size()>0){
+            W2_1.getChildren().get(0).getStyleClass().remove("selectable");
+            W2_1.getChildren().get(0).setOnMouseClicked(null);
+        }
+        if(W2_2.getChildren().size()>0){
+            W2_2.getChildren().get(0).getStyleClass().remove("selectable");
+            W2_2.getChildren().get(0).setOnMouseClicked(null);
+        }
+        if(W3_1.getChildren().size()>0){
+            W3_1.getChildren().get(0).getStyleClass().remove("selectable");
+            W3_1.getChildren().get(0).setOnMouseClicked(null);
+        }
+        if(W3_2.getChildren().size()>0){
+            W3_2.getChildren().get(0).getStyleClass().remove("selectable");
+            W3_2.getChildren().get(0).setOnMouseClicked(null);
+        }
+        if(W3_3.getChildren().size()>0){
+            W3_3.getChildren().get(0).getStyleClass().remove("selectable");
+            W3_3.getChildren().get(0).setOnMouseClicked(null);
         }
     }
 
@@ -408,12 +492,14 @@ public class GameScreenController extends ViewObservable {
                 }
             }
         }
+
         //Development buy action
         else if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
 
         }
+
         //Activate production
-        else if(split[0].equals("P")){
+        else if(split[0].equals("SLOT")){
 
         }
     }

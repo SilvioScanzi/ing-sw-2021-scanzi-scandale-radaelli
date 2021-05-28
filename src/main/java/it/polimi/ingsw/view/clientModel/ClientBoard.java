@@ -12,7 +12,9 @@ public class ClientBoard {
     private final int position;
     private final String nickname;
     private final HashMap<Integer, Pair<Resources,Integer>> warehouse;
-    private final ArrayList<Pair<Colours, Integer>> slots;
+    private final ArrayList<Pair<Colours, Integer>> slot_1;
+    private final ArrayList<Pair<Colours, Integer>> slot_2;
+    private final ArrayList<Pair<Colours, Integer>> slot_3;
     private HashMap<Resources,Integer> strongBox;
     private final HashMap<Integer,Pair<Integer,Resources>> LCMap = new HashMap<>();
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsHand;
@@ -33,10 +35,9 @@ public class ClientBoard {
         leaderCardsHand = new ArrayList<>();
         leaderCardsPlayed = new ArrayList<>();
         hand = new ArrayList<>();
-        slots = new ArrayList<>();
-        slots.add(new Pair<>(Colours.Purple,-1));
-        slots.add(new Pair<>(Colours.Purple,-1));
-        slots.add(new Pair<>(Colours.Purple,-1));
+        slot_1 = new ArrayList<>();
+        slot_2 = new ArrayList<>();
+        slot_3 = new ArrayList<>();
         FaithMarker = 0;
         popeFavor = new boolean[3];
     }
@@ -57,7 +58,10 @@ public class ClientBoard {
     }
 
     public void setSlot(int i, Colours c, int vp){
-        slots.set(i,new Pair<>(c,vp));
+        if (i == 1) slot_1.add(new Pair<>(c,vp));
+
+        else if (i == 2) slot_2.add(new Pair<>(c,vp));
+        else if (i == 3) slot_3.add(new Pair<>(c,vp));
     }
 
     public void setStrongBox(HashMap<Resources, Integer> strongBox) {
@@ -84,11 +88,21 @@ public class ClientBoard {
     }
 
     public Integer getSlotsVP(int i) {
-        return slots.get(i-1).getValue();
+        return switch(i){
+            case 1 -> slot_1.get(slot_1.size()-1).getValue();
+            case 2 -> slot_2.get(slot_2.size()-1).getValue();
+            case 3 -> slot_3.get(slot_3.size()-1).getValue();
+            default -> -1;
+        };
     }
 
     public Pair<Colours,Integer> getSlots(int i) throws IndexOutOfBoundsException {
-        return slots.get(i-1);
+        return switch(i){
+            case 1 -> slot_1.get(slot_1.size()-1);
+            case 2 -> slot_2.get(slot_2.size()-1);
+            case 3 -> slot_3.get(slot_3.size()-1);
+            default -> new Pair<>();
+        };
     }
 
     public boolean getActionDone() {

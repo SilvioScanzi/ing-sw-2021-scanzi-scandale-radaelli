@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class SetupScreenController extends ViewObservable {
+public class SetupScreenView extends ViewObservable {
 
     @FXML
     private GridPane developmentCards;
