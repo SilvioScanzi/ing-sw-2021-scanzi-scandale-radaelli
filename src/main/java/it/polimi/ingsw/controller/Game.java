@@ -95,7 +95,7 @@ public class Game extends ModelObservable {
 
         ArrayList<Resources> R = new ArrayList<>();
         for(String s : userChoice){
-             R.add(Resources.getResourceFromString(s));
+             R.add(Resources.getResourceFromAbbr(s));
         }
 
         //player 2
@@ -347,16 +347,16 @@ public class Game extends ModelObservable {
                     throw new LeaderCardNotCompatibleException("Leader card is not compatible");
                 cost = new HashMap<>();
                 cost.put(playerBoard.getLeaderCardsPlayed().get(i - 4).getAbility().getResType(), 1);
-                tmpHand.add(Resources.getResourceFromString(userChoice.get(i).remove(userChoice.get(i).size() - 1).getKey()));
+                tmpHand.add(Resources.getResourceFromAbbr(userChoice.get(i).remove(userChoice.get(i).size() - 1).getKey()));
                 producedFaith++;
             }
             else if (i==6){
-                    tmpHand.add(Resources.getResourceFromString((userChoice.get(i).remove(userChoice.get(i).size()-1).getKey())));
+                    tmpHand.add(Resources.getResourceFromAbbr((userChoice.get(i).remove(userChoice.get(i).size()-1).getKey())));
 
                     if (userChoice.get(i).size()==2){
                         cost = new HashMap<>();
                         for (int j=0; j<userChoice.get(i).size(); j++){
-                            Resources r = Resources.getResourceFromString(userChoice.get(i).get(j).getKey());
+                            Resources r = Resources.getResourceFromAbbr(userChoice.get(i).get(j).getKey());
                             cost.put(r,(cost.get(r) == null)?1:cost.get(r)+1);
                         }
                     } else throw new BadRequestException("Error in the base production");
@@ -413,7 +413,7 @@ public class Game extends ModelObservable {
         }
         for(Pair<String,Integer> p: userChoice){
             Resources r;
-            r = Resources.getResourceFromString(p.getKey());
+            r = Resources.getResourceFromAbbr(p.getKey());
 
             if(1<=p.getValue() && p.getValue()<=3) {
                 if (wr.checkResourcePresent(p.getValue(), r)) {
@@ -491,7 +491,7 @@ public class Game extends ModelObservable {
         for(Triplet<String,Integer,Integer> uc : userChoice) {
             //try-catch to check and remove resources from their (cloned) location
             try {
-                r = Resources.getResourceFromString(uc.get_1());
+                r = Resources.getResourceFromAbbr(uc.get_1());
             } catch (IllegalArgumentException e) { throw new BadRequestException("Resource requested in a wrong format"); }
             if (1 <= uc.get_2() && uc.get_2() <= 3) {
                 if (wr.checkResourcePresent(uc.get_2(), r)) {
@@ -521,7 +521,7 @@ public class Game extends ModelObservable {
         for(Triplet<String,Integer,Integer> uc : userChoice){
             //try-catch to check and insert resources into their (cloned) location
             try {
-                r = Resources.getResourceFromString(uc.get_1());
+                r = Resources.getResourceFromAbbr(uc.get_1());
             } catch (IllegalArgumentException e) { throw new BadRequestException("Resource requested in a wrong format"); }
                 if(1 <= uc.get_3() && uc.get_3() <= 3){
                     wr.addDepot(uc.get_3(), r, 1);

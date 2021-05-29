@@ -18,13 +18,15 @@ public class ClientApp {
                 System.out.println("Altrimenti, se non scrivi nulla, di default viene utilizzata una GUI");
             }
             else{
-                GUI.main(args);
+                GUI gui = new GUI();
+                gui.begin();
             }
         }
         else{
             /*CLI cli = new CLI(false);
             cli.start();*/
-            GUI.main(args);
+            GUI gui = new GUI();
+            gui.begin();
         }
     }
 }

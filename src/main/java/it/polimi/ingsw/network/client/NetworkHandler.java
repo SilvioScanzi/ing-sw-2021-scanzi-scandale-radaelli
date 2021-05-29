@@ -5,7 +5,6 @@ import it.polimi.ingsw.network.messages.*;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.observers.ViewObserver;
 import it.polimi.ingsw.view.*;
-import it.polimi.ingsw.view.CLI.CLI;
 import it.polimi.ingsw.view.clientModel.ClientModel;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
 
@@ -14,7 +13,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -179,7 +177,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
         HashMap<Resources,Integer> strongbox = new HashMap<>(clientModel.getBoard(clientModel.getMyNickname()).getStrongBox());
         ArrayList<Triplet<Resources,Integer,Integer>> leaderCards = new ArrayList<>(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed());
         for(Pair<String,Integer> P : userChoice){
-            Resources R = Resources.getResourceFromString(P.getKey());
+            Resources R = Resources.getResourceFromAbbr(P.getKey());
             if(P.getValue()>=1 && P.getValue()<=3) {
                 try {
                     Pair<Resources, Integer> depot = warehouse.get(P.getValue());
@@ -225,7 +223,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
             uc.put(R,0);
         }
         for(Pair<String,Integer> P : userChoice){
-            uc.replace(Resources.getResourceFromString(P.getKey()),uc.get(Resources.getResourceFromString(P.getKey()))+1);
+            uc.replace(Resources.getResourceFromAbbr(P.getKey()),uc.get(Resources.getResourceFromAbbr(P.getKey()))+1);
         }
         return cost.equals(uc);
     }

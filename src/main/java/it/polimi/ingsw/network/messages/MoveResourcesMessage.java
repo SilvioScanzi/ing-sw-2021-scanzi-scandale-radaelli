@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class MoveResourcesMessage extends Message implements Serializable {
     private final ArrayList<Triplet<String,Integer,Integer>> userChoice;
+    private String errorMsg;
 
     public MoveResourcesMessage(ArrayList<Triplet<String, Integer, Integer>> userChoice) {
         this.userChoice = userChoice;

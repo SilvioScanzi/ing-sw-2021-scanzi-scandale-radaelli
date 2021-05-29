@@ -25,12 +25,22 @@ public enum Resources{
         };
     }
 
-    public static Resources getResourceFromString(String string) throws IllegalArgumentException {
+    public static Resources getResourceFromAbbr(String string) throws IllegalArgumentException {
         return switch (string) {
             case "MO" -> Coins;
             case "PI" -> Stones;
             case "SC" -> Shields;
             case "SE" -> Servants;
+            default -> throw new IllegalArgumentException();
+        };
+    }
+
+    public static String getResourceFromID(String string) throws IllegalArgumentException {
+        return switch (string) {
+            case "CO" -> "MO";
+            case "ST" -> "PI";
+            case "SH" -> "SC";
+            case "SE" -> "SE";
             default -> throw new IllegalArgumentException();
         };
     }

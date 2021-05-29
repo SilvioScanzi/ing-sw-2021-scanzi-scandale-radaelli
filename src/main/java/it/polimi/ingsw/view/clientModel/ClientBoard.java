@@ -41,6 +41,8 @@ public class ClientBoard {
         FaithMarker = 0;
         popeFavor = new boolean[3];
     }
+
+
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
     }
@@ -123,6 +125,10 @@ public class ClientBoard {
 
     public int getPosition() {
         return position;
+    }
+
+    public ArrayList<Resources> getHand() {
+        return hand;
     }
 
     public String getNickname() {

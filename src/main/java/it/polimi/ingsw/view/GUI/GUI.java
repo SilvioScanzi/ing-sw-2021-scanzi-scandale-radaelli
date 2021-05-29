@@ -38,7 +38,7 @@ public class GUI extends Application implements View{
 
     private NetworkHandler NH;
 
-    public static void main(String[] args){
+    public void begin(){
         Application.launch();
     }
 
@@ -249,6 +249,7 @@ public class GUI extends Application implements View{
             case nicknameAlreadyInUse -> nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
             case unavailableConnection -> connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile");
             case actionDone -> gameScreenController.setActionDone();
+            case incompatibleResources -> gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
         }
     }
 
@@ -276,7 +277,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) Platform.runLater(() ->gameScreenController.addHand(H));
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) Platform.runLater(() -> gameScreenController.populateHand(H));
     }
 
     @Override
