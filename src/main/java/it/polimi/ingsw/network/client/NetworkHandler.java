@@ -230,6 +230,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     public void sendObject(Object o){
         try{
+            socketOut.reset();
             socketOut.writeObject(o);
         }catch(IOException e){e.printStackTrace();}
     }

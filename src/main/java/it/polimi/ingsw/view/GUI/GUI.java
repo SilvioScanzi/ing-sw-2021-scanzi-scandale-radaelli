@@ -249,7 +249,11 @@ public class GUI extends Application implements View{
             case nicknameAlreadyInUse -> nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
             case unavailableConnection -> connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile");
             case actionDone -> gameScreenController.setActionDone();
-            case incompatibleResources -> gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+            case incompatibleResources -> {
+                Platform.runLater(() -> {
+                    gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                });
+            }
         }
     }
 

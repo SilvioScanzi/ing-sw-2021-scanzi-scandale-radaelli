@@ -227,6 +227,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     public void sendStandardMessage(StandardMessages SM){
         try{
+            socketOut.reset();
             socketOut.writeObject(SM);
         }catch(IOException e){e.printStackTrace();}
     }

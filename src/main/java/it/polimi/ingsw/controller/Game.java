@@ -506,7 +506,9 @@ public class Game extends ModelObservable {
                     LCCapacity.put(LC, LCCapacity.get(LC) - 1);
                 } else throw new LeaderCardNotCompatibleException("Not compatible leader card");
             } else if (uc.get_2() == 0) {
-                if (!tmpHand.remove(r)) throw new ResourceErrorException("No such resource in hand");
+                if (!tmpHand.remove(r)) {
+                    throw new ResourceErrorException("No such resource in hand");
+                }
             } else throw new IllegalArgumentException("Invalid position requested");
 
             //Resources moved to the hand are added now. This makes possible for the user to swap depots (firstly, he decides to move the
@@ -534,7 +536,6 @@ public class Game extends ModelObservable {
                     } else throw new LeaderCardNotCompatibleException("Not compatible leader card");
                 }
                 else if(uc.get_3() != 0) throw new IllegalArgumentException("Invalid position requested");
-
         }
 
         //if ok, actually modify everything
