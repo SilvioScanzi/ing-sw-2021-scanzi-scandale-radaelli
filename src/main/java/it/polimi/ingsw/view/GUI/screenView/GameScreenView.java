@@ -112,7 +112,14 @@ public class GameScreenView extends ViewObservable {
     private ImageView selected = null;
     private final ArrayList<Triplet<String,Integer,Integer>> moveAction = new ArrayList<>();
     private boolean isMoveAction = false;
+    private boolean actionDone = false;
 
+    public void setActionDone(boolean actionDone) {
+        this.actionDone = actionDone;
+        if(actionDone){
+            grayOutActionDone();
+        }
+    }
 
     @FXML
     public void initialize(){
@@ -324,11 +331,11 @@ public class GameScreenView extends ViewObservable {
             if (played[j]) {
                 j++;
             }
+            int finalJ = j;
             if(LeaderCardsPlayed.getChildren().size()>j) {
-                LeaderCardsPlayed.getChildren().remove(j);
+                LeaderCardsPlayed.getChildren().removeIf(n -> GridPane.getColumnIndex(n) == finalJ);
             }
             LeaderCardsPlayed.add(backLCView,j,0);
-            int finalJ = j;
             grayNotPlayedLeaderCard(false,finalJ,backLCView);
             j++;
         }
@@ -351,6 +358,7 @@ public class GameScreenView extends ViewObservable {
             IV.setPreserveRatio(true);
             Hand.add(IV,j,i);
         }
+        grayHand(false);
     }
 
 
@@ -363,7 +371,7 @@ public class GameScreenView extends ViewObservable {
             for(int i = 1; i<=2;i++){
                 ImageView IM = null;
                 for(Node n : LeaderCardsPlayed.getChildren()){
-                    if(GridPane.getColumnIndex(n) == i) IM = (ImageView) n;
+                    if(GridPane.getColumnIndex(n) == i - 1) IM = (ImageView) n;
                 }
                 if(!LCMap.get(i).get_3()) grayNotPlayedLeaderCard(true,i-1,IM);
             }
@@ -379,15 +387,17 @@ public class GameScreenView extends ViewObservable {
             for(int i = 1; i<=2;i++){
                 ImageView IM = null;
                 for(Node n : LeaderCardsPlayed.getChildren()){
-                    if(GridPane.getColumnIndex(n) == i) IM = (ImageView) n;
+                    if(GridPane.getColumnIndex(n) == i - 1) IM = (ImageView) n;
                 }
                 if(!LCMap.get(i).get_3()) grayNotPlayedLeaderCard(false,i-1,IM);
             }
             grayProduction(false);
             //graySlots(false);
         }
+        if(!actionDone){
+            endTurn.setDisable(true);
+        }
         confirmAction.setDisable(true);
-        endTurn.setDisable(true);
     }
 
     public void grayOutActionDone(){
@@ -528,8 +538,26 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    private void grayEmptyWarehouse(boolean gray){
-        if(gray) {
+    public void grayEmptyWarehouse(boolean gray) {
+        if (gray) {
+            W1_1.setId(null);
+            W1_1.setOnMouseClicked(null);
+
+            W2_1.setId(null);
+            W2_1.setOnMouseClicked(null);
+
+            W2_2.setId(null);
+            W2_2.setOnMouseClicked(null);
+
+            W3_1.setId(null);
+            W3_1.setOnMouseClicked(null);
+
+            W3_2.setId(null);
+            W3_2.setOnMouseClicked(null);
+
+            W3_3.setId(null);
+            W3_3.setOnMouseClicked(null);
+        } else {
             if (W1_1.getChildren().size() == 0) {
                 W1_1.setId("W1_1Empty");
                 W1_1.setOnMouseClicked(e -> {
@@ -566,28 +594,10 @@ public class GameScreenView extends ViewObservable {
                     handleMoveAction(W3_3);
                 });
             }
-        }else{
-            W1_1.setId(null);
-            W1_1.setOnMouseClicked(null);
-
-            W2_1.setId(null);
-            W2_1.setOnMouseClicked(null);
-
-            W2_2.setId(null);
-            W2_2.setOnMouseClicked(null);
-
-            W3_1.setId(null);
-            W3_1.setOnMouseClicked(null);
-
-            W3_2.setId(null);
-            W3_2.setOnMouseClicked(null);
-
-            W3_3.setId(null);
-            W3_3.setOnMouseClicked(null);
         }
     }
 
-    private void grayHand(boolean gray){
+    public void grayHand(boolean gray){
         if(gray){
             for(Node node : Hand.getChildren()){
                 node.getStyleClass().remove("selectable");
@@ -604,7 +614,7 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    private void grayNotPlayedLeaderCard(boolean gray, int finalJ, ImageView backLCView) {
+    public void grayNotPlayedLeaderCard(boolean gray, int finalJ, ImageView backLCView) {
         if (gray) {
             for (Integer i : LCMap.keySet()) {
                 if (!LCMap.get(i).get_3()) {
@@ -612,8 +622,6 @@ public class GameScreenView extends ViewObservable {
                         if (GridPane.getColumnIndex(n) == (i - 1)) {
                             n.getStyleClass().remove("selectable");
                             n.setOnMouseClicked(null);
-                            backLCView.setOnMouseEntered(null);
-                            backLCView.setOnMouseExited(null);
                         }
                     }
                 }
@@ -624,14 +632,7 @@ public class GameScreenView extends ViewObservable {
                     for (Node n : LeaderCardsPlayed.getChildren()) {
                         if (GridPane.getColumnIndex(n) == (i - 1)) {
                             if(!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
-                            backLCView.setOnMouseEntered(e -> {
-                                String p = "/images/leaderCards/"+LCMap.get(finalJ +1).get_1().getID()+LCMap.get(finalJ + 1).get_2()+".png";
-                                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
-                            });
-                            backLCView.setOnMouseExited(e ->{
-                                String p = "/images/LeaderCardBack.png";
-                                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
-                            });
+                            backLCView.setOnMouseClicked(e -> handleLeaderCardClick(backLCView));
                         }
                     }
                 }
@@ -639,7 +640,7 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    private void grayPlayedLeaderCard(boolean gray) {
+    public void grayPlayedLeaderCard(boolean gray) {
         if (gray) {
             for (Integer i : LCMap.keySet()) {
                 if (LCMap.get(i).get_3()) {
@@ -665,7 +666,7 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    private void grayStrongBox(boolean gray){
+    public void grayStrongBox(boolean gray){
         if(gray){
             if(SB_CO_ICON.getStyleClass().contains("selectable")) SB_CO_ICON.getStyleClass().remove("selectable");
             SB_CO_ICON.setOnMouseClicked(null);
@@ -687,7 +688,7 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    private void grayProduction(boolean gray){
+    public void grayProduction(boolean gray){
         if(gray){
             if(P_B.getStyleClass().contains("selectable")) P_B.getStyleClass().remove("selectable");
             P_B.setOnMouseClicked(null);
@@ -697,7 +698,7 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    private void graySlots(boolean gray){
+    public void graySlots(boolean gray){
         if(gray){
             for(Node n : Slots.getChildren()) {
                 n.getStyleClass().remove("selectable");
@@ -809,11 +810,6 @@ public class GameScreenView extends ViewObservable {
     private void handleMoveAction(Pane pane){
         isMoveAction = true;
 
-        grayOut(true);
-        grayHand(false);
-        grayWarehouse(false);
-        confirmAction.setDisable(false);
-
         String r = Resources.getResourceFromID(selected.getId().split("_")[0]);
         Integer idFrom = Integer.parseInt(String.valueOf(selected.getId().split("_")[1].charAt(1)));
         Integer idTo = Integer.parseInt(pane.getId().split("_")[0].substring(1));
@@ -842,6 +838,10 @@ public class GameScreenView extends ViewObservable {
             else handleSelect((ImageView) pane.getChildren().get(0));
         });
 
+        grayOut(true);
+        grayHand(false);
+        grayWarehouse(false);
+        confirmAction.setDisable(false);
         grayHand(false);
 
         selected = null;
@@ -904,7 +904,7 @@ public class GameScreenView extends ViewObservable {
         String path ="/images/Scroll.png";
 
         for(Node node : LeaderCardsPlayed.getChildren()){
-            ImageView n = (ImageView) ((StackPane) node).getChildren().get(0);
+            ImageView n = (ImageView) node;
             n.getStyleClass().remove("selectable");
             n.setOnMouseClicked(null);
             n.setOnMouseEntered(null);
@@ -959,6 +959,17 @@ public class GameScreenView extends ViewObservable {
         cancelButton.setOnMouseClicked(e -> {
             //grey out
         });
+
+        /*
+        backLCView.setOnMouseEntered(e -> {
+                                String p = "/images/leaderCards/"+LCMap.get(finalJ +1).get_1().getID()+LCMap.get(finalJ + 1).get_2()+".png";
+                                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
+                            });
+                            backLCView.setOnMouseExited(e ->{
+                                String p = "/images/LeaderCardBack.png";
+                                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
+                            });
+         */
     }
 
     //Utils
