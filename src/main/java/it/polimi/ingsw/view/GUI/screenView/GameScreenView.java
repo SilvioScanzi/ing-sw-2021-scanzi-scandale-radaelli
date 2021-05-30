@@ -4,6 +4,7 @@ import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.observers.ViewObservable;
 import it.polimi.ingsw.view.GUI.GUI;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -19,6 +20,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -931,7 +933,7 @@ public class GameScreenView extends ViewObservable {
     }
 
     private void handleLeaderCardClick(ImageView backLCView){
-        String path ="/images/Scroll.png";
+        String path ="/images/Hanging Sign.png";
 
         for(Node node : LeaderCardsPlayed.getChildren()){
             ImageView n = (ImageView) node;
@@ -946,50 +948,71 @@ public class GameScreenView extends ViewObservable {
         AnchorPane anchorPane = (AnchorPane) LeaderCardsPlayed.getParent();
         Pane confirmPane = new Pane();
         confirmPane.setId("confirmPane");
-        confirmPane.setLayoutX(650.0);
-        confirmPane.setLayoutY(50.0);
+        confirmPane.setLayoutX(0.0);
+        confirmPane.setLayoutY(0.0);
         anchorPane.getChildren().add(confirmPane);
 
-        ImageView scroll = new ImageView(new Image(GUI.class.getResource(path).toString()));
-        scroll.setFitWidth(400.0);
-        scroll.setPreserveRatio(true);
-        confirmPane.getChildren().add(scroll);
+        ImageView sign = new ImageView(new Image(GUI.class.getResource(path).toString()));
+        sign.setFitWidth(434);
+        sign.setPreserveRatio(true);
+        confirmPane.getChildren().add(sign);
 
         Button confirmButton = new Button();
-        confirmButton.getStyleClass().add("activate");
+        confirmButton.getStyleClass().add("gameButton");
         confirmButton.getStyleClass().add("selectable");
         Button discardButton = new Button();
-        discardButton.getStyleClass().add("discard");
+        discardButton.getStyleClass().add("gameButton");
         discardButton.getStyleClass().add("selectable");
         Button cancelButton = new Button();
-        cancelButton.getStyleClass().add("cancel");
+        cancelButton.getStyleClass().add("gameButton");
         cancelButton.getStyleClass().add("selectable");
 
         confirmPane.getChildren().add(confirmButton);
         confirmPane.getChildren().add(discardButton);
         confirmPane.getChildren().add(cancelButton);
 
-        confirmButton.setPrefSize(137,137);
-        discardButton.setPrefSize(137,137);
-        cancelButton.setPrefSize(137,137);
+        confirmButton.setPrefWidth(200);
+        confirmButton.setPrefHeight(50);
+        discardButton.setPrefWidth(200);
+        discardButton.setPrefHeight(50);
+        cancelButton.setPrefWidth(200);
+        cancelButton.setPrefHeight(50);
 
-        confirmButton.setLayoutX(40);
-        confirmButton.setLayoutY(20);
-        discardButton.setLayoutX(219);
-        discardButton.setLayoutY(20);
-        cancelButton.setLayoutX(128);
-        cancelButton.setLayoutY(140);
+        confirmButton.setLayoutX(117);
+        discardButton.setLayoutX(117);
+        cancelButton.setLayoutX(117);
+        confirmButton.setLayoutY(191);
+        discardButton.setLayoutY(263.5);
+        cancelButton.setLayoutY(336);
+
+        confirmButton.setText("Gioca la carta");
+        discardButton.setText("Scarta la carta");
+        cancelButton.setText("Annulla selezione");
+
+        TranslateTransition TTIn = new TranslateTransition(Duration.millis(1000),confirmPane);
+        TTIn.setFromX(253);
+        TTIn.setToX(253);
+        TTIn.setFromY(-472);
+        TTIn.setToY(-38);
+        TTIn.play();
+
+        TranslateTransition TTOut = new TranslateTransition(Duration.millis(1000),confirmPane);
+        TTOut.setFromX(253);
+        TTOut.setToX(253);
+        TTOut.setFromY(-38);
+        TTOut.setToY(-472);
+        TTOut.setOnFinished(x -> anchorPane.getChildren().remove(confirmPane));
 
         confirmButton.setOnMouseClicked(e -> {
             notifyActivateLC(Integer.parseInt(backLCView.getId().split("_")[2]));
-            anchorPane.getChildren().remove(confirmPane);
+            TTOut.play();
             grayOut(false);
             if(actionDone) grayOutActionDone();
         });
 
         discardButton.setOnMouseClicked(e -> {
             notifyDiscardLC(Integer.parseInt(backLCView.getId().split("_")[2]));
-            anchorPane.getChildren().remove(confirmPane);
+            TTOut.play();
 
             int index = Integer.parseInt(backLCView.getId().split("_")[2]);
             LeaderCardsPlayed.getChildren().remove(backLCView);
@@ -1000,7 +1023,8 @@ public class GameScreenView extends ViewObservable {
         });
 
         cancelButton.setOnMouseClicked(e -> {
-            anchorPane.getChildren().remove(confirmPane);
+            TTOut.play();
+
             grayOut(false);
             if(actionDone) grayOutActionDone();
 

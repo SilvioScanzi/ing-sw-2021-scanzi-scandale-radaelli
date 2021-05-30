@@ -195,7 +195,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                             gameHandlerNotify();
                             t.cancel();
                         }
-                    },3000);  //timer set to 10 minutes for reconnection
+                    },600000);  //timer set to 10 minutes for reconnection
                 }
             }
         }
