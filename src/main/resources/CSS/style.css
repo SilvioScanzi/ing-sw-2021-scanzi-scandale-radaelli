@@ -30,11 +30,39 @@
     -fx-fill: white;
 }
 
-Button{
+.banner{
     -fx-background-image: url("../images/Banner.png");
     -fx-background-size: 100% 100%;
     -fx-background-repeat: no-repeat;
     -fx-background-color: transparent;
+}
+
+.banner:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.activate{
+    -fx-background-image: url("../images/Activate.png");
+    -fx-background-size: 100% 100%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.discard{
+    -fx-background-image: url("../images/Discard.png");
+    -fx-background-size: 100% 100%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+.cancel{
+    -fx-background-image: url("../images/Cancel.png");
+    -fx-background-size: 100% 100%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
 
 .selectable:hover{
@@ -49,10 +77,6 @@ Button{
 
 .physical{
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 5, 0, -5, 5);
-}
-
-Button:hover {
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
 
 

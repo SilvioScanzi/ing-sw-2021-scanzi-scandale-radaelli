@@ -3,7 +3,7 @@ package it.polimi.ingsw.view.GUI;
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.network.client.NetworkHandler;
 import it.polimi.ingsw.network.messages.StandardMessages;
-import it.polimi.ingsw.view.GUI.controllers.*;
+import it.polimi.ingsw.view.GUI.screenView.*;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
@@ -189,7 +189,6 @@ public class GUI extends Application implements View{
         else if(state.equals(ViewState.myTurn) || state.equals(ViewState.notMyTurn)){
             Platform.runLater(() -> {
                 try {
-
                     if(gameScreenController == null) {
                         fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
@@ -206,8 +205,7 @@ public class GUI extends Application implements View{
 
                     currentScene.setRoot(gameScreen);
 
-                    if(state.equals(ViewState.notMyTurn)) gameScreenController.grayOut(true);
-                    else gameScreenController.grayOut(false);
+                    gameScreenController.grayOut(state.equals(ViewState.notMyTurn));
 
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
@@ -246,14 +244,10 @@ public class GUI extends Application implements View{
     @Override
     public void printStandardMessage(StandardMessages message) {
         switch(message){
-            case nicknameAlreadyInUse -> nicknameScreenController.setErrormsg("Il nickname scelto è già in uso");
-            case unavailableConnection -> connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile");
-            case actionDone -> gameScreenController.setActionDone();
-            case incompatibleResources -> {
-                Platform.runLater(() -> {
-                    gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
-                });
-            }
+            case nicknameAlreadyInUse -> Platform.runLater(() -> nicknameScreenController.setErrormsg("Il nickname scelto è già in uso"));
+            case unavailableConnection -> Platform.runLater(() -> connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
+            case actionDone -> Platform.runLater(() -> gameScreenController.grayOutActionDone());
+            case incompatibleResources -> Platform.runLater(() -> gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname())));
         }
     }
 
@@ -281,7 +275,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) Platform.runLater(() -> gameScreenController.populateHand(H));
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) Platform.runLater(() -> gameScreenController.addHand(H));
     }
 
     @Override

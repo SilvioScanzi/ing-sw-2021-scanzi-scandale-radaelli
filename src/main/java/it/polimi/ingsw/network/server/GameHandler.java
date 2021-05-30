@@ -169,6 +169,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             gameHandlerNotify();
         } else {
             synchronized (clients) {
+                client.closeConnection();
                 synchronized (Lock) {
                     disconnectedPlayers.put(client.getNickname(), clientMap.get(client).getValue());
                     if(turn == clientMap.get(client).getValue() && disconnectedPlayers.size() != playerNumber){
@@ -194,7 +195,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                             gameHandlerNotify();
                             t.cancel();
                         }
-                    },600000);  //timer set to 10 minutes for reconnection
+                    },3000);  //timer set to 10 minutes for reconnection
                 }
             }
         }

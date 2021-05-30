@@ -53,21 +53,25 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         int delay;
         if (state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)) {
             delay = 120000;
-        } else delay = 600000;
+        } else if(state.equals(ClientHandlerState.myTurn) || state.equals(ClientHandlerState.moveNeeded) || state.equals(ClientHandlerState.actionDone)) delay = 600000;
+        else delay = 0;
 
         if(t != null){
             t.cancel();
             t.purge();
         }
-        t = new Timer();
-        t.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                sendObject(new DisconnectedMessage(nickname));
-                notifyServerDisconnection();
-                notifyDisconnected();
-            }
-        }, delay);  //timer set to 10 minutes for every action in the game
+        if(delay!=0) {
+            t = new Timer();
+            t.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    setState(ClientHandlerState.disconnected);
+                    sendObject(new DisconnectedMessage(nickname));
+                    notifyServerDisconnection();
+                    notifyDisconnected();
+                }
+            }, delay);
+        }
 
         this.state = state;
     }
@@ -124,10 +128,10 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     t.schedule(new TimerTask() {
                         @Override
                         public void run() {
+                            state = ClientHandlerState.disconnected;
                             sendObject(new DisconnectedMessage(nickname));
                             notifyServerDisconnection();
                             notifyDisconnected();
-                            state = ClientHandlerState.disconnected;
                         }
                     },600000);  //timer set to 10 minutes for every action in the game
                     message = socketIn.readObject();
@@ -144,9 +148,11 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 }
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (this) {
-                    notifyServerDisconnection();
-                    notifyDisconnected();
-                    state = ClientHandlerState.disconnected;
+                    if(!state.equals(ClientHandlerState.disconnected)) {
+                        notifyServerDisconnection();
+                        notifyDisconnected();
+                        state = ClientHandlerState.disconnected;
+                    }
                 }
                 return;
             }

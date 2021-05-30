@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.SetupScreenView">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.screenView.SetupScreenView">
 <children>
       <ImageView fitHeight="900.0" fitWidth="1600.0" layoutX="1.0">
          <image>
@@ -63,14 +63,14 @@
             <Cursor fx:constant="HAND" />
         </cursor>
     </GridPane>
-    <Button fx:id="button" layoutX="940.0" layoutY="450.0" mnemonicParsing="false" onAction="#selectCards" prefHeight="103.78" prefWidth="455.0">
+    <Button styleClass="banner" fx:id="button" layoutX="940.0" layoutY="450.0" mnemonicParsing="false" onAction="#selectCards" prefHeight="103.78" prefWidth="455.0">
         <cursor>
             <Cursor fx:constant="HAND" />
         </cursor>
     </Button>
       <ImageView fitHeight="89.0" fitWidth="697.0" layoutX="819.0" layoutY="333.0">
          <image>
-            <Image url="@../images/frieze.png" />
+            <Image url="@../images/Frieze.png" />
          </image>
       </ImageView>
       <Text fx:id="message" layoutX="834.0" layoutY="439.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textBig" textAlignment="CENTER" wrappingWidth="667.1365966796875" />

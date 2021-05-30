@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyPressed" prefHeight="700.0" prefWidth="700.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.controllers.PlayerNumberScreenView">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onKeyPressed="#handleKeyPressed" prefHeight="700.0" prefWidth="700.0" styleClass="pane" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.screenView.PlayerNumberScreenView">
    <children>
       <ImageView fitHeight="212.0" fitWidth="458.0" layoutX="122.0" layoutY="42.0" pickOnBounds="true" preserveRatio="true">
          <image>
@@ -16,7 +16,7 @@
          </image>
       </ImageView>
       <Text layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" text="Scegli il numero di giocatori per la partita" textAlignment="CENTER" wrappingWidth="700.0" />
-      <Button fx:id="button" layoutX="105.0" layoutY="547.0" mnemonicParsing="false" onAction="#submitOnClickHandler" prefHeight="113.0" prefWidth="492.0">
+      <Button styleClass="banner" fx:id="button" layoutX="105.0" layoutY="547.0" mnemonicParsing="false" onAction="#submitOnClickHandler" prefHeight="113.0" prefWidth="492.0">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>

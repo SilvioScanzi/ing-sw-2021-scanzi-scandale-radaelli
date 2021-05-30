@@ -1,4 +1,4 @@
-package it.polimi.ingsw.view.GUI.controllers;
+package it.polimi.ingsw.view.GUI.screenView;
 
 import it.polimi.ingsw.commons.*;
 import it.polimi.ingsw.observers.ViewObservable;
