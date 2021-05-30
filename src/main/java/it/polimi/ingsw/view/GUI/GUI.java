@@ -205,8 +205,8 @@ public class GUI extends Application implements View{
 
                     currentScene.setRoot(gameScreen);
 
+                    if(state.equals(ViewState.myTurn)) gameScreenController.setActionDone(false);
                     gameScreenController.grayOut(state.equals(ViewState.notMyTurn));
-
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -269,12 +269,16 @@ public class GUI extends Application implements View{
 
     @Override
     public void printLeaderCardHand(ArrayList<Triplet<Resources, Integer, Integer>> LC) {
-
+        if(gameScreenController!=null) {
+            Platform.runLater(() -> gameScreenController.addLeaderCards(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsPlayed(), LC));
+        }
     }
 
     @Override
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
-
+        if(gameScreenController!=null) {
+            Platform.runLater(() -> {if((NH.getClientModel().getMyNickname().equals(nickname))) gameScreenController.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());});
+        }
     }
 
     @Override

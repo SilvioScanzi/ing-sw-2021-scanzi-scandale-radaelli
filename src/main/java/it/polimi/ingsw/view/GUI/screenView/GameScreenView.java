@@ -20,6 +20,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -113,17 +114,28 @@ public class GameScreenView extends ViewObservable {
     private final ArrayList<Triplet<String,Integer,Integer>> moveAction = new ArrayList<>();
     private boolean isMoveAction = false;
     private boolean actionDone = false;
+    private boolean prevResBuyAction = false;
+
+    @FXML
+    public void initialize(){
+        endTurn.setDisable(true);
+        confirmAction.setDisable(true);
+    }
 
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
         if(actionDone){
+            endTurn.setDisable(false);
             grayOutActionDone();
         }
-    }
-
-    @FXML
-    public void initialize(){
-
+        else{
+            endTurn.setDisable(true);
+            prevResBuyAction = false;
+            isMoveAction = false;
+            selectedRMLC.clear();
+            moveAction.clear();
+            selected = null;
+        }
     }
 
     //Add methods
@@ -137,7 +149,7 @@ public class GameScreenView extends ViewObservable {
         addStrongBox(board.getStrongBox());
         addWarehouse(board.getWarehouse());
         addFaithTrack(board.getFaithMarker(), board.getPopeFavor());
-        addLeaderCards(board.getLeaderCardsPlayed());
+        addLeaderCards(board.getLeaderCardsPlayed(),board.getLeaderCardsHand());
         addHand(board.getHand());
     }
 
@@ -297,47 +309,50 @@ public class GameScreenView extends ViewObservable {
     }
 
     //TODO: mettere un pane con imageView sulle leader card; viene mostrata una risorsa solo se fa parte delle leadercardsPlayed
-    public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed){
-        int c = 0;
-        boolean[] played = {false,false};
+    public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed, ArrayList<Triplet<Resources,Integer,Integer>> LCHand){
+
         for(Triplet<Resources,Integer,Integer> T : LCPlayed){
             String path = "/images/leaderCards/" + T.get_1().getID() + T.get_2() + ".png";
             ImageView LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             LCView.setFitWidth(140.0);
             LCView.setPreserveRatio(true);
             LCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            LCView.setId("F_L_"+(c+1));
-            if(T.get_1().equals(LCMap.get(1).get_1()) && T.get_2().equals(LCMap.get(1).get_2())){
-                LeaderCardsPlayed.getChildren().removeIf(n -> GridPane.getColumnIndex(n) == 0);
-                LeaderCardsPlayed.add(LCView,0,0);
-                played[0]=true;
+
+            for(int i=1;i<3;i++){
+                if(LCMap.containsKey(i) && LCMap.get(i).get_1().equals(T.get_1()) && LCMap.get(i).get_2().equals(T.get_2())){
+                    LCView.setId("F_L_"+(i));
+                    int finalI = i;
+                    LeaderCardsPlayed.getChildren().removeIf(n -> GridPane.getColumnIndex(n) == (finalI -1));
+                    LeaderCardsPlayed.add(LCView,i-1,0);
+                    LCMap.get(i).set_3(true);
+                }
             }
-            else{
-                LeaderCardsPlayed.getChildren().removeIf(n -> GridPane.getColumnIndex(n) == 1);
-                LeaderCardsPlayed.add(LCView,1,0);
-                played[1]=true;
-            }
-            c++;
         }
 
-        int j = 0;
-        for(int i=c; i<2;i++){
+        for(Triplet<Resources,Integer,Integer> T : LCHand){
             String path = "/images/LeaderCardBack.png";
             ImageView backLCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             backLCView.setFitWidth(140.0);
             backLCView.setPreserveRatio(true);
             backLCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-            backLCView.setId("B_L_"+(c+1));
-            if (played[j]) {
-                j++;
+            for(int i=1;i<3;i++){
+                if(LCMap.containsKey(i) && LCMap.get(i).get_1().equals(T.get_1()) && LCMap.get(i).get_2().equals(T.get_2())){
+                    backLCView.setId("B_L_"+(i));
+                    int finalI = i;
+                    LeaderCardsPlayed.getChildren().removeIf(n -> GridPane.getColumnIndex(n) == (finalI -1));
+                    LeaderCardsPlayed.add(backLCView,i-1,0);
+                    LCMap.get(i).set_3(false);
+                    backLCView.setOnMouseEntered(e -> {
+                        String p = "/images/leaderCards/"+LCMap.get(finalI).get_1().getID()+LCMap.get(finalI).get_2()+".png";
+                        backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
+                    });
+                    backLCView.setOnMouseExited(e ->{
+                        String p = "/images/LeaderCardBack.png";
+                        backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
+                    });
+                    grayNotPlayedLeaderCard(false,finalI-1,backLCView);
+                }
             }
-            int finalJ = j;
-            if(LeaderCardsPlayed.getChildren().size()>j) {
-                LeaderCardsPlayed.getChildren().removeIf(n -> GridPane.getColumnIndex(n) == finalJ);
-            }
-            LeaderCardsPlayed.add(backLCView,j,0);
-            grayNotPlayedLeaderCard(false,finalJ,backLCView);
-            j++;
         }
     }
 
@@ -373,7 +388,7 @@ public class GameScreenView extends ViewObservable {
                 for(Node n : LeaderCardsPlayed.getChildren()){
                     if(GridPane.getColumnIndex(n) == i - 1) IM = (ImageView) n;
                 }
-                if(!LCMap.get(i).get_3()) grayNotPlayedLeaderCard(true,i-1,IM);
+                if(LCMap.containsKey(i) && !LCMap.get(i).get_3()) grayNotPlayedLeaderCard(true,i-1,IM);
             }
             grayEmptyWarehouse(true);
             grayHand(true);
@@ -389,20 +404,14 @@ public class GameScreenView extends ViewObservable {
                 for(Node n : LeaderCardsPlayed.getChildren()){
                     if(GridPane.getColumnIndex(n) == i - 1) IM = (ImageView) n;
                 }
-                if(!LCMap.get(i).get_3()) grayNotPlayedLeaderCard(false,i-1,IM);
+                if(LCMap.containsKey(i) && !LCMap.get(i).get_3()) grayNotPlayedLeaderCard(false,i-1,IM);
             }
             grayProduction(false);
             //graySlots(false);
         }
-        if(!actionDone){
-            endTurn.setDisable(true);
-        }
-        confirmAction.setDisable(true);
     }
 
     public void grayOutActionDone(){
-        endTurn.setDisable(false);
-        confirmAction.setDisable(true);
         graySlots(true);
         grayResourceMarket(true);
         grayCardMarket(true);
@@ -714,16 +723,24 @@ public class GameScreenView extends ViewObservable {
 
     //Handle Methods
     public void handleConfirmClick(){
-        if(!isMoveAction){
+        if(!isMoveAction && prevResBuyAction){
+            confirmAction.setDisable(true);
+            prevResBuyAction = false;
+            notifyMoveResources(moveAction);
+            moveAction.clear();
+        }
+        else if(!isMoveAction){
             String ID = selected.getId();
             String[] split = ID.split("_");
 
             if(split[0].equals("R") || split[0].equals("C")){
+                prevResBuyAction = true;
                 int i=0;
                 for(Triplet<Resources,Integer,Boolean> T : LCMap.values()){
                     if(T.get_3() && T.get_2()==5) i++;
                 }
                 if(i<2){
+                    confirmAction.setDisable(false);
                     unselect();
                     selected = null;
                     notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),new ArrayList<>());
@@ -748,6 +765,7 @@ public class GameScreenView extends ViewObservable {
                                 unselect();
                                 selected = null;
                                 notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC);
+
                             }else{
                                 glowNextWhiteMarble(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC.size());
                             }
@@ -769,14 +787,25 @@ public class GameScreenView extends ViewObservable {
 
         //Resource market action
         else if(isMoveAction){
+            prevResBuyAction = false;
             isMoveAction = false;
             notifyMoveResources(moveAction);
             moveAction.clear();
             confirmAction.setDisable(true);
+            grayOut(false);
+            if(actionDone) grayOutActionDone();
         }
+
     }
 
     public void handleEndTurnClick(){
+        if(prevResBuyAction){
+            notifyMoveResources(moveAction);
+            prevResBuyAction = false;
+            moveAction.clear();
+        }
+        confirmAction.setDisable(true);
+        endTurn.setDisable(true);
         notifyEndTurn();
     }
 
@@ -847,6 +876,7 @@ public class GameScreenView extends ViewObservable {
         selected = null;
     }
 
+    //TODO: Scambi con la mano da fixare
     private void handleMoveAction(ImageView IV){
         isMoveAction = true;
 
@@ -911,6 +941,8 @@ public class GameScreenView extends ViewObservable {
             n.setOnMouseExited(null);
         }
 
+        grayOut(true);
+
         AnchorPane anchorPane = (AnchorPane) LeaderCardsPlayed.getParent();
         Pane confirmPane = new Pane();
         confirmPane.setId("confirmPane");
@@ -950,26 +982,46 @@ public class GameScreenView extends ViewObservable {
 
         confirmButton.setOnMouseClicked(e -> {
             notifyActivateLC(Integer.parseInt(backLCView.getId().split("_")[2]));
+            anchorPane.getChildren().remove(confirmPane);
+            grayOut(false);
+            if(actionDone) grayOutActionDone();
         });
 
         discardButton.setOnMouseClicked(e -> {
             notifyDiscardLC(Integer.parseInt(backLCView.getId().split("_")[2]));
+            anchorPane.getChildren().remove(confirmPane);
+
+            int index = Integer.parseInt(backLCView.getId().split("_")[2]);
+            LeaderCardsPlayed.getChildren().remove(backLCView);
+            LCMap.remove(index);
+
+            grayOut(false);
+            if(actionDone) grayOutActionDone();
         });
 
         cancelButton.setOnMouseClicked(e -> {
-            //grey out
-        });
+            anchorPane.getChildren().remove(confirmPane);
+            grayOut(false);
+            if(actionDone) grayOutActionDone();
 
-        /*
-        backLCView.setOnMouseEntered(e -> {
-                                String p = "/images/leaderCards/"+LCMap.get(finalJ +1).get_1().getID()+LCMap.get(finalJ + 1).get_2()+".png";
-                                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
-                            });
-                            backLCView.setOnMouseExited(e ->{
-                                String p = "/images/LeaderCardBack.png";
-                                backLCView.setImage(new Image(GUI.class.getResource(p).toString()));
-                            });
-         */
+            for(Node node : LeaderCardsPlayed.getChildren()){
+                if(node.getId().startsWith("B")) {
+                    ImageView n = (ImageView) node;
+                    String target = "/images/LeaderCardBack.png";
+                    n.setImage(new Image(GUI.class.getResource(target).toString()));
+                    int finalJ = Integer.parseInt(n.getId().split("_")[2]);
+                    n.setOnMouseEntered(x -> {
+                        String p = "/images/leaderCards/"+LCMap.get(finalJ).get_1().getID()+LCMap.get(finalJ).get_2()+".png";
+                        n.setImage(new Image(GUI.class.getResource(p).toString()));
+                    });
+                    n.setOnMouseExited(x ->{
+                        String p = "/images/LeaderCardBack.png";
+                        n.setImage(new Image(GUI.class.getResource(p).toString()));
+                    });
+                    n.setOnMouseClicked(x -> handleLeaderCardClick(n));
+                }
+            }
+        });
     }
 
     //Utils

@@ -222,8 +222,8 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <Button fx:id="confirmAction" layoutX="318.0" layoutY="322.0" mnemonicParsing="false" onMouseClicked="#handleConfirmClick" text="Conferma azione" />
-      <Button fx:id="endTurn" layoutX="549.0" layoutY="322.0" mnemonicParsing="false" onMouseClicked="#handleEndTurnClick" text="Fine turno" />
+      <Button fx:id="confirmAction" layoutX="318.0" layoutY="322.0" mnemonicParsing="false" onMouseClicked="#handleConfirmClick" prefWidth="150" styleClass="gameButton" text="Conferma  azione" />
+      <Button fx:id="endTurn" layoutX="494.0" layoutY="322.0" mnemonicParsing="false" onMouseClicked="#handleEndTurnClick" prefWidth="150" styleClass="gameButton" text="Fine  turno" />
       <GridPane fx:id="Hand" layoutX="57.0" layoutY="547.0" prefHeight="174.0" prefWidth="72.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.1939468383789" minWidth="10.0" prefWidth="101.1939468383789" />

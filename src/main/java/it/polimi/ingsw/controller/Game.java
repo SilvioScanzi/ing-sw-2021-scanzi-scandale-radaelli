@@ -577,7 +577,7 @@ public class Game extends ModelObservable {
     }
 
     public synchronized void discardLeaderCard(int player, int leaderCardIndex) throws IndexOutOfBoundsException{
-        if(!players.get(player).getLeaderCardsHand().containsKey(leaderCardIndex - 1)) throw new IndexOutOfBoundsException("Leader card does not exist");
+        if(!players.get(player).getLeaderCardsHand().containsKey(leaderCardIndex - 1)) {throw new IndexOutOfBoundsException("Leader card does not exist"); }
         players.get(player).discardLeaderCard(leaderCardIndex);
         players.get(player).getFaithTrack().advanceTrack();
         int tmp = players.get(player).getFaithTrack().checkPopeFavor();

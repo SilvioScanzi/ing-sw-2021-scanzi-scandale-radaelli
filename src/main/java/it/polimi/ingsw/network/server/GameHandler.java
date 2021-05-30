@@ -432,6 +432,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     @Override
     public void updateTurnDone(CHObservable obs, TurnDoneMessage message){
         ClientHandler client = (ClientHandler) obs;
+        game.getBoard(client.getNickname()).setActionDone(false);
         synchronized (client) {
             client.sendStandardMessage(StandardMessages.notYourTurn);
             client.setState(ClientHandler.ClientHandlerState.notMyTurn);
@@ -473,6 +474,11 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 demolished = true;
                 gameHandlerNotify();
             }
+            synchronized (client){
+                client.setState(ClientHandler.ClientHandlerState.myTurn);
+            }
+            client.sendStandardMessage(StandardMessages.yourTurn);
+
         }
         else  {
             turn = (turn + 1) % playerNumber;

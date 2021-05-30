@@ -397,22 +397,12 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateActivateLC(int userChoice) {
-        try{
-            clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsHand().get(userChoice-1);
-            sendObject(new PlayLeaderCardMessage(userChoice));
-        }catch(IndexOutOfBoundsException e){
-            view.print("La leader card selezionata non esiste");
-        }
+        sendObject(new PlayLeaderCardMessage(userChoice));
     }
 
     @Override
     public void updateDiscardLC(int userChoice) {
-        try{
-            clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsHand().get(userChoice-1);
-            sendObject(new DiscardLeaderCardMessage(userChoice));
-        }catch(IndexOutOfBoundsException e){
-            view.print("La leader card selezionata non esiste");
-        }
+        sendObject(new DiscardLeaderCardMessage(userChoice));
     }
 
     @Override
