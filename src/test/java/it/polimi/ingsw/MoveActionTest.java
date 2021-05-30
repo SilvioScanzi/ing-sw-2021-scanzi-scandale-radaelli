@@ -235,7 +235,7 @@ public class MoveActionTest {
         //Adding a new LCCard which provides extra slots for stones
         LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Stones,2);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCSlot);
+        playerBoard.getLeaderCardsHand().put(0,LCSlot);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}

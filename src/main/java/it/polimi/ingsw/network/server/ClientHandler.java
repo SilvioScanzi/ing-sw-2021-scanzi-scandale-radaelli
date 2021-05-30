@@ -11,6 +11,7 @@ import it.polimi.ingsw.observers.ModelObserver;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -261,7 +262,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     //if you are playing, the cards are showed to you, otherwise it's just to show something to other players
     @Override
-    public void updateLCHand(ArrayList<LeaderCard> LCHand, String s){
+    public void updateLCHand(HashMap<Integer,LeaderCard> LCHand, String s){
         if(nickname.equals(s)) sendObject(new LeaderCardHandMessage(LCHand));
         else sendObject(new LeaderCardHandUpdateMessage(s));
     }
@@ -282,7 +283,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void updateLCPlayed(ArrayList<LeaderCard> lcp, String s){
+    public void updateLCPlayed(HashMap<Integer,LeaderCard> lcp, String s){
         sendObject(new LeaderCardPlayedMessage(lcp,s));
     }
 

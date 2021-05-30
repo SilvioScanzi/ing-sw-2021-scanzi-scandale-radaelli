@@ -191,7 +191,7 @@ public class DevelopmentBuyTest{
         //Adding a new LCCard which provides a discount on servants
         LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCDiscount);
+        playerBoard.getLeaderCardsHand().put(0,LCDiscount);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -229,7 +229,7 @@ public class DevelopmentBuyTest{
         //Adding a new LCCard which provides a discount on servants
         LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCDiscount);
+        playerBoard.getLeaderCardsHand().put(0,LCDiscount);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -254,7 +254,7 @@ public class DevelopmentBuyTest{
         //Adding a new LCCard which provides extra slots for stones
         LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Stones,2);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCSlot);
+        playerBoard.getLeaderCardsHand().put(0,LCSlot);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -291,11 +291,11 @@ public class DevelopmentBuyTest{
         LeaderCard LCDiscount = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"DiscountAbility",Resources.Servants,-1);
         LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Stones,2);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCSlot);
-        playerBoard.getLeaderCardsHand().add(LCDiscount);
+        playerBoard.getLeaderCardsHand().put(0,LCSlot);
+        playerBoard.getLeaderCardsHand().put(1,LCDiscount);
         try {
             game.playLeaderCard(0, 1);
-            game.playLeaderCard(0,1);
+            game.playLeaderCard(0,2);
         }catch(Exception e){e.printStackTrace();}
 
         try {

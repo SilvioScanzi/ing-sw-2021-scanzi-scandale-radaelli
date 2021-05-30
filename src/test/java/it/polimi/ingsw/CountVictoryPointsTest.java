@@ -44,7 +44,7 @@ public class CountVictoryPointsTest {
         //Adding one LC which counts for 5 VP
         LeaderCard LC = new LeaderCard(5,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Shields,2);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC);
+        playerBoard.getLeaderCardsHand().put(0,LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}

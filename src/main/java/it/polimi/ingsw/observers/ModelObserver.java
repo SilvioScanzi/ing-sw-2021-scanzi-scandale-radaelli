@@ -6,18 +6,19 @@ import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface ModelObserver {
     //void updateMarket(ResourceMarket m);
     void updateMarket(Marbles[][] grid, Marbles remainingMarble);
     void updateDCMarket(DevelopmentCardMarket DCM);
     void updateWR(Warehouse wr, String s);
-    void updateLCHand(ArrayList<LeaderCard> LCHand, String s);
+    void updateLCHand(HashMap<Integer,LeaderCard> LCHand, String s);
     void updateSB(Strongbox sb, String s);
     void updateFT(FaithTrack ft, String s);
     void updateSlots(DevelopmentCard DC, int slotIndex, String nickname);
     void updateHand(ArrayList<Resources> hand, String s);
-    void updateLCPlayed(ArrayList<LeaderCard> lcp, String s);
+    void updateLCPlayed(HashMap<Integer,LeaderCard> lcp, String s);
     void updateVP(int victoryPoints,String s);
     void updateLorenzo(LorenzoTrack lorenzo);
     void updateActionToken(ActionToken AT);

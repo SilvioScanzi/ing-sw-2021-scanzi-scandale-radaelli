@@ -6,6 +6,7 @@ import it.polimi.ingsw.commons.Resources;
 import it.polimi.ingsw.model.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ModelObservable {
@@ -47,7 +48,7 @@ public class ModelObservable {
         }
     }
 
-    public void notifyLCHand(ArrayList<LeaderCard> LCHand, String s){
+    public void notifyLCHand(HashMap<Integer,LeaderCard> LCHand, String s){
         for(ModelObserver obs : observers){
             obs.updateLCHand(LCHand,s);
         }
@@ -71,7 +72,7 @@ public class ModelObservable {
         }
     }
 
-    public void notifyLCPlayed(ArrayList<LeaderCard> lcp, String s){
+    public void notifyLCPlayed(HashMap<Integer,LeaderCard> lcp, String s){
         for(ModelObserver obs : observers){
             obs.updateLCPlayed(lcp,s);
         }

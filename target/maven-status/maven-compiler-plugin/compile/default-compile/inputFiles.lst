@@ -6,11 +6,9 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/ModelObservable.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/DiscountAbility.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/Warehouse.java
-/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/ConnectionScreenController.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Triplet.java
-/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/SetupScreenController.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/ActionToken.java
-/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/PlayerNumberScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/NicknameScreenView.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/RequirementsNotMetException.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/controller/Game.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/CH_ServerObserver.java
@@ -19,14 +17,12 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ProductionMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/StandardMessages.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/LeaderCardHandMessage.java
-/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/GameScreenController.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Marbles.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/MoveResourcesMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/Strongbox.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/CHObserver.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/DevelopmentCard.java
-/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/DevelopmentBuyScreenController.java
-/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/WaitScreenController.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/GameScreenView.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/clientModel/ClientModel.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/NicknameMapMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/server/GameHandler.java
@@ -35,6 +31,7 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/ResourceMarket.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/CLI/CLI.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/SlotMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/PlayerNumberScreenView.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/LeaderCardNotCompatibleException.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/LeaderCardDeck.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/WhiteMarbleAbility.java
@@ -46,6 +43,7 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/FaithTrack.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/PlayLeaderCardMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ChoosePlayerNumberMessage.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/ConnectionScreenView.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Colours.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/DisconnectedMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ReconnectMessage.java
@@ -59,6 +57,7 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/EmptyException.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/ViewState.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/ViewObservable.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/DevelopmentBuyScreenView.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/LeaderCardHandUpdateMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/GameHandlerObserver.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/GameHandlerObservable.java
@@ -66,8 +65,10 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/ActionTokenMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/model/DevelopmentCardMarket.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/Resources.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/SetupScreenView.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/DCMarketMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/exceptions/BadRequestException.java
+/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/WaitScreenView.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/observers/ViewObserver.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/VictoryPointsMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/FinishSetupMessage.java
@@ -89,4 +90,3 @@
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/client/NetworkHandler.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/network/messages/FaithTrackMessage.java
 /Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/commons/DevelopmentCardParser.java
-/Users/francescoscandale/Desktop/ing-sw-2021-scanzi-scandale-radaelli/src/main/java/it/polimi/ingsw/view/GUI/controllers/NicknameScreenController.java

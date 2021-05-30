@@ -42,7 +42,7 @@ public class LeaderCardPlayAndDiscardTest {
         HashMap<Resources,Integer> rr = new HashMap<>();
         LeaderCard LC = new LeaderCard(5,rc,rr,"WhiteMarbleAbility",Resources.Shields,0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC);
+        playerBoard.getLeaderCardsHand().put(0,LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -62,7 +62,7 @@ public class LeaderCardPlayAndDiscardTest {
         playerBoard.getStrongbox().addResource(Resources.Shields,2);
         LeaderCard LC = new LeaderCard(3,rc,rr,"ExtraSlotAbility",Resources.Servants,2);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC);
+        playerBoard.getLeaderCardsHand().put(0,LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -90,7 +90,7 @@ public class LeaderCardPlayAndDiscardTest {
         playerBoard.getStrongbox().addResource(Resources.Shields,2);
         LeaderCard LC = new LeaderCard(5,rc,rr,"DiscountAbility",Resources.Shields,-1);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC);
+        playerBoard.getLeaderCardsHand().put(0,LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -116,7 +116,7 @@ public class LeaderCardPlayAndDiscardTest {
         playerBoard.getStrongbox().addResource(Resources.Shields, 2);
         LeaderCard LC = new LeaderCard(3, rc, rr, "ExtraSlotAbility", Resources.Servants, 2);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC);
+        playerBoard.getLeaderCardsHand().put(0,LC);
         assertThrows(Exception.class, () -> game.playLeaderCard(0, 1));
 
         //Lack of DC
@@ -135,7 +135,7 @@ public class LeaderCardPlayAndDiscardTest {
         rr = new HashMap<>();
         LC = new LeaderCard(5, rc, rr, "WhiteMarbleAbility", Resources.Shields, 0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC);
+        playerBoard.getLeaderCardsHand().put(0,LC);
         assertThrows(Exception.class, () -> game.playLeaderCard(0, 1));
     }
 
@@ -185,10 +185,10 @@ public class LeaderCardPlayAndDiscardTest {
         LeaderCard LC4 = new LeaderCard(4,rc,rr,"ProductionPowerAbility",Resources.Coins,-1);
 
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC1);
-        playerBoard.getLeaderCardsHand().add(LC2);
-        playerBoard.getLeaderCardsHand().add(LC3);
-        playerBoard.getLeaderCardsHand().add(LC4);
+        playerBoard.getLeaderCardsHand().put(0,LC1);
+        playerBoard.getLeaderCardsHand().put(1,LC2);
+        playerBoard.getLeaderCardsHand().put(2,LC3);
+        playerBoard.getLeaderCardsHand().put(3,LC4);
 
         int[] selection = {1,2};
         try{
@@ -213,10 +213,10 @@ public class LeaderCardPlayAndDiscardTest {
         LeaderCard LC4 = new LeaderCard(4,rc,rr,"ProductionPowerAbility",Resources.Coins,-1);
 
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC1);
-        playerBoard.getLeaderCardsHand().add(LC2);
-        playerBoard.getLeaderCardsHand().add(LC3);
-        playerBoard.getLeaderCardsHand().add(LC4);
+        playerBoard.getLeaderCardsHand().put(0,LC1);
+        playerBoard.getLeaderCardsHand().put(1,LC2);
+        playerBoard.getLeaderCardsHand().put(2,LC3);
+        playerBoard.getLeaderCardsHand().put(3,LC4);
 
         int[] selection = {6,2};
         assertThrows(Exception.class, () -> game.discardSelectedLC(0,selection));
@@ -234,10 +234,10 @@ public class LeaderCardPlayAndDiscardTest {
         LeaderCard LC4 = new LeaderCard(4,rc,rr,"ProductionPowerAbility",Resources.Coins,-1);
 
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC1);
-        playerBoard.getLeaderCardsHand().add(LC2);
-        playerBoard.getLeaderCardsHand().add(LC3);
-        playerBoard.getLeaderCardsHand().add(LC4);
+        playerBoard.getLeaderCardsHand().put(0,LC1);
+        playerBoard.getLeaderCardsHand().put(1,LC2);
+        playerBoard.getLeaderCardsHand().put(2,LC3);
+        playerBoard.getLeaderCardsHand().put(3,LC4);
 
         int[] selection = {69,42,119};
         assertThrows(Exception.class, () -> game.discardSelectedLC(0,selection));

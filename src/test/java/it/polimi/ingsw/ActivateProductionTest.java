@@ -110,7 +110,7 @@ public class ActivateProductionTest {
     void testCanActivateWithLC(){
         LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Shields,2);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCSlot);
+        playerBoard.getLeaderCardsHand().put(0,LCSlot);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -132,7 +132,7 @@ public class ActivateProductionTest {
     void testCanActivateLCProduction(){
         LeaderCard LCProduction = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ProductionPowerAbility",Resources.Servants,0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCProduction);
+        playerBoard.getLeaderCardsHand().put(0,LCProduction);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -152,7 +152,7 @@ public class ActivateProductionTest {
     void testWrongLC(){
         LeaderCard LCSlot = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"ExtraSlotAbility",Resources.Servants,0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCSlot);
+        playerBoard.getLeaderCardsHand().put(0,LCSlot);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}

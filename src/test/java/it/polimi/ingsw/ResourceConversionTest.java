@@ -73,7 +73,7 @@ public class ResourceConversionTest {
     void testCanConversionWhiteWithLC(){
         LeaderCard LC = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LC);
+        playerBoard.getLeaderCardsHand().put(0,LC);
         try {
             game.playLeaderCard(0, 1);
         }catch(Exception e){e.printStackTrace();}
@@ -95,11 +95,11 @@ public class ResourceConversionTest {
         LeaderCard LCServants = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
         LeaderCard LCCoins = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Coins,0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCServants);
-        playerBoard.getLeaderCardsHand().add(LCCoins);
+        playerBoard.getLeaderCardsHand().put(0,LCServants);
+        playerBoard.getLeaderCardsHand().put(1,LCCoins);
         try {
             game.playLeaderCard(0, 1);
-            game.playLeaderCard(0, 1);
+            game.playLeaderCard(0, 2);
         }catch(Exception e){e.printStackTrace();}
         ArrayList<Integer> requestedWMConversion = new ArrayList<>();
         requestedWMConversion.add(1);
@@ -122,11 +122,11 @@ public class ResourceConversionTest {
         LeaderCard LCServants = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
         LeaderCard LCCoins = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Coins,0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCServants);
-        playerBoard.getLeaderCardsHand().add(LCCoins);
+        playerBoard.getLeaderCardsHand().put(0,LCServants);
+        playerBoard.getLeaderCardsHand().put(1,LCCoins);
         try {
             game.playLeaderCard(0, 1);
-            game.playLeaderCard(0, 1);
+            game.playLeaderCard(0, 2);
         }catch(Exception e){e.printStackTrace();}
         ArrayList<Integer> requestedWMConversion = new ArrayList<>();
         requestedWMConversion.add(1);
@@ -141,11 +141,11 @@ public class ResourceConversionTest {
         LeaderCard LCServants = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Servants,0);
         LeaderCard LCCoins = new LeaderCard(0,new HashMap<>(),new HashMap<>(),"WhiteMarbleAbility",Resources.Coins,0);
         playerBoard.getLeaderCardsHand().clear();
-        playerBoard.getLeaderCardsHand().add(LCServants);
-        playerBoard.getLeaderCardsHand().add(LCCoins);
+        playerBoard.getLeaderCardsHand().put(0,LCServants);
+        playerBoard.getLeaderCardsHand().put(1,LCCoins);
         try {
             game.playLeaderCard(0, 1);
-            game.playLeaderCard(0, 1);
+            game.playLeaderCard(0, 2);
         }catch(Exception e){e.printStackTrace();}
         ArrayList<Integer> requestedWMConversion = new ArrayList<>();
         requestedWMConversion.add(1);

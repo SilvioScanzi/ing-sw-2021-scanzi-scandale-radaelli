@@ -149,6 +149,15 @@ public class Game extends ModelObservable {
             players.get(player).discardLeaderCard(i);
         }
 
+        ArrayList<LeaderCard> LCHand = new ArrayList<>();
+        for(Integer I : players.get(player).getLeaderCardsHand().keySet()){
+            LCHand.add(players.get(player).getLeaderCardsHand().get(I));
+
+        }
+        players.get(player).getLeaderCardsHand().clear();
+        players.get(player).getLeaderCardsHand().put(0,LCHand.remove(0));
+        players.get(player).getLeaderCardsHand().put(1,LCHand.remove(0));
+
         notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
     }
 
@@ -269,12 +278,14 @@ public class Game extends ModelObservable {
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
-        for(LeaderCard LC: playerBoard.getLeaderCardsPlayed()){
+        for(Integer I : playerBoard.getLeaderCardsPlayed().keySet()){
+            LeaderCard LC = playerBoard.getLeaderCardsPlayed().get(I);
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
 
         //Check if LC played give some discount
-        for(LeaderCard LC : playerBoard.getLeaderCardsPlayed()){
+        for(Integer I : playerBoard.getLeaderCardsPlayed().keySet()){
+            LeaderCard LC = playerBoard.getLeaderCardsPlayed().get(I);
             cost = LC.getAbility().doDiscount(cost);
         }
 
@@ -298,7 +309,8 @@ public class Game extends ModelObservable {
         }
 
         boolean updated = false;
-        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+        for (Integer I : playerBoard.getLeaderCardsPlayed().keySet()) {
+            LeaderCard L = playerBoard.getLeaderCardsPlayed().get(I);
             if(LCCapacity.get(L)!=L.getAbility().getStashedResources()) {
                 L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
                 updated = true;
@@ -327,7 +339,8 @@ public class Game extends ModelObservable {
         Warehouse wr = playerBoard.getWarehouse().clone();
         Strongbox sb = playerBoard.getStrongbox().clone();
 
-        for(LeaderCard LC: playerBoard.getLeaderCardsPlayed()){
+        for(Integer I : playerBoard.getLeaderCardsPlayed().keySet()){
+            LeaderCard LC = playerBoard.getLeaderCardsPlayed().get(I);
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
         ArrayList<Resources> tmpHand = new ArrayList<>();
@@ -388,7 +401,8 @@ public class Game extends ModelObservable {
         }
 
         boolean updated = false;
-        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+        for (Integer I : playerBoard.getLeaderCardsPlayed().keySet()) {
+            LeaderCard L = playerBoard.getLeaderCardsPlayed().get(I);
             if(LCCapacity.get(L)!=L.getAbility().getStashedResources()) {
                 L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
                 updated = true;
@@ -457,7 +471,8 @@ public class Game extends ModelObservable {
         Board playerBoard = players.get(player);
         Warehouse wr = playerBoard.getWarehouse().clone();
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
-        for(LeaderCard LC: playerBoard.getLeaderCardsPlayed()){
+        for(Integer I : playerBoard.getLeaderCardsPlayed().keySet()){
+            LeaderCard LC = playerBoard.getLeaderCardsPlayed().get(I);
             LCCapacity.put(LC,LC.getAbility().getStashedResources());
         }
         ArrayList<Resources> tmpHand = (ArrayList<Resources>)playerBoard.getHand().clone();
@@ -543,7 +558,8 @@ public class Game extends ModelObservable {
         playerBoard.setHand(tmpHand);
 
         boolean updated = false;
-        for (LeaderCard L : playerBoard.getLeaderCardsPlayed()) {
+        for (Integer I : playerBoard.getLeaderCardsPlayed().keySet()) {
+            LeaderCard L = playerBoard.getLeaderCardsPlayed().get(I);
             if(LCCapacity.get(L)!=L.getAbility().getStashedResources()) {
                 L.getAbility().doUpdateSlot(L.getAbility().getResType(), LCCapacity.get(L) - L.getAbility().getStashedResources());
                 updated = true;
@@ -571,7 +587,7 @@ public class Game extends ModelObservable {
     }
 
     public synchronized void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
-        if(leaderCardIndex>players.get(player).getLeaderCardsHand().size() || leaderCardIndex<=0) throw new IndexOutOfBoundsException("Leader card does not exist");
+        if(!players.get(player).getLeaderCardsHand().containsKey(leaderCardIndex-1)) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).playLeaderCard(leaderCardIndex);
 
         notifyLCPlayed(players.get(player).getLeaderCardsPlayed(),players.get(player).getNickname());
@@ -616,7 +632,8 @@ public class Game extends ModelObservable {
             }
 
             //leadercard points
-            for(LeaderCard LC : playerBoard.getLeaderCardsPlayed()){
+            for (Integer I : playerBoard.getLeaderCardsPlayed().keySet()) {
+                LeaderCard LC = playerBoard.getLeaderCardsPlayed().get(I);
                 tmp += LC.getVictoryPoints();
             }
 
@@ -635,7 +652,8 @@ public class Game extends ModelObservable {
             for(Resources r : Resources.values()){
                 amount+=playerBoard.getStrongbox().getResource(r);
             }
-            for(LeaderCard LC : playerBoard.getLeaderCardsPlayed()){
+            for (Integer I : playerBoard.getLeaderCardsPlayed().keySet()) {
+                LeaderCard LC = playerBoard.getLeaderCardsPlayed().get(I);
                 amount+=LC.getAbility().getStashedResources();
             }
 

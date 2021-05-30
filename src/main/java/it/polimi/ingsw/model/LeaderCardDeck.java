@@ -38,10 +38,10 @@ public class LeaderCardDeck {
         return deck.pop();
     }
 
-    public ArrayList<LeaderCard> getLeaderCards(){
-        ArrayList<LeaderCard> tmp = new ArrayList<>();
+    public HashMap<Integer,LeaderCard> getLeaderCards(){
+        HashMap<Integer,LeaderCard> tmp = new HashMap<>();
         for(int i=0;i<4;i++){
-            tmp.add(getFirstCard());
+            tmp.put(i,getFirstCard());
         }
         return tmp;
     }

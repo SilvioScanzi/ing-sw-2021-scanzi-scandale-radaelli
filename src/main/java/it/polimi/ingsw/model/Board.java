@@ -3,7 +3,6 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.commons.Colours;
 import it.polimi.ingsw.commons.Pair;
 import it.polimi.ingsw.commons.Resources;
-import it.polimi.ingsw.exceptions.EmptyException;
 import it.polimi.ingsw.exceptions.RequirementsNotMetException;
 
 import java.util.*;
@@ -14,13 +13,13 @@ public class Board{
     private Warehouse warehouse;
     private Strongbox strongbox;
     private final Slot[] slots;
-    private final ArrayList<LeaderCard> leaderCardsHand;
-    private final ArrayList<LeaderCard> leaderCardsPlayed;
+    private final HashMap<Integer, LeaderCard> leaderCardsHand;
+    private final HashMap<Integer, LeaderCard> leaderCardsPlayed;
     private ArrayList<Resources> hand;
     private boolean actionDone;
     private int victoryPoints;
 
-    public Board(ArrayList<LeaderCard> leaderCards, String nickname) {
+    public Board(HashMap<Integer,LeaderCard> leaderCards, String nickname) {
         this.nickname = nickname;
         faithtrack = new FaithTrack();
         warehouse = new Warehouse();
@@ -29,8 +28,8 @@ public class Board{
         for(int i=0;i<3;i++){
             slots[i] = new Slot();
         }
-        leaderCardsHand = new ArrayList<> (leaderCards);
-        leaderCardsPlayed = new ArrayList<>();
+        leaderCardsHand = new HashMap<> (leaderCards);
+        leaderCardsPlayed = new HashMap<>();
         hand = new ArrayList<>();
         actionDone = false;
         victoryPoints = 0;
@@ -57,7 +56,7 @@ public class Board{
         return hand;
     }
 
-    public ArrayList<LeaderCard> getLeaderCardsPlayed() {
+    public HashMap<Integer, LeaderCard> getLeaderCardsPlayed() {
         return leaderCardsPlayed;
     }
 
@@ -70,7 +69,7 @@ public class Board{
         return slots[index-1];
     }
 
-    public ArrayList<LeaderCard> getLeaderCardsHand() {
+    public HashMap<Integer,LeaderCard> getLeaderCardsHand() {
         return leaderCardsHand;
     }
 
@@ -93,7 +92,8 @@ public class Board{
         }
 
         //adds leader cards resources
-        for(LeaderCard LC : leaderCardsPlayed){
+        for(Integer I : leaderCardsPlayed.keySet()){
+            LeaderCard LC = leaderCardsPlayed.get(I);
             tmp.put(LC.getAbility().getResType(), tmp.get(LC.getAbility().getResType())+LC.getAbility().getStashedResources());
         }
 
@@ -120,6 +120,8 @@ public class Board{
     public void setHand(ArrayList<Resources> hand) {
         this.hand = hand;
     }
+
+
 
     //action related methods
     public void dumpHandIntoStrongbox(){
@@ -164,7 +166,7 @@ public class Board{
         }
 
         if(requiredColours.isEmpty() && requiredResources.isEmpty())
-            leaderCardsPlayed.add(leaderCardsHand.remove(i-1));
+            leaderCardsPlayed.put(i-1,leaderCardsHand.remove(i-1));
         else
             throw new RequirementsNotMetException("Cannot play selected leader card");
     }
