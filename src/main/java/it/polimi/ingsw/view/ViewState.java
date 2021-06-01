@@ -12,5 +12,6 @@ public enum ViewState {
     finishSetupTwoResources,
     myTurn,
     notMyTurn,
-    disconnected
+    disconnected,
+    reconnecting;
 }

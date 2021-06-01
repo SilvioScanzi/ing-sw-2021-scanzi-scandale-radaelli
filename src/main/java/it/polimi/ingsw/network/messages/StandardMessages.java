@@ -5,7 +5,9 @@ import java.io.Serializable;
 public enum StandardMessages implements Serializable {
 
     //Communication messages
+    reconnection("Vuoi riconnetterti alla partita in corso?"),
     connectionEstablished("Connessione effettuata al server del gioco"),
+    waitForReconnection("Resta in attesa che gli altri giocatori si riconnettano"),
     gameNotCreated("Resta in attesa che venga creata una partita"),
     gameIsStarting("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!"),
     choosePlayerNumber("Scegli il numero dei giocatori"),
@@ -40,13 +42,14 @@ public enum StandardMessages implements Serializable {
     baseProductionError("La scelta della produzione di base non è valida"),
     emptySlot("Lo slot selezionato è vuoto"),
     resourcesWrong("Le risorse sono state scelte in maniera errata"),
-    moveActionNeeded("Devi scegliere dove posizionare le risorse appena ottenute"),
+    moveActionNeeded("Devi scegliere dove posizionare le risorse che hai nella mano"),
     resourcesLeftInHand("Devi riposizionare le risorse che hai nella mano"),
     incompatibleResources("L'allocazione delle risorse è fallita perchè sono presenti risorse non compatibili"),
     leaderCardWrongAbility("La carta leader scelta non ha un'abilità compatibile con l'azione svolta"),
     requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
     notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione"),
-    disconnectedMessage("Il giocatore si è disconnesso");
+    disconnectedMessage("Il giocatore si è disconnesso"),
+    actionNeeded("Non hai ancora svolto l'azione per il turno");
 
 
     private final String message;

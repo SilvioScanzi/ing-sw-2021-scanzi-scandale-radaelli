@@ -41,6 +41,18 @@
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
 }
 
+.cancelbanner{
+    -fx-background-image: url("../images/CancelBanner.png");
+    -fx-background-size: 100% 100%;
+    -fx-background-repeat: no-repeat;
+    -fx-background-color: transparent;
+}
+
+.cancelbanner:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+
 .gameButton{
     -fx-background-image: url("../images/Button.png");
     -fx-background-size: 100% 100%;

@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BlurType;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
@@ -22,10 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 
 public class GameScreenView extends ViewObservable {
 
@@ -141,9 +138,15 @@ public class GameScreenView extends ViewObservable {
     }
 
     //Add methods
-    public void addLCMap(ArrayList<Triplet<Resources,Integer,Integer>> L){
-        for(int i=0;i<2;i++){
-            LCMap.put((i+1),new Triplet<>(L.get(i).get_1(),L.get(i).get_2(),false));
+    public void addLCMap(HashMap<Integer, Pair<Resources,Integer>> LC, ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed){
+        for(Integer i : LC.keySet()){
+            boolean played = false;
+            for(Triplet<Resources,Integer,Integer> T : leaderCardsPlayed){
+                if(T.get_1().equals(LC.get(i).getKey()) && T.get_2().equals(LC.get(i).getValue())){
+                    played = true;
+                }
+            }
+            LCMap.put(i+1,new Triplet<>(LC.get(i).getKey(),LC.get(i).getValue(),played));
         }
     }
 
@@ -153,6 +156,85 @@ public class GameScreenView extends ViewObservable {
         addFaithTrack(board.getFaithMarker(), board.getPopeFavor());
         addLeaderCards(board.getLeaderCardsPlayed(),board.getLeaderCardsHand());
         addHand(board.getHand());
+        addSlots(board.getSlot_1(),board.getSlot_2(),board.getSlot_3());
+    }
+
+    public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1,ArrayList<Pair<Colours,Integer>> Slot_2,ArrayList<Pair<Colours,Integer>> Slot_3){
+        Slot_1.add(new Pair<>(Colours.Purple,1));
+        Slot_1.add(new Pair<>(Colours.Purple,6));
+        Slot_1.add(new Pair<>(Colours.Green,12));
+        Slot_2.add(new Pair<>(Colours.Green,1));
+        Slot_3.add(new Pair<>(Colours.Blue,4));
+        Slot_3.add(new Pair<>(Colours.Yellow,7));
+        for(Node n : Slots.getChildren()){
+            ((StackPane)n).getChildren().clear();
+        }
+        int j = 0;
+        int b = 15;
+        for (Pair<Colours, Integer> P : Slot_1) {
+            String path = "/images/developmentCards/" + P.getKey().ColourToString() + P.getValue() + ".png";
+            StackPane SP = null;
+            for (Node n : Slots.getChildren()) {
+                if (GridPane.getColumnIndex(n) == 0) {
+                    SP = (StackPane) n;
+                }
+            }
+            ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+            DCView.setFitWidth(109.0);
+            DCView.setPreserveRatio(true);
+            DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+            DCView.setTranslateY(b -(25.0)*j);
+            DCView.setTranslateX(-5);
+            if(j == Slot_1.size()-1){
+                DCView.setId("P_S_1");
+            }
+            SP.getChildren().add(DCView);
+            j++;
+        }
+        j = 0;
+        b = 15;
+        for (Pair<Colours, Integer> P : Slot_2) {
+            String path = "/images/developmentCards/" + P.getKey().ColourToString() + P.getValue() + ".png";
+            StackPane SP = null;
+            for (Node n : Slots.getChildren()) {
+                if (GridPane.getColumnIndex(n) == 1) {
+                    SP = (StackPane) n;
+                }
+            }
+            ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+            DCView.setFitWidth(109.0);
+            DCView.setPreserveRatio(true);
+            DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+            DCView.setTranslateY(b -(25.0)*j);
+            DCView.setTranslateX(-2);
+            SP.getChildren().add(DCView);
+            if(j == Slot_2.size()-1){
+                DCView.setId("P_S_2");
+            }
+            j++;
+        }
+        j = 0;
+        b = 15;
+        for (Pair<Colours, Integer> P : Slot_3) {
+            String path = "/images/developmentCards/" + P.getKey().ColourToString() + P.getValue() + ".png";
+            StackPane SP = null;
+            for (Node n : Slots.getChildren()) {
+                if (GridPane.getColumnIndex(n) == 2) {
+                    SP = (StackPane) n;
+                }
+            }
+            ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+            DCView.setFitWidth(109.0);
+            DCView.setPreserveRatio(true);
+            DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+            DCView.setTranslateY(b -(25.0)*j);
+            DCView.setTranslateX(5);
+            SP.getChildren().add(DCView);
+            if(j == Slot_3.size()-1){
+                DCView.setId("P_S_3");
+            }
+            j++;
+        }
     }
 
     public void addMarbles(Marbles[][] market, Marbles remainingMarble){
@@ -174,19 +256,37 @@ public class GameScreenView extends ViewObservable {
         rm.setImage(new Image(GUI.class.getResource(path).toString()));
     }
 
-    public void addDevelopment(HashMap<Pair<Colours, Integer>, Integer> DCM){
-        CardMarket.getChildren().clear();
+    public void addDevelopment(HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> DCM){
+        for(Node n : CardMarket.getChildren()){
+            ((StackPane) n).getChildren().clear();
+        }
 
         for(Colours C : Colours.values()){
             for(int i=3;i>=1;i--){
                 Pair<Colours,Integer> P = new Pair<>(C,i);
-                String path = "/images/developmentCards/" + P.getKey().ColourToString() + DCM.get(new Pair<>(P)) +".png";
+                String path = "/images/developmentCards/" + P.getKey().ColourToString() + DCM.get(P).getKey() +".png";
+                StackPane SP = null;
+                for(Node n : CardMarket.getChildren()){
+                    if(GridPane.getColumnIndex(n) == P.getKey().ColourToColumn() && GridPane.getRowIndex(n) == 3-P.getValue()){
+                        SP = (StackPane) n;
+                    }
+                }
+                for(int j = 0; j < DCM.get(P).getValue()-1; j++){
+                    ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                    DCView.setFitWidth(140.0);
+                    DCView.setPreserveRatio(true);
+                    DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+                    DCView.setTranslateY((-10.0)*j);
+                    SP.getChildren().add(DCView);
+                }
+
                 ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
                 DCView.setFitWidth(140.0);
                 DCView.setPreserveRatio(true);
                 DCView.setId(P.getKey().ColourToColumn()+"_"+P.getValue().toString());
                 DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-                CardMarket.add(DCView,P.getKey().ColourToColumn(),3-P.getValue());
+                SP.getChildren().add(DCView);
+                DCView.setTranslateY((-10.0)*(DCM.get(P).getValue()-1));
             }
         }
     }
@@ -312,7 +412,6 @@ public class GameScreenView extends ViewObservable {
 
     //TODO: mettere un pane con imageView sulle leader card; viene mostrata una risorsa solo se fa parte delle leadercardsPlayed
     public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed, ArrayList<Triplet<Resources,Integer,Integer>> LCHand){
-
         for(Triplet<Resources,Integer,Integer> T : LCPlayed){
             String path = "/images/leaderCards/" + T.get_1().getID() + T.get_2() + ".png";
             ImageView LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
@@ -409,7 +508,7 @@ public class GameScreenView extends ViewObservable {
                 if(LCMap.containsKey(i) && !LCMap.get(i).get_3()) grayNotPlayedLeaderCard(false,i-1,IM);
             }
             grayProduction(false);
-            //graySlots(false);
+            graySlots(false);
         }
     }
 
@@ -502,14 +601,17 @@ public class GameScreenView extends ViewObservable {
     public void grayCardMarket(boolean gray){
         if(gray){
             for(Node n : CardMarket.getChildren()){
-                n.getStyleClass().remove("selectable");
-                n.setOnMouseClicked(null);
+                ((StackPane) n).getChildren().get(((StackPane) n).getChildren().size()-1).getStyleClass().remove("selectable");
+                ((StackPane) n).getChildren().get(((StackPane) n).getChildren().size()-1).setOnMouseClicked(null);
             }
         }
         else{
             for(Node n : CardMarket.getChildren()){
-                if(!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
-                n.setOnMouseClicked(e -> { handleSelect((ImageView) n); });
+                if(!((StackPane) n).getChildren().get(((StackPane) n).getChildren().size()-1).getStyleClass().contains("selectable"))
+                    ((StackPane) n).getChildren().get(((StackPane) n).getChildren().size()-1).getStyleClass().add("selectable");
+                ((StackPane) n).getChildren().get(((StackPane) n).getChildren().size()-1).setOnMouseClicked(e -> {
+                    handleSelect((ImageView) ((StackPane) n).getChildren().get(((StackPane) n).getChildren().size()-1));
+                });
             }
         }
     }
@@ -701,24 +803,30 @@ public class GameScreenView extends ViewObservable {
 
     public void grayProduction(boolean gray){
         if(gray){
-            if(P_B.getStyleClass().contains("selectable")) P_B.getStyleClass().remove("selectable");
+            P_B.getStyleClass().remove("selectable");
             P_B.setOnMouseClicked(null);
         }else{
-            P_B.getStyleClass().add("selectable");
-            //P_B.setOnMouseClicked(null);
+            if(P_B.getStyleClass().contains("selectable")) P_B.getStyleClass().add("selectable");
+            P_B.setOnMouseClicked(e -> handleSelect(P_B));
         }
     }
 
     public void graySlots(boolean gray){
         if(gray){
             for(Node n : Slots.getChildren()) {
-                n.getStyleClass().remove("selectable");
-                n.setOnMouseClicked(null);
+                for(Node d : ((StackPane) n).getChildren()) {
+                    d.getStyleClass().remove("selectable");
+                    d.setOnMouseClicked(null);
+                }
             }
         }else{
             for(Node n : Slots.getChildren()) {
-                if(n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
-                n.setOnMouseClicked(e -> { handleSelect((ImageView) n); });
+                for(Node d : ((StackPane) n).getChildren()) {
+                    if(!(d.getId()==null) && d.getId().startsWith("P_S_")) {
+                        if(!d.getStyleClass().contains("selectable")) d.getStyleClass().add("selectable");
+                        d.setOnMouseClicked(e -> handleSelect((ImageView) d));
+                    }
+                }
             }
         }
     }
@@ -796,6 +904,7 @@ public class GameScreenView extends ViewObservable {
             confirmAction.setDisable(true);
             grayOut(false);
             if(actionDone) grayOutActionDone();
+            grayEmptyWarehouse(true);
         }
 
     }
@@ -1118,7 +1227,7 @@ public class GameScreenView extends ViewObservable {
 
     private void unselect() {
         String[] split = selected.getId().split("_");
-        if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
+        if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3") || selected.getId().startsWith("P_S")){
             selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
         }
         else selected.setEffect(null);

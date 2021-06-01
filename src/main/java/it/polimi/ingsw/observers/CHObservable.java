@@ -39,6 +39,12 @@ public class CHObservable {
         }
     }
 
+    public void notifyReconnection(){
+        for(CH_ServerObserver obs : serverObservers){
+            obs.updateServerReconnection(this);
+        }
+    }
+
     public void notifyDisconnected(){
         for(CHObserver obs : observers){
             obs.updateDisconnected(this);
@@ -93,9 +99,9 @@ public class CHObservable {
         }
     }
 
-    public void notifyTurnDone(TurnDoneMessage message){
+    public void notifyTurnDone(){
         for(CHObserver obs : observers){
-            obs.updateTurnDone(this,message);
+            obs.updateTurnDone(this);
         }
     }
 }

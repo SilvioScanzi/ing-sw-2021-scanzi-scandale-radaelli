@@ -12,5 +12,5 @@ public interface CHObserver {
     void updateMoveResources(CHObservable obs, MoveResourcesMessage message);
     void updatePlayLeaderCard(CHObservable obs, PlayLeaderCardMessage message);
     void updateDiscardLeaderCard(CHObservable obs, DiscardLeaderCardMessage message);
-    void updateTurnDone(CHObservable obs, TurnDoneMessage message);
+    void updateTurnDone(CHObservable obs);
 }

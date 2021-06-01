@@ -16,7 +16,6 @@ public class ClientBoard {
     private final ArrayList<Pair<Colours, Integer>> slot_2;
     private final ArrayList<Pair<Colours, Integer>> slot_3;
     private HashMap<Resources,Integer> strongBox;
-    private final HashMap<Integer,Pair<Integer,Resources>> LCMap = new HashMap<>();
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsHand;
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed;
     private ArrayList<Resources> hand;
@@ -96,6 +95,18 @@ public class ClientBoard {
             case 3 -> slot_3.get(slot_3.size()-1).getValue();
             default -> -1;
         };
+    }
+
+    public ArrayList<Pair<Colours, Integer>> getSlot_1(){
+        return slot_1;
+    }
+
+    public ArrayList<Pair<Colours, Integer>> getSlot_2(){
+        return slot_2;
+    }
+
+    public ArrayList<Pair<Colours, Integer>> getSlot_3(){
+        return slot_3;
     }
 
     public Pair<Colours,Integer> getSlots(int i) throws IndexOutOfBoundsException {

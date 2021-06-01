@@ -94,4 +94,10 @@ public class ViewObservable {
             obs.updateAddress(IP,port);
         }
     }
+
+    public void notifyReconnection(boolean r){
+        for(ViewObserver obs : observers){
+            obs.updateReconnection(r);
+        }
+    }
 }

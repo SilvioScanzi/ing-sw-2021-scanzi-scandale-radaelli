@@ -18,11 +18,11 @@ public class ModelObservable {
         }
     }
 
-    /*public void notifyResourceMarket(ResourceMarket m){
-        for(ModelObserver obs : observers){
-            obs.updateMarket(m);
+    public void removeObserver(ModelObserver observer){
+        synchronized (observers) {
+            observers.remove(observer);
         }
-    }*/
+    }
 
     public void notifyResourceMarket(Marbles[][] grid, Marbles remainingMarble){
         for(ModelObserver obs : observers){

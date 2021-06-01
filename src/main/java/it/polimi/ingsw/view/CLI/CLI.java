@@ -570,7 +570,7 @@ public class CLI extends ViewObservable implements View {
     }
 
     @Override
-    public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
+    public void printCardMarket(HashMap<Pair<Colours, Integer>,Pair<Integer,Integer>> CM) {
         System.out.println("MERCATO DELLE CARTE");
         DevelopmentCardParser DCP = new DevelopmentCardParser();
         System.out.println(DCP.findMarketByID(CM,color));

@@ -84,7 +84,7 @@ public class DevelopmentCardParser {
         return tmp;
     }
 
-    public String findMarketByID(HashMap<Pair<Colours, Integer>, Integer> CM, boolean color){
+    public String findMarketByID(HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> CM, boolean color){
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
         //Iterating on the nodelist previously got, single node for every DCCard
         ArrayList<Integer> lvl = new ArrayList<>();
@@ -109,7 +109,7 @@ public class DevelopmentCardParser {
                         if (developmentcardnode.getNodeType() == Node.ELEMENT_NODE) {
                             Element developmentcardElement = (Element) developmentcardnode;
                             int victorypoints = Integer.parseInt(developmentcardElement.getElementsByTagName("victorypoints").item(0).getTextContent());
-                            if (victorypoints == CM.get(P)) {
+                            if (victorypoints == CM.get(P).getKey()) {
                                 Colours colour = Colours.valueOf(developmentcardElement.getElementsByTagName("colour").item(0).getTextContent());
                                 if (colour.equals(c)) {
 
@@ -191,7 +191,7 @@ public class DevelopmentCardParser {
                 }
                 else{
                     tmp = tmp + asciiColor + "║" + asciiReset + " PUNTI VITTORIA " + CM.get(new Pair<>(c,i));
-                    if(CM.get(new Pair<>(c,i))<10) tmp = tmp + " ";
+                    if(CM.get(new Pair<>(c,i)).getKey()<10) tmp = tmp + " ";
                     tmp = tmp + asciiColor + " ║" + asciiReset;
                 }
                 tmp = tmp + "       ";

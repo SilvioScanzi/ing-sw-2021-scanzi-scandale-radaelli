@@ -21,7 +21,7 @@ public interface View {
     void printResourceHand(ArrayList<Resources> H, String nickname);
     void printAT(ActionToken AT);
     void printBlackCross(int BC);
-    void printCardMarket(HashMap<Pair<Colours,Integer>, Integer> CM);
+    void printCardMarket(HashMap<Pair<Colours,Integer>, Pair<Integer,Integer>> CM);
     void printFaithTrack(int FM, boolean[] PF, String nickname);
     void printSlot(int I, Colours C, int VP, String nickname);
     void printStrongBox(HashMap<Resources,Integer> SB, String nickname);

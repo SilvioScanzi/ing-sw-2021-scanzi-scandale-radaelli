@@ -76,11 +76,11 @@ public class SetupScreenView extends ViewObservable {
         rm.setImage(new Image(GUI.class.getResource(path).toString()));
     }
 
-    public void addDevelopment(HashMap<Pair<Colours, Integer>, Integer> DCM){
+    public void addDevelopment(HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> DCM){
         for(Colours C : Colours.values()){
             for(int i=3;i>=1;i--){
                 Pair<Colours,Integer> P = new Pair<>(C,i);
-                String path = "/images/developmentCards/" + P.getKey().ColourToString() + DCM.get(new Pair<>(P)) +".png";
+                String path = "/images/developmentCards/" + P.getKey().ColourToString() + DCM.get(P).getKey() +".png";
                 ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
                 DCView.getStyleClass().add("physical");
                 DCView.setFitWidth(175.0);

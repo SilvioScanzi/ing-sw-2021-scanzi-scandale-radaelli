@@ -182,7 +182,7 @@ public class MoveActionTest {
         );
     }
 
-    @Test
+    /*@Test
     @DisplayName("Ensure exception is thrown when resources are left in hand")
     void testResourcesLeftInHand(){
         game = new Game(0);
@@ -204,7 +204,7 @@ public class MoveActionTest {
 
         assertThrows(Exception.class,()-> game.moveResources(0,choice));
         assert(playerBoard.getHand().size()==1 && playerBoard.getHand().get(0).equals(Resources.Stones));
-    }
+    }*/
 
     @Test
     @DisplayName("Ensure discard remaining resources is correct")

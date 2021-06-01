@@ -12,8 +12,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 public class Server implements CH_ServerObserver, GameHandlerObserver {
@@ -139,9 +137,9 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
             if ((gameHandlerMap.containsKey(S) && gameHandlerMap.get(S).getValue()) || currPlayers.contains(S)) {
                 ((ClientHandler) obs).sendStandardMessage(StandardMessages.nicknameAlreadyInUse);
             } else if (gameHandlerMap.containsKey(S)) {
-                gameHandlerMap.get(S).setValue(true);
                 CH.setNickname(S);
-                gameHandlerMap.get(S).getKey().addPlayer(CH);
+                CH.setState(ClientHandler.ClientHandlerState.reconnecting);
+                CH.sendStandardMessage(StandardMessages.reconnection);
                 System.out.println("[SERVER] Client " + S + " is trying to reconnect");
             } else {
                 System.out.println("[SERVER] Client " + S + " is ready to play");
@@ -152,7 +150,7 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
                     startNewGameHandler(CH);
                 }
                 //if there is already a game which is ready
-                else if(gameHandler != null && gameHandler.getAddedPlayers()< gameHandler.getPlayerNumber()){
+                else if(gameHandler != null && gameHandler.getAddedPlayers() < gameHandler.getPlayerNumber()){
                     currentGameHandler.addPlayer(CH);
                     gameHandlerMap.put(CH.getNickname(), new Pair<>(currentGameHandler, true));
                     clientHandlers.remove(CH);
@@ -194,5 +192,13 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         synchronized (Lock) {
             gameHandlerRequired = false;
         }
+    }
+
+    @Override
+    public void updateServerReconnection(CHObservable obs) {
+        ClientHandler CH = (ClientHandler) obs;
+        String S = CH.getNickname();
+        gameHandlerMap.get(S).setValue(true);
+        gameHandlerMap.get(S).getKey().addPlayer(CH);
     }
 }

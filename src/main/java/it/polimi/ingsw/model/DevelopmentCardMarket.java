@@ -58,6 +58,9 @@ public class DevelopmentCardMarket {
         catch(IOException | SAXException e){e.printStackTrace();}
     }
 
+    public int cardsInStack(Colours colour, int level){
+        return cardMarket.get(new Pair<>(colour,level)).size();
+    }
 
     //Peek doesn't remove the card from the relative deck, it's used to check the cost of the card
     public DevelopmentCard peekFirstCard(Colours colour, int level) throws EmptyException, IndexOutOfBoundsException {

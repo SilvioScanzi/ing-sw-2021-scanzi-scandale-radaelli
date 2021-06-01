@@ -73,6 +73,18 @@ public class Game extends ModelObservable {
         return developmentCardMarket;
     }
 
+    public HashMap<Integer,Pair<Resources,Integer>> getLCMap(String nickname){
+        HashMap<Integer,Pair<Resources,Integer>> tmp = new HashMap<>();
+        Board playerBoard = getBoard(nickname);
+        for(Integer i : playerBoard.getLeaderCardsHand().keySet()){
+            tmp.put(i,new Pair<>(playerBoard.getLeaderCardsHand().get(i).getAbility().getResType(),playerBoard.getLeaderCardsHand().get(i).getVictoryPoints()));
+        }
+        for(Integer i : playerBoard.getLeaderCardsPlayed().keySet()){
+            tmp.put(i,new Pair<>(playerBoard.getLeaderCardsPlayed().get(i).getAbility().getResType(),playerBoard.getLeaderCardsPlayed().get(i).getVictoryPoints()));
+        }
+        return tmp;
+    }
+
 
     //Methods for the game setup
 
@@ -87,6 +99,9 @@ public class Game extends ModelObservable {
         notifyResourceMarket(resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
         for(int i = 0; i< playerNumber; i++){
             notifyLCHand(players.get(i).getLeaderCardsHand(),players.get(i).getNickname());
+        }
+        if(playerNumber == 1){
+            notifyLorenzo(lorenzo);
         }
     }
 
@@ -210,6 +225,8 @@ public class Game extends ModelObservable {
         notifyActionDone(playerBoard.getNickname());
 
         playerBoard.setActionDone(true);
+        playerBoard.setLastActionMarket(true);
+        playerBoard.setMoveNeeded(true);
     }
 
     //Converts Marbles to resources
@@ -263,6 +280,7 @@ public class Game extends ModelObservable {
 
         playerBoard.getHand().clear();
         notifyHand(new ArrayList<>(), playerBoard.getNickname());
+        playerBoard.setMoveNeeded(false);
     }
 
     //Player selects colour and level; method checks for costs and adds to the board the development card
@@ -467,7 +485,7 @@ public class Game extends ModelObservable {
     //1-3 for the depots, 4-5 for the Leader Cards (Extra slot only), 0 to the hand which is used to make the swaps
     //In the end, if there are resources left in the hand, there needs to be a check from the caller of this method.
     public synchronized void moveResources(int player, ArrayList<Triplet<String,Integer,Integer>> userChoice) throws BadRequestException, LeaderCardNotCompatibleException,
-            ResourceErrorException, InvalidPlacementException, IllegalArgumentException, IncompatibleResourceException, ResourcesLeftInHandException{
+            ResourceErrorException, InvalidPlacementException, IllegalArgumentException, IncompatibleResourceException{
         Board playerBoard = players.get(player);
         Warehouse wr = playerBoard.getWarehouse().clone();
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
@@ -572,8 +590,9 @@ public class Game extends ModelObservable {
 
         notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
         notifyHand(playerBoard.getHand(), playerBoard.getNickname());
-
-        if(tmpHand.size()>0) throw new ResourcesLeftInHandException("There are still some resources in the hand");
+        if(tmpHand.size() == 0) playerBoard.setMoveNeeded(false);
+        else if(playerBoard.getLastActionMarket()) discardRemainingResources(player);
+        else if(tmpHand.size()>0) playerBoard.setMoveNeeded(true);
     }
 
     public synchronized void discardLeaderCard(int player, int leaderCardIndex) throws IndexOutOfBoundsException{
@@ -677,26 +696,36 @@ public class Game extends ModelObservable {
     public void activatedToken(){
         ActionToken AT = actionStack.draw();
         notifyActionToken(AT);
-        switch(AT){
-            case Advance2: {
-                for(int i=0;i<2;i++){
+        switch (AT) {
+            case Advance2 -> {
+                for (int i = 0; i < 2; i++) {
                     lorenzo.advanceBlackCross();
-                    if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
+                    if (lorenzo.checkPopeFavor() != -1) popeEvent(lorenzo.checkPopeFavor());
                 }
                 notifyLorenzo(lorenzo);
-                break;
             }
-            case AdvanceAndRefresh: {
+            case AdvanceAndRefresh -> {
                 lorenzo.advanceBlackCross();
-                if(lorenzo.checkPopeFavor()!=-1) popeEvent(lorenzo.checkPopeFavor());
+                if (lorenzo.checkPopeFavor() != -1) popeEvent(lorenzo.checkPopeFavor());
                 actionStack = new ActionStack();
                 notifyLorenzo(lorenzo);
-                break;
             }
-            case DeleteBlue: developmentCardMarket.deleteCards(Colours.Blue); notifyDCMarket(developmentCardMarket); break;
-            case DeleteGreen: developmentCardMarket.deleteCards(Colours.Green); notifyDCMarket(developmentCardMarket); break;
-            case DeletePurple: developmentCardMarket.deleteCards(Colours.Purple); notifyDCMarket(developmentCardMarket); break;
-            case DeleteYellow: developmentCardMarket.deleteCards(Colours.Yellow); notifyDCMarket(developmentCardMarket); break;
+            case DeleteBlue -> {
+                developmentCardMarket.deleteCards(Colours.Blue);
+                notifyDCMarket(developmentCardMarket);
+            }
+            case DeleteGreen -> {
+                developmentCardMarket.deleteCards(Colours.Green);
+                notifyDCMarket(developmentCardMarket);
+            }
+            case DeletePurple -> {
+                developmentCardMarket.deleteCards(Colours.Purple);
+                notifyDCMarket(developmentCardMarket);
+            }
+            case DeleteYellow -> {
+                developmentCardMarket.deleteCards(Colours.Yellow);
+                notifyDCMarket(developmentCardMarket);
+            }
         }
     }
 

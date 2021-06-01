@@ -17,6 +17,8 @@ public class Board{
     private final HashMap<Integer, LeaderCard> leaderCardsPlayed;
     private ArrayList<Resources> hand;
     private boolean actionDone;
+    private boolean lastActionMarket;
+    private boolean moveNeeded;
     private int victoryPoints;
 
     public Board(HashMap<Integer,LeaderCard> leaderCards, String nickname) {
@@ -36,6 +38,14 @@ public class Board{
     }
 
     //getters
+    public boolean getMoveNeeded() {
+        return moveNeeded;
+    }
+
+    public boolean getLastActionMarket() {
+        return lastActionMarket;
+    }
+
     public String getNickname() {
         return nickname;
     }
@@ -101,6 +111,15 @@ public class Board{
     }
 
     //setters
+
+    public void setMoveNeeded(boolean moveNeeded) {
+        this.moveNeeded = moveNeeded;
+    }
+
+    public void setLastActionMarket(boolean lastActionMarket) {
+        this.lastActionMarket = lastActionMarket;
+    }
+
     public void setWarehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
     }

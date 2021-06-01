@@ -83,6 +83,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     view.setState(ViewState.disconnected);
                     closeConnection();
                 }
+                case reconnection -> {
+                    view.setState(ViewState.reconnecting);
+                }
             }
 
             view.printStandardMessage((StandardMessages) message);
@@ -96,6 +99,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
             if(message instanceof NicknameMapMessage){
                 clientModel = new ClientModel(((NicknameMapMessage) message).getPlayerMap(), ((NicknameMapMessage) message).getMyNickname(), ((NicknameMapMessage) message).getInkwell());
                 view.printNames(((NicknameMapMessage) message).getPlayerMap(), ((NicknameMapMessage) message).getInkwell());
+            }
+
+            else if(message instanceof LCMapMessage){
+                clientModel.setLCMap(((LCMapMessage) message).getLCMap());
             }
 
             //Solo play
@@ -430,5 +437,11 @@ public class NetworkHandler implements Runnable, ViewObserver {
             if(cb==null) view.print("Il giocatore selezionato non esiste");
             else view.printBoard(cb);
         }
+    }
+
+    @Override
+    public void updateReconnection(boolean r){
+        if(r) sendObject(new ReconnectMessage("Y"));
+        else sendObject(new ReconnectMessage("N"));
     }
 }

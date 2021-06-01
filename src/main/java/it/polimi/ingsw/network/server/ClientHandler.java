@@ -16,13 +16,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class ClientHandler extends CHObservable implements Runnable, ModelObserver {
-    public enum ClientHandlerState{nickname, playerNumber, gameNotCreated, lobbyNotReady, wait, discardLeaderCard, finishingSetup, myTurn, moveNeeded, actionDone, notMyTurn, endGame, disconnected}
+    public enum ClientHandlerState{reconnecting, nickname, playerNumber, gameNotCreated, lobbyNotReady, wait, discardLeaderCard, finishingSetup, myTurn, notMyTurn, endGame, disconnected}
     private ClientHandlerState state = ClientHandlerState.nickname;
     private String nickname = null;
     private final Socket socket;
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
-    private boolean lastActionMarket = false;
     private Timer t;
 
     public ClientHandler(Socket socket) {
@@ -53,7 +52,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         int delay;
         if (state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)) {
             delay = 120000;
-        } else if(state.equals(ClientHandlerState.myTurn) || state.equals(ClientHandlerState.moveNeeded) || state.equals(ClientHandlerState.actionDone)) delay = 600000;
+        } else if(state.equals(ClientHandlerState.myTurn)) delay = 600000;
         else delay = 0;
 
         if(t != null){
@@ -72,16 +71,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                 }
             }, delay);
         }
-
         this.state = state;
-    }
-
-    public boolean getLastActionMarket() {
-        return lastActionMarket;
-    }
-
-    public void setLastActionMarket(boolean lastActionMarket) {
-        this.lastActionMarket = lastActionMarket;
     }
 
     public String getNickname(){
@@ -118,8 +108,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     t.purge();
                     t = null;
                 }
-                else if(state.equals(ClientHandlerState.myTurn) || state.equals(ClientHandlerState.moveNeeded) ||
-                        state.equals(ClientHandlerState.actionDone)){
+                else if(state.equals(ClientHandlerState.myTurn)){
                     if(t != null){
                         t.cancel();
                         t.purge();
@@ -204,28 +193,25 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     notifyPlayLeaderCard((PlayLeaderCardMessage) message);
                 else if (message instanceof DiscardLeaderCardMessage)
                     notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
-                else sendStandardMessage(StandardMessages.wrongObject);
-            }
-            case moveNeeded -> {
-                if (!(message instanceof MoveResourcesMessage)) {
-                    sendStandardMessage(StandardMessages.moveActionNeeded);
-                } else {
-                    notifyMoveResources((MoveResourcesMessage) message);
-                }
-            }
-            case actionDone -> {
-                if (message instanceof MoveResourcesMessage) notifyMoveResources((MoveResourcesMessage) message);
-                else if (message instanceof PlayLeaderCardMessage)
-                    notifyPlayLeaderCard((PlayLeaderCardMessage) message);
-                else if (message instanceof DiscardLeaderCardMessage)
-                    notifyDiscardLeaderCard((DiscardLeaderCardMessage) message);
-                else if (message instanceof TurnDoneMessage) notifyTurnDone((TurnDoneMessage) message);
+                else if (message instanceof TurnDoneMessage)
+                    notifyTurnDone();
                 else sendStandardMessage(StandardMessages.wrongObject);
             }
             case notMyTurn -> sendStandardMessage(StandardMessages.notYourTurn);
             case endGame -> sendStandardMessage(StandardMessages.endGame);
+            case reconnecting -> {
+                if(message instanceof ReconnectMessage && ((ReconnectMessage) message).getNickname().equals("Y")) notifyReconnection();
+                else {
+                    state = ClientHandlerState.nickname;
+                    sendStandardMessage(StandardMessages.chooseNickName);
+                }
+            }
         }
 
+    }
+
+    public void printAlive(){
+        System.out.println(!socket.isClosed());
     }
 
     public void setNickname(String nickname){

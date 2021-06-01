@@ -7,4 +7,5 @@ public interface CH_ServerObserver {
     void updateServerDisconnection(CHObservable obs);
     void updateServerPlayerNumber(CHObservable obs, ChoosePlayerNumberMessage message);
     void updateServerNickname(CHObservable obs, NicknameMessage message);
+    void updateServerReconnection(CHObservable obs);
 }

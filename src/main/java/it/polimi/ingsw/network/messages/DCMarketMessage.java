@@ -10,8 +10,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 public class DCMarketMessage extends Message implements Serializable {
-    private final HashMap<Pair<Colours,Integer>, Integer> market;
-    //Hashmap: Pair(color, level), victory points
+    private final HashMap<Pair<Colours,Integer>, Pair<Integer,Integer>> market;
+    //Hashmap: Pair(color, level), Pair(victory points,number of cards)
 
     public DCMarketMessage(DevelopmentCardMarket DM){
         market = new HashMap<>();
@@ -20,13 +20,15 @@ public class DCMarketMessage extends Message implements Serializable {
                 DevelopmentCard DC;
                 try{
                     DC = DM.peekFirstCard(C,L);
-                    market.put(new Pair<>(C,L),DC.getVictoryPoints());
-                }catch(EmptyException e){}
+                    market.put(new Pair<>(C,L),new Pair<>(DC.getVictoryPoints(),DM.cardsInStack(C,L)));
+                }catch(EmptyException e){
+                    market.put(new Pair<>(C,L),new Pair<>(-1,0));
+                }
             }
         }
     }
 
-    public HashMap<Pair<Colours,Integer>, Integer> getMarket() {
+    public HashMap<Pair<Colours,Integer>, Pair<Integer,Integer>> getMarket() {
         return market;
     }
 }

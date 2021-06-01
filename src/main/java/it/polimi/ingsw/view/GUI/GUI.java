@@ -29,12 +29,13 @@ public class GUI extends Application implements View{
     private Scene currentScene;
     private Pane gameScreen;
     private FXMLLoader fxmlLoader;
-    private ConnectionScreenView connectionScreenController;
-    private NicknameScreenView nicknameScreenController;
-    private PlayerNumberScreenView playerNumberScreenController;
-    private SetupScreenView setupScreenController;
-    private WaitScreenView waitScreenController;
-    private GameScreenView gameScreenController = null;
+    private ConnectionScreenView connectionScreenView;
+    private ReconnectScreenView reconnectScreenView;
+    private NicknameScreenView nicknameScreenView;
+    private PlayerNumberScreenView playerNumberScreenView;
+    private SetupScreenView ssetupScreenView;
+    private WaitScreenView waitScreenView;
+    private GameScreenView gameScreenView = null;
 
     private NetworkHandler NH;
 
@@ -63,8 +64,8 @@ public class GUI extends Application implements View{
             Pane root = fxmlLoader.load();
             currentScene = new Scene(root);
             primaryStage.setTitle("Maestri del rinascimento - Launcher");
-            connectionScreenController = fxmlLoader.getController();
-            connectionScreenController.addObserver(NH);
+            connectionScreenView = fxmlLoader.getController();
+            connectionScreenView.addObserver(NH);
             primaryStage.setScene(currentScene);
             primaryStage.show();
             primaryStage.setResizable(false);
@@ -90,8 +91,8 @@ public class GUI extends Application implements View{
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
-                    nicknameScreenController = fxmlLoader.getController();
-                    nicknameScreenController.addObserver(NH);
+                    nicknameScreenView = fxmlLoader.getController();
+                    nicknameScreenView.addObserver(NH);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -102,8 +103,20 @@ public class GUI extends Application implements View{
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
-                    playerNumberScreenController = fxmlLoader.getController();
-                    playerNumberScreenController.addObserver(NH);
+                    playerNumberScreenView = fxmlLoader.getController();
+                    playerNumberScreenView.addObserver(NH);
+                }catch(IOException e){e.printStackTrace();}
+            });
+        }
+        else if(state.equals(ViewState.reconnecting)){
+            Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/ReconnectScreen.fxml"));
+                try {
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
+                    reconnectScreenView = fxmlLoader.getController();
+                    reconnectScreenView.addObserver(NH);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -114,8 +127,8 @@ public class GUI extends Application implements View{
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
-                    waitScreenController = fxmlLoader.getController();
-                    waitScreenController.changeMessage("Resta in attesa che venga creata una partita");
+                    waitScreenView = fxmlLoader.getController();
+                    waitScreenView.changeMessage("Resta in attesa che venga creata una partita");
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -129,8 +142,8 @@ public class GUI extends Application implements View{
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
-                    waitScreenController = fxmlLoader.getController();
-                    waitScreenController.changeMessage("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!");
+                    waitScreenView = fxmlLoader.getController();
+                    waitScreenView.changeMessage("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!");
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -144,8 +157,8 @@ public class GUI extends Application implements View{
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
-                    waitScreenController = fxmlLoader.getController();
-                    waitScreenController.changeMessage("Gli altri giocatori stanno compiendo delle scelte, resta in attesa");
+                    waitScreenView = fxmlLoader.getController();
+                    waitScreenView.changeMessage("Gli altri giocatori stanno compiendo delle scelte, resta in attesa");
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -161,13 +174,13 @@ public class GUI extends Application implements View{
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
                     gameScreen = root;
-                    setupScreenController = fxmlLoader.getController();
-                    setupScreenController.addObserver(NH);
-                    setupScreenController.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
-                    setupScreenController.addDevelopment(NH.getClientModel().getCardMarket());
-                    setupScreenController.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                    setupScreenController.setMessage("Scegli le due carte Leader da scartare");
-                    currentScene.setOnKeyPressed(e -> setupScreenController.handleKeyPressed(e));
+                    ssetupScreenView = fxmlLoader.getController();
+                    ssetupScreenView.addObserver(NH);
+                    ssetupScreenView.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
+                    ssetupScreenView.addDevelopment(NH.getClientModel().getCardMarket());
+                    ssetupScreenView.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                    ssetupScreenView.setMessage("Scegli le due carte Leader da scartare");
+                    currentScene.setOnKeyPressed(e -> ssetupScreenView.handleKeyPressed(e));
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -177,10 +190,10 @@ public class GUI extends Application implements View{
         else if(state.equals(ViewState.finishSetupOneResource) || state.equals(ViewState.finishSetupTwoResources)){
             Platform.runLater(() -> {
                 currentScene.setRoot(gameScreen);
-                if (state.equals(ViewState.finishSetupOneResource)) setupScreenController.addResources(1);
-                if (state.equals(ViewState.finishSetupTwoResources)) setupScreenController.addResources(2);
+                if (state.equals(ViewState.finishSetupOneResource)) ssetupScreenView.addResources(1);
+                if (state.equals(ViewState.finishSetupTwoResources)) ssetupScreenView.addResources(2);
                 String message = "Scegli " + ((state.equals(ViewState.finishSetupOneResource)) ? "una" : "la prima") + " risorsa da ottenere";
-                setupScreenController.setMessage(message);
+                ssetupScreenView.setMessage(message);
                 primaryStage.setResizable(true);
                 primaryStage.setMaximized(true);
                 scale(1600, 900);
@@ -189,24 +202,24 @@ public class GUI extends Application implements View{
         else if(state.equals(ViewState.myTurn) || state.equals(ViewState.notMyTurn)){
             Platform.runLater(() -> {
                 try {
-                    if(gameScreenController == null) {
+                    if(gameScreenView == null) {
                         fxmlLoader = new FXMLLoader();
                         fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
                         primaryStage.setTitle("Maestri del rinascimento - In gioco");
                         gameScreen = fxmlLoader.load();
                         currentScene.setOnKeyPressed(null);
-                        gameScreenController = fxmlLoader.getController();
-                        gameScreenController.addObserver(NH);
-                        gameScreenController.addLCMap(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                        gameScreenController.addMarbles(NH.getClientModel().getResourceMarket(), NH.getClientModel().getRemainingMarble());
-                        gameScreenController.addDevelopment(NH.getClientModel().getCardMarket());
-                        gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                        gameScreenView = fxmlLoader.getController();
+                        gameScreenView.addObserver(NH);
+                        gameScreenView.addLCMap(NH.getClientModel().getLCMap(), NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsPlayed());
+                        gameScreenView.addMarbles(NH.getClientModel().getResourceMarket(), NH.getClientModel().getRemainingMarble());
+                        gameScreenView.addDevelopment(NH.getClientModel().getCardMarket());
+                        gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                     }
 
                     currentScene.setRoot(gameScreen);
 
-                    if(state.equals(ViewState.myTurn)) gameScreenController.setActionDone(false);
-                    gameScreenController.grayOut(state.equals(ViewState.notMyTurn));
+                    if(state.equals(ViewState.myTurn)) gameScreenView.setActionDone(false);
+                    gameScreenView.grayOut(state.equals(ViewState.notMyTurn));
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -233,7 +246,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void print(String string) {
-
+        System.out.println(string);
     }
 
     @Override
@@ -244,13 +257,26 @@ public class GUI extends Application implements View{
     @Override
     public void printStandardMessage(StandardMessages message) {
         switch(message){
-            case nicknameAlreadyInUse -> Platform.runLater(() -> nicknameScreenController.setErrormsg("Il nickname scelto è già in uso"));
-            case unavailableConnection -> Platform.runLater(() -> connectionScreenController.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
-            case actionDone -> Platform.runLater(() -> gameScreenController.setActionDone(true));
+            case nicknameAlreadyInUse -> Platform.runLater(() -> nicknameScreenView.setErrormsg("Il nickname scelto è già in uso"));
+            case unavailableConnection -> Platform.runLater(() -> connectionScreenView.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
+            case actionDone -> Platform.runLater(() -> gameScreenView.setActionDone(true));
             case incompatibleResources -> Platform.runLater(() -> {
-                gameScreenController.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
-                gameScreenController.grayWarehouse(false);
-                gameScreenController.grayHand(false);
+                gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                gameScreenView.grayWarehouse(false);
+                gameScreenView.grayHand(false);
+            });
+            case waitForReconnection -> Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
+                try {
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
+                    waitScreenView = fxmlLoader.getController();
+                    waitScreenView.changeMessage("Resta in attesa che si riconnettano tutti gli altri giocatori");
+                    primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
+                    scale(1600,900);
+                }catch(IOException e){e.printStackTrace();}
             });
         }
     }
@@ -262,28 +288,28 @@ public class GUI extends Application implements View{
 
     @Override
     public void printResourceMarket(Marbles[][] a, Marbles b) {
-        if(gameScreenController!=null) {
-            Platform.runLater(() -> gameScreenController.addMarbles(a, b));
+        if(gameScreenView != null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addMarbles(a, b));
         }
     }
 
     @Override
     public void printLeaderCardHand(ArrayList<Triplet<Resources, Integer, Integer>> LC) {
-        if(gameScreenController!=null) {
-            Platform.runLater(() -> gameScreenController.addLeaderCards(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsPlayed(), LC));
+        if(gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addLeaderCards(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsPlayed(), LC));
         }
     }
 
     @Override
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
-        if(gameScreenController!=null) {
-            Platform.runLater(() -> {if((NH.getClientModel().getMyNickname().equals(nickname))) gameScreenController.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());});
+        if(gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> {if((NH.getClientModel().getMyNickname().equals(nickname))) gameScreenView.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());});
         }
     }
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) Platform.runLater(() -> gameScreenController.addHand(H));
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) Platform.runLater(() -> gameScreenView.addHand(H));
     }
 
     @Override
@@ -297,14 +323,14 @@ public class GUI extends Application implements View{
     }
 
     @Override
-    public void printCardMarket(HashMap<Pair<Colours, Integer>, Integer> CM) {
-        if(gameScreenController!=null) Platform.runLater(() -> gameScreenController.addDevelopment(CM));
+    public void printCardMarket(HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> CM) {
+        if(gameScreenView !=null&& !state.equals(ViewState.reconnecting)) Platform.runLater(() -> gameScreenView.addDevelopment(CM));
     }
 
     @Override
     public void printFaithTrack(int FM, boolean[] PF, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenController!=null) {
-            Platform.runLater(() -> gameScreenController.addFaithTrack(FM, PF));
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addFaithTrack(FM, PF));
         }
     }
 

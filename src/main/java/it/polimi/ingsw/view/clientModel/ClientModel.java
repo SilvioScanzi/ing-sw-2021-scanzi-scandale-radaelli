@@ -8,10 +8,11 @@ import java.util.HashMap;
 public class ClientModel {
     private final String myNickname;
     private final HashMap<String, ClientBoard> boards;
-    private HashMap<Pair<Colours,Integer>, Integer> cardMarket;
+    private HashMap<Pair<Colours,Integer>, Pair<Integer,Integer>> cardMarket;
     private Marbles[][] resourceMarket;
     private Marbles remainingMarble;
     private final int playerNumber;
+    private HashMap<Integer,Pair<Resources,Integer>> LCMap = new HashMap<>();
 
     public ClientModel(HashMap<String,Integer> playerMap, String myNickname, int inkwell){
         this.myNickname = myNickname;
@@ -36,7 +37,7 @@ public class ClientModel {
     }
 
     //setters
-    public void setCardMarket(HashMap<Pair<Colours, Integer>, Integer> cardMarket) {
+    public void setCardMarket(HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> cardMarket) {
         this.cardMarket = cardMarket;
     }
 
@@ -45,19 +46,16 @@ public class ClientModel {
         this.remainingMarble = remainingMarble;
     }
 
-    public void setResourceMarket(String[][] resourceMarket, String remainingMarble){
-        this.resourceMarket = new Marbles[3][4];
-        for(int i=0;i<3;i++){
-            for(int j=0;j<4;j++){
-                this.resourceMarket[i][j] = Marbles.getMarbleFromString(resourceMarket[i][j]);
-            }
-        }
-        this.remainingMarble = Marbles.getMarbleFromString(remainingMarble);
+    public void setLCMap(HashMap<Integer, Pair<Resources, Integer>> LCMap) {
+        this.LCMap = LCMap;
     }
 
     //getters
+    public HashMap<Integer, Pair<Resources, Integer>> getLCMap() {
+        return LCMap;
+    }
 
-    public HashMap<Pair<Colours, Integer>, Integer> getCardMarket() {
+    public HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> getCardMarket() {
         return cardMarket;
     }
 

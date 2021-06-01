@@ -9,7 +9,6 @@ import it.polimi.ingsw.observers.CHObservable;
 import it.polimi.ingsw.observers.CHObserver;
 import it.polimi.ingsw.observers.GameHandlerObservable;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Timer;
@@ -35,6 +34,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     private boolean endGame = false;
     private boolean started = false;
     private boolean demolished = false;
+    private boolean reconnect = false;
 
     public GameHandler(int playerNumber){
         this.playerNumber = playerNumber;
@@ -52,58 +52,83 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     }
 
     public void addPlayer(ClientHandler CH) {
-        if(!started){
+        if (!started) {
             //no need for synchronization because this first add is only done in one thread (lobbyManager)
             clients.add(CH);
-        }
-        else {
-            if(disconnectedPlayers.size() == playerNumber) {
-                t.cancel();
-            }
-
-            String name = CH.getNickname();
-
-            CH.setState(ClientHandler.ClientHandlerState.notMyTurn);
-
-            for (ClientHandler clientHandler : clients) {
-                if (!clientHandler.equals(CH) && !(disconnectedPlayers.containsKey(clientHandler.getNickname())))
-                    clientHandler.sendObject(new ReconnectMessage(CH.getNickname()));
-            }
-
-            //attaching observers
-            CH.addObserver(this);
-            game.addObserver(CH);
-
-            //sending game status to the reconnected player
-            synchronized (game){
-                CH.sendObject(new NicknameMapMessage(CH.getNickname(),nameMap, game.getInkwell()));
-                CH.sendObject(new ResourceMarketMessage(game.getMarket().getGrid(),game.getMarket().getRemainingMarble()));
-                CH.sendObject(new DCMarketMessage(game.getDevelopmentCardMarket()));
-                for(int i=0; i<playerNumber; i++){
-                    Board playerBoard = game.getBoard(i);
-                    CH.sendObject(new FaithTrackMessage(playerBoard.getFaithTrack(),playerBoard.getNickname()));
-                    CH.sendObject(new WarehouseMessage(playerBoard.getWarehouse(),playerBoard.getNickname()));
-                    CH.sendObject(new StrongboxMessage(playerBoard.getStrongbox(),playerBoard.getNickname()));
-                    try {
-                        CH.sendObject(new SlotMessage(playerBoard.getSlot(1).getFirstCard(), 1,playerBoard.getNickname()));
-                    }catch(EmptyException ignored){}
-                    try {
-                        CH.sendObject(new SlotMessage(playerBoard.getSlot(2).getFirstCard(), 2,playerBoard.getNickname()));
-                    }catch(EmptyException ignored){}
-                    try {
-                        CH.sendObject(new SlotMessage(playerBoard.getSlot(3).getFirstCard(), 3,playerBoard.getNickname()));
-                    }catch(EmptyException ignored){}
-                    CH.sendObject(new LeaderCardPlayedMessage(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname()));
-                }
-            }
-
+        } else if (reconnect && disconnectedPlayers.size() == 1) {
+            System.out.println(disconnectedPlayers);
             synchronized (clients) {
-                int n = disconnectedPlayers.get(name);
+                int n = disconnectedPlayers.get(CH.getNickname());
                 clients.set(n, CH);
-                clientMap.put(CH, new Pair<>(name, disconnectedPlayers.get(name)));
-                disconnectedPlayers.remove(name);
+                clientMap.put(CH, new Pair<>(CH.getNickname(), disconnectedPlayers.get(CH.getNickname())));
+                disconnectedPlayers.remove(CH.getNickname());
+                t.cancel();
+                t.purge();
+
+                for (ClientHandler c : clients) {
+                    reconnectCH(c);
+                }
+                reconnect = false;
+            }
+            getNextActivePlayer();
+        } else if (reconnect) {
+            System.out.println(disconnectedPlayers);
+            synchronized (clients) {
+                int n = disconnectedPlayers.get(CH.getNickname());
+                clients.set(n, CH);
+                clientMap.put(CH, new Pair<>(CH.getNickname(), disconnectedPlayers.get(CH.getNickname())));
+                disconnectedPlayers.remove(CH.getNickname());
+                CH.sendStandardMessage(StandardMessages.waitForReconnection);
+            }
+        } else {
+            synchronized (clients) {
+                for (ClientHandler clientHandler : clients) {
+                    if (!clientHandler.equals(CH) && !(disconnectedPlayers.containsKey(clientHandler.getNickname())))
+                        clientHandler.sendObject(new ReconnectMessage(CH.getNickname()));
+                }
+                int n = disconnectedPlayers.get(CH.getNickname());
+                clients.set(n, CH);
+                clientMap.put(CH, new Pair<>(CH.getNickname(), disconnectedPlayers.get(CH.getNickname())));
+                disconnectedPlayers.remove(CH.getNickname());
+                reconnectCH(CH);
+            }
+
+        }
+    }
+
+    public void reconnectCH(ClientHandler CH){
+        CH.setState(ClientHandler.ClientHandlerState.notMyTurn);
+
+        //attaching observers
+        CH.addObserver(this);
+        game.addObserver(CH);
+
+        //sending game status to the reconnected player
+        synchronized (game){
+            CH.sendObject(new NicknameMapMessage(CH.getNickname(),nameMap,game.getInkwell()));
+            CH.sendObject(new LCMapMessage(game.getLCMap(CH.getNickname())));
+            CH.sendObject(new ResourceMarketMessage(game.getMarket().getGrid(),game.getMarket().getRemainingMarble()));
+            CH.sendObject(new DCMarketMessage(game.getDevelopmentCardMarket()));
+            CH.sendObject(new LeaderCardHandMessage(game.getBoard(CH.getNickname()).getLeaderCardsHand()));
+            for(int i=0; i<playerNumber; i++){
+                Board playerBoard = game.getBoard(i);
+                CH.sendObject(new FaithTrackMessage(playerBoard.getFaithTrack(),playerBoard.getNickname()));
+                CH.sendObject(new WarehouseMessage(playerBoard.getWarehouse(),playerBoard.getNickname()));
+                CH.sendObject(new StrongboxMessage(playerBoard.getStrongbox(),playerBoard.getNickname()));
+                try {
+                    CH.sendObject(new SlotMessage(playerBoard.getSlot(1).getFirstCard(), 1,playerBoard.getNickname()));
+                }catch(EmptyException ignored){}
+                try {
+                    CH.sendObject(new SlotMessage(playerBoard.getSlot(2).getFirstCard(), 2,playerBoard.getNickname()));
+                }catch(EmptyException ignored){}
+                try {
+                    CH.sendObject(new SlotMessage(playerBoard.getSlot(3).getFirstCard(), 3,playerBoard.getNickname()));
+                }catch(EmptyException ignored){}
+                CH.sendObject(new LeaderCardPlayedMessage(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname()));
             }
         }
+
+        CH.sendStandardMessage(StandardMessages.notYourTurn);
     }
 
     public void removePlayer(ClientHandler CH){
@@ -155,6 +180,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     @Override
     public void updateDisconnected(CHObservable obs){
         ClientHandler client = (ClientHandler) obs;
+        game.removeObserver(client);
         if(demolished) return;
         if (!started) {
             synchronized (clients) {
@@ -187,6 +213,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
 
             synchronized (clients){
                 if(disconnectedPlayers.size() == playerNumber){
+                    reconnect = true;
                     t = new Timer();
                     t.schedule(new TimerTask() {
                         @Override
@@ -209,6 +236,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             try {
                 game.discardSelectedLC(player, message.getDiscardedLC());
                 client.setState(ClientHandler.ClientHandlerState.wait);
+                client.sendObject(new LCMapMessage(game.getLCMap(client.getNickname())));
                 if(playerNumber>1) {
                     boolean flag = false;
                     synchronized (Lock) {
@@ -297,19 +325,21 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     }
 
     @Override
-    public void updateBuyResources(CHObservable obs, BuyResourcesMessage message){
+    public void updateBuyResources(CHObservable obs, BuyResourcesMessage message) {
         ClientHandler client = (ClientHandler) obs;
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
-            try {
-                game.BuyMarketResourcesAction(player, message.getRow(), message.getN(), message.getRequestedWMConversion());
-
-                //after getting the resources, the user needs to say where he wants to deposit them
-                client.setLastActionMarket(true);
-                client.setState(ClientHandler.ClientHandlerState.moveNeeded);
-            } catch (ActionAlreadyDoneException e) { client.sendStandardMessage(StandardMessages.actionAlreadyDone); }
-            catch(IndexOutOfBoundsException e) { client.sendStandardMessage(StandardMessages.indexOutOfBound); }
-            catch(IllegalArgumentException e){ client.sendStandardMessage(StandardMessages.whiteMarbleNotCongruent);}
+            synchronized (client) {
+                try {
+                    game.BuyMarketResourcesAction(player, message.getRow(), message.getN(), message.getRequestedWMConversion());
+                } catch (ActionAlreadyDoneException e) {
+                    client.sendStandardMessage(StandardMessages.actionAlreadyDone);
+                } catch (IndexOutOfBoundsException e) {
+                    client.sendStandardMessage(StandardMessages.indexOutOfBound);
+                } catch (IllegalArgumentException e) {
+                    client.sendStandardMessage(StandardMessages.whiteMarbleNotCongruent);
+                }
+            }
         }
     }
 
@@ -318,51 +348,53 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         ClientHandler client = (ClientHandler) obs;
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
-            try {
-                game.BuyDevelopmentCardAction(message.getC(), message.getLevel(), player, message.getSlotNumber(), message.getUserChoice());
-                client.setState(ClientHandler.ClientHandlerState.actionDone);
-            }catch (ActionAlreadyDoneException e) {
-                client.sendStandardMessage(StandardMessages.actionAlreadyDone);
-            }catch(ResourceErrorException | RequirementsNotMetException e){
-                client.sendStandardMessage(StandardMessages.notEnoughResources);
-            }catch(LeaderCardNotCompatibleException e) {
-                client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
-            }catch(EmptyException e){
-                client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
-            }catch(InvalidPlacementException e){
-                client.sendStandardMessage(StandardMessages.invalidSlot);
-            }catch(IllegalArgumentException e){
-                client.sendStandardMessage(StandardMessages.resourcesWrong);
-            }catch(IndexOutOfBoundsException e){
-                client.sendStandardMessage(StandardMessages.indexOutOfBound);
+            synchronized (client) {
+                try {
+                    game.BuyDevelopmentCardAction(message.getC(), message.getLevel(), player, message.getSlotNumber(), message.getUserChoice());
+                } catch (ActionAlreadyDoneException e) {
+                    client.sendStandardMessage(StandardMessages.actionAlreadyDone);
+                } catch (ResourceErrorException | RequirementsNotMetException e) {
+                    client.sendStandardMessage(StandardMessages.notEnoughResources);
+                } catch (LeaderCardNotCompatibleException e) {
+                    client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
+                } catch (EmptyException e) {
+                    client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
+                } catch (InvalidPlacementException e) {
+                    client.sendStandardMessage(StandardMessages.invalidSlot);
+                } catch (IllegalArgumentException e) {
+                    client.sendStandardMessage(StandardMessages.resourcesWrong);
+                } catch (IndexOutOfBoundsException e) {
+                    client.sendStandardMessage(StandardMessages.indexOutOfBound);
+                }
             }
         }
     }
 
     @Override
-    public void updateProduction(CHObservable obs, ProductionMessage message){
+    public void updateProduction(CHObservable obs, ProductionMessage message) {
         ClientHandler client = (ClientHandler) obs;
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
-            try {
-                game.activateProductionAction(player, message.getUserChoice());
-                client.setState(ClientHandler.ClientHandlerState.actionDone);
-            }catch (ActionAlreadyDoneException e) {
-                client.sendStandardMessage(StandardMessages.actionAlreadyDone);
-            }catch(ResourceErrorException | RequirementsNotMetException e){
-                client.sendStandardMessage(StandardMessages.notEnoughResources);
-            }catch(LeaderCardNotCompatibleException e) {
-                client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
-            }catch(EmptyException e){
-                client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
-            }catch(IllegalArgumentException e){
-                client.sendStandardMessage(StandardMessages.productionError);
-            }catch(IndexOutOfBoundsException e){
-                client.sendStandardMessage(StandardMessages.indexOutOfBound);
-            }catch(BadRequestException e){
-                client.sendStandardMessage(StandardMessages.baseProductionError);
-            }
+            synchronized (client) {
+                try {
+                    game.activateProductionAction(player, message.getUserChoice());
+                } catch (ActionAlreadyDoneException e) {
+                    client.sendStandardMessage(StandardMessages.actionAlreadyDone);
+                } catch (ResourceErrorException | RequirementsNotMetException e) {
+                    client.sendStandardMessage(StandardMessages.notEnoughResources);
+                } catch (LeaderCardNotCompatibleException e) {
+                    client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
+                } catch (EmptyException e) {
+                    client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
+                } catch (IllegalArgumentException e) {
+                    client.sendStandardMessage(StandardMessages.productionError);
+                } catch (IndexOutOfBoundsException e) {
+                    client.sendStandardMessage(StandardMessages.indexOutOfBound);
+                } catch (BadRequestException e) {
+                    client.sendStandardMessage(StandardMessages.baseProductionError);
+                }
 
+            }
         }
     }
 
@@ -371,31 +403,19 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         ClientHandler client = (ClientHandler) obs;
         synchronized (clients) {
             int player = clientMap.get(client).getValue();
-            try {
-                game.moveResources(player, message.getUserChoice());
-                if (client.getLastActionMarket()) {
-                    client.setLastActionMarket(false);
-                    client.setState(ClientHandler.ClientHandlerState.actionDone);
-                } else {
-                    client.setState(ClientHandler.ClientHandlerState.myTurn);
-                }
-            }catch (IllegalArgumentException e){
-                client.sendStandardMessage(StandardMessages.indexOutOfBound);
-            }catch (BadRequestException e){
-                client.sendStandardMessage(StandardMessages.resourceParseError);
-            }catch (LeaderCardNotCompatibleException e){
-                client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
-            }catch(IncompatibleResourceException | InvalidPlacementException e) {
-                client.sendStandardMessage(StandardMessages.incompatibleResources);
-            }catch(ResourceErrorException e) {
-                client.sendStandardMessage(StandardMessages.notEnoughResources);
-            } catch (ResourcesLeftInHandException e) {
-                if (client.getLastActionMarket()) {
-                    game.discardRemainingResources(player);
-                    client.setLastActionMarket(false);
-                    client.setState(ClientHandler.ClientHandlerState.actionDone);
-                } else {
-                    client.sendStandardMessage(StandardMessages.wrongObject);
+            synchronized (client) {
+                try {
+                    game.moveResources(player, message.getUserChoice());
+                } catch (IllegalArgumentException e) {
+                    client.sendStandardMessage(StandardMessages.indexOutOfBound);
+                } catch (BadRequestException e) {
+                    client.sendStandardMessage(StandardMessages.resourceParseError);
+                } catch (LeaderCardNotCompatibleException e) {
+                    client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
+                } catch (IncompatibleResourceException | InvalidPlacementException e) {
+                    client.sendStandardMessage(StandardMessages.incompatibleResources);
+                } catch (ResourceErrorException e) {
+                    client.sendStandardMessage(StandardMessages.notEnoughResources);
                 }
             }
         }
@@ -430,59 +450,63 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     }
 
     @Override
-    public void updateTurnDone(CHObservable obs, TurnDoneMessage message){
+    public void updateTurnDone(CHObservable obs){
         ClientHandler client = (ClientHandler) obs;
-        game.getBoard(client.getNickname()).setActionDone(false);
-        synchronized (client) {
-            client.sendStandardMessage(StandardMessages.notYourTurn);
-            client.setState(ClientHandler.ClientHandlerState.notMyTurn);
-        }
-
-        if(!endGame){
-            endGame = game.checkEndGame(clientMap.get(client).getValue());
-        }
-
-        if(endGame && playerNumber==1){
-            game.countVictoryPoints();
-            client.sendObject(new VictoryPointsMessage(game.getBoard(0).getVictoryPoints(),game.getBoard(0).getNickname()));
-            client.closeConnection();
-            demolished = true;
-            gameHandlerNotify();
-        }
-
-        else if(endGame && playerNumber>1){
-            turn = (turn + 1) % playerNumber;
-            if (turn == game.getInkwell()) {
-                game.countVictoryPoints();
-                synchronized (clients) {
-                    for (ClientHandler CH : clients) {
-                        CH.sendObject(new VictoryPointsMessage(game.getBoard(0).getVictoryPoints(), game.getBoard(0).getNickname()));
-                        CH.closeConnection();
-                    }
-                    demolished = true;
-                    gameHandlerNotify();
-                }
-            }else{
-                getNextActivePlayer();
+        if(game.getBoard(client.getNickname()).getActionDone() && !game.getBoard(client.getNickname()).getMoveNeeded()) {
+            game.getBoard(client.getNickname()).setActionDone(false);
+            synchronized (client) {
+                client.sendStandardMessage(StandardMessages.notYourTurn);
+                client.setState(ClientHandler.ClientHandlerState.notMyTurn);
             }
-        }
-        else if(playerNumber == 1){
-            game.activatedToken();
-            if(game.checkLorenzoWin()){
-                client.sendStandardMessage(StandardMessages.lorenzoWin);
+
+            if (!endGame) {
+                endGame = game.checkEndGame(clientMap.get(client).getValue());
+            }
+
+            if (endGame && playerNumber == 1) {
+                game.countVictoryPoints();
+                client.sendObject(new VictoryPointsMessage(game.getBoard(0).getVictoryPoints(), game.getBoard(0).getNickname()));
                 client.closeConnection();
                 demolished = true;
                 gameHandlerNotify();
-            }
-            synchronized (client){
-                client.setState(ClientHandler.ClientHandlerState.myTurn);
-            }
-            client.sendStandardMessage(StandardMessages.yourTurn);
+            } else if (endGame && playerNumber > 1) {
+                turn = (turn + 1) % playerNumber;
+                if (turn == game.getInkwell()) {
+                    game.countVictoryPoints();
+                    synchronized (clients) {
+                        for (ClientHandler CH : clients) {
+                            CH.sendObject(new VictoryPointsMessage(game.getBoard(0).getVictoryPoints(), game.getBoard(0).getNickname()));
+                            CH.closeConnection();
+                        }
+                        demolished = true;
+                        gameHandlerNotify();
+                    }
+                } else {
+                    getNextActivePlayer();
+                }
+            } else if (playerNumber == 1) {
+                game.activatedToken();
+                if (game.checkLorenzoWin()) {
+                    client.sendStandardMessage(StandardMessages.lorenzoWin);
+                    client.closeConnection();
+                    demolished = true;
+                    gameHandlerNotify();
+                }
+                synchronized (client) {
+                    client.setState(ClientHandler.ClientHandlerState.myTurn);
+                }
+                client.sendStandardMessage(StandardMessages.yourTurn);
 
+            } else {
+                turn = (turn + 1) % playerNumber;
+                getNextActivePlayer();
+            }
         }
-        else  {
-            turn = (turn + 1) % playerNumber;
-            getNextActivePlayer();
+        else if(game.getBoard(client.getNickname()).getMoveNeeded()){
+            client.sendStandardMessage(StandardMessages.moveActionNeeded);
+        }
+        else{
+            client.sendStandardMessage(StandardMessages.actionNeeded);
         }
     }
 
