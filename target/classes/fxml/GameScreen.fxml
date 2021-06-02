@@ -122,9 +122,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="0"/>
-                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" />
-                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2" />
+                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="0" fx:id="S_1"/>
+                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" fx:id="S_2"/>
+                  <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2" fx:id="S_3"/>
                </children>
             </GridPane>
          </children>

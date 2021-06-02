@@ -262,7 +262,7 @@ public class GUI extends Application implements View{
             case actionDone -> Platform.runLater(() -> gameScreenView.setActionDone(true));
             case incompatibleResources -> Platform.runLater(() -> {
                 gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
-                gameScreenView.grayWarehouse(false);
+                gameScreenView.grayWarehouse(false,"move");
                 gameScreenView.grayHand(false);
             });
             case waitForReconnection -> Platform.runLater(() -> {
