@@ -37,6 +37,10 @@ public enum StandardMessages implements Serializable {
     nicknameAlreadyInUse("Il nickname scelto è già in uso"),
     lobbyNotReady("Aspetta che inizi il gioco"),
 
+    moveActionWrong("Hai sbagliato a spostare le risorse"),
+
+    buyDevelopmentWrong("Hai sbagliato a comprare una carta sviluppo"),
+
     invalidSlot("Lo slot scelto non può accogliere questa carta"),
     invalidChoice("La scelta effettuata non è valida"),
     baseProductionError("La scelta della produzione di base non è valida"),

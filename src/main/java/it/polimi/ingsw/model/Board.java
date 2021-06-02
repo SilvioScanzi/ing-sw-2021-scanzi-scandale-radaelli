@@ -74,6 +74,10 @@ public class Board{
         return faithtrack;
     }
 
+    public Slot[] getSlots() {
+        return slots;
+    }
+
     public Slot getSlot(int index) throws IndexOutOfBoundsException{
         if(index < 1 || index > 3) throw new IndexOutOfBoundsException("Invalid slot: index must be between 1 and 3");
         return slots[index-1];

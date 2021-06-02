@@ -424,7 +424,7 @@ public class CLI extends ViewObservable implements View {
         String nickname = board.getNickname();
         printLeaderCardPlayed(board.getLeaderCardsPlayed(),nickname);
         for(int i=1;i<=3;i++){
-            printSlot(i,board.getSlots(1).getKey(),board.getSlots(1).getValue(),nickname);
+            printSlot(board.getSlots(),nickname);
         }
         printFaithTrack(board.getFaithMarker(), board.getPopeFavor(), nickname);
         printStrongBox(board.getStrongBox(),nickname);
@@ -588,16 +588,17 @@ public class CLI extends ViewObservable implements View {
         System.out.println("\n\n");
     }
 
+    //TODO
     @Override
-    public void printSlot(int I, Colours C, int VP, String nickname) {
-        if(VP==-1){
+    public void printSlot(ArrayList<ArrayList<Pair<Colours, Integer>>> slots, String nickname) {
+        /*if(VP==-1){
             System.out.println("LO SLOT " + I + " DELLA PLANCIA DI " + nickname+" È VUOTO");
         }
         else {
             System.out.println("SLOT " + I + " DELLA PLANCIA DI " + nickname);
             DevelopmentCardParser DCP = new DevelopmentCardParser();
             System.out.println(DCP.findCardByID(C, VP, color));
-        }
+        }*/
     }
 
     @Override

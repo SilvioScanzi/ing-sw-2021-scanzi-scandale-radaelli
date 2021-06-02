@@ -286,6 +286,7 @@ public class Game extends ModelObservable {
     //Player selects colour and level; method checks for costs and adds to the board the development card
     public synchronized void BuyDevelopmentCardAction(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice)
             throws ActionAlreadyDoneException,EmptyException,InvalidPlacementException,RequirementsNotMetException,ResourceErrorException,LeaderCardNotCompatibleException,IndexOutOfBoundsException,IllegalArgumentException{
+
         Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
         DevelopmentCard DC;
@@ -311,10 +312,12 @@ public class Game extends ModelObservable {
         //Try to consume the resources needed
         consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice);
 
+
+
         //Getting the slot requested by the player
         Slot requestedSlot = playerBoard.getSlot(slotNumber);
         requestedSlot.addCard(DC);
-        notifySlot(DC, slotNumber, playerBoard.getNickname());
+        notifySlot(playerBoard.getSlots(), playerBoard.getNickname());
 
         if(!wr.equals(playerBoard.getWarehouse())) {
             playerBoard.setWarehouse(wr);
@@ -439,6 +442,9 @@ public class Game extends ModelObservable {
     //consumes them, changing the state of the board. If there are no errors modifies everything, otherwise throws exception and rollback.
     private void consumeResources (Board playerBoard, Strongbox sb, Warehouse wr, HashMap<Resources, Integer> cost, HashMap<LeaderCard,Integer> LCCapacity, ArrayList<Pair<String,Integer>> userChoice)
             throws ResourceErrorException,LeaderCardNotCompatibleException,RequirementsNotMetException,IllegalArgumentException{
+        if(userChoice.size()==0){
+            throw new RequirementsNotMetException("You don't have enough resources to buy the card");
+        }
         HashMap<Resources, Integer> selectedResources = new HashMap<>();
         for(Resources r: Resources.values()){
             selectedResources.put(r,0);

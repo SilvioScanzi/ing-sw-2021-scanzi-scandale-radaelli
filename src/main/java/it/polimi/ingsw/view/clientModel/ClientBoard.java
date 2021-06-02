@@ -12,9 +12,9 @@ public class ClientBoard {
     private final int position;
     private final String nickname;
     private final HashMap<Integer, Pair<Resources,Integer>> warehouse;
-    private final ArrayList<Pair<Colours, Integer>> slot_1;
-    private final ArrayList<Pair<Colours, Integer>> slot_2;
-    private final ArrayList<Pair<Colours, Integer>> slot_3;
+    private ArrayList<Pair<Colours, Integer>> slot_1;
+    private ArrayList<Pair<Colours, Integer>> slot_2;
+    private ArrayList<Pair<Colours, Integer>> slot_3;
     private HashMap<Resources,Integer> strongBox;
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsHand;
     private ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed;
@@ -58,11 +58,10 @@ public class ClientBoard {
         this.hand = hand;
     }
 
-    public void setSlot(int i, Colours c, int vp){
-        if (i == 1) slot_1.add(new Pair<>(c,vp));
-
-        else if (i == 2) slot_2.add(new Pair<>(c,vp));
-        else if (i == 3) slot_3.add(new Pair<>(c,vp));
+    public void setSlot(ArrayList<ArrayList<Pair<Colours, Integer>>> slots){
+        this.slot_1 = slots.get(0);
+        this.slot_2 = slots.get(1);
+        this.slot_3 = slots.get(2);
     }
 
     public void setStrongBox(HashMap<Resources, Integer> strongBox) {
@@ -89,12 +88,29 @@ public class ClientBoard {
     }
 
     public Integer getSlotsVP(int i) {
-        return switch(i){
-            case 1 -> slot_1.get(slot_1.size()-1).getValue();
-            case 2 -> slot_2.get(slot_2.size()-1).getValue();
-            case 3 -> slot_3.get(slot_3.size()-1).getValue();
-            default -> -1;
-        };
+        switch(i){
+            case 1 -> {
+                if(slot_1.size()>0) return slot_1.get(slot_1.size()-1).getValue();
+                else return -1;
+            }
+            case 2 -> {
+                if(slot_2.size()>0) return slot_2.get(slot_2.size()-1).getValue();
+                else return -1;
+            }
+            case 3 -> {
+                    if(slot_3.size()>0) return slot_3.get(slot_3.size()-1).getValue();
+                    else return -1;
+                }
+            default -> {return -1;}
+        }
+    }
+
+    public ArrayList<ArrayList<Pair<Colours, Integer>>> getSlots(){
+        ArrayList<ArrayList<Pair<Colours, Integer>>> tmp = new ArrayList<>();
+        tmp.add(slot_1);
+        tmp.add(slot_2);
+        tmp.add(slot_3);
+        return tmp;
     }
 
     public ArrayList<Pair<Colours, Integer>> getSlot_1(){

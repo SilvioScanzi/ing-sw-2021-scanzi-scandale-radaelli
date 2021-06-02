@@ -115,15 +115,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 CH.sendObject(new FaithTrackMessage(playerBoard.getFaithTrack(),playerBoard.getNickname()));
                 CH.sendObject(new WarehouseMessage(playerBoard.getWarehouse(),playerBoard.getNickname()));
                 CH.sendObject(new StrongboxMessage(playerBoard.getStrongbox(),playerBoard.getNickname()));
-                try {
-                    CH.sendObject(new SlotMessage(playerBoard.getSlot(1).getFirstCard(), 1,playerBoard.getNickname()));
-                }catch(EmptyException ignored){}
-                try {
-                    CH.sendObject(new SlotMessage(playerBoard.getSlot(2).getFirstCard(), 2,playerBoard.getNickname()));
-                }catch(EmptyException ignored){}
-                try {
-                    CH.sendObject(new SlotMessage(playerBoard.getSlot(3).getFirstCard(), 3,playerBoard.getNickname()));
-                }catch(EmptyException ignored){}
+                CH.sendObject(new SlotMessage(playerBoard.getSlots(), playerBoard.getNickname()));
                 CH.sendObject(new LeaderCardPlayedMessage(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname()));
             }
         }
@@ -351,20 +343,8 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             synchronized (client) {
                 try {
                     game.BuyDevelopmentCardAction(message.getC(), message.getLevel(), player, message.getSlotNumber(), message.getUserChoice());
-                } catch (ActionAlreadyDoneException e) {
-                    client.sendStandardMessage(StandardMessages.actionAlreadyDone);
-                } catch (ResourceErrorException | RequirementsNotMetException e) {
-                    client.sendStandardMessage(StandardMessages.notEnoughResources);
-                } catch (LeaderCardNotCompatibleException e) {
-                    client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
-                } catch (EmptyException e) {
-                    client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
-                } catch (InvalidPlacementException e) {
-                    client.sendStandardMessage(StandardMessages.invalidSlot);
-                } catch (IllegalArgumentException e) {
-                    client.sendStandardMessage(StandardMessages.resourcesWrong);
-                } catch (IndexOutOfBoundsException e) {
-                    client.sendStandardMessage(StandardMessages.indexOutOfBound);
+                } catch (Exception e){
+                    client.sendStandardMessage(StandardMessages.buyDevelopmentWrong);
                 }
             }
         }
@@ -406,16 +386,8 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             synchronized (client) {
                 try {
                     game.moveResources(player, message.getUserChoice());
-                } catch (IllegalArgumentException e) {
-                    client.sendStandardMessage(StandardMessages.indexOutOfBound);
-                } catch (BadRequestException e) {
-                    client.sendStandardMessage(StandardMessages.resourceParseError);
-                } catch (LeaderCardNotCompatibleException e) {
-                    client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
-                } catch (IncompatibleResourceException | InvalidPlacementException e) {
-                    client.sendStandardMessage(StandardMessages.incompatibleResources);
-                } catch (ResourceErrorException e) {
-                    client.sendStandardMessage(StandardMessages.notEnoughResources);
+                } catch (Exception e) {
+                    client.sendStandardMessage(StandardMessages.moveActionWrong);
                 }
             }
         }

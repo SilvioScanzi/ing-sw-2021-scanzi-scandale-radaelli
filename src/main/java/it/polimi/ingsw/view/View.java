@@ -23,7 +23,7 @@ public interface View {
     void printBlackCross(int BC);
     void printCardMarket(HashMap<Pair<Colours,Integer>, Pair<Integer,Integer>> CM);
     void printFaithTrack(int FM, boolean[] PF, String nickname);
-    void printSlot(int I, Colours C, int VP, String nickname);
+    void printSlot(ArrayList<ArrayList<Pair<Colours, Integer>>> slots, String nickname);
     void printStrongBox(HashMap<Resources,Integer> SB, String nickname);
     void printWarehouse(HashMap<Integer,Pair<Resources,Integer>> WH, String nickname);
     void print(String string);

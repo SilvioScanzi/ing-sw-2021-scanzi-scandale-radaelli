@@ -260,10 +260,15 @@ public class GUI extends Application implements View{
             case nicknameAlreadyInUse -> Platform.runLater(() -> nicknameScreenView.setErrormsg("Il nickname scelto è già in uso"));
             case unavailableConnection -> Platform.runLater(() -> connectionScreenView.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
             case actionDone -> Platform.runLater(() -> gameScreenView.setActionDone(true));
-            case incompatibleResources -> Platform.runLater(() -> {
+            case moveActionWrong -> Platform.runLater(() -> {
+                gameScreenView.addErrorMessage(message.toString());
                 gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                 gameScreenView.grayWarehouse(false,"move");
                 gameScreenView.grayHand(false);
+            });
+            case buyDevelopmentWrong -> Platform.runLater(() -> {
+                gameScreenView.addErrorMessage(message.toString());
+                gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
             });
             case waitForReconnection -> Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
@@ -335,8 +340,10 @@ public class GUI extends Application implements View{
     }
 
     @Override
-    public void printSlot(int I, Colours C, int VP, String nickname) {
-
+    public void printSlot(ArrayList<ArrayList<Pair<Colours, Integer>>> slots, String nickname) {
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addSlots(slots.get(0),slots.get(1),slots.get(2)));
+        }
     }
 
     @Override

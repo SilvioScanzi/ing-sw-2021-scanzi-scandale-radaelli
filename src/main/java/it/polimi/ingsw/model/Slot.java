@@ -21,6 +21,14 @@ public class Slot {
         return tmp;
     }
 
+    public ArrayList<Pair<Colours,Integer>> getSlotListVP(){
+        ArrayList<Pair<Colours,Integer>> tmp = new ArrayList<>();
+        for(DevelopmentCard DC : developmentcards){
+            tmp.add(new Pair<>(DC.getColour(), DC.getVictoryPoints()));
+        }
+        return tmp;
+    }
+
     public DevelopmentCard getFirstCard() throws EmptyException {
         if(developmentcards.size()==0) throw new EmptyException("S");
         else return developmentcards.get(developmentcards.size()-1);

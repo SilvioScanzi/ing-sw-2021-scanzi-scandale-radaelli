@@ -265,8 +265,8 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void updateSlots(DevelopmentCard DC, int slotIndex, String nickname){
-        sendObject(new SlotMessage(DC, slotIndex, nickname));
+    public void updateSlots(Slot[] slots, String nickname){
+        sendObject(new SlotMessage(slots, nickname));
     }
 
     @Override

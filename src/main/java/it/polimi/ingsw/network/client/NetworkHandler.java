@@ -143,8 +143,8 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 view.printResourceHand(((ResourceHandMessage) message).getHand(),((ResourceHandMessage) message).getNickname());
             }
             else if(message instanceof SlotMessage){
-                clientModel.getBoard(((SlotMessage) message).getNickname()).setSlot(((SlotMessage) message).getSlotIndex(),((SlotMessage) message).getColour(), ((SlotMessage) message).getVictoryPoints());
-                view.printSlot(((SlotMessage) message).getSlotIndex(),((SlotMessage) message).getColour(), ((SlotMessage) message).getVictoryPoints(), ((SlotMessage) message).getNickname());
+                clientModel.getBoard(((SlotMessage) message).getNickname()).setSlot(((SlotMessage) message).getSlots());
+                view.printSlot(((SlotMessage) message).getSlots(), ((SlotMessage) message).getNickname());
             }
             else if(message instanceof StrongboxMessage){
                 clientModel.getBoard(((StrongboxMessage) message).getNickname()).setStrongBox(((StrongboxMessage) message).getStorage());
@@ -306,7 +306,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateBuyDC(Colours colour, int level, int slot, ArrayList<Pair<String, Integer>> userChoice) {
-        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
+        /*if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
@@ -338,8 +338,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
         if(!checkGotResources(userChoice) || !checkRightResources(cost,userChoice)){
             view.print("La scelta delle risorse non è corretta");
             return;
-        }
-
+        }*/
         sendObject(new BuyDevelopmentCardMessage(colour,level,slot,userChoice));
     }
 

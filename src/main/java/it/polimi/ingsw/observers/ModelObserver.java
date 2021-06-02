@@ -16,7 +16,7 @@ public interface ModelObserver {
     void updateLCHand(HashMap<Integer,LeaderCard> LCHand, String s);
     void updateSB(Strongbox sb, String s);
     void updateFT(FaithTrack ft, String s);
-    void updateSlots(DevelopmentCard DC, int slotIndex, String nickname);
+    void updateSlots(Slot[] slots, String nickname);
     void updateHand(ArrayList<Resources> hand, String s);
     void updateLCPlayed(HashMap<Integer,LeaderCard> lcp, String s);
     void updateVP(int victoryPoints,String s);

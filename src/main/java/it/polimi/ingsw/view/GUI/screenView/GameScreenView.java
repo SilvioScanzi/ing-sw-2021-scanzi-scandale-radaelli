@@ -9,7 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.effect.BlurType;
-import javafx.scene.effect.ColorAdjust;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
 import javafx.scene.image.Image;
@@ -20,6 +19,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
@@ -99,6 +99,12 @@ public class GameScreenView extends ViewObservable {
     private GridPane Slots;
     @FXML
     private ImageView P_B;
+    @FXML
+    private ImageView S_1_ARROW;
+    @FXML
+    private ImageView S_2_ARROW;
+    @FXML
+    private ImageView S_3_ARROW;
 
     @FXML
     private Button confirmAction;
@@ -110,7 +116,8 @@ public class GameScreenView extends ViewObservable {
     private final HashMap<Integer,Triplet<Resources,Integer,Boolean>> LCMap = new HashMap<>();
     private final boolean[][] grid = new boolean[3][4];
     private final ArrayList<Integer> selectedRMLC = new ArrayList<>();
-    private Node selected = null;
+    private ImageView selected = null;
+    private ImageView selectedCard = null;
     private final ArrayList<Triplet<String,Integer,Integer>> moveAction = new ArrayList<>();
     private final ArrayList<Pair<String, Integer>> buyDevelopmentAction = new ArrayList<>();
     private Pair<Colours,Integer> buyDevelopmentCard;
@@ -468,11 +475,52 @@ public class GameScreenView extends ViewObservable {
 
             ImageView IV = new ImageView(new Image(GUI.class.getResource(path).toString()));
             IV.setId(hand.get(size).getID() + "_W00");
-            IV.setFitWidth(25.0);
+            IV.setFitWidth(47.0);
             IV.setPreserveRatio(true);
             Hand.add(IV,j,i);
         }
         grayHand(false);
+    }
+
+    public void addErrorMessage(String message){
+        String path ="/images/Hanging Sign.png";
+
+        grayOut(true);
+
+        AnchorPane anchorPane = (AnchorPane) LeaderCardsPlayed.getParent();
+        StackPane errorPane = new StackPane();
+        errorPane.setId("errorPane");
+        errorPane.setLayoutX(0.0);
+        errorPane.setLayoutY(0.0);
+        anchorPane.getChildren().add(errorPane);
+
+        ImageView sign = new ImageView(new Image(GUI.class.getResource(path).toString()));
+        sign.setFitWidth(434);
+        sign.setPreserveRatio(true);
+        errorPane.getChildren().add(sign);
+
+        Text t = new Text(message);
+        t.setWrappingWidth(300);
+        t.setLayoutX(sign.getFitWidth()/2);
+        t.setTranslateY(70);
+        t.getStyleClass().add("textError");
+        t.setTextAlignment(TextAlignment.CENTER);
+        errorPane.getChildren().add(t);
+
+        TranslateTransition TTIn = new TranslateTransition(Duration.millis(1000),errorPane);
+        TTIn.setFromX(253);
+        TTIn.setToX(253);
+        TTIn.setFromY(-472);
+        TTIn.setToY(-38);
+        TTIn.play();
+        TranslateTransition TTOut = new TranslateTransition(Duration.millis(1000),errorPane);
+        TTIn.setOnFinished(x -> TTOut.play());
+        TTOut.setFromX(253);
+        TTOut.setToX(253);
+        TTOut.setFromY(-38);
+        TTOut.setToY(-472);
+        TTOut.setDelay(Duration.millis(3000));
+        TTOut.setOnFinished(x -> anchorPane.getChildren().remove(errorPane));
     }
 
 
@@ -491,7 +539,7 @@ public class GameScreenView extends ViewObservable {
             }
             grayEmptyWarehouse(true);
             grayHand(true);
-            grayStrongBox(true);
+            grayStrongBox(true,"");
         }
         else{
             //Clickable board
@@ -520,28 +568,34 @@ public class GameScreenView extends ViewObservable {
     public void grayWarehouse(boolean gray, String type){
         if(gray){
             if (W1_1.getChildren().size() > 0) {
-               W1_1.getChildren().get(0).getStyleClass().remove("selectable");
+                W1_1.getChildren().get(0).getStyleClass().remove("selectable");
                 W1_1.getChildren().get(0).setOnMouseClicked(null);
+                if(!isBuyAction) W1_1.getChildren().get(0).setEffect(null);
             }
             if (W2_1.getChildren().size() > 0) {
                 W2_1.getChildren().get(0).getStyleClass().remove("selectable");
                 W2_1.getChildren().get(0).setOnMouseClicked(null);
+                if(!isBuyAction) W2_1.getChildren().get(0).setEffect(null);
             }
             if (W2_2.getChildren().size() > 0) {
                 W2_2.getChildren().get(0).getStyleClass().remove("selectable");
                 W2_2.getChildren().get(0).setOnMouseClicked(null);
+                if(!isBuyAction) W2_2.getChildren().get(0).setEffect(null);
             }
             if (W3_1.getChildren().size() > 0) {
                 W3_1.getChildren().get(0).getStyleClass().remove("selectable");
                 W3_1.getChildren().get(0).setOnMouseClicked(null);
+                if(!isBuyAction) W3_1.getChildren().get(0).setEffect(null);
             }
             if (W3_2.getChildren().size() > 0) {
                 W3_2.getChildren().get(0).getStyleClass().remove("selectable");
                 W3_2.getChildren().get(0).setOnMouseClicked(null);
+                if(!isBuyAction) W3_2.getChildren().get(0).setEffect(null);
             }
             if (W3_3.getChildren().size() > 0) {
                 W3_3.getChildren().get(0).getStyleClass().remove("selectable");
                 W3_3.getChildren().get(0).setOnMouseClicked(null);
+                if(!isBuyAction) W3_3.getChildren().get(0).setEffect(null);
             }
         }
         else if (type.equals("move")){
@@ -806,25 +860,25 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    public void grayStrongBox(boolean gray){
+    public void grayStrongBox(boolean gray,String type){
         if(gray){
-            if(SB_CO_ICON.getStyleClass().contains("selectable")) SB_CO_ICON.getStyleClass().remove("selectable");
-            SB_CO_ICON.setOnMouseClicked(null);
-            if(SB_SH_ICON.getStyleClass().contains("selectable")) SB_SH_ICON.getStyleClass().remove("selectable");
-            SB_SH_ICON.setOnMouseClicked(null);
-            if(SB_ST_ICON.getStyleClass().contains("selectable")) SB_ST_ICON.getStyleClass().remove("selectable");
-            SB_ST_ICON.setOnMouseClicked(null);
-            if(SB_SE_ICON.getStyleClass().contains("selectable")) SB_SE_ICON.getStyleClass().remove("selectable");
-            SB_SE_ICON.setOnMouseClicked(null);
-        }else{
             SB_CO_ICON.getStyleClass().remove("selectable");
-            //SB_CO_ICON.setOnMouseClicked(null);
+            SB_CO_ICON.setOnMouseClicked(null);
             SB_SH_ICON.getStyleClass().remove("selectable");
-            //SB_SH_ICON.setOnMouseClicked(null);
+            SB_SH_ICON.setOnMouseClicked(null);
             SB_ST_ICON.getStyleClass().remove("selectable");
-            //SB_ST_ICON.setOnMouseClicked(null);
+            SB_ST_ICON.setOnMouseClicked(null);
             SB_SE_ICON.getStyleClass().remove("selectable");
-            //SB_SE_ICON.setOnMouseClicked(null);
+            SB_SE_ICON.setOnMouseClicked(null);
+        }else if(type.equals("buy")){
+            if(!SB_CO_ICON.getStyleClass().contains("selectable")) SB_CO_ICON.getStyleClass().add("selectable");
+            SB_CO_ICON.setOnMouseClicked(e -> handleBuySelect((Pane) SB_CO_ICON.getParent()));
+            if(!SB_SH_ICON.getStyleClass().contains("selectable")) SB_SH_ICON.getStyleClass().add("selectable");
+            SB_SH_ICON.setOnMouseClicked(e -> handleBuySelect((Pane) SB_SH_ICON.getParent()));
+            if(!SB_ST_ICON.getStyleClass().contains("selectable")) SB_ST_ICON.getStyleClass().add("selectable");
+            SB_ST_ICON.setOnMouseClicked(e -> handleBuySelect((Pane) SB_ST_ICON.getParent()));
+            if(!SB_SE_ICON.getStyleClass().contains("selectable")) SB_SE_ICON.getStyleClass().add("selectable");
+            SB_SE_ICON.setOnMouseClicked(e -> handleBuySelect((Pane) SB_SE_ICON.getParent()));
         }
     }
 
@@ -846,6 +900,15 @@ public class GameScreenView extends ViewObservable {
                     d.setOnMouseClicked(null);
                 }
             }
+            S_1_ARROW.getStyleClass().remove("bigselectable");
+            S_1_ARROW.setOnMouseClicked(null);
+            S_1_ARROW.setEffect(null);
+            S_2_ARROW.getStyleClass().remove("bigselectable");
+            S_2_ARROW.setOnMouseClicked(null);
+            S_2_ARROW.setEffect(null);
+            S_3_ARROW.getStyleClass().remove("bigselectable");
+            S_3_ARROW.setOnMouseClicked(null);
+            S_3_ARROW.setEffect(null);
         }else if(type.equals("production")){
             for(Node n : Slots.getChildren()) {
                 for(Node d : ((StackPane) n).getChildren()) {
@@ -858,8 +921,15 @@ public class GameScreenView extends ViewObservable {
         }else if(type.equals("buy")){
             for(Node n : Slots.getChildren()) {
                 if(((StackPane)n).getChildren().size()<3) {
-                    if (!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
-                    n.setOnMouseClicked(e -> handleSelect(n));
+                    ImageView arrow;
+                    switch(GridPane.getColumnIndex(n)){
+                        case 0 -> arrow = S_1_ARROW;
+                        case 1 -> arrow = S_2_ARROW;
+                        case 2 -> arrow = S_3_ARROW;
+                        default -> arrow = S_1_ARROW;
+                    }
+                    if (!n.getStyleClass().contains("bigselectable")) arrow.getStyleClass().add("bigselectable");
+                    arrow.setOnMouseClicked(e -> handleSelect(arrow));
                 }
             }
         }
@@ -872,14 +942,21 @@ public class GameScreenView extends ViewObservable {
             grayOut(true);
             graySlots(false,"buy");
             buyDevelopmentCard = new Pair<>(Colours.getColourFromColumn(selected.getId().split("_")[0]),Integer.parseInt(selected.getId().split("_")[1]));
+            selectedCard = selected;
             selected = null;
             confirmAction.setDisable(true);
         }
 
         else if(isBuyAction){
+            isBuyAction = false;
             notifyBuyDC(buyDevelopmentCard.getKey(),buyDevelopmentCard.getValue(),Integer.parseInt(selected.getId().split("_")[1]),buyDevelopmentAction);
+            selectedCard.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+            selectedCard = null;
             selected = null;
+            buyDevelopmentAction.clear();
+            grayOut(true);
             grayOut(false);
+            confirmAction.setDisable(true);
         }
 
         else if(!isMoveAction && prevResBuyAction){
@@ -937,17 +1014,18 @@ public class GameScreenView extends ViewObservable {
             //Development buy action
             else if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3")){
                 isBuyAction = true;
-                Colours color = Colours.getColourFromColumn(split[0]);
-                int victoryPoints = Integer.parseInt(split[1]);
                 grayOut(true);
                 grayWarehouse(false,"buy");
-                grayStrongBox(false);
+                grayStrongBox(false,"buy");
                 grayPlayedLeaderCard(false);
                 selected.getStyleClass().add("selectable");
                 selected.setOnMouseClicked(e -> {
-                    grayOut(false);
                     isBuyAction = false;
+                    grayOut(true);
+                    grayOut(false);
+                    selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     buyDevelopmentAction.clear();
+                    confirmAction.setDisable(true);
                     if(actionDone) grayOutActionDone();
                 });
             }
@@ -983,23 +1061,17 @@ public class GameScreenView extends ViewObservable {
         notifyEndTurn();
     }
 
-    private void handleSelect(Node n){
+    private void handleSelect(ImageView n){
         if(!(selected == null)) {
             unselect();
         }
         //select something different or something new
         if(selected == null || !selected.equals(n)) {
             selected =  n;
-            if(selected.getId().startsWith("S_")){
-                ColorAdjust CA = new ColorAdjust();
-                CA.setBrightness(-10000);
-                selected.setEffect(CA);
-            }
-            else {
-                DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
-                n.setEffect(DS);
-                if (!selected.getId().split("_")[1].startsWith("W")) confirmAction.setDisable(false);
-            }
+            DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
+            n.setEffect(DS);
+            if (!selected.getId().split("_")[1].startsWith("W")) confirmAction.setDisable(false);
+
         }
         //unselect previous choice
         else if(selected.equals(n)){
@@ -1026,13 +1098,13 @@ public class GameScreenView extends ViewObservable {
 
         moveAction.add(new Triplet<>(r,idFrom,idTo));
 
-        Image image = ((ImageView)selected).getImage();
+        Image image = (selected).getImage();
         String id = selected.getId().split("_")[0] + "_" + pane.getId().split("_")[0] + pane.getId().split("_")[1].charAt(0);
 
 
-        ((Pane) selected.getParent()).setId("W" + selected.getId().split("_")[1].charAt(1) + "_" + selected.getId().split("_")[1].charAt(2) + "Empty");
+        (selected.getParent()).setId("W" + selected.getId().split("_")[1].charAt(1) + "_" + selected.getId().split("_")[1].charAt(2) + "Empty");
         if(!selected.getParent().getId().equals(Hand.getId()))
-            ((Pane) selected.getParent()).setOnMouseClicked(e -> { handleMoveAction((Pane) selected.getParent());});
+            (selected.getParent()).setOnMouseClicked(e -> { handleMoveAction((Pane) selected.getParent());});
         ((Pane) selected.getParent()).getChildren().remove(selected);
 
         pane.setOnMouseClicked(null);
@@ -1053,7 +1125,7 @@ public class GameScreenView extends ViewObservable {
         grayWarehouse(false,"move");
         confirmAction.setDisable(false);
         grayHand(false);
-
+        refreshHand();
         selected = null;
     }
 
@@ -1066,7 +1138,7 @@ public class GameScreenView extends ViewObservable {
         grayWarehouse(false,"move");
         confirmAction.setDisable(false);
 
-        ImageView tmp = new ImageView( ((ImageView)selected).getImage());
+        ImageView tmp = new ImageView(selected.getImage());
         tmp.setId(selected.getId());
         tmp.setFitWidth(25.0);
         tmp.setPreserveRatio(true);
@@ -1232,21 +1304,40 @@ public class GameScreenView extends ViewObservable {
         ImageView IV = (ImageView) resource.getChildren().get(0);
         if(IV.getId().split("_")[1].startsWith("W")) {
             buyDevelopmentAction.add(new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("W")[1].charAt(0)))));
+            IV.setOnMouseClicked(e -> handleBuyDeselect(resource,null));
+            DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
+            IV.setEffect(DS);
         }
-        else if(IV.getId().split("_")[1].startsWith("SB")){}
+        else if(IV.getId().split("_")[0].startsWith("SB")) {
+            //TODO:ERROR MESSAGE (>10 risorse in mano)
+            if (Hand.getChildren().size() < 10 && Integer.parseInt(((Text) resource.getChildren().get(1)).getText()) > 0) {
+                buyDevelopmentAction.add(new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[1]), 6));
+                int HS = Hand.getChildren().size();
+                ImageView R = new ImageView(IV.getImage());
+                R.getStyleClass().add("selectable");
+                R.setOnMouseClicked(e -> handleBuyDeselect(resource, R));
+                R.setFitWidth(25.0);
+                R.setPreserveRatio(true);
+                R.setId("SB_" + IV.getId().split("_")[1] + "_HAND");
+                if (HS < 5) Hand.add(R, 0, HS);
+                else Hand.add(R, 1, HS % 5);
+                ((Text) resource.getChildren().get(1)).setText("" + (Integer.parseInt(((Text) resource.getChildren().get(1)).getText()) - 1));
+            }
+        }
         else if(IV.getId().split("_")[1].startsWith("LC")){}
-
-        resource.getChildren().get(0).setOnMouseClicked(e -> handleBuyDeselect(resource));
-        DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(212, 175, 55), 5.0, 5.0, 0, 0);
-        resource.setEffect(DS);
     }
 
-    private void handleBuyDeselect(Pane resource){
+    private void handleBuyDeselect(Pane resource,ImageView HandRes){
         ImageView IV = (ImageView) resource.getChildren().get(0);
         if(IV.getId().split("_")[1].startsWith("W")) {
             buyDevelopmentAction.remove(new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("W")[1].charAt(0)))));
         }
-        else if(IV.getId().split("_")[1].startsWith("SB")){}
+        else if(IV.getId().split("_")[0].startsWith("SB")) {
+            buyDevelopmentAction.remove(new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[1]), 6));
+            Hand.getChildren().remove(HandRes);
+            refreshHand();
+            ((Text) resource.getChildren().get(1)).setText("" + (Integer.parseInt(((Text) resource.getChildren().get(1)).getText()) + 1));
+        }
         else if(IV.getId().split("_")[1].startsWith("LC")){}
 
         resource.setEffect(null);
@@ -1255,6 +1346,19 @@ public class GameScreenView extends ViewObservable {
 
 
     //Utils
+    private void refreshHand(){
+        ArrayList<Node> tmp = new ArrayList<>(Hand.getChildren());
+        Hand.getChildren().clear();
+        int i = 0,j = 0;
+        for(int size=0;size<tmp.size();size++){
+            i = size%5;
+            if(size>5) {
+                j = 1;
+            }
+            Hand.add(tmp.get(size),j,i);
+        }
+    }
+
     private int getWhiteMarbles(boolean row, int i){
         int n=0;
         if(row){
@@ -1330,5 +1434,6 @@ public class GameScreenView extends ViewObservable {
         else selected.setEffect(null);
         confirmAction.setDisable(false);
     }
+
 
 }
