@@ -24,6 +24,11 @@
     -fx-fill: red;
 }
 
+.player{
+    -fx-font-family: "Medici Text";
+    -fx-font-size: 60;
+}
+
 .number{
     -fx-font-family: "Medici Text";
     -fx-font-size: 35;

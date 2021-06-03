@@ -7,6 +7,7 @@ import it.polimi.ingsw.view.GUI.screenView.*;
 import it.polimi.ingsw.view.View;
 import it.polimi.ingsw.view.ViewState;
 import it.polimi.ingsw.view.clientModel.ClientBoard;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +18,7 @@ import javafx.scene.text.Font;
 import javafx.scene.transform.Scale;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,9 +35,10 @@ public class GUI extends Application implements View{
     private ReconnectScreenView reconnectScreenView;
     private NicknameScreenView nicknameScreenView;
     private PlayerNumberScreenView playerNumberScreenView;
-    private SetupScreenView ssetupScreenView;
+    private SetupScreenView setupScreenView;
     private WaitScreenView waitScreenView;
     private GameScreenView gameScreenView = null;
+    private PlayerVersusScreenView playerVersusScreenView;
 
     private NetworkHandler NH;
 
@@ -81,7 +84,6 @@ public class GUI extends Application implements View{
         }catch(IOException e){e.printStackTrace();}
     }
 
-    //TODO: scene da finire
     @Override
     public void setState(ViewState state) {
         if(state.equals(ViewState.chooseNickName)){
@@ -165,35 +167,13 @@ public class GUI extends Application implements View{
                 }catch(IOException e){e.printStackTrace();}
             });
         }
-        else if(state.equals(ViewState.discardLeaderCard)){
-            Platform.runLater(() -> {
-                primaryStage.setTitle("Maestri del rinascimento - Setup");
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
-                try {
-                    Pane root = fxmlLoader.load();
-                    currentScene.setRoot(root);
-                    gameScreen = root;
-                    ssetupScreenView = fxmlLoader.getController();
-                    ssetupScreenView.addObserver(NH);
-                    ssetupScreenView.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
-                    ssetupScreenView.addDevelopment(NH.getClientModel().getCardMarket());
-                    ssetupScreenView.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                    ssetupScreenView.setMessage("Scegli le due carte Leader da scartare");
-                    currentScene.setOnKeyPressed(e -> ssetupScreenView.handleKeyPressed(e));
-                    primaryStage.setResizable(true);
-                    primaryStage.setMaximized(true);
-                    scale(1600,900);
-                }catch(IOException e){e.printStackTrace();}
-            });
-        }
         else if(state.equals(ViewState.finishSetupOneResource) || state.equals(ViewState.finishSetupTwoResources)){
             Platform.runLater(() -> {
                 currentScene.setRoot(gameScreen);
-                if (state.equals(ViewState.finishSetupOneResource)) ssetupScreenView.addResources(1);
-                if (state.equals(ViewState.finishSetupTwoResources)) ssetupScreenView.addResources(2);
+                if (state.equals(ViewState.finishSetupOneResource)) setupScreenView.addResources(1);
+                if (state.equals(ViewState.finishSetupTwoResources)) setupScreenView.addResources(2);
                 String message = "Scegli " + ((state.equals(ViewState.finishSetupOneResource)) ? "una" : "la prima") + " risorsa da ottenere";
-                ssetupScreenView.setMessage(message);
+                setupScreenView.setMessage(message);
                 primaryStage.setResizable(true);
                 primaryStage.setMaximized(true);
                 scale(1600, 900);
@@ -288,8 +268,52 @@ public class GUI extends Application implements View{
 
     @Override
     public void printNames(HashMap<String, Integer> names, int inkwell) {
-
+        if(!state.equals(ViewState.disconnected)) {
+            Platform.runLater(() -> {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerVersusScreen.fxml"));
+                try {
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
+                    playerVersusScreenView = fxmlLoader.getController();
+                    playerVersusScreenView.setScreen(names);
+                    primaryStage.setResizable(true);
+                    primaryStage.setMaximized(true);
+                    scale(1600,900);
+                    PauseTransition PT = new PauseTransition();
+                    PT.setDuration(Duration.seconds(5));
+                    PT.setOnFinished(e -> goToSetup());
+                    PT.play();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
     }
+
+    private void goToSetup(){
+        Platform.runLater(() -> {
+            primaryStage.setTitle("Maestri del rinascimento - Setup");
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
+            try {
+                Pane root = fxmlLoader.load();
+                currentScene.setRoot(root);
+                gameScreen = root;
+                setupScreenView = fxmlLoader.getController();
+                setupScreenView.addObserver(NH);
+                setupScreenView.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
+                setupScreenView.addDevelopment(NH.getClientModel().getCardMarket());
+                setupScreenView.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                setupScreenView.setMessage("Scegli le due carte Leader da scartare");
+                currentScene.setOnKeyPressed(e -> setupScreenView.handleKeyPressed(e));
+                primaryStage.setResizable(true);
+                primaryStage.setMaximized(true);
+                scale(1600,900);
+            }catch(IOException e){e.printStackTrace();}
+        });
+    }
+
 
     @Override
     public void printResourceMarket(Marbles[][] a, Marbles b) {
@@ -348,11 +372,15 @@ public class GUI extends Application implements View{
 
     @Override
     public void printStrongBox(HashMap<Resources, Integer> SB, String nickname) {
-
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addStrongBox(SB));
+        }
     }
 
     @Override
     public void printWarehouse(HashMap<Integer, Pair<Resources, Integer>> WH, String nickname) {
-
+        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addWarehouse(WH));
+        }
     }
 }

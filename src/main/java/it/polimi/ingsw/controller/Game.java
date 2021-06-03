@@ -320,11 +320,13 @@ public class Game extends ModelObservable {
         notifySlot(playerBoard.getSlots(), playerBoard.getNickname());
 
         if(!wr.equals(playerBoard.getWarehouse())) {
+            System.out.println("WAREHOUSE");
             playerBoard.setWarehouse(wr);
             notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
         }
 
         if(!sb.equals(playerBoard.getStrongbox())){
+            System.out.println("STRONGBOX");
             playerBoard.setStrongbox(sb);
             notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
         }
@@ -345,6 +347,7 @@ public class Game extends ModelObservable {
         developmentCardMarket.getFirstCard(c, level);
         playerBoard.setActionDone(true);
         notifyActionDone(playerBoard.getNickname());
+        notifyDCMarket(developmentCardMarket);
     }
 
     //if player chooses to activate a leader card or the base production, the last position of the ArrayList

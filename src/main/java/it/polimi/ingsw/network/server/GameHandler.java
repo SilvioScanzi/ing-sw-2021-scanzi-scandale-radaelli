@@ -187,6 +187,9 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             gameHandlerNotify();
         } else {
             synchronized (clients) {
+                game.getBoard(client.getNickname()).setMoveNeeded(false);
+                game.getBoard(client.getNickname()).setActionDone(false);
+                game.getBoard(client.getNickname()).getHand().clear();
                 client.closeConnection();
                 synchronized (Lock) {
                     disconnectedPlayers.put(client.getNickname(), clientMap.get(client).getValue());

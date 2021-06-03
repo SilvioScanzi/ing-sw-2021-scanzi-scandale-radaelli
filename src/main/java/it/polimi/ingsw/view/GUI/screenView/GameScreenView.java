@@ -1140,8 +1140,23 @@ public class GameScreenView extends ViewObservable {
 
         ImageView tmp = new ImageView(selected.getImage());
         tmp.setId(selected.getId());
-        tmp.setFitWidth(25.0);
         tmp.setPreserveRatio(true);
+
+        if(selected.getParent().equals(Hand)){
+            tmp.setFitWidth(25.0);
+            IV.setFitWidth(47.0);
+        }
+
+        else if(IV.getParent().equals(Hand)){
+            tmp.setFitWidth(47.0);
+            IV.setFitWidth(25.0);
+        }
+
+        else{
+            tmp.setFitWidth(25.0);
+        }
+
+
 
         String r = Resources.getResourceFromID(tmp.getId().split("_")[0]);
         Integer idFrom = Integer.parseInt(String.valueOf(tmp.getId().split("_")[1].charAt(1)));
@@ -1179,7 +1194,7 @@ public class GameScreenView extends ViewObservable {
         });
 
         grayHand(false);
-
+        refreshHand();
         selected = null;
     }
 
