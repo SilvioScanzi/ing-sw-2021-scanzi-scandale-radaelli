@@ -35,6 +35,23 @@
     -fx-fill: white;
 }
 
+.smallnumber{
+    -fx-font-family: "Medici Text";
+    -fx-font-size: 20;
+}
+
+.opponentboardnumber{
+    -fx-font-family: "Medici Text";
+    -fx-font-size: 25;
+    -fx-fill: white;
+}
+
+
+.nickname{
+    -fx-font-family: "Enchanted Land";
+    -fx-font-size: 20;
+}
+
 .banner{
     -fx-background-image: url("../images/Banner.png");
     -fx-background-size: 100% 100%;

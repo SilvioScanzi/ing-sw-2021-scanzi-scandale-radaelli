@@ -119,19 +119,21 @@ public class Game extends ModelObservable {
                 players.get(player).getWarehouse().addDepot(1,R.get(0),1);
             }catch(Exception e){e.printStackTrace();}
         }
+        //player 3
         if(playerNumber >2){
-            //player 3
             if(player == (inkwell + 2)% playerNumber) {
                 players.get(player).getFaithTrack().advanceTrack();
+                notifyFT(getBoard(player).getFaithTrack(),getBoard(player).getNickname());
                 try{
                     players.get(player).getWarehouse().addDepot(1,R.get(0),1);
                 }catch(Exception e){e.printStackTrace();}
             }
         }
+        //player 4
         if(playerNumber >3){
-            //player 3
             if(player == (inkwell + 3)% playerNumber) {
                 players.get(player).getFaithTrack().advanceTrack();
+                notifyFT(getBoard(player).getFaithTrack(),getBoard(player).getNickname());
                 try{
                     if(R.get(0).equals(R.get(1)))
                         players.get(player).getWarehouse().addDepot(2,R.get(0),2);

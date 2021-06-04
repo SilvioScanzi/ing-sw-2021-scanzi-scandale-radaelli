@@ -27,10 +27,13 @@ public class ClientBoard {
         this.position = position;
         this.nickname = nickname;
         strongBox = new HashMap<>();
+        strongBox.put(Resources.Coins,0);
+        strongBox.put(Resources.Shields,0);
+        strongBox.put(Resources.Servants,0);
+        strongBox.put(Resources.Stones,0);
         leaderCardsHand = new ArrayList<>();
         leaderCardsPlayed = new ArrayList<>();
         warehouse = new HashMap<>();
-        strongBox = new HashMap<>();
         leaderCardsHand = new ArrayList<>();
         leaderCardsPlayed = new ArrayList<>();
         hand = new ArrayList<>();
@@ -66,6 +69,9 @@ public class ClientBoard {
 
     public void setStrongBox(HashMap<Resources, Integer> strongBox) {
         this.strongBox = strongBox;
+        for(Resources R : strongBox.keySet()){
+            if(!strongBox.containsKey(R)) strongBox.put(R,0);
+        }
     }
 
     public void setWarehouse(ArrayList<Triplet<Integer, Resources, Integer>> warehouse) {

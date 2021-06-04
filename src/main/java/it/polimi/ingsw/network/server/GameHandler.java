@@ -56,7 +56,6 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             //no need for synchronization because this first add is only done in one thread (lobbyManager)
             clients.add(CH);
         } else if (reconnect && disconnectedPlayers.size() == 1) {
-            System.out.println(disconnectedPlayers);
             synchronized (clients) {
                 int n = disconnectedPlayers.get(CH.getNickname());
                 clients.set(n, CH);
@@ -72,7 +71,6 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             }
             getNextActivePlayer();
         } else if (reconnect) {
-            System.out.println(disconnectedPlayers);
             synchronized (clients) {
                 int n = disconnectedPlayers.get(CH.getNickname());
                 clients.set(n, CH);

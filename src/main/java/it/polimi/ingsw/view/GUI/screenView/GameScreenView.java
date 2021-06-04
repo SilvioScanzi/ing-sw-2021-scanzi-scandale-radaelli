@@ -94,7 +94,6 @@ public class GameScreenView extends ViewObservable {
     @FXML
     private Pane W3_3;
 
-    //TODO: mancano solo gli slot
     @FXML
     private GridPane Slots;
     @FXML
@@ -110,6 +109,9 @@ public class GameScreenView extends ViewObservable {
     private Button confirmAction;
     @FXML
     private Button endTurn;
+
+    @FXML
+    private GridPane players;
 
 
     //key is the index, value is: Resource of the card, Victory points and if played or not
@@ -168,6 +170,133 @@ public class GameScreenView extends ViewObservable {
         addLeaderCards(board.getLeaderCardsPlayed(),board.getLeaderCardsHand());
         addHand(board.getHand());
         addSlots(board.getSlot_1(),board.getSlot_2(),board.getSlot_3());
+    }
+
+    public void addPlayers(HashMap<String,ClientBoard> pl, String nickname){
+        for(String S : pl.keySet()){
+            if(!S.equals(nickname)){
+                addPlayerBoard(pl.get(S));
+            }
+        }
+    }
+
+    public void addPlayerBoard(ClientBoard board) {
+        boolean flag = false;
+        Node b = null;
+        int r = 0;
+        for (Node n : players.getChildren()) {
+            if (n.getId().split("_")[0].equals(board.getNickname())) {
+                r = GridPane.getRowIndex(n);
+                b = n;
+                flag = true;
+            }
+        }
+        if (flag) {
+            players.getChildren().remove(b);
+        } else {
+            r = players.getChildren().size();
+        }
+        Pane p = new Pane();
+        players.add(p, 0, r);
+        p.setId(board.getNickname()+"_"+board.getPosition());
+        p.setPrefWidth(200);
+        p.setPrefHeight(157);
+        //background
+        String target = "/images/Scroll.png";
+        ImageView background = new ImageView(new Image(GUI.class.getResource(target).toString()));
+        background.setFitHeight(157);
+        background.setFitWidth(200);
+        p.getChildren().add(background);
+        //nickname
+        Text nick = new Text(board.getNickname());
+        p.getChildren().add(nick);
+        nick.setLayoutX(0);
+        nick.setLayoutY(20);
+        nick.setTextAlignment(TextAlignment.CENTER);
+        nick.getStyleClass().add("nickname");
+        nick.setWrappingWidth(200);
+        //resources
+        for (Resources R : Resources.values()) {
+            Pane pane = new Pane();
+            target = "/images/resources/" + R.getID() + ".png";
+            ImageView Icon = new ImageView(new Image(GUI.class.getResource(target).toString()));
+            pane.getChildren().add(Icon);
+            Icon.setFitWidth(29);
+            Icon.setPreserveRatio(true);
+            Icon.setLayoutX(6);
+            Icon.setLayoutY(7);
+            int amount = board.getStrongBox().get(R);
+            for (int j : board.getWarehouse().keySet()) {
+                if (board.getWarehouse().get(j).getKey().equals(R)) {
+                    amount = amount + board.getWarehouse().get(j).getValue();
+                }
+            }
+            for (Triplet<Resources, Integer, Integer> T : board.getLeaderCardsPlayed()) {
+                if (T.get_1().equals(R) && T.get_2() == 3) {
+                    amount = amount + T.get_3();
+                }
+            }
+            Text AmountText = new Text("" + amount);
+            pane.getChildren().add(AmountText);
+            AmountText.setLayoutX(47);
+            AmountText.setLayoutY(25);
+            AmountText.getStyleClass().add("smallnumber");
+            p.getChildren().add(pane);
+            switch(R){
+                case Coins ->{
+                    pane.setLayoutX(33);
+                    pane.setLayoutY(18);
+                }
+                case Shields -> {
+                    pane.setLayoutX(33);
+                    pane.setLayoutY(52);
+                }
+                case Servants -> {
+                    pane.setLayoutX(109);
+                    pane.setLayoutY(18);
+                }
+                case Stones -> {
+                    pane.setLayoutX(109);
+                    pane.setLayoutY(52);
+                }
+            }
+        }
+        //development cards
+        Pane DCpane = new Pane();
+        target = "/images/DevelopmentCardBack.png";
+        ImageView DCs = new ImageView(new Image(GUI.class.getResource(target).toString()));
+        int DCnumber = board.getSlot_1().size() + board.getSlot_2().size() + board.getSlot_3().size();
+        Text DCText = new Text(""+DCnumber);
+        DCpane.getChildren().add(DCs);
+        DCpane.getChildren().add(DCText);
+        DCs.setFitWidth(32);
+        DCs.setPreserveRatio(true);
+        DCs.setLayoutY(-1);
+        DCs.setLayoutX(2);
+        DCText.setLayoutX(47);
+        DCText.setLayoutY(25);
+        DCText.getStyleClass().add("smallnumber");
+        p.getChildren().add(DCpane);
+        DCpane.setLayoutX(35);
+        DCpane.setLayoutY(100);
+        //leader cards
+        Pane LCpane = new Pane();
+        target = "/images/LeaderCardBack.png";
+        ImageView LCs = new ImageView(new Image(GUI.class.getResource(target).toString()));
+        int LCnumber = board.getLeaderCardsPlayed().size();
+        Text LCText = new Text(""+LCnumber);
+        LCpane.getChildren().add(LCs);
+        LCpane.getChildren().add(LCText);
+        LCs.setFitWidth(32);
+        LCs.setPreserveRatio(true);
+        LCs.setLayoutY(-1);
+        LCs.setLayoutX(2);
+        LCText.setLayoutX(47);
+        LCText.setLayoutY(25);
+        LCText.getStyleClass().add("smallnumber");
+        p.getChildren().add(LCpane);
+        LCpane.setLayoutX(108);
+        LCpane.setLayoutY(100);
     }
 
     public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1,ArrayList<Pair<Colours,Integer>> Slot_2,ArrayList<Pair<Colours,Integer>> Slot_3){
@@ -537,6 +666,7 @@ public class GameScreenView extends ViewObservable {
                 }
                 if(LCMap.containsKey(i) && !LCMap.get(i).get_3()) grayNotPlayedLeaderCard(true,i-1,IM);
             }
+            grayBoards(true);
             grayEmptyWarehouse(true);
             grayHand(true);
             grayStrongBox(true,"");
@@ -545,6 +675,7 @@ public class GameScreenView extends ViewObservable {
             //Clickable board
             grayWarehouse(false,"move");
             grayCardMarket(false);
+            grayBoards(false);
             grayResourceMarket(false);
             for(int i = 1; i<=2;i++){
                 ImageView IM = null;
@@ -563,6 +694,21 @@ public class GameScreenView extends ViewObservable {
         grayResourceMarket(true);
         grayCardMarket(true);
         grayProduction(true);
+    }
+
+    public void grayBoards(boolean gray){
+        if(gray){
+            for(Node n : players.getChildren()){
+                n.getStyleClass().remove("selectable");
+                n.setOnMouseClicked(null);
+            }
+        }
+        else{
+            for(Node n : players.getChildren()){
+                if(!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
+                n.setOnMouseClicked(e -> notifyPrintRequest("G "+ n.getId().split("_")[1]));
+            }
+        }
     }
 
     public void grayWarehouse(boolean gray, String type){
@@ -1129,7 +1275,6 @@ public class GameScreenView extends ViewObservable {
         selected = null;
     }
 
-    //TODO: Scambi con la mano da fixare
     private void handleMoveAction(ImageView IV){
         isMoveAction = true;
 
@@ -1449,6 +1594,4 @@ public class GameScreenView extends ViewObservable {
         else selected.setEffect(null);
         confirmAction.setDisable(false);
     }
-
-
 }

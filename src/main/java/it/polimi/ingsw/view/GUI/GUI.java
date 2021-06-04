@@ -39,6 +39,7 @@ public class GUI extends Application implements View{
     private WaitScreenView waitScreenView;
     private GameScreenView gameScreenView = null;
     private PlayerVersusScreenView playerVersusScreenView;
+    private OpponentBoardScreenView opponentBoardScreenView;
 
     private NetworkHandler NH;
 
@@ -194,6 +195,7 @@ public class GUI extends Application implements View{
                         gameScreenView.addMarbles(NH.getClientModel().getResourceMarket(), NH.getClientModel().getRemainingMarble());
                         gameScreenView.addDevelopment(NH.getClientModel().getCardMarket());
                         gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                        gameScreenView.addPlayers(NH.getClientModel().getBoards(),NH.getClientModel().getMyNickname());
                     }
 
                     currentScene.setRoot(gameScreen);
@@ -219,6 +221,29 @@ public class GUI extends Application implements View{
         currentScene.getRoot().getTransforms().setAll(scale);
     }
 
+    private void goToSetup(){
+        Platform.runLater(() -> {
+            primaryStage.setTitle("Maestri del rinascimento - Setup");
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
+            try {
+                Pane root = fxmlLoader.load();
+                currentScene.setRoot(root);
+                gameScreen = root;
+                setupScreenView = fxmlLoader.getController();
+                setupScreenView.addObserver(NH);
+                setupScreenView.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
+                setupScreenView.addDevelopment(NH.getClientModel().getCardMarket());
+                setupScreenView.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                setupScreenView.setMessage("Scegli le due carte Leader da scartare");
+                currentScene.setOnKeyPressed(e -> setupScreenView.handleKeyPressed(e));
+                primaryStage.setResizable(true);
+                primaryStage.setMaximized(true);
+                scale(1600,900);
+            }catch(IOException e){e.printStackTrace();}
+        });
+    }
+
     @Override
     public void printDisconnected(String name) {
 
@@ -231,7 +256,21 @@ public class GUI extends Application implements View{
 
     @Override
     public void printBoard(ClientBoard board) {
-
+        Platform.runLater(() -> {
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/OpponentBoardScreen.fxml"));
+            try {
+                Pane root = fxmlLoader.load();
+                currentScene.setRoot(root);
+                opponentBoardScreenView = fxmlLoader.getController();
+                opponentBoardScreenView.addObserver(NH);
+                opponentBoardScreenView.addBoard(board);
+                opponentBoardScreenView.addScreen(gameScreen,currentScene,gameScreenView,state);
+                primaryStage.setResizable(true);
+                primaryStage.setMaximized(true);
+                scale(1600,900);
+            }catch(IOException e){e.printStackTrace();}
+        });
     }
 
     @Override
@@ -291,30 +330,6 @@ public class GUI extends Application implements View{
         }
     }
 
-    private void goToSetup(){
-        Platform.runLater(() -> {
-            primaryStage.setTitle("Maestri del rinascimento - Setup");
-            fxmlLoader = new FXMLLoader();
-            fxmlLoader.setLocation(getClass().getResource("/fxml/SetupScreen.fxml"));
-            try {
-                Pane root = fxmlLoader.load();
-                currentScene.setRoot(root);
-                gameScreen = root;
-                setupScreenView = fxmlLoader.getController();
-                setupScreenView.addObserver(NH);
-                setupScreenView.addMarbles(NH.getClientModel().getResourceMarket(),NH.getClientModel().getRemainingMarble());
-                setupScreenView.addDevelopment(NH.getClientModel().getCardMarket());
-                setupScreenView.addLeader(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                setupScreenView.setMessage("Scegli le due carte Leader da scartare");
-                currentScene.setOnKeyPressed(e -> setupScreenView.handleKeyPressed(e));
-                primaryStage.setResizable(true);
-                primaryStage.setMaximized(true);
-                scale(1600,900);
-            }catch(IOException e){e.printStackTrace();}
-        });
-    }
-
-
     @Override
     public void printResourceMarket(Marbles[][] a, Marbles b) {
         if(gameScreenView != null && !state.equals(ViewState.reconnecting)) {
@@ -331,10 +346,16 @@ public class GUI extends Application implements View{
 
     @Override
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
-        if(gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> {if((NH.getClientModel().getMyNickname().equals(nickname))) gameScreenView.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());});
+        if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> {
+                if ((NH.getClientModel().getMyNickname().equals(nickname)))
+                    gameScreenView.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                else
+                    gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+            });
         }
     }
+
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
@@ -365,22 +386,37 @@ public class GUI extends Application implements View{
 
     @Override
     public void printSlot(ArrayList<ArrayList<Pair<Colours, Integer>>> slots, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> gameScreenView.addSlots(slots.get(0),slots.get(1),slots.get(2)));
+        if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> {
+                if ((NH.getClientModel().getMyNickname().equals(nickname)))
+                    gameScreenView.addSlots(slots.get(0),slots.get(1),slots.get(2));
+                else
+                    gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+            });
         }
     }
 
     @Override
     public void printStrongBox(HashMap<Resources, Integer> SB, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> gameScreenView.addStrongBox(SB));
+        if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> {
+                if ((NH.getClientModel().getMyNickname().equals(nickname)))
+                    gameScreenView.addStrongBox(SB);
+                else
+                    gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+            });
         }
     }
 
     @Override
     public void printWarehouse(HashMap<Integer, Pair<Resources, Integer>> WH, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> gameScreenView.addWarehouse(WH));
+        if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> {
+                if ((NH.getClientModel().getMyNickname().equals(nickname)))
+                    gameScreenView.addWarehouse(WH);
+                else
+                    gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+            });
         }
     }
 }

@@ -18,7 +18,7 @@
             <Image url="@../images/Parchment.jpg" />
          </image>
       </ImageView>
-      <ImageView fitHeight="339.0" fitWidth="196.0" layoutX="39.0" layoutY="484.0">
+      <ImageView fitHeight="339.0" fitWidth="196.0" layoutX="39.0" layoutY="527.0">
          <image>
             <Image url="@../images/frame.png" />
          </image>
@@ -264,7 +264,7 @@
       </GridPane>
       <Button fx:id="confirmAction" layoutX="318.0" layoutY="322.0" mnemonicParsing="false" onMouseClicked="#handleConfirmClick" prefWidth="150" styleClass="gameButton" text="Conferma  azione" />
       <Button fx:id="endTurn" layoutX="494.0" layoutY="322.0" mnemonicParsing="false" onMouseClicked="#handleEndTurnClick" prefWidth="150" styleClass="gameButton" text="Fine  turno" />
-      <GridPane fx:id="Hand" layoutX="78.0" layoutY="506.0" prefHeight="289.0" prefWidth="118.0">
+      <GridPane fx:id="Hand" layoutX="78.0" layoutY="548.0" prefHeight="289.0" prefWidth="118.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="101.1939468383789" minWidth="10.0" prefWidth="101.1939468383789" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.8060531616211" minWidth="10.0" prefWidth="98.8060531616211" />
@@ -277,7 +277,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
       </GridPane>
-      <GridPane layoutX="41.0" layoutY="39.0" prefHeight="429.0" prefWidth="197.0">
+      <GridPane fx:id="players" layoutX="39.0" layoutY="14.0" prefHeight="484.0" prefWidth="197.0">
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
         </columnConstraints>
