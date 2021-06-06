@@ -87,6 +87,7 @@ public class OpponentBoardScreenView extends ViewObservable{
                 scene.setRoot(pane);
                 if(state.equals(ViewState.myTurn)) screenView.setActionDone(false);
                 screenView.grayOut(state.equals(ViewState.notMyTurn));
+                screenView.grayBoards(false);
         });
     }
 

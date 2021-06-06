@@ -196,12 +196,19 @@ public class GUI extends Application implements View{
                         gameScreenView.addDevelopment(NH.getClientModel().getCardMarket());
                         gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                         gameScreenView.addPlayers(NH.getClientModel().getBoards(),NH.getClientModel().getMyNickname());
+                        gameScreenView.setCharacter(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getPosition());
                     }
 
                     currentScene.setRoot(gameScreen);
 
-                    if(state.equals(ViewState.myTurn)) gameScreenView.setActionDone(false);
-                    gameScreenView.grayOut(state.equals(ViewState.notMyTurn));
+                    if(state.equals(ViewState.myTurn)) {
+                        gameScreenView.grayOut(false);
+                        gameScreenView.setActionDone(false);
+                    }
+                    else{
+                        gameScreenView.grayOut(true);
+                        gameScreenView.grayBoards(false);
+                    }
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -279,15 +286,14 @@ public class GUI extends Application implements View{
             case nicknameAlreadyInUse -> Platform.runLater(() -> nicknameScreenView.setErrormsg("Il nickname scelto è già in uso"));
             case unavailableConnection -> Platform.runLater(() -> connectionScreenView.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
             case actionDone -> Platform.runLater(() -> gameScreenView.setActionDone(true));
-            case moveActionWrong -> Platform.runLater(() -> {
+            case moveActionWrong, buyDevelopmentWrong -> Platform.runLater(() -> {
                 gameScreenView.addErrorMessage(message.toString());
                 gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
-                gameScreenView.grayWarehouse(false,"move");
+                gameScreenView.grayOut(false);
+                if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();
+                /*gameScreenView.grayWarehouse(false,"move");
                 gameScreenView.grayHand(false);
-            });
-            case buyDevelopmentWrong -> Platform.runLater(() -> {
-                gameScreenView.addErrorMessage(message.toString());
-                gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
+                gameScreenView.grayPlayedLeaderCard(false,"move");*/
             });
             case waitForReconnection -> Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
@@ -307,7 +313,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void printNames(HashMap<String, Integer> names, int inkwell) {
-        if(!state.equals(ViewState.disconnected)) {
+        if(!state.equals(ViewState.disconnected) && !state.equals(ViewState.myTurn) && !state.equals(ViewState.notMyTurn)) {
             Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerVersusScreen.fxml"));
@@ -412,8 +418,11 @@ public class GUI extends Application implements View{
     public void printWarehouse(HashMap<Integer, Pair<Resources, Integer>> WH, String nickname) {
         if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
             Platform.runLater(() -> {
-                if ((NH.getClientModel().getMyNickname().equals(nickname)))
+                if ((NH.getClientModel().getMyNickname().equals(nickname))) {
                     gameScreenView.addWarehouse(WH);
+                    gameScreenView.grayOut(false);
+                    if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();
+                }
                 else
                     gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
             });

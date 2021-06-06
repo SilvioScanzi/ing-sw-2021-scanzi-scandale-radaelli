@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.screenView.PlayerVersusScreenView">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.screenView.PlayerVersusScreenView">
    <children>
       <ImageView fitHeight="900.0" fitWidth="1600.0">
          <image>
@@ -17,34 +17,29 @@
             <Image url="@../images/Title.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="PL3" fitHeight="333.0" fitWidth="469.0" layoutX="750.0" layoutY="569.0">
+      <ImageView fx:id="PL3" fitHeight="479.0" fitWidth="364.0" layoutX="819.0" layoutY="425.0" preserveRatio="true">
          <image>
             <Image url="@../images/Leonardo.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="PL4" fitHeight="369.0" fitWidth="303.0" layoutX="1314.0" layoutY="543.0">
+      <ImageView fx:id="PL4" fitHeight="470.0" fitWidth="375.0" layoutX="1253.0" layoutY="448.0" preserveRatio="true">
          <image>
             <Image url="@../images/Michelangelo.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="PL1" fitHeight="391.0" fitWidth="324.0" layoutX="-12.0" layoutY="509.0">
+      <ImageView fx:id="PL1" fitHeight="452.0" fitWidth="375.0" layoutX="-29.0" layoutY="457.0" preserveRatio="true">
          <image>
-            <Image url="@../images/Raphael.gif" />
+            <Image url="@../images/Raphael.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="PL2" fitHeight="315.0" fitWidth="319.0" layoutX="400.0" layoutY="588.0">
+      <ImageView fx:id="PL2" fitHeight="444.0" fitWidth="344.0" layoutX="375.0" layoutY="464.0" preserveRatio="true">
          <image>
             <Image url="@../images/Donatello.png" />
          </image>
       </ImageView>
-      <Text fx:id="P1" layoutX="14.0" layoutY="500.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.6085456478438" />
-      <Text fx:id="P2" layoutX="474.0" layoutY="567.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.60854564784387" />
-      <Text fx:id="P3" layoutX="901.0" layoutY="527.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.6085456478438" />
-      <Text fx:id="P4" layoutX="1373.0" layoutY="527.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.60854564784375" />
-      <ImageView fx:id="VS" fitHeight="369.0" fitWidth="661.0" layoutX="470.0" layoutY="266.0">
-         <image>
-            <Image url="@../images/vs gif.gif" />
-         </image>
-      </ImageView>
+      <Text fx:id="P1" layoutX="64.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.6085456478438" />
+      <Text fx:id="P2" layoutX="441.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.60854564784387" />
+      <Text fx:id="P3" layoutX="910.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.6085456478438" />
+      <Text fx:id="P4" layoutX="1332.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.60854564784375" />
    </children>
 </AnchorPane>

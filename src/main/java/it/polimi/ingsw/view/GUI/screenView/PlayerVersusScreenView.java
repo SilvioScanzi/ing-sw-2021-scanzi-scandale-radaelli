@@ -28,8 +28,6 @@ public class PlayerVersusScreenView {
     private Text P4;
     @FXML
     private ImageView PL4;
-    @FXML
-    private ImageView VS;
 
 
     public void setScreen(HashMap<String,Integer> players){
@@ -54,7 +52,6 @@ public class PlayerVersusScreenView {
                 PL4.setFitWidth(446);
                 PL4.setLayoutX(1600);
                 PL4.setLayoutY(558);
-                VS.setTranslateY(100);
                 P4.setLayoutX(2000);
                 TranslateTransition TT = new TranslateTransition(Duration.seconds(0.5),PL1);
                 TT.setFromX(-500);
@@ -81,25 +78,28 @@ public class PlayerVersusScreenView {
             case 2 -> {
                 P1.setText(tmp.get(0));
                 P4.setText(tmp.get(1));
+                PL4.setImage(PL2.getImage());
                 AP.getChildren().remove(P2);
                 AP.getChildren().remove(PL2);
                 AP.getChildren().remove(PL3);
-                AP.getChildren().remove(PL3);
+                AP.getChildren().remove(P3);
             }
             case 3 -> {
                 P1.setText(tmp.get(0));
                 P2.setText(tmp.get(1));
-                P4.setText(tmp.get(2));
-                AP.getChildren().remove(PL3);
-                AP.getChildren().remove(PL3);
+                P3.setText(tmp.get(2));
+                PL2.setLayoutX(630);
+                P2.setLayoutX(690);
+                PL3.setLayoutX(1237);
+                P3.setLayoutX(1332);
+                AP.getChildren().remove(P4);
+                AP.getChildren().remove(PL4);
             }
             default -> {
-                {
-                    P1.setText(tmp.get(0));
-                    P2.setText(tmp.get(1));
-                    P3.setText(tmp.get(2));
-                    P4.setText(tmp.get(3));
-                }
+                P1.setText(tmp.get(0));
+                P2.setText(tmp.get(1));
+                P3.setText(tmp.get(2));
+                P4.setText(tmp.get(3));
             }
         }
     }

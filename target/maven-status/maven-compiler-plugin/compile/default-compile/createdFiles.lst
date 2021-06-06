@@ -66,6 +66,7 @@ it\polimi\ingsw\network\messages\ResourceHandMessage.class
 it\polimi\ingsw\network\messages\TurnDoneMessage.class
 it\polimi\ingsw\network\messages\ResourceMarketMessage.class
 it\polimi\ingsw\network\messages\BuyResourcesMessage.class
+it\polimi\ingsw\view\GUI\screenView\OpponentBoardScreenView$1.class
 it\polimi\ingsw\exceptions\InvalidPlacementException.class
 it\polimi\ingsw\model\Strongbox.class
 it\polimi\ingsw\model\ResourceMarket.class
@@ -87,6 +88,7 @@ it\polimi\ingsw\view\clientModel\ClientModel.class
 it\polimi\ingsw\network\messages\LeaderCardHandUpdateMessage.class
 it\polimi\ingsw\observers\GameHandlerObserver.class
 it\polimi\ingsw\network\messages\NicknameMessage.class
+it\polimi\ingsw\view\GUI\screenView\PlayerVersusScreenView.class
 it\polimi\ingsw\model\DevelopmentCard.class
 it\polimi\ingsw\observers\ModelObserver.class
 it\polimi\ingsw\network\messages\FinishSetupMessage.class
