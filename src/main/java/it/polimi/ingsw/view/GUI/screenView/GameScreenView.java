@@ -25,6 +25,7 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+//TODO: finestra per scegliere quali risorse prendere nelle produzioni a scelta
 public class GameScreenView extends ViewObservable {
 
     @FXML
@@ -54,6 +55,19 @@ public class GameScreenView extends ViewObservable {
 
     @FXML
     private GridPane LeaderCardsPlayed;
+
+    @FXML
+    private GridPane RES_P1;
+    @FXML
+    private GridPane RES_P2;
+    @FXML
+    private GridPane RES_P3;
+    @FXML
+    private GridPane RES_P4;
+    @FXML
+    private GridPane RES_P5;
+    @FXML
+    private GridPane RES_P6;
 
     @FXML
     private GridPane FaithTrack;
@@ -97,7 +111,7 @@ public class GameScreenView extends ViewObservable {
     @FXML
     private GridPane Slots;
     @FXML
-    private ImageView P_B;
+    private ImageView P_B_6;
     @FXML
     private ImageView S_1_ARROW;
     @FXML
@@ -122,9 +136,11 @@ public class GameScreenView extends ViewObservable {
     private ImageView selectedCard = null;
     private final ArrayList<Triplet<String,Integer,Integer>> moveAction = new ArrayList<>();
     private final ArrayList<Pair<String, Integer>> buyDevelopmentAction = new ArrayList<>();
+    private final HashMap<Integer, ArrayList<Pair<String,Integer>>> productionAction = new HashMap<>();
     private Pair<Colours,Integer> buyDevelopmentCard;
     private boolean isMoveAction = false;
     private boolean isBuyAction = false;
+    private boolean isProductionAction = false;
     private boolean actionDone = false;
     private boolean prevResBuyAction = false;
     private Color character;
@@ -171,8 +187,6 @@ public class GameScreenView extends ViewObservable {
             }
             LCMap.put(i+1,new Triplet<>(LC.get(i).getKey(),LC.get(i).getValue(),played));
         }
-        LCMap.clear();
-        LCMap.put(1,new Triplet<>(Resources.Coins,3,true));
     }
 
     public void addBoard(ClientBoard board){
@@ -312,7 +326,40 @@ public class GameScreenView extends ViewObservable {
     }
 
     public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1,ArrayList<Pair<Colours,Integer>> Slot_2,ArrayList<Pair<Colours,Integer>> Slot_3){
-        for(Node n : Slots.getChildren()){
+        String path1 = "/images/developmentCards/B1.png";
+        String path2 = "/images/developmentCards/G2.png";
+        ImageView DCView = new ImageView(new Image(GUI.class.getResource(path1).toString()));
+        DCView.setFitWidth(109.0);
+        DCView.setPreserveRatio(true);
+        DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+        DCView.setTranslateY(15 -(25.0)*0);
+        DCView.setTranslateX(-5);
+        DCView.setId("P_S_1");
+        StackPane SP = null;
+        for (Node n : Slots.getChildren()) {
+            if (GridPane.getColumnIndex(n) == 0) {
+                SP = (StackPane) n;
+            }
+        }
+        SP.getChildren().add(DCView);
+
+
+        ImageView DCView1 = new ImageView(new Image(GUI.class.getResource(path2).toString()));
+        DCView1.setFitWidth(109.0);
+        DCView1.setPreserveRatio(true);
+        DCView1.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+        DCView1.setTranslateY(15 -(25.0)*0);
+        DCView1.setTranslateX(-5);
+        DCView1.setId("P_S_2");
+        StackPane SP1 = null;
+        for (Node n : Slots.getChildren()) {
+            if (GridPane.getColumnIndex(n) == 1) {
+                SP1 = (StackPane) n;
+            }
+        }
+        SP1.getChildren().add(DCView1);
+
+        /*for(Node n : Slots.getChildren()){
             ((StackPane)n).getChildren().clear();
         }
         int j = 0;
@@ -380,7 +427,7 @@ public class GameScreenView extends ViewObservable {
                 DCView.setId("P_S_3");
             }
             j++;
-        }
+        }*/
     }
 
     public void addMarbles(Marbles[][] market, Marbles remainingMarble){
@@ -559,46 +606,7 @@ public class GameScreenView extends ViewObservable {
     public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed, ArrayList<Triplet<Resources,Integer,Integer>> LCHand){
         LeaderCardsPlayed.getChildren().clear();
 
-        String path = "/images/leaderCards/CO3.png";
-        ImageView LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-        LCView.setFitWidth(140.0);
-        LCView.setPreserveRatio(true);
-        LCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-        LCView.setId("F_L_"+1);
-        LeaderCardsPlayed.add(LCView,0,0);
-        path = "/images/resources/CO.png";
-
-        AnchorPane AP = new AnchorPane();
-        AP.setId("AP_1");
-        LeaderCardsPlayed.add(AP,0,0);
-
-        Pane P = new Pane();
-        AP.getChildren().add(P);
-        P.setLayoutX(25);
-        P.setLayoutY(171);
-        P.setPrefHeight(34);
-        P.setPrefWidth(34);
-        P.setId("W_4_1");
-        ImageView R = new ImageView(new Image(GUI.class.getResource(path).toString()));
-        R.setFitWidth(34);
-        R.setPreserveRatio(true);
-        R.setId("CO_W41");
-        P.getChildren().add(R);
-
-        Pane P2 = new Pane();
-        AP.getChildren().add(P2);
-        P2.setLayoutX(75);
-        P2.setLayoutY(171);
-        P2.setPrefHeight(34);
-        P2.setPrefWidth(34);
-        P2.setId("W_4_2");
-        ImageView R2 = new ImageView(new Image(GUI.class.getResource(path).toString()));
-        R2.setFitWidth(34);
-        R2.setPreserveRatio(true);
-        R2.setId("CO_W42");
-        P2.getChildren().add(R2);
-
-        /*for(Triplet<Resources,Integer,Integer> T : LCPlayed){
+        for(Triplet<Resources,Integer,Integer> T : LCPlayed){
             String path = "/images/leaderCards/" + T.get_1().getID() + T.get_2() + ".png";
             ImageView LCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
             LCView.setFitWidth(140.0);
@@ -670,7 +678,7 @@ public class GameScreenView extends ViewObservable {
                     grayNotPlayedLeaderCard(false,backLCView);
                 }
             }
-        }*/
+        }
     }
 
     public void addHand(ArrayList<Resources> hand){
@@ -753,6 +761,7 @@ public class GameScreenView extends ViewObservable {
             grayHand(true);
             grayStrongBox(true,"");
             grayEmptyLeaderCard(true);
+            graySlots(true,"");
         }
         else{
             //Clickable board
@@ -919,7 +928,30 @@ public class GameScreenView extends ViewObservable {
             }
         }
         else if(type.equals("production")){
-
+            if (W1_1.getChildren().size() > 0) {
+                if(!W1_1.getChildren().get(0).getStyleClass().contains("selectable")) W1_1.getChildren().get(0).getStyleClass().add("selectable");
+                W1_1.getChildren().get(0).setOnMouseClicked(e -> handleProductionSelect(W1_1));
+            }
+            if (W2_1.getChildren().size() > 0) {
+                if(!W2_1.getChildren().get(0).getStyleClass().contains("selectable")) W2_1.getChildren().get(0).getStyleClass().add("selectable");
+                W2_1.getChildren().get(0).setOnMouseClicked(e -> handleProductionSelect(W2_1));
+            }
+            if (W2_2.getChildren().size() > 0) {
+                if(!W2_2.getChildren().get(0).getStyleClass().contains("selectable")) W2_2.getChildren().get(0).getStyleClass().add("selectable");
+                W2_2.getChildren().get(0).setOnMouseClicked(e -> handleProductionSelect(W2_2));
+            }
+            if (W3_1.getChildren().size() > 0) {
+                if(!W3_1.getChildren().get(0).getStyleClass().contains("selectable")) W3_1.getChildren().get(0).getStyleClass().add("selectable");
+                W3_1.getChildren().get(0).setOnMouseClicked(e -> handleProductionSelect(W3_1));
+            }
+            if (W3_2.getChildren().size() > 0) {
+                if(!W3_2.getChildren().get(0).getStyleClass().contains("selectable")) W3_2.getChildren().get(0).getStyleClass().add("selectable");
+                W3_2.getChildren().get(0).setOnMouseClicked(e -> handleProductionSelect(W3_2));
+            }
+            if (W3_3.getChildren().size() > 0) {
+                if(!W3_3.getChildren().get(0).getStyleClass().contains("selectable")) W3_3.getChildren().get(0).getStyleClass().add("selectable");
+                W3_3.getChildren().get(0).setOnMouseClicked(e -> handleProductionSelect(W3_3));
+            }
         }
     }
 
@@ -1128,6 +1160,21 @@ public class GameScreenView extends ViewObservable {
                     }
                 }
             }
+        } else if(type.equals("production")){
+            for (Integer i : LCMap.keySet()) {
+                if (LCMap.get(i).get_3()) {
+                    for (Node m : LeaderCardsPlayed.getChildren()) {
+                        if (m.getId().startsWith("AP") && GridPane.getColumnIndex(m) == (i - 1)) {
+                            for (Node h : ((AnchorPane) m).getChildren()) {
+                                for(Node n : ((Pane) h).getChildren()){
+                                    if (!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
+                                    n.setOnMouseClicked(e -> handleProductionSelect((Pane) n.getParent()));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -1151,15 +1198,28 @@ public class GameScreenView extends ViewObservable {
             if(!SB_SE_ICON.getStyleClass().contains("selectable")) SB_SE_ICON.getStyleClass().add("selectable");
             SB_SE_ICON.setOnMouseClicked(e -> handleBuySelect((Pane) SB_SE_ICON.getParent()));
         }
+        else if(type.equals("production")){
+            if(!SB_CO_ICON.getStyleClass().contains("selectable")) SB_CO_ICON.getStyleClass().add("selectable");
+            SB_CO_ICON.setOnMouseClicked(e -> handleProductionSelect((Pane) SB_CO_ICON.getParent()));
+            if(!SB_SH_ICON.getStyleClass().contains("selectable")) SB_SH_ICON.getStyleClass().add("selectable");
+            SB_SH_ICON.setOnMouseClicked(e -> handleProductionSelect((Pane) SB_SH_ICON.getParent()));
+            if(!SB_ST_ICON.getStyleClass().contains("selectable")) SB_ST_ICON.getStyleClass().add("selectable");
+            SB_ST_ICON.setOnMouseClicked(e -> handleProductionSelect((Pane) SB_ST_ICON.getParent()));
+            if(!SB_SE_ICON.getStyleClass().contains("selectable")) SB_SE_ICON.getStyleClass().add("selectable");
+            SB_SE_ICON.setOnMouseClicked(e -> handleProductionSelect((Pane) SB_SE_ICON.getParent()));
+        }
     }
 
     public void grayProduction(boolean gray){
         if(gray){
-            P_B.getStyleClass().remove("selectable");
-            P_B.setOnMouseClicked(null);
+            P_B_6.getStyleClass().remove("selectable");
+            P_B_6.setOnMouseClicked(null);
         }else{
-            if(!P_B.getStyleClass().contains("selectable")) P_B.getStyleClass().add("selectable");
-            P_B.setOnMouseClicked(e -> handleSelect(P_B));
+            if(!P_B_6.getStyleClass().contains("selectable")) P_B_6.getStyleClass().add("selectable");
+            P_B_6.setOnMouseClicked(e -> {
+                if(!isProductionAction) handleSelect(P_B_6);
+                else handleProduction(P_B_6);
+            });
         }
     }
 
@@ -1180,12 +1240,43 @@ public class GameScreenView extends ViewObservable {
             S_3_ARROW.getStyleClass().remove("bigselectable");
             S_3_ARROW.setOnMouseClicked(null);
             S_3_ARROW.setEffect(null);
+
+            //grayOut of leader cards with production action
+            for(Integer I : LCMap.keySet()){
+                if(LCMap.get(I).get_3() && LCMap.get(I).get_2()==4){
+                    for(Node n : LeaderCardsPlayed.getChildren()){
+                        if(GridPane.getColumnIndex(n) == I-1 && !n.getId().startsWith("AP")){
+                            n.getStyleClass().remove("selectable");
+                            n.setOnMouseClicked(null);
+                        }
+                    }
+                }
+            }
         }else if(type.equals("production")){
+            //grayIn of the slots
             for(Node n : Slots.getChildren()) {
                 for(Node d : ((StackPane) n).getChildren()) {
                     if(!(d.getId()==null) && d.getId().startsWith("P_S_")) {
                         if(!d.getStyleClass().contains("selectable")) d.getStyleClass().add("selectable");
-                        d.setOnMouseClicked(e -> handleSelect((ImageView) d));
+                        d.setOnMouseClicked(e -> {
+                            if(!isProductionAction) handleSelect((ImageView) d);
+                            else handleProduction((ImageView) d);
+                        });
+                    }
+                }
+            }
+
+            //grayIn of the leader cards with production action
+            for(Integer I : LCMap.keySet()){
+                if(LCMap.get(I).get_3() && LCMap.get(I).get_2()==4){
+                    for(Node n : LeaderCardsPlayed.getChildren()){
+                        if(GridPane.getColumnIndex(n) == I-1 && !n.getId().startsWith("AP")){
+                            if(!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
+                            n.setOnMouseClicked(e -> {
+                                if(!isProductionAction) handleSelect((ImageView) n);
+                                else handleProduction((ImageView) n);
+                            });
+                        }
                     }
                 }
             }
@@ -1249,13 +1340,12 @@ public class GameScreenView extends ViewObservable {
 
         else if(isBuyAction){
             isBuyAction = false;
+            grayOut(false);
             notifyBuyDC(buyDevelopmentCard.getKey(),buyDevelopmentCard.getValue(),Integer.parseInt(selected.getId().split("_")[1]),buyDevelopmentAction);
             selectedCard.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             selectedCard = null;
             selected = null;
             buyDevelopmentAction.clear();
-            grayOut(true);
-            grayOut(false);
             confirmAction.setDisable(true);
         }
 
@@ -1266,7 +1356,7 @@ public class GameScreenView extends ViewObservable {
             moveAction.clear();
         }
 
-        else if(!isMoveAction){
+        else if(!isMoveAction && !isProductionAction){
             String ID = selected.getId();
             String[] split = ID.split("_");
 
@@ -1302,7 +1392,6 @@ public class GameScreenView extends ViewObservable {
                                 unselect();
                                 selected = null;
                                 notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC);
-
                             }else{
                                 glowNextWhiteMarble(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC.size());
                             }
@@ -1321,18 +1410,19 @@ public class GameScreenView extends ViewObservable {
                 selected.getStyleClass().add("selectable");
                 selected.setOnMouseClicked(e -> {
                     isBuyAction = false;
-                    grayOut(true);
                     grayOut(false);
                     selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     buyDevelopmentAction.clear();
                     confirmAction.setDisable(true);
-                    if(actionDone) grayOutActionDone();
                 });
             }
 
             //Activate production
-            else if(split[0].equals("SLOT")){
-
+            else if(split[0].equals("P")){
+                unselect();
+                grayOut(true);
+                isProductionAction = true;
+                graySlots(false,"production");
             }
         }
 
@@ -1340,11 +1430,26 @@ public class GameScreenView extends ViewObservable {
         else if(isMoveAction){
             prevResBuyAction = false;
             isMoveAction = false;
+            grayOut(false);
             notifyMoveResources(moveAction);
             moveAction.clear();
             confirmAction.setDisable(true);
+        }
+
+        else if(isProductionAction){
+            isProductionAction = false;
             grayOut(false);
-            if(actionDone) grayOutActionDone();
+            confirmAction.setDisable(true);
+            System.out.println(productionAction);
+            notifyActivateProduction(productionAction);
+            productionAction.clear();
+            RES_P1.getChildren().clear();
+            RES_P2.getChildren().clear();
+            RES_P3.getChildren().clear();
+            RES_P4.getChildren().clear();
+            RES_P5.getChildren().clear();
+            RES_P6.getChildren().clear();
+            unselect();
         }
 
     }
@@ -1651,10 +1756,164 @@ public class GameScreenView extends ViewObservable {
             refreshHand();
             ((Text) resource.getChildren().get(1)).setText("" + (Integer.parseInt(((Text) resource.getChildren().get(1)).getText()) + 1));
         }
-        else if(IV.getId().split("_")[1].startsWith("LC")){}
-
         resource.setEffect(null);
         resource.getChildren().get(0).setOnMouseClicked(e -> handleBuySelect(resource));
+    }
+
+    private void handleProduction(ImageView IV){
+        isMoveAction = false;
+        isBuyAction = false;
+        if(selected!=null && selected.getId().equals(IV.getId())){
+            //handleProductionDeselect(IV,IV.getParent()); //TODO: popup che chiede se annullare l'azione totale o solo la selezione della carta
+            selected = null;
+            return;
+        }
+        handleSelect(IV);
+
+        grayOut(true);
+        graySlots(false,"production");
+        grayWarehouse(false,"production");
+        grayStrongBox(false,"production");
+        grayPlayedLeaderCard(false,"production");
+    }
+
+    private void handleProductionSelect(Pane pane){
+        ImageView IV = (ImageView) pane.getChildren().get(0);
+        ImageView R;
+        if(IV.getId().split("_")[1].startsWith("W")) {
+            int index = 0;
+            if(selected.getId().startsWith("F")) index = 3;
+            if(!productionAction.containsKey(Integer.parseInt(selected.getId().split("_")[2])+index)) {
+                ArrayList<Pair<String,Integer>> tmp1 = new ArrayList<>();
+                Pair<String,Integer> tmp2 = new Pair<>(IV.getId().split("_")[0], Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+                tmp1.add(tmp2);
+                productionAction.put(Integer.parseInt(selected.getId().split("_")[2]) + index,tmp1);
+            }
+            else{
+                ArrayList<Pair<String,Integer>> tmp1 = productionAction.get(Integer.parseInt(selected.getId().split("_")[2])+index);
+                Pair<String,Integer> tmp2 = new Pair<>(IV.getId().split("_")[0], Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+                tmp1.add(tmp2);
+            }
+            IV.setFitWidth(50.0);
+            IV.setOnMouseClicked(e -> handleProductionDeselect(IV,IV.getParent()));
+
+            R = IV;
+            pane.getChildren().remove(IV);
+        }
+        else{
+            int index = 0;
+            if (selected.getId().startsWith("F")) index = 3;
+
+            //TODO: check se effettivamente funziona attivare la produzione prendendo le risorse dallo strongbox
+            if(!productionAction.containsKey(Integer.parseInt(selected.getId().split("_")[2])+index)) {
+                ArrayList<Pair<String,Integer>> tmp1 = new ArrayList<>();
+                Pair<String,Integer> tmp2 = new Pair<>(IV.getId().split("_")[0], Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+                tmp1.add(tmp2);
+                productionAction.put(Integer.parseInt(selected.getId().split("_")[2]) + index,tmp1);
+            }
+            else{
+                ArrayList<Pair<String,Integer>> tmp1 = productionAction.get(Integer.parseInt(selected.getId().split("_")[2])+index);
+                Pair<String,Integer> tmp2 = new Pair<>(IV.getId().split("_")[0], Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+                tmp1.add(tmp2);
+            }
+            IV.setOnMouseClicked(e -> handleProductionDeselect(IV,IV.getParent()));
+
+            R = new ImageView(IV.getImage());
+            R.getStyleClass().add("selectable");
+            R.setFitWidth(50.0);
+            R.setPreserveRatio(true);
+            R.setId(IV.getId());
+            R.setOnMouseClicked(e -> handleProductionDeselect(R,R.getParent()));
+            ((Text) pane.getChildren().get(1)).setText("" + (Integer.parseInt(((Text) pane.getChildren().get(1)).getText()) - 1));
+        }
+
+        switch(Integer.parseInt(selected.getId().split("_")[2])){
+            case 1 -> {
+                int size = RES_P1.getChildren().size();
+                if(size == 0) RES_P1.add(R,0,0);
+                else if(size == 1) RES_P1.add(R,1,0);
+                else {
+                    handleProductionDeselect((ImageView) RES_P1.getChildren().get(0),R.getParent());
+                    ImageView tmp = (ImageView) RES_P1.getChildren().remove(0);
+                    RES_P1.add(tmp,0,0);
+                    RES_P1.add(R,1,0);
+                }
+            }
+            case 2 -> {
+                int size = RES_P2.getChildren().size();
+                if (size == 0) RES_P2.add(R, 0, 0);
+                else if (size == 1) RES_P2.add(R, 1, 0);
+                else {
+                    handleProductionDeselect((ImageView) RES_P2.getChildren().get(0),R.getParent());
+                    ImageView tmp = (ImageView) RES_P2.getChildren().remove(0);
+                    RES_P2.add(tmp,0,0);
+                    RES_P2.add(R,1,0);
+                }
+            }
+            case 3 -> {
+                int size = RES_P3.getChildren().size();
+                if (size == 0) RES_P3.add(R, 0, 0);
+                else if (size == 1) RES_P3.add(R, 1, 0);
+                else {
+                    handleProductionDeselect((ImageView) RES_P3.getChildren().get(0),R.getParent());
+                    ImageView tmp = (ImageView) RES_P3.getChildren().remove(0);
+                    RES_P3.add(tmp,0,0);
+                    RES_P3.add(R,1,0);
+                }
+            }
+            case 4 -> {
+                int size = RES_P4.getChildren().size();
+                if (size == 0) RES_P4.add(R, 0, 0);
+                else if (size == 1) RES_P4.add(R, 1, 0);
+                else {
+                    handleProductionDeselect((ImageView) RES_P4.getChildren().get(0),R.getParent());
+                    ImageView tmp = (ImageView) RES_P4.getChildren().remove(0);
+                    RES_P4.add(tmp,0,0);
+                    RES_P4.add(R,1,0);
+                }
+            }
+            case 5 -> {
+                int size = RES_P5.getChildren().size();
+                if (size == 0) RES_P5.add(R, 0, 0);
+                else if (size == 1) RES_P5.add(R, 1, 0);
+                else {
+                    handleProductionDeselect((ImageView) RES_P5.getChildren().get(0),R.getParent());
+                    ImageView tmp = (ImageView) RES_P5.getChildren().remove(0);
+                    RES_P5.add(tmp,0,0);
+                    RES_P5.add(R,1,0);
+                }
+            }
+            case 6 -> {
+                int size = RES_P6.getChildren().size();
+                if (size == 0) RES_P6.add(R, 0, 0);
+                else if (size == 1) RES_P6.add(R, 0, 1);
+                else {
+                    handleProductionDeselect((ImageView) RES_P6.getChildren().get(0),R.getParent());
+                    ImageView tmp = (ImageView) RES_P6.getChildren().remove(0);
+                    RES_P6.add(tmp,0,0);
+                    RES_P6.add(R,0,1);
+                }
+            }
+        }
+    }
+
+    private void handleProductionDeselect(ImageView IV,Node oldParent){
+        Pane newParent = (Pane) IV.getParent();
+        newParent.getChildren().remove(IV);
+        if(IV.getId().split("_")[1].startsWith("W")) {
+            ((Pane) oldParent).getChildren().add(IV);
+
+            if(IV.getId().split("_")[1].substring(1).startsWith("4") || IV.getId().split("_")[1].substring(1).startsWith("5"))
+                IV.setFitWidth(34);
+            else IV.setFitWidth(25.0);
+
+            IV.setOnMouseClicked(e -> handleProductionSelect((Pane) oldParent));
+
+        }
+        //strongbox
+        else {
+            ((Text) ((Pane) oldParent).getChildren().get(1)).setText("" + (Integer.parseInt(((Text) ((Pane) oldParent).getChildren().get(1)).getText()) + 1));
+        }
     }
 
     //Utils

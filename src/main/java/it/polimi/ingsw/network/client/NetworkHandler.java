@@ -344,7 +344,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateActivateProduction(HashMap<Integer, ArrayList<Pair<String, Integer>>> userChoice) {
-        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
+        /*if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
@@ -392,7 +392,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     }
                 }
             }
-        }
+        }*/
         sendObject(new ProductionMessage(userChoice));
     }
 

@@ -359,22 +359,10 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             synchronized (client) {
                 try {
                     game.activateProductionAction(player, message.getUserChoice());
-                } catch (ActionAlreadyDoneException e) {
-                    client.sendStandardMessage(StandardMessages.actionAlreadyDone);
-                } catch (ResourceErrorException | RequirementsNotMetException e) {
-                    client.sendStandardMessage(StandardMessages.notEnoughResources);
-                } catch (LeaderCardNotCompatibleException e) {
-                    client.sendStandardMessage(StandardMessages.leaderCardWrongAbility);
-                } catch (EmptyException e) {
-                    client.sendStandardMessage(StandardMessages.developmentCardMarketEmpty);
-                } catch (IllegalArgumentException e) {
-                    client.sendStandardMessage(StandardMessages.productionError);
-                } catch (IndexOutOfBoundsException e) {
-                    client.sendStandardMessage(StandardMessages.indexOutOfBound);
-                } catch (BadRequestException e) {
-                    client.sendStandardMessage(StandardMessages.baseProductionError);
-                }
+                } catch (Exception e) {
+                    client.sendStandardMessage(StandardMessages.activateProductionWrong);
 
+                }
             }
         }
     }

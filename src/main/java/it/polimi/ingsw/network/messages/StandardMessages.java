@@ -39,7 +39,8 @@ public enum StandardMessages implements Serializable {
 
     moveActionWrong("Hai sbagliato a spostare le risorse"),
 
-    buyDevelopmentWrong("Hai sbagliato a comprare una carta sviluppo"),
+    buyDevelopmentWrong("C'è stato un errore nel comprare una carta sviluppo"),
+    activateProductionWrong("C'è stato un errore nell'attivare una produzione"),
 
     invalidSlot("Lo slot scelto non può accogliere questa carta"),
     invalidChoice("La scelta effettuata non è valida"),

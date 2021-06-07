@@ -286,14 +286,11 @@ public class GUI extends Application implements View{
             case nicknameAlreadyInUse -> Platform.runLater(() -> nicknameScreenView.setErrormsg("Il nickname scelto è già in uso"));
             case unavailableConnection -> Platform.runLater(() -> connectionScreenView.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
             case actionDone -> Platform.runLater(() -> gameScreenView.setActionDone(true));
-            case moveActionWrong, buyDevelopmentWrong -> Platform.runLater(() -> {
+            case moveActionWrong, buyDevelopmentWrong, activateProductionWrong -> Platform.runLater(() -> {
                 gameScreenView.addErrorMessage(message.toString());
                 gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                 gameScreenView.grayOut(false);
                 if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();
-                /*gameScreenView.grayWarehouse(false,"move");
-                gameScreenView.grayHand(false);
-                gameScreenView.grayPlayedLeaderCard(false,"move");*/
             });
             case waitForReconnection -> Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
