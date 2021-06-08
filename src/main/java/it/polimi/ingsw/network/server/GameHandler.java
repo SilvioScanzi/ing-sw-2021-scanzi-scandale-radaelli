@@ -358,10 +358,14 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             int player = clientMap.get(client).getValue();
             synchronized (client) {
                 try {
-                    game.activateProductionAction(player, message.getUserChoice());
+                    if(message.getUserChoice().size()==0){
+                        client.sendStandardMessage(StandardMessages.activateProductionWrong);
+                    }
+                    else {
+                        game.activateProductionAction(player, message.getUserChoice());
+                    }
                 } catch (Exception e) {
                     client.sendStandardMessage(StandardMessages.activateProductionWrong);
-
                 }
             }
         }

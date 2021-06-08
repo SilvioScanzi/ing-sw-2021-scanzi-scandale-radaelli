@@ -322,13 +322,11 @@ public class Game extends ModelObservable {
         notifySlot(playerBoard.getSlots(), playerBoard.getNickname());
 
         if(!wr.equals(playerBoard.getWarehouse())) {
-            System.out.println("WAREHOUSE");
             playerBoard.setWarehouse(wr);
             notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
         }
 
         if(!sb.equals(playerBoard.getStrongbox())){
-            System.out.println("STRONGBOX");
             playerBoard.setStrongbox(sb);
             notifySB(playerBoard.getStrongbox(),playerBoard.getNickname());
         }
@@ -358,7 +356,6 @@ public class Game extends ModelObservable {
             throws ActionAlreadyDoneException,LeaderCardNotCompatibleException,IllegalArgumentException,EmptyException,ResourceErrorException,RequirementsNotMetException,BadRequestException {
         Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
-
         HashMap<Resources, Integer> cost;
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
 
@@ -526,6 +523,12 @@ public class Game extends ModelObservable {
             if(userChoice.get(i).get_2().equals(userChoice.get(i).get_3())){
                 userChoice.remove(i);
                 i=i-1;
+            }
+        }
+
+        for (Triplet<String, Integer, Integer> stringIntegerIntegerTriplet : userChoice) {
+            if (stringIntegerIntegerTriplet.get_3() == 0) {
+                throw new BadRequestException("Resorces cannot be moved into hand");
             }
         }
 
