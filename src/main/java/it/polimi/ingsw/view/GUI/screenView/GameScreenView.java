@@ -127,7 +127,6 @@ public class GameScreenView extends ViewObservable {
     @FXML
     private GridPane players;
 
-
     //key is the index, value is: Resource of the card, Victory points and if played or not
     private final HashMap<Integer,Triplet<Resources,Integer,Boolean>> LCMap = new HashMap<>();
     private final boolean[][] grid = new boolean[3][4];
@@ -192,7 +191,8 @@ public class GameScreenView extends ViewObservable {
     public void addBoard(ClientBoard board){
         addStrongBox(board.getStrongBox());
         addWarehouse(board.getWarehouse());
-        addFaithTrack(board.getFaithMarker(), board.getPopeFavor());
+        addFaithTrack(board.getFaithMarker(), board.getPopeFavor(),false);
+        addFaithTrack(board.getLorenzoMarker(),null,true);
         addLeaderCards(board.getLeaderCardsPlayed(),board.getLeaderCardsHand());
         addHand(board.getHand());
         addSlots(board.getSlot_1(),board.getSlot_2(),board.getSlot_3());
@@ -326,7 +326,7 @@ public class GameScreenView extends ViewObservable {
     }
 
     public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1,ArrayList<Pair<Colours,Integer>> Slot_2,ArrayList<Pair<Colours,Integer>> Slot_3){
-        String path1 = "/images/developmentCards/B1.png";
+        /*String path1 = "/images/developmentCards/B1.png";
         String path2 = "/images/developmentCards/G2.png";
         ImageView DCView = new ImageView(new Image(GUI.class.getResource(path1).toString()));
         DCView.setFitWidth(109.0);
@@ -357,9 +357,9 @@ public class GameScreenView extends ViewObservable {
                 SP1 = (StackPane) n;
             }
         }
-        SP1.getChildren().add(DCView1);
+        SP1.getChildren().add(DCView1);*/
 
-        /*for(Node n : Slots.getChildren()){
+        for(Node n : Slots.getChildren()){
             ((StackPane)n).getChildren().clear();
         }
         int j = 0;
@@ -427,7 +427,7 @@ public class GameScreenView extends ViewObservable {
                 DCView.setId("P_S_3");
             }
             j++;
-        }*/
+        }
     }
 
     public void addMarbles(Marbles[][] market, Marbles remainingMarble){
@@ -568,41 +568,84 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-    public void addFaithTrack(int faithMarker, boolean[] popeFavor){
-        FaithTrack.getChildren().clear();
-        String path = "/images/faithTrack/FaithMarker.png";
-        ImageView FMImage = new ImageView(new Image(GUI.class.getResource(path).toString()));
-        FMImage.setPreserveRatio(true);
-        FMImage.setFitWidth(29);
+    public void addFaithTrack(int marker, boolean[] popeFavor, boolean lorenzoTrack){
+        if(!lorenzoTrack) {
+            FaithTrack.getChildren().removeIf(n -> n.getId().equals("FaithMarker"));
+            //FaithTrack.getChildren().clear();
+            String path = "/images/faithTrack/FaithMarker.png";
+            ImageView FMImage = new ImageView(new Image(GUI.class.getResource(path).toString()));
+            FMImage.setPreserveRatio(true);
+            FMImage.setFitWidth(29);
+            FMImage.setId("FaithMarker");
 
-        if(faithMarker<3)
-            FaithTrack.add(FMImage,faithMarker,2);
-        else if(faithMarker<5)
-            FaithTrack.add(FMImage,2,4-faithMarker);
-        else if(faithMarker<10)
-            FaithTrack.add(FMImage,faithMarker-2,0);
-        else if(faithMarker<12)
-            FaithTrack.add(FMImage,7,faithMarker-9);
-        else if(faithMarker<17)
-            FaithTrack.add(FMImage,faithMarker-4,2);
-        else if(faithMarker<19)
-            FaithTrack.add(FMImage,12,18-faithMarker);
-        else if(faithMarker<25)
-            FaithTrack.add(FMImage,faithMarker-6,0);
+            if (marker < 3)
+                FaithTrack.add(FMImage, marker, 2);
+            else if (marker < 5)
+                FaithTrack.add(FMImage, 2, 4 - marker);
+            else if (marker < 10)
+                FaithTrack.add(FMImage, marker - 2, 0);
+            else if (marker < 12)
+                FaithTrack.add(FMImage, 7, marker - 9);
+            else if (marker < 17)
+                FaithTrack.add(FMImage, marker - 4, 2);
+            else if (marker < 19)
+                FaithTrack.add(FMImage, 12, 18 - marker);
+            else if (marker < 25)
+                FaithTrack.add(FMImage, marker - 6, 0);
 
 
-        path = "/images/faithTrack/1";
-        if(popeFavor[0]) path = path + "_F.png";
-        else path = path + "_B.png";
-        PF1.setImage(new Image(GUI.class.getResource(path).toString()));
-        path = "/images/faithTrack/2";
-        if(popeFavor[1]) path = path + "_F.png";
-        else path = path + "_B.png";
-        PF2.setImage(new Image(GUI.class.getResource(path).toString()));
-        path = "/images/faithTrack/3";
-        if(popeFavor[2]) path = path + "_F.png";
-        else path = path + "_B.png";
-        PF3.setImage(new Image(GUI.class.getResource(path).toString()));
+            path = "/images/faithTrack/1";
+            if (popeFavor[0]) path = path + "_F.png";
+            else path = path + "_B.png";
+            PF1.setImage(new Image(GUI.class.getResource(path).toString()));
+            path = "/images/faithTrack/2";
+            if (popeFavor[1]) path = path + "_F.png";
+            else path = path + "_B.png";
+            PF2.setImage(new Image(GUI.class.getResource(path).toString()));
+            path = "/images/faithTrack/3";
+            if (popeFavor[2]) path = path + "_F.png";
+            else path = path + "_B.png";
+            PF3.setImage(new Image(GUI.class.getResource(path).toString()));
+        }
+        else {
+            //TODO: la blackcross può attivare un vatican report
+            FaithTrack.getChildren().removeIf(n -> n.getId().equals("BlackCross"));
+            //FaithTrack.getChildren().clear();
+            String path = "/images/faithTrack/BlackCross.png";
+            ImageView FMImage = new ImageView(new Image(GUI.class.getResource(path).toString()));
+            FMImage.setPreserveRatio(true);
+            FMImage.setFitWidth(29);
+            FMImage.setId("BlackCross");
+
+            if (marker < 2) {
+                FaithTrack.add(FMImage, marker, 1);
+                FMImage.setTranslateY(20);
+            }
+            else if (marker < 5) {
+                FaithTrack.add(FMImage, 1, 4 - marker);
+                FMImage.setTranslateX(20);
+            }
+            else if (marker < 9) {
+                FaithTrack.add(FMImage, marker - 2, 1);
+                FMImage.setTranslateY(-20);
+            }
+            else if (marker < 12) {
+                FaithTrack.add(FMImage, 8, marker - 9);
+                FMImage.setTranslateX(-20);
+            }
+            else if (marker < 16) {
+                FaithTrack.add(FMImage, marker - 4, 1);
+                FMImage.setTranslateY(20);
+            }
+            else if (marker < 19){
+                FaithTrack.add(FMImage, 11, 18 - marker);
+                FMImage.setTranslateX(20);
+            }
+            else if (marker < 25) {
+                FaithTrack.add(FMImage, marker - 6, 1);
+                FMImage.setTranslateY(-20);
+            }
+        }
     }
 
     public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed, ArrayList<Triplet<Resources,Integer,Integer>> LCHand){
@@ -744,6 +787,15 @@ public class GameScreenView extends ViewObservable {
         TTOut.setOnFinished(x -> anchorPane.getChildren().remove(errorPane));
     }
 
+    public void addActionToken(String abbreviation){
+        String path = "/images/actionToken/" + abbreviation + ".png";
+        ImageView imageView = new ImageView(new Image(GUI.class.getResource(path).toString()));
+        imageView.setPreserveRatio(true);
+        imageView.setFitWidth(135);
+        imageView.setTranslateX(50);
+
+        players.add(imageView,0,1);
+    }
 
     //Gray out methods
     public void grayOut(boolean gray){
@@ -791,6 +843,7 @@ public class GameScreenView extends ViewObservable {
         grayProduction(true);
     }
 
+    //TODO: dato che usiamo "players" come pane, fare in modo che non vengano fatte queste grayOut quando in giocatore singolo
     public void grayBoards(boolean gray){
         if(gray){
             for(Node n : players.getChildren()){

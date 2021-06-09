@@ -1,5 +1,6 @@
 package it.polimi.ingsw.commons;
 
+
 public enum ActionToken {
     Advance2,
     AdvanceAndRefresh,
@@ -19,5 +20,16 @@ public enum ActionToken {
             case DeleteYellow: return "Le prime due carte di colore giallo vengono eliminate";
             default: return "Error";
         }
+    }
+
+    public String abbreviation(){
+        return switch (this) {
+            case Advance2 -> "A_2";
+            case AdvanceAndRefresh -> "A_1";
+            case DeleteGreen -> "D_G";
+            case DeleteYellow -> "D_Y";
+            case DeletePurple -> "D_P";
+            case DeleteBlue -> "D_B";
+        };
     }
 }

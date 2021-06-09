@@ -21,6 +21,7 @@ public class ClientBoard {
     private ArrayList<Resources> hand;
     private boolean actionDone;
     private int FaithMarker;
+    private int lorenzoMarker;
     private boolean[] popeFavor;
 
     public ClientBoard(int position, String nickname){
@@ -87,6 +88,10 @@ public class ClientBoard {
 
     public void setPopeFavor(boolean[] popeFavor) {
         this.popeFavor = popeFavor;
+    }
+
+    public void setLorenzoMarker(int lorenzoMarker) {
+        this.lorenzoMarker = lorenzoMarker;
     }
 
     public HashMap<Integer, Pair<Resources, Integer>> getWarehouse() {
@@ -174,5 +179,9 @@ public class ClientBoard {
 
     public boolean[] getPopeFavor() {
         return popeFavor;
+    }
+
+    public int getLorenzoMarker() {
+        return lorenzoMarker;
     }
 }

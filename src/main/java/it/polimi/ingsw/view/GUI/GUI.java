@@ -88,7 +88,6 @@ public class GUI extends Application implements View{
 
     @Override
     public void setState(ViewState state) {
-        System.out.println(state);
         if(state.equals(ViewState.chooseNickName)){
             Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
@@ -212,7 +211,7 @@ public class GUI extends Application implements View{
                         gameScreenView.grayOut(false);
                         gameScreenView.setActionDone(false);
                     }
-                    else{
+                    else if(NH.getClientModel().getBoards().size() > 1){
                         gameScreenView.grayOut(true);
                         gameScreenView.grayBoards(false);
                     }
@@ -418,12 +417,16 @@ public class GUI extends Application implements View{
 
     @Override
     public void printAT(ActionToken AT) {
-
+        if(gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addActionToken(AT.abbreviation()));
+        }
     }
 
     @Override
     public void printBlackCross(int BC) {
-
+        if(gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> gameScreenView.addFaithTrack(BC, null,true));
+        }
     }
 
     @Override
@@ -434,7 +437,7 @@ public class GUI extends Application implements View{
     @Override
     public void printFaithTrack(int FM, boolean[] PF, String nickname) {
         if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> gameScreenView.addFaithTrack(FM, PF));
+            Platform.runLater(() -> gameScreenView.addFaithTrack(FM, PF,false));
         }
     }
 
