@@ -100,4 +100,16 @@ public class ViewObservable {
             obs.updateReconnection(r);
         }
     }
+
+    public void notifyAnotherGame(){
+        for(ViewObserver obs : observers){
+            obs.updateAnotherGame();
+        }
+    }
+
+    public void notifyDemolish(){
+        for(ViewObserver obs : observers){
+            obs.updateDemolish();
+        }
+    }
 }

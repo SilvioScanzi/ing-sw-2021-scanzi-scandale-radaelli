@@ -429,8 +429,11 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             }
 
             if (endGame && playerNumber == 1) {
+                if(game.checkLorenzoWin()) client.sendStandardMessage(StandardMessages.lorenzoWin);
                 game.countVictoryPoints();
-                client.sendObject(new VictoryPointsMessage(game.getBoard(0).getVictoryPoints(), game.getBoard(0).getNickname()));
+                HashMap<String,Integer> vp = new HashMap<>();
+                vp.put(game.getBoard(0).getNickname(),game.getBoard(0).getVictoryPoints());
+                client.sendObject(new VictoryPointsMessage(vp));
                 client.closeConnection();
                 demolished = true;
                 gameHandlerNotify();
@@ -440,7 +443,11 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                     game.countVictoryPoints();
                     synchronized (clients) {
                         for (ClientHandler CH : clients) {
-                            CH.sendObject(new VictoryPointsMessage(game.getBoard(0).getVictoryPoints(), game.getBoard(0).getNickname()));
+                            HashMap<String,Integer> vp = new HashMap<>();
+                            for(int i=0;i<playerNumber;i++){
+                                vp.put(game.getBoard(i).getNickname(),game.getBoard(i).getVictoryPoints());
+                            }
+                            CH.sendObject(new VictoryPointsMessage(vp));
                             CH.closeConnection();
                         }
                         demolished = true;
@@ -453,6 +460,9 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 game.activatedToken();
                 if (game.checkLorenzoWin()) {
                     client.sendStandardMessage(StandardMessages.lorenzoWin);
+                    HashMap<String,Integer> vp = new HashMap<>();
+                    vp.put(game.getBoard(0).getNickname(),game.getBoard(0).getVictoryPoints());
+                    client.sendObject(new VictoryPointsMessage(vp));
                     client.closeConnection();
                     demolished = true;
                     gameHandlerNotify();

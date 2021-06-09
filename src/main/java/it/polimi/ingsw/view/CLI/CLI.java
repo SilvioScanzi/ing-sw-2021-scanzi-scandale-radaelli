@@ -159,6 +159,16 @@ public class CLI extends ViewObservable implements View {
     }
 
     @Override
+    public void clearView() {
+
+    }
+
+    @Override
+    public void demolish() {
+
+    }
+
+    @Override
     public void printDisconnected(String name) {
         System.out.println("[NETWORK] Il giocatore "+name+" si è disconnesso");
     }

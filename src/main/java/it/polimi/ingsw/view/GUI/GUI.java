@@ -38,6 +38,7 @@ public class GUI extends Application implements View{
     private SetupScreenView setupScreenView;
     private WaitScreenView waitScreenView;
     private GameScreenView gameScreenView = null;
+    private LeaderBoardScreenView leaderBoardScreenView;
     private PlayerVersusScreenView playerVersusScreenView;
     private OpponentBoardScreenView opponentBoardScreenView;
 
@@ -87,6 +88,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void setState(ViewState state) {
+        System.out.println(state);
         if(state.equals(ViewState.chooseNickName)){
             Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
@@ -108,6 +110,11 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     playerNumberScreenView = fxmlLoader.getController();
                     playerNumberScreenView.addObserver(NH);
+                    primaryStage.setResizable(false);
+                    if(primaryStage.getWidth()!=716.0 || primaryStage.getHeight()!=739.0) {
+                        primaryStage.setMaximized(false);
+                        scale(716.0,739.0);
+                    }
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -215,7 +222,51 @@ public class GUI extends Application implements View{
                 }catch(IOException e){e.printStackTrace();}
             });
         }
+        else if(state.equals(ViewState.endGame)){
+            Platform.runLater(() -> {
+                try {
+                    fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(getClass().getResource("/fxml/LeaderBoardScreen.fxml"));
+                    primaryStage.setTitle("Maestri del rinascimento - Fine partita");
+
+                    Pane root = fxmlLoader.load();
+                    currentScene.setRoot(root);
+                    currentScene.setOnKeyPressed(null);
+                    leaderBoardScreenView = fxmlLoader.getController();
+                    leaderBoardScreenView.addObserver(NH);
+                    leaderBoardScreenView.setLeaderBoard(NH.getClientModel().getLeaderBoard(), NH.getClientModel().getLorenzo());
+                    primaryStage.setMaximized(false);
+                    scale(716.0,739.0);
+                    primaryStage.setResizable(false);
+                }catch(IOException e){e.printStackTrace();}
+            });
+        }
         this.state = state;
+    }
+
+    @Override
+    public void clearView() {
+        fxmlLoader = new FXMLLoader();
+        fxmlLoader.setLocation(getClass().getResource("/fxml/NicknameScreen.fxml"));
+        gameScreenView = null;
+        gameScreen = null;
+        state = ViewState.chooseNickName;
+        try {
+            Pane root = fxmlLoader.load();
+            currentScene = new Scene(root);
+            primaryStage.setTitle("Maestri del rinascimento - Launcher");
+            nicknameScreenView = fxmlLoader.getController();
+            nicknameScreenView.addObserver(NH);
+            primaryStage.setScene(currentScene);
+            primaryStage.setResizable(false);
+
+        }catch(IOException e){e.printStackTrace();}
+    }
+
+    @Override
+    public void demolish() {
+        Platform.exit();
+        System.exit(0);
     }
 
     private void scale(double width,double height){
@@ -310,7 +361,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void printNames(HashMap<String, Integer> names, int inkwell) {
-        if(!state.equals(ViewState.disconnected) && !state.equals(ViewState.myTurn) && !state.equals(ViewState.notMyTurn)) {
+        if(!state.equals(ViewState.reconnecting) && !state.equals(ViewState.myTurn) && !state.equals(ViewState.notMyTurn)) {
             Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
                 fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerVersusScreen.fxml"));

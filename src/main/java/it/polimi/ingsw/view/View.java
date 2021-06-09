@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 public interface View {
     void setState(ViewState state);
+    void clearView();
+    void demolish();
 
     //print
     void printDisconnected(String name);

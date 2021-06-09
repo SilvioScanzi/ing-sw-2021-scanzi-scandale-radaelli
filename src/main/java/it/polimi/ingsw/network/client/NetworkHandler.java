@@ -24,6 +24,8 @@ public class NetworkHandler implements Runnable, ViewObserver {
     private ObjectOutputStream socketOut;
     private ObjectInputStream socketIn;
     private ClientModel clientModel;
+    private String IP = null;
+    private int port = 0;
 
     public NetworkHandler(View view){
         this.view = view;
@@ -55,8 +57,6 @@ public class NetworkHandler implements Runnable, ViewObserver {
             } catch (IOException | ClassNotFoundException e) {
                 demolished = true;
                 closeConnection();
-
-                //TODO: gestisci la disconnessione ?
             }
         }
     }
@@ -86,6 +86,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 case reconnection -> {
                     view.setState(ViewState.reconnecting);
                 }
+                case lorenzoWin -> clientModel.setLorenzo(true);
             }
 
             view.printStandardMessage((StandardMessages) message);
@@ -162,6 +163,12 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 }
                 if(cards.size()>0) cards.remove(0);
                 clientModel.getBoard(((LeaderCardHandUpdateMessage) message).getNickname()).setLeaderCardsHand(cards);
+            }
+
+            else if(message instanceof VictoryPointsMessage){
+                clientModel.setLeaderBoard(((VictoryPointsMessage) message).getVp());
+                view.setState(ViewState.endGame);
+                view.print("La partita è finita");
             }
 
             //Not Model Related Messages
@@ -249,6 +256,8 @@ public class NetworkHandler implements Runnable, ViewObserver {
             socketOut = new ObjectOutputStream(socket.getOutputStream());
             socketIn = new ObjectInputStream(socket.getInputStream());
             new Thread(this).start();
+            this.IP = IP;
+            this.port = port;
         }catch(IOException e){view.printStandardMessage(StandardMessages.unavailableConnection);}
     }
 
@@ -442,5 +451,22 @@ public class NetworkHandler implements Runnable, ViewObserver {
     public void updateReconnection(boolean r){
         if(r) sendObject(new ReconnectMessage("Y"));
         else sendObject(new ReconnectMessage("N"));
+    }
+
+    @Override
+    public void updateAnotherGame(){
+        try {
+            demolished = false;
+            socket = new Socket(IP,port);
+            socketOut = new ObjectOutputStream(socket.getOutputStream());
+            socketIn = new ObjectInputStream(socket.getInputStream());
+            new Thread(this).start();
+            view.clearView();
+        }catch(IOException e){view.demolish();}
+    }
+
+    @Override
+    public void updateDemolish(){
+        view.demolish();
     }
 }

@@ -13,6 +13,8 @@ public class ClientModel {
     private Marbles remainingMarble;
     private final int playerNumber;
     private HashMap<Integer,Pair<Resources,Integer>> LCMap = new HashMap<>();
+    private boolean lorenzo = false;
+    private HashMap<String,Integer> leaderBoard;
 
     public ClientModel(HashMap<String,Integer> playerMap, String myNickname, int inkwell){
         this.myNickname = myNickname;
@@ -48,6 +50,14 @@ public class ClientModel {
 
     public void setLCMap(HashMap<Integer, Pair<Resources, Integer>> LCMap) {
         this.LCMap = LCMap;
+    }
+
+    public void setLorenzo(boolean lorenzo) {
+        this.lorenzo = lorenzo;
+    }
+
+    public void setLeaderBoard(HashMap<String, Integer> leaderBoard) {
+        this.leaderBoard = leaderBoard;
     }
 
     //getters
@@ -92,5 +102,13 @@ public class ClientModel {
 
     public HashMap<String, ClientBoard> getBoards() {
         return boards;
+    }
+
+    public HashMap<String, Integer> getLeaderBoard() {
+        return leaderBoard;
+    }
+
+    public boolean getLorenzo() {
+        return lorenzo;
     }
 }

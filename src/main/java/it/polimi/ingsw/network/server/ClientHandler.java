@@ -210,10 +210,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     }
 
-    public void printAlive(){
-        System.out.println(!socket.isClosed());
-    }
-
     public void setNickname(String nickname){
         this.nickname = nickname;
     }
@@ -277,11 +273,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     @Override
     public void updateLCPlayed(HashMap<Integer,LeaderCard> lcp, String s){
         sendObject(new LeaderCardPlayedMessage(lcp,s));
-    }
-
-    @Override
-    public void updateVP(int vp, String s){
-        sendObject(new VictoryPointsMessage(vp,s));
     }
 
     @Override

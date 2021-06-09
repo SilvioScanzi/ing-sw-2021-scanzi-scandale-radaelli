@@ -1,21 +1,16 @@
 package it.polimi.ingsw.network.messages;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class VictoryPointsMessage extends Message implements Serializable {
-    private final String nickname;
-    private final int victoryPoints;
+    private final HashMap<String,Integer> vp;
 
-    public VictoryPointsMessage(int victoryPoints, String nickname){
-        this.nickname = nickname;
-        this.victoryPoints = victoryPoints;
+    public VictoryPointsMessage(HashMap<String,Integer> vp){
+        this.vp = vp;
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public int getVictoryPoints() {
-        return victoryPoints;
+    public HashMap<String, Integer> getVp() {
+        return vp;
     }
 }

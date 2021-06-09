@@ -693,8 +693,6 @@ public class Game extends ModelObservable {
             tmp+=(amount-amount%5)/5;
 
             playerBoard.setVictoryPoints(tmp);
-
-            notifyVictoryPoints(playerBoard.getVictoryPoints(), playerBoard.getNickname());
         }
     }
 

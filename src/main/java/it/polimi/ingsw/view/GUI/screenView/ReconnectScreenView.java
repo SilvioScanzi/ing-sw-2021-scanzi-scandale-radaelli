@@ -8,7 +8,6 @@ import javafx.scene.input.KeyEvent;
 
 public class ReconnectScreenView extends ViewObservable{
 
-    @FXML
     public void submitOnClickHandlerConfirm() {
         notifyReconnection(true);
     }

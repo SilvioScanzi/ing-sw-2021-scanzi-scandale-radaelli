@@ -23,4 +23,6 @@ public interface ViewObserver {
     void updateEndTurn();
     void updatePrintRequest(String message);
     void updateReconnection(boolean r);
+    void updateAnotherGame();
+    void updateDemolish();
 }

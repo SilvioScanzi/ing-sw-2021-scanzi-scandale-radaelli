@@ -19,7 +19,6 @@ public interface ModelObserver {
     void updateSlots(Slot[] slots, String nickname);
     void updateHand(ArrayList<Resources> hand, String s);
     void updateLCPlayed(HashMap<Integer,LeaderCard> lcp, String s);
-    void updateVP(int victoryPoints,String s);
     void updateLorenzo(LorenzoTrack lorenzo);
     void updateActionToken(ActionToken AT);
     void updateActionDone(String s);
