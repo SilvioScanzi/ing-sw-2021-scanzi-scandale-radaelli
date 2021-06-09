@@ -425,7 +425,7 @@ public class GUI extends Application implements View{
     @Override
     public void printBlackCross(int BC) {
         if(gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> gameScreenView.addFaithTrack(BC, null,true));
+            Platform.runLater(() -> gameScreenView.addFaithTrack(BC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getPopeFavor(),true));
         }
     }
 

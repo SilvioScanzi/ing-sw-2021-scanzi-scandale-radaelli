@@ -108,11 +108,11 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
             //Solo play
             else if(message instanceof ActionTokenMessage){
-                System.out.println(((ActionTokenMessage) message).getAT().toString());
                 view.printAT(((ActionTokenMessage) message).getAT());
             }
             else if(message instanceof LorenzoTrackMessage){
                 clientModel.getBoard(clientModel.getMyNickname()).setLorenzoMarker(((LorenzoTrackMessage) message).getBlackCross());
+                clientModel.getBoard(clientModel.getMyNickname()).setPopeFavor(((LorenzoTrackMessage) message).getPopeFavor());
                 view.printBlackCross(((LorenzoTrackMessage) message).getBlackCross());
             }
 

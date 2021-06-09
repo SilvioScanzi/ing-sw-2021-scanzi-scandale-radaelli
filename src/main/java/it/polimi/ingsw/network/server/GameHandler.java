@@ -422,6 +422,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             synchronized (client) {
                 client.sendStandardMessage(StandardMessages.notYourTurn);
                 client.setState(ClientHandler.ClientHandlerState.notMyTurn);
+                System.out.println("not my turn");
             }
 
             if (!endGame) {

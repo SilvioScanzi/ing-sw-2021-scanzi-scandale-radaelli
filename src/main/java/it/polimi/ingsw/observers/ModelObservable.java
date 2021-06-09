@@ -78,9 +78,9 @@ public class ModelObservable {
         }
     }
 
-    public void notifyLorenzo(LorenzoTrack lorenzo){
+    public void notifyLorenzo(LorenzoTrack lorenzo, boolean[] popeFavor){
         for(ModelObserver obs : observers){
-            obs.updateLorenzo(lorenzo);
+            obs.updateLorenzo(lorenzo,popeFavor);
         }
     }
 

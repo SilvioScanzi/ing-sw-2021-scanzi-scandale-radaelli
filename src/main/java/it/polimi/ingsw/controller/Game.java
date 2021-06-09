@@ -101,7 +101,7 @@ public class Game extends ModelObservable {
             notifyLCHand(players.get(i).getLeaderCardsHand(),players.get(i).getNickname());
         }
         if(playerNumber == 1){
-            notifyLorenzo(lorenzo);
+            notifyLorenzo(lorenzo,players.get(0).getFaithTrack().getPopeFavor());
         }
     }
 
@@ -277,7 +277,7 @@ public class Game extends ModelObservable {
                 lorenzo.advanceBlackCross();
                 if (lorenzo.checkPopeFavor() != -1) popeEvent(lorenzo.checkPopeFavor());
             }
-            notifyLorenzo(lorenzo);
+            notifyLorenzo(lorenzo,players.get(0).getFaithTrack().getPopeFavor());
         }
 
         playerBoard.getHand().clear();
@@ -712,15 +712,19 @@ public class Game extends ModelObservable {
             case Advance2 -> {
                 for (int i = 0; i < 2; i++) {
                     lorenzo.advanceBlackCross();
+                    /*boolean[] tmp = lorenzo.advanceBlackCross(vaticanReport);
+                    if(tmp[0] && !vaticanReport[0]) vaticanReport[0] = true;
+                    if(tmp[1] && !vaticanReport[1]) vaticanReport[1] = true;
+                    if(tmp[2] && !vaticanReport[2]) vaticanReport[2] = true;*/
                     if (lorenzo.checkPopeFavor() != -1) popeEvent(lorenzo.checkPopeFavor());
                 }
-                notifyLorenzo(lorenzo);
+                notifyLorenzo(lorenzo,players.get(0).getFaithTrack().getPopeFavor());
             }
             case AdvanceAndRefresh -> {
                 lorenzo.advanceBlackCross();
                 if (lorenzo.checkPopeFavor() != -1) popeEvent(lorenzo.checkPopeFavor());
                 actionStack = new ActionStack();
-                notifyLorenzo(lorenzo);
+                notifyLorenzo(lorenzo,players.get(0).getFaithTrack().getPopeFavor());
             }
             case DeleteBlue -> {
                 developmentCardMarket.deleteCards(Colours.Blue);

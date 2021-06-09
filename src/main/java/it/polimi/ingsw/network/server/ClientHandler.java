@@ -276,8 +276,8 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void updateLorenzo(LorenzoTrack lorenzo){
-        sendObject(new LorenzoTrackMessage(lorenzo));
+    public void updateLorenzo(LorenzoTrack lorenzo, boolean[] popeFavor){
+        sendObject(new LorenzoTrackMessage(lorenzo,popeFavor));
     }
 
     @Override

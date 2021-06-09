@@ -192,7 +192,7 @@ public class GameScreenView extends ViewObservable {
         addStrongBox(board.getStrongBox());
         addWarehouse(board.getWarehouse());
         addFaithTrack(board.getFaithMarker(), board.getPopeFavor(),false);
-        addFaithTrack(board.getLorenzoMarker(),null,true);
+        addFaithTrack(board.getLorenzoMarker(), board.getPopeFavor(), true);
         addLeaderCards(board.getLeaderCardsPlayed(),board.getLeaderCardsHand());
         addHand(board.getHand());
         addSlots(board.getSlot_1(),board.getSlot_2(),board.getSlot_3());
@@ -594,7 +594,7 @@ public class GameScreenView extends ViewObservable {
                 FaithTrack.add(FMImage, marker - 6, 0);
 
 
-            path = "/images/faithTrack/1";
+            /*path = "/images/faithTrack/1";
             if (popeFavor[0]) path = path + "_F.png";
             else path = path + "_B.png";
             PF1.setImage(new Image(GUI.class.getResource(path).toString()));
@@ -605,7 +605,7 @@ public class GameScreenView extends ViewObservable {
             path = "/images/faithTrack/3";
             if (popeFavor[2]) path = path + "_F.png";
             else path = path + "_B.png";
-            PF3.setImage(new Image(GUI.class.getResource(path).toString()));
+            PF3.setImage(new Image(GUI.class.getResource(path).toString()));*/
         }
         else {
             //TODO: la blackcross può attivare un vatican report
@@ -646,6 +646,20 @@ public class GameScreenView extends ViewObservable {
                 FMImage.setTranslateY(-20);
             }
         }
+
+        System.out.println(popeFavor[0] + " " + popeFavor[1] + " " + popeFavor[2]);
+        String path = "/images/faithTrack/1";
+        if (popeFavor[0]) path = path + "_F.png";
+        else path = path + "_B.png";
+        PF1.setImage(new Image(GUI.class.getResource(path).toString()));
+        path = "/images/faithTrack/2";
+        if (popeFavor[1]) path = path + "_F.png";
+        else path = path + "_B.png";
+        PF2.setImage(new Image(GUI.class.getResource(path).toString()));
+        path = "/images/faithTrack/3";
+        if (popeFavor[2]) path = path + "_F.png";
+        else path = path + "_B.png";
+        PF3.setImage(new Image(GUI.class.getResource(path).toString()));
     }
 
     public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed, ArrayList<Triplet<Resources,Integer,Integer>> LCHand){
