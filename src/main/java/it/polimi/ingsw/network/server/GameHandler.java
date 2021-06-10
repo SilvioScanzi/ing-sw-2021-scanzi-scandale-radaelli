@@ -214,8 +214,9 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                             demolished = true;
                             gameHandlerNotify();
                             t.cancel();
+                            t.purge();
                         }
-                    },600000);  //timer set to 10 minutes for reconnection
+                    },10000);  //timer set to 10 minutes for reconnection
                 }
             }
         }
@@ -422,7 +423,6 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             synchronized (client) {
                 client.sendStandardMessage(StandardMessages.notYourTurn);
                 client.setState(ClientHandler.ClientHandlerState.notMyTurn);
-                System.out.println("not my turn");
             }
 
             if (!endGame) {
@@ -435,14 +435,15 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 HashMap<String,Integer> vp = new HashMap<>();
                 vp.put(game.getBoard(0).getNickname(),game.getBoard(0).getVictoryPoints());
                 client.sendObject(new VictoryPointsMessage(vp));
-                client.closeConnection();
                 demolished = true;
                 gameHandlerNotify();
+                client.closeConnection();
             } else if (endGame && playerNumber > 1) {
                 turn = (turn + 1) % playerNumber;
                 if (turn == game.getInkwell()) {
                     game.countVictoryPoints();
                     synchronized (clients) {
+                        gameHandlerNotify();
                         for (ClientHandler CH : clients) {
                             HashMap<String,Integer> vp = new HashMap<>();
                             for(int i=0;i<playerNumber;i++){
@@ -452,7 +453,6 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                             CH.closeConnection();
                         }
                         demolished = true;
-                        gameHandlerNotify();
                     }
                 } else {
                     getNextActivePlayer();
@@ -464,9 +464,9 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                     HashMap<String,Integer> vp = new HashMap<>();
                     vp.put(game.getBoard(0).getNickname(),game.getBoard(0).getVictoryPoints());
                     client.sendObject(new VictoryPointsMessage(vp));
-                    client.closeConnection();
                     demolished = true;
                     gameHandlerNotify();
+                    client.closeConnection();
                 }
                 synchronized (client) {
                     client.setState(ClientHandler.ClientHandlerState.myTurn);
@@ -511,5 +511,9 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             tmp.addAll(disconnectedPlayers.keySet());
         }
         return tmp;
+    }
+
+    public ArrayList<ClientHandler> getClients(){
+        return clients;
     }
 }

@@ -39,6 +39,9 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             socketOut.close();
             socketIn.close();
             socket.close();
+            synchronized (this){
+                state = ClientHandlerState.disconnected;
+            }
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -138,9 +141,14 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (this) {
                     if(!state.equals(ClientHandlerState.disconnected)) {
+                        state = ClientHandlerState.disconnected;
+                        if(t!=null) {
+                            t.cancel();
+                            t.purge();
+                            t = null;
+                        }
                         notifyServerDisconnection();
                         notifyDisconnected();
-                        state = ClientHandlerState.disconnected;
                     }
                 }
                 return;
@@ -216,15 +224,19 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
 
     public void sendStandardMessage(StandardMessages SM){
         try{
-            socketOut.reset();
-            socketOut.writeObject(SM);
+            if(!state.equals(ClientHandlerState.disconnected)) {
+                socketOut.reset();
+                socketOut.writeObject(SM);
+            }
         }catch(IOException e){e.printStackTrace();}
     }
 
-    public void sendObject(Object o){
+    public synchronized void sendObject(Object o){
         try{
-            socketOut.reset();
-            socketOut.writeObject(o);
+            if(!state.equals(ClientHandlerState.disconnected)) {
+                socketOut.reset();
+                socketOut.writeObject(o);
+            }
         }catch(IOException e){e.printStackTrace();}
     }
 
@@ -290,5 +302,10 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         if(s.equals(nickname)){
             sendStandardMessage(StandardMessages.actionDone);
         }
+    }
+
+    @Override
+    public void updateResourceBuyDone(){
+        sendStandardMessage(StandardMessages.resourceBuyDone);
     }
 }

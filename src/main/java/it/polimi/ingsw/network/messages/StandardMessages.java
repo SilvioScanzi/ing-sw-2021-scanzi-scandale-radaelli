@@ -21,6 +21,7 @@ public enum StandardMessages implements Serializable {
     endGame("La partita è conclusa"),
     fatalError("Un giocatore si è disconnesso prima dell'inizio della partita, la partita è terminata"),
     unavailableConnection("La connessione al server indicato non è disponibile"),
+    resourceBuyDone("Hai completato l'azione di acquisto risorse"),
 
     //Error messages
     wait("Gli altri giocatori stanno compiendo delle scelte"),

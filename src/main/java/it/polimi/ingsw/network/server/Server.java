@@ -65,15 +65,18 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
                 else gameHandlerRequired = true;
             }
             //if disconnected player is in a game
-            else if (!clientHandlers.remove(CH)) {
+            else if (!clientHandlers.remove(CH) && gameHandlerMap.containsKey(CH.getNickname())) {
                 Pair<GameHandler, Boolean> P = gameHandlerMap.get(CH.getNickname());
                 if (P.getKey().equals(currentGameHandler)) {
                     gameHandlerMap.remove(CH.getNickname());
                     currentGameHandler.removePlayer(CH);
-                } else {
+                } else{
                     P.setValue(false);
                     gameHandlerMap.put(CH.getNickname(), P);
                 }
+            }
+            else{
+                System.out.println("\n\n[SERVER] FATAL ERROR on client\n\n");
             }
         }
         System.out.println("[SERVER] Client " + CH.getNickname() + " has disconnected from the game");
@@ -177,6 +180,11 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
     @Override
     public void gameHandlerUpdate(GameHandlerObservable obs) {
         synchronized (clientHandlers){
+            for(ClientHandler CH : ((GameHandler)obs).getClients()){
+                synchronized (CH) {
+                    CH.clearServer();
+                }
+            }
             for(String S : ((GameHandler)obs).getAllNicknames()){
                 gameHandlerMap.remove(S);
             }

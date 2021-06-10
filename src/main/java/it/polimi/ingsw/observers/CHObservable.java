@@ -16,8 +16,14 @@ public class CHObservable {
     }
 
     public void addServerObserver(CH_ServerObserver observer){
-        synchronized (observers) {
+        synchronized (serverObservers) {
             serverObservers.add(observer);
+        }
+    }
+
+    public void clearServer(){
+        synchronized (serverObservers) {
+            serverObservers.clear();
         }
     }
 
@@ -99,8 +105,8 @@ public class CHObservable {
         }
     }
 
-    public void notifyTurnDone(){
-        for(CHObserver obs : observers){
+    public void notifyTurnDone() {
+        for (CHObserver obs : observers) {
             obs.updateTurnDone(this);
         }
     }

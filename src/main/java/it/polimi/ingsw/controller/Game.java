@@ -283,6 +283,8 @@ public class Game extends ModelObservable {
         playerBoard.getHand().clear();
         notifyHand(new ArrayList<>(), playerBoard.getNickname());
         playerBoard.setMoveNeeded(false);
+        playerBoard.setLastActionMarket(false);
+        notifyResourceBuyDone();
     }
 
     //Player selects colour and level; method checks for costs and adds to the board the development card
@@ -604,7 +606,13 @@ public class Game extends ModelObservable {
 
         notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
         notifyHand(playerBoard.getHand(), playerBoard.getNickname());
-        if(tmpHand.size() == 0) playerBoard.setMoveNeeded(false);
+        if(tmpHand.size() == 0) {
+            playerBoard.setMoveNeeded(false);
+            if(playerBoard.getLastActionMarket()){
+                playerBoard.setLastActionMarket(false);
+                notifyResourceBuyDone();
+            }
+        }
         else if(playerBoard.getLastActionMarket()) discardRemainingResources(player);
         else if(tmpHand.size()>0) playerBoard.setMoveNeeded(true);
     }

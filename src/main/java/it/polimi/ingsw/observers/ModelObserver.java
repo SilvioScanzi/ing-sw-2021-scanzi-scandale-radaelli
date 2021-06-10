@@ -22,4 +22,5 @@ public interface ModelObserver {
     void updateLorenzo(LorenzoTrack lorenzo, boolean[] popeFavor);
     void updateActionToken(ActionToken AT);
     void updateActionDone(String s);
+    void updateResourceBuyDone();
 }

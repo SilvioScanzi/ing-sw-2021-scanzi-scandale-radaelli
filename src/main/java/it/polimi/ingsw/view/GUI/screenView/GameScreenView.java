@@ -8,6 +8,7 @@ import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Glow;
@@ -25,7 +26,6 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//TODO: finestra per scegliere quali risorse prendere nelle produzioni a scelta
 public class GameScreenView extends ViewObservable {
 
     @FXML
@@ -143,6 +143,7 @@ public class GameScreenView extends ViewObservable {
     private boolean actionDone = false;
     private boolean prevResBuyAction = false;
     private Color character;
+    private boolean lorenzo = false;
 
     @FXML
     public void initialize(){
@@ -150,19 +151,32 @@ public class GameScreenView extends ViewObservable {
         confirmAction.setDisable(true);
     }
 
+    public void setLorenzoTrue(){
+        lorenzo = true;
+    }
+
+    public void setPrevResBuyAction(){
+        prevResBuyAction = false;
+    }
+
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
-        if(actionDone){
-            endTurn.setDisable(false);
-            grayOutActionDone();
-        }
-        else{
+        if(!actionDone){
             endTurn.setDisable(true);
             prevResBuyAction = false;
             isMoveAction = false;
+            isBuyAction = false;
+            isProductionAction = false;
             selectedRMLC.clear();
             moveAction.clear();
+            buyDevelopmentAction.clear();
+            productionAction.clear();
             selected = null;
+            selectedCard = null;
+        }
+        else if (!prevResBuyAction){
+            endTurn.setDisable(false);
+            grayOutActionDone();
         }
     }
 
@@ -173,6 +187,10 @@ public class GameScreenView extends ViewObservable {
             case 3 -> character = Color.rgb(29, 103, 173);
             case 4 -> character = Color.rgb(252, 112, 51);
         }
+    }
+
+    public void setIsMoveAction(){
+        isMoveAction = true;
     }
 
     //Add methods
@@ -192,7 +210,9 @@ public class GameScreenView extends ViewObservable {
         addStrongBox(board.getStrongBox());
         addWarehouse(board.getWarehouse());
         addFaithTrack(board.getFaithMarker(), board.getPopeFavor(),false);
-        addFaithTrack(board.getLorenzoMarker(), board.getPopeFavor(), true);
+        if(lorenzo) {
+            addFaithTrack(board.getLorenzoMarker(), board.getPopeFavor(), true);
+        }
         addLeaderCards(board.getLeaderCardsPlayed(),board.getLeaderCardsHand());
         addHand(board.getHand());
         addSlots(board.getSlot_1(),board.getSlot_2(),board.getSlot_3());
@@ -305,24 +325,25 @@ public class GameScreenView extends ViewObservable {
         p.getChildren().add(DCpane);
         DCpane.setLayoutX(35);
         DCpane.setLayoutY(100);
+
         //leader cards
-        Pane LCpane = new Pane();
-        target = "/images/LeaderCardBack.png";
-        ImageView LCs = new ImageView(new Image(GUI.class.getResource(target).toString()));
-        int LCnumber = board.getLeaderCardsPlayed().size();
-        Text LCText = new Text(""+LCnumber);
-        LCpane.getChildren().add(LCs);
-        LCpane.getChildren().add(LCText);
-        LCs.setFitWidth(32);
-        LCs.setPreserveRatio(true);
-        LCs.setLayoutY(-1);
-        LCs.setLayoutX(2);
-        LCText.setLayoutX(47);
-        LCText.setLayoutY(25);
-        LCText.getStyleClass().add("smallnumber");
-        p.getChildren().add(LCpane);
-        LCpane.setLayoutX(108);
-        LCpane.setLayoutY(100);
+        Pane FTpane = new Pane();
+        target = "/images/faithTrack/FaithMarker.png";
+        ImageView FT = new ImageView(new Image(GUI.class.getResource(target).toString()));
+        int FTtext = board.getFaithMarker();
+        Text FTText = new Text(""+FTtext);
+        FTpane.getChildren().add(FT);
+        FTpane.getChildren().add(FTText);
+        FT.setFitWidth(32);
+        FT.setPreserveRatio(true);
+        FT.setLayoutY(-1);
+        FT.setLayoutX(2);
+        FTText.setLayoutX(47);
+        FTText.setLayoutY(25);
+        FTText.getStyleClass().add("smallnumber");
+        p.getChildren().add(FTpane);
+        FTpane.setLayoutX(108);
+        FTpane.setLayoutY(100);
     }
 
     public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1,ArrayList<Pair<Colours,Integer>> Slot_2,ArrayList<Pair<Colours,Integer>> Slot_3){
@@ -608,7 +629,6 @@ public class GameScreenView extends ViewObservable {
             PF3.setImage(new Image(GUI.class.getResource(path).toString()));*/
         }
         else {
-            //TODO: la blackcross può attivare un vatican report
             FaithTrack.getChildren().removeIf(n -> n.getId().equals("BlackCross"));
             //FaithTrack.getChildren().clear();
             String path = "/images/faithTrack/BlackCross.png";
@@ -647,7 +667,6 @@ public class GameScreenView extends ViewObservable {
             }
         }
 
-        System.out.println(popeFavor[0] + " " + popeFavor[1] + " " + popeFavor[2]);
         String path = "/images/faithTrack/1";
         if (popeFavor[0]) path = path + "_F.png";
         else path = path + "_B.png";
@@ -704,7 +723,7 @@ public class GameScreenView extends ViewObservable {
                             P.setLayoutY(171);
                             P.setPrefHeight(34);
                             P.setPrefWidth(34);
-                            P.setId("W_" + (i + 3) + "_" + (j + 1));
+                            P.setId("W" + (i + 3) + "_" + (j + 1));
                             if (h == 0) P.setLayoutX(25);
                             else P.setLayoutX(75);
                         }
@@ -802,13 +821,27 @@ public class GameScreenView extends ViewObservable {
     }
 
     public void addActionToken(String abbreviation){
+        players.getChildren().clear();
         String path = "/images/actionToken/" + abbreviation + ".png";
         ImageView imageView = new ImageView(new Image(GUI.class.getResource(path).toString()));
         imageView.setPreserveRatio(true);
         imageView.setFitWidth(135);
         imageView.setTranslateX(50);
+        Tooltip tooltip = new Tooltip();
+        String text = "";
+        switch(abbreviation){
+            case "A_2" -> text = "La croce nera è avanzata di due spazi";
+            case "A_1" -> text = "La croce nera è avanzata di uno spazio ed è stata mescolata la pila dei segnalini azione";
+            case "D_B" -> text = "Le prime due carte di colore blu sono state eliminate";
+            case "D_G" -> text = "Le prime due carte di colore verde sono state eliminate";
+            case "D_P" -> text = "Le prime due carte di colore viola sono state eliminate";
+            case "D_Y" -> text = "Le prime due carte di colore giallo sono state eliminate";
+        }
 
+        tooltip.setText(text);
+        tooltip.setShowDelay(Duration.millis(1));
         players.add(imageView,0,1);
+        Tooltip.install(imageView,tooltip);
     }
 
     //Gray out methods
@@ -824,7 +857,9 @@ public class GameScreenView extends ViewObservable {
                 }
                 if(LCMap.containsKey(i) && !LCMap.get(i).get_3()) grayNotPlayedLeaderCard(false,IM);
             }
-            grayBoards(true);
+            if(!lorenzo) {
+                grayBoards(true);
+            }
             grayEmptyWarehouse(true);
             grayHand(true);
             grayStrongBox(true,"");
@@ -835,7 +870,9 @@ public class GameScreenView extends ViewObservable {
             //Clickable board
             grayWarehouse(false,"move");
             grayCardMarket(false);
-            grayBoards(false);
+            if(!lorenzo) {
+                grayBoards(false);
+            }
             grayResourceMarket(false);
             grayPlayedLeaderCard(false,"move");
             for(int i = 1; i<=2;i++){
@@ -857,7 +894,6 @@ public class GameScreenView extends ViewObservable {
         grayProduction(true);
     }
 
-    //TODO: dato che usiamo "players" come pane, fare in modo che non vengano fatte queste grayOut quando in giocatore singolo
     public void grayBoards(boolean gray){
         if(gray){
             for(Node n : players.getChildren()){
@@ -1468,12 +1504,14 @@ public class GameScreenView extends ViewObservable {
                                 unselect();
                                 selected = null;
                                 notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC);
+                                confirmAction.setDisable(false);
                             }else{
                                 glowNextWhiteMarble(split[0].equals("R"),Integer.parseInt(split[1]),selectedRMLC.size());
                             }
                         });
                     }
                 }
+
             }
 
             //Development buy action
@@ -1500,7 +1538,6 @@ public class GameScreenView extends ViewObservable {
 
         //Resource market action
         else if(isMoveAction){
-            prevResBuyAction = false;
             isMoveAction = false;
             grayOut(false);
             notifyMoveResources(moveAction);
@@ -1536,17 +1573,20 @@ public class GameScreenView extends ViewObservable {
     }
 
     public void handleEndTurnClick(){
-        if(prevResBuyAction){
-            notifyMoveResources(moveAction);
-            prevResBuyAction = false;
-            moveAction.clear();
-        }
         confirmAction.setDisable(true);
         endTurn.setDisable(true);
         notifyEndTurn();
     }
 
     private void handleSelect(ImageView n){
+        if(selected!=null && prevResBuyAction && selected.equals(n)){
+            unselect();
+            grayHand(false);
+            grayWarehouse(false,"move");
+            grayPlayedLeaderCard(false,"move");
+            selected = null;
+            return;
+        }
         if(selected != null) {
             unselect();
         }
@@ -1570,9 +1610,12 @@ public class GameScreenView extends ViewObservable {
             if(selected.getId().split("_")[1].startsWith("W")){
                 grayEmptyWarehouse(false);
                 grayEmptyLeaderCard(false);
+                grayHand(true);
             }
             if((selected.getParent()).equals(Hand)){
-                grayHand(true);
+                ImageView finalSelected = selected;
+                finalSelected.setOnMouseClicked(e -> handleSelect(finalSelected));
+                finalSelected.getStyleClass().add("selectable");
                 grayWarehouse(true,"");
             }
         }
@@ -1834,6 +1877,7 @@ public class GameScreenView extends ViewObservable {
         ImageView IV = (ImageView) resource.getChildren().get(0);
         if(IV.getId().split("_")[1].startsWith("W")) {
             buyDevelopmentAction.remove(new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("W")[1].charAt(0)))));
+            IV.setEffect(null);
         }
         else if(IV.getId().split("_")[0].startsWith("SB")) {
             buyDevelopmentAction.remove(new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[1]), 6));

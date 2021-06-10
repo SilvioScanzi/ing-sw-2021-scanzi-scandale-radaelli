@@ -197,6 +197,9 @@ public class GUI extends Application implements View{
                         currentScene.setOnKeyPressed(null);
                         gameScreenView = fxmlLoader.getController();
                         gameScreenView.addObserver(NH);
+                        if(NH.getClientModel().getPlayerNumber()==1){
+                            gameScreenView.setLorenzoTrue();
+                        }
                         gameScreenView.addLCMap(NH.getClientModel().getLCMap(), NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsPlayed());
                         gameScreenView.addMarbles(NH.getClientModel().getResourceMarket(), NH.getClientModel().getRemainingMarble());
                         gameScreenView.addDevelopment(NH.getClientModel().getCardMarket());
@@ -206,15 +209,15 @@ public class GUI extends Application implements View{
                     }
 
                     currentScene.setRoot(gameScreen);
-
+                    gameScreenView.grayOut(true);
                     if(state.equals(ViewState.myTurn)) {
                         gameScreenView.grayOut(false);
                         gameScreenView.setActionDone(false);
                     }
-                    else if(NH.getClientModel().getBoards().size() > 1){
-                        gameScreenView.grayOut(true);
+                    else if(NH.getClientModel().getPlayerNumber() > 1){
                         gameScreenView.grayBoards(false);
                     }
+
                     primaryStage.setResizable(true);
                     primaryStage.setMaximized(true);
                     scale(1600,900);
@@ -308,7 +311,7 @@ public class GUI extends Application implements View{
 
     @Override
     public void print(String string) {
-        System.out.println(string);
+        if(!string.equals("La conversione avverrà in automatico")) System.out.println(string);
     }
 
     @Override
@@ -341,6 +344,9 @@ public class GUI extends Application implements View{
                 gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                 gameScreenView.grayOut(false);
                 if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();
+                if(message.equals(StandardMessages.moveActionWrong)){
+                    gameScreenView.setIsMoveAction();
+                }
             });
             case waitForReconnection -> Platform.runLater(() -> {
                 fxmlLoader = new FXMLLoader();
@@ -354,6 +360,10 @@ public class GUI extends Application implements View{
                     primaryStage.setMaximized(true);
                     scale(1600,900);
                 }catch(IOException e){e.printStackTrace();}
+            });
+            case resourceBuyDone -> Platform.runLater(() -> {
+                gameScreenView.setPrevResBuyAction();
+                gameScreenView.setActionDone(true);
             });
         }
     }
@@ -403,12 +413,9 @@ public class GUI extends Application implements View{
             Platform.runLater(() -> {
                 if ((NH.getClientModel().getMyNickname().equals(nickname)))
                     gameScreenView.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
-                else
-                    gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
             });
         }
     }
-
 
     @Override
     public void printResourceHand(ArrayList<Resources> H, String nickname) {
@@ -436,8 +443,13 @@ public class GUI extends Application implements View{
 
     @Override
     public void printFaithTrack(int FM, boolean[] PF, String nickname) {
-        if(NH.getClientModel().getMyNickname().equals(nickname) && gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> gameScreenView.addFaithTrack(FM, PF,false));
+        if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
+            Platform.runLater(() -> {
+                if ((NH.getClientModel().getMyNickname().equals(nickname)))
+                    Platform.runLater(() -> gameScreenView.addFaithTrack(FM, PF,false));
+                else
+                    gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+            });
         }
     }
 

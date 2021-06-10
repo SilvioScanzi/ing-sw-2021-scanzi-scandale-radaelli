@@ -95,4 +95,10 @@ public class ModelObservable {
             obs.updateActionDone(s);
         }
     }
+
+    public void notifyResourceBuyDone(){
+        for(ModelObserver obs : observers){
+            obs.updateResourceBuyDone();
+        }
+    }
 }
