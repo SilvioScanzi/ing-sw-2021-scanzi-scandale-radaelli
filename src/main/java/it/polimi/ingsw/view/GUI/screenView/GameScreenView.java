@@ -1450,6 +1450,7 @@ public class GameScreenView extends ViewObservable {
         }
 
         else if(isBuyAction){
+            Hand.getChildren().clear();
             isBuyAction = false;
             grayOut(false);
             notifyBuyDC(buyDevelopmentCard.getKey(),buyDevelopmentCard.getValue(),Integer.parseInt(selected.getId().split("_")[1]),buyDevelopmentAction);
@@ -1523,16 +1524,19 @@ public class GameScreenView extends ViewObservable {
                 grayPlayedLeaderCard(false,"buy");
                 selected.getStyleClass().add("selectable");
                 selected.setOnMouseClicked(e -> handleBuyCancel());
+                confirmAction.setDisable(true);
             }
 
             //Activate production
             else if(split[0].equals("P")){
-                unselect();
-                selected = null;
+                confirmAction.setDisable(true);
                 grayOut(true);
                 isProductionAction = true;
                 graySlots(false,"production");
                 grayProduction(false);
+                ImageView iv = selected;
+                selected = null;
+                handleProduction(iv);
             }
         }
 
@@ -1546,6 +1550,7 @@ public class GameScreenView extends ViewObservable {
         }
 
         else if(isProductionAction){
+            grayOut(true);
             confirmAction.setDisable(true);
             ArrayList<Integer> a = new ArrayList<>();
             for(int i=6;i>=4;i--){
@@ -1595,7 +1600,7 @@ public class GameScreenView extends ViewObservable {
             selected =  n;
             DropShadow DS = new DropShadow(BlurType.THREE_PASS_BOX, character, 5.0, 5.0, 0, 0);
             n.setEffect(DS);
-            if (!selected.getId().split("_")[1].startsWith("W")) confirmAction.setDisable(false);
+            if (!selected.getId().split("_")[1].startsWith("W") && !isProductionAction) confirmAction.setDisable(false);
         }
         //unselect previous choice
         else if(selected.equals(n)){
@@ -1871,6 +1876,9 @@ public class GameScreenView extends ViewObservable {
                 addErrorMessage("Le carte sviluppo non costano più di 7 risorse, sei già oltre il limite!");
             }
         }
+        if(buyDevelopmentAction.size()>0 && confirmAction.isDisabled()){
+            confirmAction.setDisable(false);
+        }
     }
 
     private void handleBuyDeselect(Pane resource,ImageView HandRes){
@@ -1887,6 +1895,9 @@ public class GameScreenView extends ViewObservable {
         }
         resource.setEffect(null);
         resource.getChildren().get(0).setOnMouseClicked(e -> handleBuySelect(resource));
+        if(buyDevelopmentAction.size()==0 && !confirmAction.isDisabled()){
+            confirmAction.setDisable(true);
+        }
     }
 
     private void handleBuyCancel() {
@@ -1955,7 +1966,21 @@ public class GameScreenView extends ViewObservable {
 
         confirmButton.setOnMouseClicked(e -> {
             TTOut.play();
+            ArrayList<Node> nodes = new ArrayList<>(Hand.getChildren());
+            for(Node n : nodes){
+                Pane p = null;
+                switch(n.getId().split("_")[1]){
+                    case "SE" -> p = (Pane) SB_SE.getParent();
+                    case "SH" -> p = (Pane) SB_SH.getParent();
+                    case "ST" -> p = (Pane) SB_ST.getParent();
+                    case "CO" -> p = (Pane) SB_CO.getParent();
+                }
+                handleBuyDeselect(p,(ImageView) n);
+            }
+            nodes.clear();
+
             isBuyAction = false;
+            grayOut(true);
             grayOut(false);
             buyDevelopmentAction.clear();
             if(selected!=null){
@@ -2114,6 +2139,8 @@ public class GameScreenView extends ViewObservable {
                 }
             }
         }
+        if(RES_P1.getChildren().size() > 0 || RES_P2.getChildren().size() > 0 || RES_P3.getChildren().size() > 0 || RES_P4.getChildren().size() > 0 || RES_P5.getChildren().size() > 0 || RES_P6.getChildren().size()>0)
+            if(confirmAction.isDisabled()) confirmAction.setDisable(false);
     }
 
     private void handleProductionDeselect(ImageView IV,Node oldParent) {
@@ -2121,9 +2148,11 @@ public class GameScreenView extends ViewObservable {
         newParent.getChildren().remove(IV);
 
         int i = Integer.parseInt(String.valueOf(newParent.getId().split("_")[1].charAt(1)));
+
         ArrayList<Pair<String,Integer>> tmp = productionAction.get(i);
         Pair<String,Integer> tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
         tmp.remove(tmp2);
+        System.out.println(productionAction);
         if(tmp.size()==0){
             productionAction.remove(i);
         }
@@ -2184,6 +2213,8 @@ public class GameScreenView extends ViewObservable {
                 newParent.add(m, 0, 0);
             }
         }
+        if(!(RES_P1.getChildren().size() > 0 || RES_P2.getChildren().size() > 0 || RES_P3.getChildren().size() > 0 || RES_P4.getChildren().size() > 0 || RES_P5.getChildren().size() > 0 || RES_P6.getChildren().size()>0))
+            if(!confirmAction.isDisabled()) confirmAction.setDisable(true);
     }
 
     private void handleProductionCancel(ImageView IV){
@@ -2531,6 +2562,5 @@ public class GameScreenView extends ViewObservable {
             selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
         }
         else selected.setEffect(null);
-        confirmAction.setDisable(false);
     }
 }

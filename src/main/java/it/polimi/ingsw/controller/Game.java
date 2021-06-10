@@ -197,7 +197,7 @@ public class Game extends ModelObservable {
         ArrayList<Resources> tmp = new ArrayList<>();
 
         ArrayList<Integer> conversionIndex = new ArrayList<>();
-        for(int j = 0; j<playerBoard.getLeaderCardsPlayed().size(); j++){
+        for(Integer j : playerBoard.getLeaderCardsPlayed().keySet()){
             if(playerBoard.getLeaderCardsPlayed().get(j).getAbility().doConvert()) conversionIndex.add(j);
         }
 
