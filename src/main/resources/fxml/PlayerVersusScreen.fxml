@@ -37,9 +37,9 @@
             <Image url="@../images/Donatello.png" />
          </image>
       </ImageView>
-      <Text fx:id="P1" layoutX="64.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.6085456478438" />
-      <Text fx:id="P2" layoutX="441.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.60854564784387" />
-      <Text fx:id="P3" layoutX="910.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.6085456478438" />
-      <Text fx:id="P4" layoutX="1332.0" layoutY="415.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="212.60854564784375" />
+      <Text fx:id="P1" layoutX="14.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="336.0" />
+      <Text fx:id="P2" layoutX="375.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="343.56564331054676" />
+      <Text fx:id="P3" layoutX="829.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="343.56564331054676" />
+      <Text fx:id="P4" layoutX="1228.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="343.56564331054676" />
    </children>
 </AnchorPane>

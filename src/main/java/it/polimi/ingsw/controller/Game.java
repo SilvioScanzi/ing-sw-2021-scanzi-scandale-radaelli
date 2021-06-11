@@ -31,7 +31,10 @@ public class Game extends ModelObservable {
         actionStack = new ActionStack();
     }
 
-    //Only used for testing
+    /**
+     * method used for testing, it initialize a game with a standard configuration (further explained in each model class)
+     * @param Arandom is just used to overload the method and the methods in the model
+     */
     public Game(int Arandom){
         inkwell = 0;
         playerNumber = 0;
@@ -45,7 +48,6 @@ public class Game extends ModelObservable {
     }
 
     //Setters
-
     public void setInkwell(int inkwell) {
         this.inkwell = inkwell;
     }
@@ -73,6 +75,14 @@ public class Game extends ModelObservable {
         return developmentCardMarket;
     }
 
+    /**
+     * the method returns all the Leader Cards of the chosen player, played or not.
+     * The leader cards are returned with their index (which is the position of that card in the board) and a pair of:
+     * Resources which is the resource used for the ability and an Integer which is the number of victory points
+     * which the card gives. With these 2 information it can be determined which card it is
+     * @param nickname is the name of the chosen player
+     * @return leader cards of the player
+     */
     public HashMap<Integer,Pair<Resources,Integer>> getLCMap(String nickname){
         HashMap<Integer,Pair<Resources,Integer>> tmp = new HashMap<>();
         Board playerBoard = getBoard(nickname);
@@ -88,7 +98,11 @@ public class Game extends ModelObservable {
 
     //Methods for the game setup
 
-    //Initializes variables and boards, assigning nicknames
+    /**
+     * Initializes variables and boards, assigning nicknames and dealing each player 4 leader cards
+     * (2 of which will be discarded)
+     * @param names is the list of names of the players in the current game
+     */
     public void setup(ArrayList<String> names){
         playerNumber = names.size();
         for(int i = 0; i< playerNumber; i++){
@@ -105,7 +119,14 @@ public class Game extends ModelObservable {
         }
     }
 
-    //Called on all players but the first
+    /**
+     * The method is called by all players but the first. A player specifies which resource (or 2 resources) wants
+     * to get from the setup and, after checking his position (2 -> 1 resource, 3 -> 1 resource and 1 faith point, 4 -> 2 resources and 2 faith points)
+     * if the request is correct, the boards are updated
+     * @param player position of the player in the game (from 1 to n number of total players)
+     * @param userChoice resource(s) which the player wants to get, passed via String
+     * @throws IllegalArgumentException if the String which should represent a Resource (MO,PI,SC,SE) is in a wrong format
+     */
     public void finishingSetup(int player, ArrayList<String> userChoice) throws IllegalArgumentException{
 
         ArrayList<Resources> R = new ArrayList<>();
@@ -148,8 +169,16 @@ public class Game extends ModelObservable {
     }
 
     //Discards leader cards in the setup phase of the game
+
+    /**
+     * The method is used in the setup phase of the game, when players need to specify which 2 leader cards they want to discard.
+     * @param player position of the player
+     * @param discardedLC array of integers which specify the indexes of the card to discard
+     * @throws IllegalArgumentException if the array has not exactly 2 indexes or the indexes are identical
+     * @throws IndexOutOfBoundsException if the indexes specified are out of bounds (they have to be between 1 and 4)
+     */
     public void discardSelectedLC(int player, int[] discardedLC) throws IllegalArgumentException, IndexOutOfBoundsException{
-        if(discardedLC.length!=2) throw new IllegalArgumentException("Input from user is not compatible");
+        if(discardedLC.length != 2 || discardedLC[0] == discardedLC[1]) throw new IllegalArgumentException("Input from user is not compatible");
 
         //sorting in descending order the index
         if(discardedLC[0]<discardedLC[1]){
@@ -158,7 +187,7 @@ public class Game extends ModelObservable {
             discardedLC[1] = tmp;
         }
 
-        if(discardedLC[0]>4 || discardedLC[0]<0 || discardedLC[1]>3 || discardedLC[1]<0){
+        if(discardedLC[0] > 4 || discardedLC[0] <= 0 || discardedLC[1] <= 0){
             throw new IndexOutOfBoundsException("Selected leader cards do not exist");
         }
 
@@ -180,6 +209,13 @@ public class Game extends ModelObservable {
 
 
     //Methods used in the actual game
+
+    /**
+     * The method check if there can be a possible pope event. It is called after a player reaches a pope tile.
+     * Firstly, it is checked if the pope event for that tile was already triggered, if not it triggers it,
+     * setting the pope favors in all the boards which are qualified for it
+     * @param index is the index of the pope event (1 for the first, 2 for the second, 3 for the third)
+     */
     private void popeEvent(int index){
         if(!(vaticanReport[index-1])) {
             for(int i = 0; i< playerNumber; i++){
@@ -189,7 +225,22 @@ public class Game extends ModelObservable {
         }
     }
 
-    //Adds the resources from the market to the hand, ignoring white marbles
+    /**
+     * The method is used to perform the first part of the "buy resources" action. Player selects row/column
+     * and the method check if the action can be performed. In particular, it is checked if the player has played 1
+     * leader card with the ability of conversion of the white marble (or 0) and, if so, it converts automatically.
+     * If two leader cards of this type are played, player needs to specify for each white marble which card he wants
+     * to use.
+     * @param player position of the player
+     * @param row boolean which indicates if the players chose a row (true) or a column (false)
+     * @param i index of the row/column chosen by the player
+     * @param requestedWMConversion Arraylist of indexes of the leader cards used if a player has exactly 2 leader cards with the ability
+     *                              to convert the white marble into some other resource. The indexes specify for each white marble of
+     *                              the row/column which leader card is going to be used for the conversion
+     * @throws ActionAlreadyDoneException if the player has already done his action for his turn
+     * @throws IllegalArgumentException if the indexes selected aren't exactly the same number of white marbles in the selected row/column
+     * @throws IndexOutOfBoundsException if the row/column selected doesn't exist (i out of bounds)
+     */
     public synchronized void BuyMarketResourcesAction(int player, boolean row, int i, ArrayList<Integer> requestedWMConversion) throws ActionAlreadyDoneException, IllegalArgumentException, IndexOutOfBoundsException {
         Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
@@ -231,7 +282,12 @@ public class Game extends ModelObservable {
         playerBoard.setMoveNeeded(true);
     }
 
-    //Converts Marbles to resources
+    /**
+     * Helper method which converts Marbles to resources, ignoring the white marble
+     * @param marbles is the Arraylist of the non-white marbles selected by the player
+     * @param playerBoard board of the player whose Faith Track needs to be updated (if a red marble is in the set)
+     * @return The Arraylist of resources got from the action
+     */
     private ArrayList<Resources> standardConversion(ArrayList<Marbles> marbles, Board playerBoard){
         ArrayList<Resources> tmp = new ArrayList<>();
         for(Marbles m : marbles){
@@ -253,6 +309,12 @@ public class Game extends ModelObservable {
     }
 
     //Discard resources and advance other players
+
+    /**
+     * Used to discard all the resources left in the player's "Hand" after a market action.
+     * For each resource discarded, every other player gets to advance his faith track
+     * @param player position of the player who is discarding the resources
+     */
     public synchronized void discardRemainingResources(int player) {
         Board playerBoard = players.get(player);
         if (playerNumber > 1) {
@@ -288,6 +350,27 @@ public class Game extends ModelObservable {
     }
 
     //Player selects colour and level; method checks for costs and adds to the board the development card
+
+    /**
+     * Method used for buying a development card from the market. User specifies which card via various parameters and
+     * which resources he's going to use to buy that card. Different exceptions are thrown if anything goes wrong.
+     * @param c Colour of the selected development card
+     * @param level Level of the selected development card
+     * @param player position of the player who is performing the action
+     * @param slotNumber slot in which the player wants to put the card
+     * @param userChoice Arraylist of the specified resources used to buy the card. Represented via a Pair of String (Abbreviation of the resource)
+     *                   and Integer which represent the place from which the player is picking the resource. 1-3 for depots in warehouse,
+     *                   4-5 for leader cards, 6 for strongbox
+     * @throws ActionAlreadyDoneException if the player has already done his action for his turn
+     * @throws EmptyException if the card selected doesn't exist (the relative pile is empty)
+     * @throws InvalidPlacementException if the card is placed on a slot which cannot contain the card
+     * @throws RequirementsNotMetException if the specified resources aren't enough/exactly correct for buying the card
+     * @throws ResourceErrorException if the specified resources aren't actually present in the specified locations
+     * @throws LeaderCardNotCompatibleException if the player wanted to use a resource from a leader card which is not of the correct
+     * type (has an ability which isn't extra space for resources)
+     * @throws IndexOutOfBoundsException if the player specifies a location which doesn't exist
+     * @throws IllegalArgumentException if the specified resources are in a wrong format
+     */
     public synchronized void BuyDevelopmentCardAction(Colours c, int level, int player, int slotNumber, ArrayList<Pair<String, Integer>> userChoice)
             throws ActionAlreadyDoneException,EmptyException,InvalidPlacementException,RequirementsNotMetException,ResourceErrorException,LeaderCardNotCompatibleException,IndexOutOfBoundsException,IllegalArgumentException{
 
@@ -315,8 +398,6 @@ public class Game extends ModelObservable {
 
         //Try to consume the resources needed
         consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice);
-
-
 
         //Getting the slot requested by the player
         Slot requestedSlot = playerBoard.getSlot(slotNumber);
@@ -352,10 +433,27 @@ public class Game extends ModelObservable {
         notifyDCMarket(developmentCardMarket);
     }
 
-    //if player chooses to activate a leader card or the base production, the last position of the ArrayList
-    //contained in userChoice is the to-be-produced resource
+    /**
+     * Method used to activate the productions of any card/base production. The player chooses which productions he wants
+     * to activate and, for each production, which resources will be used for that production.
+     * @param player position of the player who is performing the action
+     * @param userChoice HashMap with the number of the production as the index (1-3 for the slots, 4-5 for the leader cards,
+     *                   6 for the base production) and an Arraylist of pairs which contains the resources used to activate each production.
+     *                   Specifically, the String represents the resource selected and the integer the location from which the resource is picked.
+     *                   (1-3 for depots in warehouse, 4-5 for leader cards, 6 for strongbox)
+     *                   In the case of index 4-5-6 of the production (leader cards or base production) the player also
+     *                   has to specify which resource he wants to get. In the last position of the relative Arraylist,
+     *                   there is the resource chosen with a symbolic -1 for the position
+     * @throws ActionAlreadyDoneException if the player has already done his action for his turn
+     * @throws LeaderCardNotCompatibleException if the player chose to activate a leader card for his production,
+     * but the selected leader card has another ability
+     * @throws IllegalArgumentException if the player chose something other than 1-6 as the index of the production
+     * @throws EmptyException if the slot specified for the production is empty
+     * @throws ResourceErrorException if the player specified a resource which isn't actually on his board
+     * @throws RequirementsNotMetException if the player chose the resources to activate the production incorrectly
+     */
     public synchronized void activateProductionAction(int player, HashMap<Integer,ArrayList<Pair<String,Integer>>> userChoice)
-            throws ActionAlreadyDoneException,LeaderCardNotCompatibleException,IllegalArgumentException,EmptyException,ResourceErrorException,RequirementsNotMetException,BadRequestException {
+            throws IndexOutOfBoundsException,ActionAlreadyDoneException,LeaderCardNotCompatibleException,IllegalArgumentException,EmptyException,ResourceErrorException,RequirementsNotMetException {
         Board playerBoard = players.get(player);
         if(playerBoard.getActionDone()) throw new ActionAlreadyDoneException("Current player has already done his action for the turn");
         HashMap<Resources, Integer> cost;
@@ -397,7 +495,7 @@ public class Game extends ModelObservable {
                             Resources r = Resources.getResourceFromAbbr(userChoice.get(i).get(j).getKey());
                             cost.put(r,(cost.get(r) == null)?1:cost.get(r)+1);
                         }
-                    } else throw new BadRequestException("Error in the base production");
+                    } else throw new RequirementsNotMetException("Error in the base production");
             } else throw new IllegalArgumentException("Error in the selection of the production");
 
             consumeResources(playerBoard, sb, wr, cost, LCCapacity, userChoice.get(i));
@@ -441,13 +539,26 @@ public class Game extends ModelObservable {
         notifyActionDone(playerBoard.getNickname());
     }
 
-    //Helper method used to modify the board of a player regarding his resources.
-    //From strongbox, warehouse and leader card (cloned) checks if requested resources are present and, if so,
-    //consumes them, changing the state of the board. If there are no errors modifies everything, otherwise throws exception and rollback.
+    /**
+     *  Helper method used to consume the resources of a player board. The method is always called on cloned storages
+     *  and changes the state of these storages after performing the required consumptions, but only after
+     *  checking if the requested resources are present. Otherwise, throws an exception and nothing is changed.
+     * @param playerBoard board that needs to be updated
+     * @param sb cloned strongbox of that board
+     * @param wr cloned warehouse of that board
+     * @param cost Hashmap in which there are the resources needed (and their number) for the required action (buying a card or activating a production)
+     * @param LCCapacity cloned storages related to leader cards with the ability to contain extra resources
+     * @param userChoice Arraylist of pair (resource and the location from which they are taken)
+     * @throws ResourceErrorException if the specified resources aren't actually on the player board
+     * @throws LeaderCardNotCompatibleException if the leader card used to store/retrieve resources has an ability which isn't extra space for resources
+     * or if the leader card has the right ability, but contains a different type of resources
+     * @throws RequirementsNotMetException if after the selection, the resources aren't enough or right to perform the action
+     * @throws IllegalArgumentException if the format of the resources isn't right
+     */
     private void consumeResources (Board playerBoard, Strongbox sb, Warehouse wr, HashMap<Resources, Integer> cost, HashMap<LeaderCard,Integer> LCCapacity, ArrayList<Pair<String,Integer>> userChoice)
             throws ResourceErrorException,LeaderCardNotCompatibleException,RequirementsNotMetException,IllegalArgumentException{
         if(userChoice.size()==0){
-            throw new RequirementsNotMetException("You don't have enough resources to buy the card");
+            throw new RequirementsNotMetException("You don't have enough resources to perform the action");
         }
         HashMap<Resources, Integer> selectedResources = new HashMap<>();
         for(Resources r: Resources.values()){
@@ -481,7 +592,7 @@ public class Game extends ModelObservable {
                     }catch (Exception e) {e.printStackTrace();}
                     selectedResources.put(r, (1+selectedResources.get(r)));
                 }else throw new ResourceErrorException("There aren't enough resources in the strongbox");
-            } else throw new IllegalArgumentException("Selection not compatible");
+            } else throw new IndexOutOfBoundsException("Selection not compatible");
         }
         for(Resources r:selectedResources.keySet()){
             if(selectedResources.get(r)!=0 && !selectedResources.get(r).equals(cost.get(r)))
@@ -490,12 +601,25 @@ public class Game extends ModelObservable {
 
     }
 
-    //The ArrayList of triplets contains user choices on resources to move. The string represents the resource to move,
-    //the first Integer (_2) represents the source (FROM), the last Integer (_3) represents the destination (TO)
-    //1-3 for the depots, 4-5 for the Leader Cards (Extra slot only), 0 to the hand which is used to make the swaps
-    //In the end, if there are resources left in the hand, there needs to be a check from the caller of this method.
+
+    /**
+     * Method used to move resources between depots and leader cards. First, the request is simplified, reducing the moves
+     * performed, compressing them into a single move for each resource.
+     * At the end of the move, if there are resources left in the hand, it is checked whether the move was performed after the
+     * buy resource. If so, the resources are discarded
+     * @param player position of the player who is performing the action
+     * @param userChoice ArrayList of triplets which contains player choices on resources to move. The string represents the resource to move
+     *                   the first Integer represents the source location (FROM), the last Integer represents the destination (TO)
+     *                   1-3 for the depots, 4-5 for the Leader Cards (Extra slot only), 0 to the hand (used to contain the resources got from the market)
+     * @throws BadRequestException if the player is trying to put resources in the hand
+     * @throws LeaderCardNotCompatibleException if the player is trying to put resources on a leader card with an incorrect ability
+     * @throws ResourceErrorException if the player doesn't actually has the resources in his board
+     * @throws InvalidPlacementException if the player moves incorrectly the resources (at the end, there is the same type of the resource in different depots)
+     * @throws IllegalArgumentException if the player chooses an invalid index (other than 0-5)
+     * @throws IncompatibleResourceException if the player moves a resource into a depot which contains another type of resource
+     */
     public synchronized void moveResources(int player, ArrayList<Triplet<String,Integer,Integer>> userChoice) throws BadRequestException, LeaderCardNotCompatibleException,
-            ResourceErrorException, InvalidPlacementException, IllegalArgumentException, IncompatibleResourceException{
+            ResourceErrorException, IllegalArgumentException, IncompatibleResourceException, InvalidPlacementException{
         Board playerBoard = players.get(player);
         Warehouse wr = playerBoard.getWarehouse().clone();
         HashMap<LeaderCard,Integer> LCCapacity = new HashMap<>();
@@ -530,7 +654,7 @@ public class Game extends ModelObservable {
 
         for (Triplet<String, Integer, Integer> stringIntegerIntegerTriplet : userChoice) {
             if (stringIntegerIntegerTriplet.get_3() == 0) {
-                throw new BadRequestException("Resorces cannot be moved into hand");
+                throw new BadRequestException("Resources cannot be moved into hand");
             }
         }
 
@@ -617,6 +741,12 @@ public class Game extends ModelObservable {
         else if(tmpHand.size()>0) playerBoard.setMoveNeeded(true);
     }
 
+    /**
+     * Method used to discard leader cards
+     * @param player position of the player who is performing the action
+     * @param leaderCardIndex index of the card which the player wants to discard
+     * @throws IndexOutOfBoundsException if the index isn't a valid one
+     */
     public synchronized void discardLeaderCard(int player, int leaderCardIndex) throws IndexOutOfBoundsException{
         if(!players.get(player).getLeaderCardsHand().containsKey(leaderCardIndex - 1)) {throw new IndexOutOfBoundsException("Leader card does not exist"); }
         players.get(player).discardLeaderCard(leaderCardIndex);
@@ -627,6 +757,13 @@ public class Game extends ModelObservable {
         notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
     }
 
+    /**
+     * Method used to play leader cards
+     * @param player position of the player who is performing the action
+     * @param leaderCardIndex index of the card which the player wants to discard
+     * @throws RequirementsNotMetException if the requirements for that card aren't fulfilled
+     * @throws IndexOutOfBoundsException if the index isn't a valid one
+     */
     public synchronized void playLeaderCard(int player, int leaderCardIndex) throws RequirementsNotMetException, IndexOutOfBoundsException{
         if(!players.get(player).getLeaderCardsHand().containsKey(leaderCardIndex-1)) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).playLeaderCard(leaderCardIndex);
@@ -635,6 +772,11 @@ public class Game extends ModelObservable {
         notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
     }
 
+    /**
+     * Method used to check if at least one end game condition is met for a player
+     * @param player position of the player who's getting checked
+     * @return true if the condition is met, otherwise false
+     */
     public boolean checkEndGame(int player){
         if(vaticanReport[2]) return true;
         else{
@@ -672,7 +814,7 @@ public class Game extends ModelObservable {
                 if(playerBoard.getFaithTrack().getPopeFavor()[j]) tmp+=2+j;
             }
 
-            //leadercard points
+            //leader card points
             for (Integer I : playerBoard.getLeaderCardsPlayed().keySet()) {
                 LeaderCard LC = playerBoard.getLeaderCardsPlayed().get(I);
                 tmp += LC.getVictoryPoints();
@@ -713,6 +855,10 @@ public class Game extends ModelObservable {
         return actionStack;
     }
 
+    /**
+     * Method used for single player games. Activates the action token for the round,
+     * updating the model after the activation.
+     */
     public void activatedToken(){
         ActionToken AT = actionStack.draw();
         notifyActionToken(AT);
@@ -720,10 +866,6 @@ public class Game extends ModelObservable {
             case Advance2 -> {
                 for (int i = 0; i < 2; i++) {
                     lorenzo.advanceBlackCross();
-                    /*boolean[] tmp = lorenzo.advanceBlackCross(vaticanReport);
-                    if(tmp[0] && !vaticanReport[0]) vaticanReport[0] = true;
-                    if(tmp[1] && !vaticanReport[1]) vaticanReport[1] = true;
-                    if(tmp[2] && !vaticanReport[2]) vaticanReport[2] = true;*/
                     if (lorenzo.checkPopeFavor() != -1) popeEvent(lorenzo.checkPopeFavor());
                 }
                 notifyLorenzo(lorenzo,players.get(0).getFaithTrack().getPopeFavor());

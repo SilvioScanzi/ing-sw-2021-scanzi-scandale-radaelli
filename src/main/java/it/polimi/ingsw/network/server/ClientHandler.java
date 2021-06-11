@@ -102,7 +102,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                             if(state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)) {
                                 notifyDisconnected();
                             }
-                            else closeConnection();
+                            closeConnection();
                             state = ClientHandlerState.disconnected;
                         }
                     },120000);  //timer set to 2 minutes for setup stages of the game
@@ -120,10 +120,10 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                     t.schedule(new TimerTask() {
                         @Override
                         public void run() {
-                            state = ClientHandlerState.disconnected;
                             sendObject(new DisconnectedMessage(nickname));
                             notifyServerDisconnection();
                             notifyDisconnected();
+                            state = ClientHandlerState.disconnected;
                         }
                     },600000);  //timer set to 10 minutes for every action in the game
                     message = socketIn.readObject();
@@ -141,7 +141,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (this) {
                     if(!state.equals(ClientHandlerState.disconnected)) {
-                        state = ClientHandlerState.disconnected;
                         if(t!=null) {
                             t.cancel();
                             t.purge();
@@ -149,6 +148,7 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
                         }
                         notifyServerDisconnection();
                         notifyDisconnected();
+                        state = ClientHandlerState.disconnected;
                     }
                 }
                 return;

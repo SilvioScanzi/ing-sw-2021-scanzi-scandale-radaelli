@@ -110,9 +110,9 @@ public class GUI extends Application implements View{
                     playerNumberScreenView = fxmlLoader.getController();
                     playerNumberScreenView.addObserver(NH);
                     primaryStage.setResizable(false);
-                    if(primaryStage.getWidth()!=716.0 || primaryStage.getHeight()!=739.0) {
+                    if(currentScene.getWidth()!=700.0 || currentScene.getHeight()!=700.0) {
                         primaryStage.setMaximized(false);
-                        scale(716.0,739.0);
+                        scale(700.0,700.0);
                     }
                 }catch(IOException e){e.printStackTrace();}
             });
@@ -238,7 +238,7 @@ public class GUI extends Application implements View{
                     leaderBoardScreenView.addObserver(NH);
                     leaderBoardScreenView.setLeaderBoard(NH.getClientModel().getLeaderBoard(), NH.getClientModel().getLorenzo());
                     primaryStage.setMaximized(false);
-                    scale(716.0,739.0);
+                    scale(700.0,700.0);
                     primaryStage.setResizable(false);
                 }catch(IOException e){e.printStackTrace();}
             });
@@ -272,8 +272,8 @@ public class GUI extends Application implements View{
     }
 
     private void scale(double width,double height){
-        double scaleFactorX = primaryStage.getWidth()/width;
-        double scaleFactorY = primaryStage.getHeight()/height;
+        double scaleFactorX = currentScene.getWidth()/width;
+        double scaleFactorY = currentScene.getHeight()/height;
 
         Scale scale = new Scale(scaleFactorX, scaleFactorY);
         scale.setPivotX(0);

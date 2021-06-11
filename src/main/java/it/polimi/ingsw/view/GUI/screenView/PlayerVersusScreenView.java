@@ -49,7 +49,7 @@ public class PlayerVersusScreenView {
                 String target = "/images/lorenzo.png";
                 PL4.setImage(new Image(GUI.class.getResource(target).toString()));
                 PL4.setPreserveRatio(true);
-                PL4.setFitWidth(446);
+                PL4.setFitWidth(500);
                 PL4.setLayoutX(1600);
                 PL4.setLayoutY(558);
                 P4.setLayoutX(2000);
@@ -83,6 +83,29 @@ public class PlayerVersusScreenView {
                 AP.getChildren().remove(PL2);
                 AP.getChildren().remove(PL3);
                 AP.getChildren().remove(P3);
+
+                TranslateTransition TT = new TranslateTransition(Duration.seconds(0.5),PL1);
+                TT.setFromX(-500);
+                TT.setToX(0);
+                TranslateTransition TT1 = new TranslateTransition(Duration.seconds(0.5),P1);
+                TT1.setFromX(-500);
+                TT1.setToX(0);
+
+                PL4.setLayoutX(PL4.getLayoutX()+500);
+                P4.setLayoutX(P4.getLayoutX()+500);
+
+                TranslateTransition TL = new TranslateTransition(Duration.seconds(0.5),PL4);
+                TL.setToX(-500);
+                TranslateTransition TL1 = new TranslateTransition(Duration.seconds(0.5),P4);
+                TL1.setToX(-500);
+                TL.setDelay(Duration.millis(500));
+                TL1.setDelay(Duration.millis(500));
+                TT.setOnFinished(e -> {
+                    TL1.play();
+                    TL.play();
+                });
+                TT.play();
+                TT1.play();
             }
             case 3 -> {
                 P1.setText(tmp.get(0));
@@ -94,12 +117,83 @@ public class PlayerVersusScreenView {
                 P3.setLayoutX(1332);
                 AP.getChildren().remove(P4);
                 AP.getChildren().remove(PL4);
+                TranslateTransition TT = new TranslateTransition(Duration.seconds(0.5),PL1);
+                TT.setFromY(500);
+                TT.setToY(0);
+                TranslateTransition TT1 = new TranslateTransition(Duration.seconds(0.5),P1);
+                TT1.setFromY(500);
+                TT1.setToY(0);
+                TranslateTransition TM = new TranslateTransition(Duration.seconds(0.5),PL2);
+                TM.setToY(-500);
+                TranslateTransition TM1 = new TranslateTransition(Duration.seconds(0.5),P2);
+                TM1.setToY(-520);
+                TranslateTransition TL = new TranslateTransition(Duration.seconds(0.5),PL3);
+                TL.setToY(-500);
+                TranslateTransition TL1 = new TranslateTransition(Duration.seconds(0.5),P3);
+                TL1.setToY(-520);
+
+                PL2.setLayoutY(PL2.getLayoutY()+500);
+                P2.setLayoutY(P2.getLayoutY()+520);
+                PL3.setLayoutY(PL3.getLayoutY()+500);
+                P3.setLayoutY(P3.getLayoutY()+520);
+
+                TM.setDelay(Duration.millis(500));
+                TM1.setDelay(Duration.millis(500));
+                TL.setDelay(Duration.millis(1000));
+                TL1.setDelay(Duration.millis(1000));
+                TT.play();
+                TT1.play();
+                TM.play();
+                TM1.play();
+                TL.play();
+                TL1.play();
             }
             default -> {
                 P1.setText(tmp.get(0));
                 P2.setText(tmp.get(1));
                 P3.setText(tmp.get(2));
                 P4.setText(tmp.get(3));
+
+                TranslateTransition TT = new TranslateTransition(Duration.seconds(0.5),PL1);
+                TT.setFromY(500);
+                TT.setToY(0);
+                TranslateTransition TT1 = new TranslateTransition(Duration.seconds(0.5),P1);
+                TT1.setFromY(500);
+                TT1.setToY(0);
+                TranslateTransition TM = new TranslateTransition(Duration.seconds(0.5),PL2);
+                TM.setToY(-500);
+                TranslateTransition TM1 = new TranslateTransition(Duration.seconds(0.5),P2);
+                TM1.setToY(-520);
+                TranslateTransition TL = new TranslateTransition(Duration.seconds(0.5),PL3);
+                TL.setToY(-500);
+                TranslateTransition TL1 = new TranslateTransition(Duration.seconds(0.5),P3);
+                TL1.setToY(-520);
+                TranslateTransition TR = new TranslateTransition(Duration.seconds(0.5),PL4);
+                TR.setToY(-500);
+                TranslateTransition TR1 = new TranslateTransition(Duration.seconds(0.5),P4);
+                TR1.setToY(-520);
+
+                PL2.setLayoutY(PL2.getLayoutY()+500);
+                P2.setLayoutY(P2.getLayoutY()+520);
+                PL3.setLayoutY(PL3.getLayoutY()+500);
+                P3.setLayoutY(P3.getLayoutY()+520);
+                PL4.setLayoutY(PL4.getLayoutY()+500);
+                P4.setLayoutY(P4.getLayoutY()+520);
+
+                TM.setDelay(Duration.millis(500));
+                TM1.setDelay(Duration.millis(500));
+                TL.setDelay(Duration.millis(1000));
+                TL1.setDelay(Duration.millis(1000));
+                TR.setDelay(Duration.millis(1500));
+                TR1.setDelay(Duration.millis(1500));
+                TT.play();
+                TT1.play();
+                TM.play();
+                TM1.play();
+                TL.play();
+                TL1.play();
+                TR.play();
+                TR1.play();
             }
         }
     }
