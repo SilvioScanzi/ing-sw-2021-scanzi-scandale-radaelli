@@ -1865,14 +1865,15 @@ public class GameScreenView extends ViewObservable {
                 ImageView R = new ImageView(IV.getImage());
                 R.getStyleClass().add("selectable");
                 R.setOnMouseClicked(e -> handleBuyDeselect(resource, R));
-                R.setFitWidth(25.0);
+                R.setFitWidth(43.0);
+                R.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, character, 2.0, 5.0, 0, 0));
                 R.setPreserveRatio(true);
                 R.setId("SB_" + IV.getId().split("_")[1] + "_HAND");
                 if (HS < 5) Hand.add(R, 0, HS);
                 else Hand.add(R, 1, HS % 5);
                 ((Text) resource.getChildren().get(1)).setText("" + (Integer.parseInt(((Text) resource.getChildren().get(1)).getText()) - 1));
             }
-            else{
+            else if(Hand.getChildren().size() >= 10){
                 addErrorMessage("Le carte sviluppo non costano più di 7 risorse, sei già oltre il limite!");
             }
         }
@@ -2057,22 +2058,17 @@ public class GameScreenView extends ViewObservable {
             pane.getChildren().remove(IV);
         }
         else{
-            int index = 0;
-            if (selected.getId().startsWith("F")) index = 3;
-
-            //TODO: check se effettivamente funziona attivare la produzione prendendo le risorse dallo strongbox
-            if(!productionAction.containsKey(Integer.parseInt(selected.getId().split("_")[2])+index)) {
+            if(!productionAction.containsKey(Integer.parseInt(selected.getId().split("_")[2]))) {
                 ArrayList<Pair<String,Integer>> tmp1 = new ArrayList<>();
-                Pair<String,Integer> tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+                Pair<String,Integer> tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[1]), 6);
                 tmp1.add(tmp2);
-                productionAction.put(Integer.parseInt(selected.getId().split("_")[2]) + index,tmp1);
+                productionAction.put(Integer.parseInt(selected.getId().split("_")[2]),tmp1);
             }
             else{
-                ArrayList<Pair<String,Integer>> tmp1 = productionAction.get(Integer.parseInt(selected.getId().split("_")[2])+index);
-                Pair<String,Integer> tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+                ArrayList<Pair<String,Integer>> tmp1 = productionAction.get(Integer.parseInt(selected.getId().split("_")[2]));
+                Pair<String,Integer> tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[1]), 6);
                 tmp1.add(tmp2);
             }
-            IV.setOnMouseClicked(e -> handleProductionDeselect(IV,pane));
 
             R = new ImageView(IV.getImage());
             R.getStyleClass().add("selectable");
@@ -2146,13 +2142,17 @@ public class GameScreenView extends ViewObservable {
     private void handleProductionDeselect(ImageView IV,Node oldParent) {
         GridPane newParent = (GridPane) IV.getParent();
         newParent.getChildren().remove(IV);
-
         int i = Integer.parseInt(String.valueOf(newParent.getId().split("_")[1].charAt(1)));
-
         ArrayList<Pair<String,Integer>> tmp = productionAction.get(i);
-        Pair<String,Integer> tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+        Pair<String,Integer> tmp2;
+
+        if(IV.getId().startsWith("SB")){
+            tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[1]), 6);
+        }
+        else{
+            tmp2 = new Pair<>(Resources.getResourceFromID(IV.getId().split("_")[0]), Integer.parseInt(String.valueOf(IV.getId().split("_")[1].charAt(1))));
+        }
         tmp.remove(tmp2);
-        System.out.println(productionAction);
         if(tmp.size()==0){
             productionAction.remove(i);
         }
@@ -2170,6 +2170,14 @@ public class GameScreenView extends ViewObservable {
                 case "W42" -> oldParent = ((Pane)LeaderCardsPlayed.getChildren().stream().filter(x -> (x.getId().startsWith("AP") && GridPane.getColumnIndex(x) == 0)).findFirst().get()).getChildren().stream().filter(x -> x.getId().equals("W_42")).findFirst().get();
                 case "W51" -> oldParent = ((Pane)LeaderCardsPlayed.getChildren().stream().filter(x -> (x.getId().startsWith("AP") && GridPane.getColumnIndex(x) == 1)).findFirst().get()).getChildren().stream().filter(x -> x.getId().equals("W_51")).findFirst().get();
                 case "W52" -> oldParent = ((Pane)LeaderCardsPlayed.getChildren().stream().filter(x -> (x.getId().startsWith("AP") && GridPane.getColumnIndex(x) == 1)).findFirst().get()).getChildren().stream().filter(x -> x.getId().equals("W_52")).findFirst().get();
+                default -> {
+                    switch (IV.getId().split("_")[1]) {
+                        case "CO" -> oldParent = SB_CO_ICON.getParent();
+                        case "ST" -> oldParent = SB_ST_ICON.getParent();
+                        case "SH" -> oldParent = SB_SH_ICON.getParent();
+                        case "SE" -> oldParent = SB_SE_ICON.getParent();
+                    }
+                }
             }
         }
         if (IV.getId().split("_")[1].startsWith("W")) {
