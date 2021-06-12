@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class CLI extends ViewObservable implements View {
     private ViewState state = ViewState.start;
     private final Scanner scanner;
-
+    private int lastMove = 0;
     private final boolean color;
 
     public static final String	BACKGROUND_BLACK	= "\u001B[40m";
@@ -36,116 +36,128 @@ public class CLI extends ViewObservable implements View {
 
     public void start(){
         System.out.println("Inserisci Indirizzo IP e Porta del server a cui vuoi connetterti");
-        while(!state.equals(ViewState.disconnected)){
-            if(state.equals(ViewState.myTurn)) printYourTurn();
-            String message = scanner.nextLine();
-                if(state.equals(ViewState.start)){
-                    try{
-                        String[] s = message.split(" ");
-                        int port = Integer.parseInt(s[1]);
-                        notifyAddress(s[0],port);
-                    }catch(NumberFormatException e){
-                        System.out.println("Devi inserire una porta valida");
-                    }
+        while(!state.equals(ViewState.disconnected)) {
+            synchronized (this) {
+                if (state.equals(ViewState.myTurn) && lastMove != 1) {
+                    System.out.println("CIAO COME STAI OIIWQKJEHFSIHJVBKJB");
+                    printYourTurn();
                 }
-                else if(state.equals(ViewState.chooseNickName)){
-                    notifyNickname(message);
-                }
-                else if(state.equals(ViewState.choosePlayerNumber)) {
-                    int i;
-                    try {
-                        i = Integer.parseInt(message);
-                        if(i<1 || i>4){
-                            System.out.println("Numero di giocatori non supportato");
-                        }
-                        else notifyPlayerNumber(i);
-                    }catch(NumberFormatException e) { System.out.println("Devi inserire un numero valido"); }
-                }
-                else if(state.equals(ViewState.discardLeaderCard)){
-                    int[] i = new int[2];
-                    String[] s = message.split(" ");
-                    if(s.length!=2){
-                        System.out.println("Devi inserire due indici");
-                    }
-                    else{
+                if (lastMove != 1) {
+                    //System.out.println("CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC");
+                    String message = scanner.nextLine();
+                    if (state.equals(ViewState.start)) {
                         try {
+                            String[] s = message.split(" ");
+                            int port = Integer.parseInt(s[1]);
+                            notifyAddress(s[0], port);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Devi inserire una porta valida");
+                        }
+                    } else if (state.equals(ViewState.chooseNickName)) {
+                        notifyNickname(message);
+                    } else if (state.equals(ViewState.choosePlayerNumber)) {
+                        int i;
+                        try {
+                            i = Integer.parseInt(message);
+                            if (i < 1 || i > 4) {
+                                System.out.println("Numero di giocatori non supportato");
+                            } else notifyPlayerNumber(i);
+                        } catch (NumberFormatException e) {
+                            System.out.println("Devi inserire un numero valido");
+                        }
+                    } else if (state.equals(ViewState.discardLeaderCard)) {
+                        int[] i = new int[2];
+                        String[] s = message.split(" ");
+                        if (s.length != 2) {
+                            System.out.println("Devi inserire due indici");
+                        } else {
+                            try {
+                                boolean flag = true;
+                                for (int j = 0; j < 2; j++) {
+                                    i[j] = Integer.parseInt(s[j]);
+                                    if (i[j] < 1 || i[j] > 4) {
+                                        System.out.println("Devi scegliere un indice tra 1 e 4");
+                                        flag = false;
+                                    }
+                                }
+                                if (flag) {
+                                    notifySetupDiscardLC(i);
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Devi inserire un numero valido");
+                            }
+                        }
+                    } else if (state.equals(ViewState.finishSetupOneResource)) {
+                        if (!message.equals("SE") && !message.equals("MO") && !message.equals("SC") && !message.equals("PI"))
+                            System.out.println("Scegli delle risorse esistenti");
+                        else {
+                            ArrayList<String> tmp = new ArrayList<>();
+                            tmp.add(message);
+                            notifyFinishSetup(tmp);
+                        }
+                    } else if (state.equals(ViewState.finishSetupTwoResources)) {
+                        String[] s = message.split(" ");
+                        if (s.length != 2) System.out.println("Devi scegliere due risorse");
+                        else {
                             boolean flag = true;
-                            for (int j = 0; j < 2; j++) {
-                                i[j] = Integer.parseInt(s[j]);
-                                if (i[j] < 1 || i[j] > 4) {
-                                    System.out.println("Devi scegliere un indice tra 1 e 4");
+                            for (int i = 0; i < 2; i++) {
+                                if (!s[i].equals("SE") && !s[i].equals("MO") && !s[i].equals("SC") && !s[i].equals("PI")) {
+                                    System.out.println("Scegli delle risorse esistenti");
                                     flag = false;
                                 }
                             }
-                            if(flag) {
-                                notifySetupDiscardLC(i);
-                            }
-                        }catch(NumberFormatException e) {
-                            System.out.println("Devi inserire un numero valido");
-                        }
-                    }
-                }
-                else if(state.equals(ViewState.finishSetupOneResource)){
-                    if(!message.equals("SE") && !message.equals("MO") && !message.equals("SC") && !message.equals("PI"))
-                        System.out.println("Scegli delle risorse esistenti");
-                    else {
-                        ArrayList<String> tmp = new ArrayList<>();
-                        tmp.add(message);
-                        notifyFinishSetup(tmp);
-                    }
-                }
-                else if(state.equals(ViewState.finishSetupTwoResources)){
-                    String[] s = message.split(" ");
-                    if(s.length!=2) System.out.println("Devi scegliere due risorse");
-                    else {
-                        boolean flag = true;
-                        for(int i=0;i<2;i++) {
-                            if (!s[i].equals("SE") && !s[i].equals("MO") && !s[i].equals("SC") && !s[i].equals("PI")) {
-                                System.out.println("Scegli delle risorse esistenti");
-                                flag = false;
+                            if (flag) {
+                                ArrayList<String> tmp = new ArrayList<>();
+                                tmp.add(s[0]);
+                                tmp.add(s[1]);
+                                notifyFinishSetup(tmp);
                             }
                         }
-                        if(flag) {
-                            ArrayList<String> tmp = new ArrayList<>();
-                            tmp.add(s[0]);
-                            tmp.add(s[1]);
-                            notifyFinishSetup(tmp);
-                        }
-                    }
-                }
-                else if(state.equals(ViewState.myTurn)) {
-                    if(message.equals("Plancia comune")||message.equals("G 1")||message.equals("G 2")||message.equals("G 3")||message.equals("G 4")){
-                        notifyPrintRequest(message);
-                    }
-                    else{
-                        try{
-                            int userChoice = Integer.parseInt(message);
-                            switch (userChoice) {
-                                case 1: buyResources(); break;
-                                case 2: buyDevelopmentCard(); break;
-                                case 3: activateProduction(); break;
-                                case 4: moveResources(); break;
-                                case 5: LeaderCardAction(5); break;
-                                case 6: LeaderCardAction(6); break;
-                                case 0: notifyEndTurn(); break;
+                    } else if (state.equals(ViewState.myTurn)) {
+                        if (message.equals("Plancia comune") || message.equals("G 1") || message.equals("G 2") || message.equals("G 3") || message.equals("G 4")) {
+                            notifyPrintRequest(message);
+                        } else {
+                            try {
+                                lastMove = Integer.parseInt(message);
+                                switch (lastMove) {
+                                    case 1:
+                                        buyResources();
+                                        break;
+                                    case 2:
+                                        buyDevelopmentCard();
+                                        break;
+                                    case 3:
+                                        activateProduction();
+                                        break;
+                                    case 4:
+                                        moveResources();
+                                        break;
+                                    case 5:
+                                        LeaderCardAction(5);
+                                        break;
+                                    case 6:
+                                        LeaderCardAction(6);
+                                        break;
+                                    case 0:
+                                        notifyEndTurn();
+                                        break;
+                                }
+                            } catch (NumberFormatException e) {
+                                System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
                             }
-                        }catch(NumberFormatException e) {
-                            System.out.println("Devi scegliere un'azione valida, con indice tra 0 e 6!");
                         }
+                    } else if (state.equals(ViewState.notMyTurn)) {
+                        if (message.equals("Plancia comune") || message.equals("G 1") || message.equals("G 2") || message.equals("G 3") || message.equals("G 4")) {
+                            notifyPrintRequest(message);
+                        }
+                        System.out.println("Non è il tuo turno");
+                    } else if (state.equals(ViewState.disconnected)) {
+                        System.out.println("Sei disconnesso dal server, riavvia l'applicazione per ritornare a giocare");
+                        return;
+                    } else {
+                        System.out.println("Non puoi inviare dati in questo momento");
                     }
                 }
-                else if(state.equals(ViewState.notMyTurn)){
-                    if(message.equals("Plancia comune")||message.equals("G 1")||message.equals("G 2")||message.equals("G 3")||message.equals("G 4")){
-                        notifyPrintRequest(message);
-                    }
-                    System.out.println("Non è il tuo turno");
-                }
-                else if(state.equals(ViewState.disconnected)){
-                    System.out.println("Sei disconnesso dal server, riavvia l'applicazione per ritornare a giocare");
-                    return;
-                }
-            else {
-                System.out.println("Non puoi inviare dati in questo momento");
             }
         }
         System.out.println("L'applicazione sta terminando");
@@ -364,7 +376,6 @@ public class CLI extends ViewObservable implements View {
 
     private void moveResources(){
         System.out.println("Hai deciso di spostare le risorse. ");
-        System.out.println("Scegli la risorsa, il luogo da dove prendela e il luogo dove metterla.");
         System.out.println("La mano serve solo a fare scambi, quindi non lasciarci risorse!");
         System.out.println("Inserisci i valori a triplette (es: SE 2 3); per finire digita solo il numero richiesto.");
         System.out.println("Posti: 1 - Deposito 1; 2 - Deposito 2; 3 - Deposito 3; 4 - Carta Leader 1; 5 - Carta Leader 2; 0 - Mano; 7 - Fine");
@@ -372,6 +383,7 @@ public class CLI extends ViewObservable implements View {
         ArrayList<Triplet<String,Integer,Integer>> userChoice = new ArrayList<>();
         String[] s;
         do{
+            System.out.println("Scegli la risorsa, il luogo da dove prendela e il luogo dove metterla.");
            s = scanner.nextLine().split(" ");
            if(s.length==1){
                try{
@@ -400,7 +412,9 @@ public class CLI extends ViewObservable implements View {
            else System.out.println("Inserisci dati validi");
 
         }while(!s[0].equals("7"));
-
+        synchronized (this){
+            lastMove = 0;
+        }
         notifyMoveResources(userChoice);
     }
 
@@ -518,6 +532,7 @@ public class CLI extends ViewObservable implements View {
         System.out.println(tmp);
 
         System.out.println("\n");
+        if(lastMove == 1 || lastMove == 4) moveResources();
     }
 
     @Override
@@ -624,7 +639,7 @@ public class CLI extends ViewObservable implements View {
 
     @Override
     public void printWarehouse(HashMap<Integer, Pair<Resources, Integer>> WH, String nickname) {
-        System.out.println("WAREHOUSE DI " + nickname);
+        System.out.println("\n\nWAREHOUSE DI " + nickname);
         for(Integer i : WH.keySet()){
             System.out.println("Deposito " + i + ": " + "risorsa: " + WH.get(i).getKey().toString() + ", quantità: " + WH.get(i).getValue());
         }

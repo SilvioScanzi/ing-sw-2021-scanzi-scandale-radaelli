@@ -78,7 +78,7 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     view.setState(ViewState.myTurn);
                 }
                 case actionDone -> clientModel.getBoard(clientModel.getMyNickname()).setActionDone(true);
-                case notYourTurn -> view.setState(ViewState.notMyTurn);
+                case notYourTurn -> { synchronized (view) {view.setState(ViewState.notMyTurn);}}
                 case fatalError, endGame -> {
                     view.setState(ViewState.disconnected);
                     closeConnection();
@@ -123,11 +123,16 @@ public class NetworkHandler implements Runnable, ViewObserver {
             }
             else if(message instanceof ResourceMarketMessage){
                 clientModel.setResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
-                //clientModel.setResourceMarket(((ResourceMarketMessage) message).getGrid(),((ResourceMarketMessage) message).getRemainingMarble());
                 view.printResourceMarket(clientModel.getResourceMarket(),clientModel.getRemainingMarble());
             }
 
             //Board objects
+            else if(message instanceof MarketHandMessage){
+                clientModel.getBoard(((MarketHandMessage) message).getNickname()).setHand(((MarketHandMessage) message).getHand());
+                view.printResourceHand(((MarketHandMessage) message).getHand(),((MarketHandMessage) message).getNickname());
+                clientModel.setResourceMarket(((MarketHandMessage) message).getGrid(),((MarketHandMessage) message).getRemainingMarble());
+                view.printResourceMarket(clientModel.getResourceMarket(),clientModel.getRemainingMarble());
+            }
             else if(message instanceof FaithTrackMessage){
                 clientModel.getBoard(((FaithTrackMessage) message).getNickname()).setFaithMarker(((FaithTrackMessage) message).getFaithMarker());
                 clientModel.getBoard(((FaithTrackMessage) message).getNickname()).setPopeFavor(((FaithTrackMessage) message).getPopeFavor());

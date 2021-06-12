@@ -190,11 +190,19 @@ public class DevelopmentCardParser {
                     tmp = tmp + asciiColor + "║" + asciiReset + "   <PILA VUOTA> " + asciiColor + "   ║" + asciiReset;
                 }
                 else{
-                    tmp = tmp + asciiColor + "║" + asciiReset + " PUNTI VITTORIA " + CM.get(new Pair<>(c,i));
+                    tmp = tmp + asciiColor + "║" + asciiReset + " P. VITTORIA " + CM.get(new Pair<>(c,i)).getKey();
                     if(CM.get(new Pair<>(c,i)).getKey()<10) tmp = tmp + " ";
-                    tmp = tmp + asciiColor + " ║" + asciiReset;
+                    tmp = tmp + asciiColor + "    ║" + asciiReset;
                 }
                 tmp = tmp + "       ";
+            }
+            tmp = tmp + "\n";
+            for(int i=1;i<=3;i++){
+                if(CM.containsKey(new Pair<>(c,i))){
+                    tmp = tmp + asciiColor + "║" + asciiReset + " CARTE PILA " + CM.get(new Pair<>(c,i)).getValue();
+                    tmp = tmp + asciiColor + "      ║" + asciiReset;
+                    tmp = tmp + "       ";
+                }
             }
 
             tmp = tmp + "\n" + asciiColor + "║" + asciiReset + " COSTO             " + asciiColor + "║" + asciiReset + "       " +

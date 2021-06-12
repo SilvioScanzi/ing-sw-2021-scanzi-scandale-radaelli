@@ -273,8 +273,9 @@ public class Game extends ModelObservable {
         playerBoard.getHand().addAll(standardConversion(marbles,playerBoard));
         playerBoard.getHand().addAll(tmp);
 
-        notifyResourceMarket(resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
-        notifyHand(playerBoard.getHand(), playerBoard.getNickname());
+        notifyMarketHand(playerBoard.getHand(), playerBoard.getNickname(), resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
+        //notifyHand(playerBoard.getHand(), playerBoard.getNickname());
+        //notifyResourceMarket(resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
         notifyActionDone(playerBoard.getNickname());
 
         playerBoard.setActionDone(true);

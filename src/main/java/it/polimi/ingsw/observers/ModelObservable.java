@@ -30,6 +30,11 @@ public class ModelObservable {
         }
     }
 
+    public void notifyMarketHand(ArrayList<Resources> hand, String nickname, Marbles[][] grid, Marbles remainingMarble){
+        for(ModelObserver obs : observers){
+            obs.updateMarketHand(hand, nickname, grid,remainingMarble);
+        }
+    }
     public void notifyDCMarket(DevelopmentCardMarket DCM){
         for(ModelObserver obs : observers){
             obs.updateDCMarket(DCM);

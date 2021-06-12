@@ -283,6 +283,11 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
+    public void updateMarketHand(ArrayList<Resources> hand, String s, Marbles[][] grid, Marbles remainingMarble) {
+        sendObject(new MarketHandMessage(hand,s,grid,remainingMarble));
+    }
+
+    @Override
     public void updateLCPlayed(HashMap<Integer,LeaderCard> lcp, String s){
         sendObject(new LeaderCardPlayedMessage(lcp,s));
     }

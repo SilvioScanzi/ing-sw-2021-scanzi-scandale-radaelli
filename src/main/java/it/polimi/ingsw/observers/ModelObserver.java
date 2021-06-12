@@ -18,6 +18,7 @@ public interface ModelObserver {
     void updateFT(FaithTrack ft, String s);
     void updateSlots(Slot[] slots, String nickname);
     void updateHand(ArrayList<Resources> hand, String s);
+    void updateMarketHand(ArrayList<Resources> hand, String s, Marbles[][] grid, Marbles remainingMarble);
     void updateLCPlayed(HashMap<Integer,LeaderCard> lcp, String s);
     void updateLorenzo(LorenzoTrack lorenzo, boolean[] popeFavor);
     void updateActionToken(ActionToken AT);

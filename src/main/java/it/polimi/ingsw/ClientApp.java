@@ -23,10 +23,10 @@ public class ClientApp {
             }
         }
         else{
-            /*CLI cli = new CLI(false);
-            cli.start();*/
-            GUI gui = new GUI();
-            gui.begin();
+            CLI cli = new CLI(false);
+            cli.start();
+            //GUI gui = new GUI();
+            //gui.begin();
         }
     }
 }
