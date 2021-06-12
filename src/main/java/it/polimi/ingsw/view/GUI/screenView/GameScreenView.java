@@ -142,6 +142,7 @@ public class GameScreenView extends ViewObservable {
     private boolean isProductionAction = false;
     private boolean actionDone = false;
     private boolean prevResBuyAction = false;
+    private boolean isChoosingConversion = false;
     private Color character;
     private boolean lorenzo = false;
 
@@ -815,7 +816,12 @@ public class GameScreenView extends ViewObservable {
         TTOut.setToX(253);
         TTOut.setFromY(-38);
         TTOut.setToY(-472);
-        TTOut.setDelay(Duration.millis(3000));
+        if(message.equals("È il tuo turno!")){
+            TTOut.setDelay(Duration.millis(1500));
+        }
+        else {
+            TTOut.setDelay(Duration.millis(3000));
+        }
         TTOut.setOnFinished(x -> anchorPane.getChildren().remove(errorPane));
     }
 
@@ -1434,6 +1440,131 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    @FXML
+    public void help(){
+        String message = "";
+        Text t = new Text();
+        t.setWrappingWidth(300);
+        boolean flag = false;
+        if(isChoosingConversion){
+            message = "Hai appena comprato delle risorse dal mercato, devi scegliere con quali carte leader convertire ogni biglia bianca.\n" +
+                    "Per ogni biglia bianca evidenziata, clicca sulla carta leader che vuoi utilizzare per la conversione.";
+        }
+        else if(prevResBuyAction){
+            message = "Clicca la risorsa dalla mano, poi un deposito vuoto o una carta leader in cui metterla. " +
+                    "Quando hai concluso la selezione della risorsa, ripeti per tutte le altre risorse o fino a che sei soddisfatto. " +
+                    "Cliccando il bottone conferma azione, scarterai tutte le risorse rimaste nella mano e compierai l'azione.";
+        }
+        else if(isMoveAction){
+            message = "Clicca una risorsa, poi un deposito vuoto o una carta leader in cui metterla, oppure un'altra risorsa per scambiarle. " +
+                    "Quando hai concluso la selezione della risorsa, ripeti l'azione fino a che sei soddisfatto. " +
+                    "Cliccando il bottone conferma azione, verranno spostate tutte le risorse";
+        }
+        else if(isBuyAction && selected!=null && (selected.getId().split("_")[0].equals("0") || selected.getId().split("_")[0].equals("1") || selected.getId().split("_")[0].equals("2") || selected.getId().split("_")[0].equals("3"))){
+            message = "Clicca sulle risorse dei depositi, carte leader o dal forziere per selezionarle e utilizzarle per l'acquisto della carta. " +
+                    "Quando sei soddisfatto, clicca il bottone conferma azione e passa alla fase successiva";
+        }
+        else if(isBuyAction){
+            message = "Clicca su una delle tre frecce presenti sopra gli slot delle carte per selezionare dove posizionare la carta da acquistare, poi " +
+                    "clicca il bottone conferma per completare l'azione";
+        }
+        else if(isProductionAction){
+            message = "Clicca su una produzione valida, quando la carta è selezionata, clicca " +
+                    "le risorse che vuoi utilizzare per la produzione. Per deselezionarle, clicca nuovamente sopra l'icona della risorsa. Quando sei soddisfatto, " +
+                    "puoi cliccare sulle altre carte per attivare ulteriori produzioni, oppure clicca il bottone conferma azione per concludere l'azione corrente.";
+        }
+        else if(actionDone){
+            message = "Hai compiuto l'azione per il turno, ora puoi spostare le risorse nei depositi o carte leader oppure giocare o scartare una carta leader." +
+                    " Per concludere il turno, clicca il bottone fine turno.";
+        }
+        else{
+            message = "Per fare qualsiasi azione, clicca sull'icona relativa, poi il pulsante conferma azione.\n" +
+                    "■ Per comprare le risorse dal mercato, clicca una delle frecce corrispondenti a una riga o a una colonna del mercato.\n" +
+                    "■ Per comprare una carta sviluppo clicca su una carta del mercato.";
+            flag = true;
+        }
+
+        String path ="/images/Hanging Sign.png";
+        AnchorPane anchorPane = (AnchorPane) LeaderCardsPlayed.getParent();
+        StackPane errorPane = new StackPane();
+        errorPane.setId("errorPane");
+        errorPane.setLayoutX(0.0);
+        errorPane.setLayoutY(0.0);
+        anchorPane.getChildren().add(errorPane);
+
+        ImageView sign = new ImageView(new Image(GUI.class.getResource(path).toString()));
+        sign.setFitWidth(434);
+        sign.setPreserveRatio(true);
+        errorPane.getChildren().add(sign);
+
+        t.setText(message);
+        t.setLayoutX(sign.getFitWidth()/2);
+        t.setTranslateY(70);
+        t.getStyleClass().add("smalltext");
+        t.setTextAlignment(TextAlignment.CENTER);
+        errorPane.getChildren().add(t);
+
+        TranslateTransition TTIn = new TranslateTransition(Duration.millis(1000),errorPane);
+        TTIn.setFromX(253);
+        TTIn.setToX(253);
+        TTIn.setFromY(-472);
+        TTIn.setToY(-38);
+        TTIn.play();
+        TranslateTransition TTOut = new TranslateTransition(Duration.millis(1000),errorPane);
+        TTIn.setOnFinished(x -> TTOut.play());
+        TTOut.setFromX(253);
+        TTOut.setToX(253);
+        TTOut.setFromY(-38);
+        TTOut.setToY(-472);
+        TTOut.setDelay(Duration.millis(10000));
+
+        if(!flag){
+            TTOut.setOnFinished(x -> anchorPane.getChildren().remove(errorPane));
+        }
+        else{
+            TranslateTransition TTIn2 = new TranslateTransition(Duration.millis(1000),errorPane);
+            TranslateTransition TTOut2 = new TranslateTransition(Duration.millis(1000),errorPane);
+            TTIn2.setFromX(253);
+            TTIn2.setToX(253);
+            TTIn2.setFromY(-472);
+            TTIn2.setToY(-38);
+            TTIn2.setOnFinished(x -> TTOut2.play());
+            TTOut2.setFromX(253);
+            TTOut2.setToX(253);
+            TTOut2.setFromY(-38);
+            TTOut2.setToY(-472);
+            TTOut2.setDelay(Duration.millis(10000));
+            TTOut.setOnFinished(x -> {t.setText("■ Per attivare una produzione clicca sul simbolo della produzione di base o quello di qualsiasi altra produzione.\n" +
+                    "■ Per muovere delle risorse tra i vari luoghi, clicca una risorsa, poi clicca un deposito vuoto o una carta leader in cui metterla, " +
+                    "oppure un'altra risorsa per effettuare uno scambio.");
+                TTIn2.play();
+            });
+
+            TranslateTransition TTIn3 = new TranslateTransition(Duration.millis(1000),errorPane);
+            TranslateTransition TTOut3 = new TranslateTransition(Duration.millis(1000),errorPane);
+
+            TTIn2.setOnFinished(x -> TTOut2.play());
+            TTOut2.setOnFinished(x -> {t.setText("■ Per giocare o scartare una carta leader clicca sulla carta leader stessa.\n " +
+                    "■ Per vedere la plancia di un altro giocatore, clicca sulle icone relative.\n" +
+                    "■ Per annullare l'azione selezionata clicca sull'icona evidenziata.");
+                TTIn3.play();
+            });
+
+            TTIn3.setFromX(253);
+            TTIn3.setToX(253);
+            TTIn3.setFromY(-472);
+            TTIn3.setToY(-38);
+            TTIn3.setOnFinished(x -> TTOut3.play());
+            TTOut3.setFromX(253);
+            TTOut3.setToX(253);
+            TTOut3.setFromY(-38);
+            TTOut3.setToY(-472);
+            TTOut3.setDelay(Duration.millis(10000));
+            TTIn3.setOnFinished(x -> TTOut3.play());
+            TTOut3.setOnFinished(x -> anchorPane.getChildren().remove(errorPane));
+        }
+    }
+
 
     //Handle Methods
     public void handleConfirmClick(){
@@ -1485,6 +1616,7 @@ public class GameScreenView extends ViewObservable {
                     notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),new ArrayList<>());
                 }
                 else if(getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))>0){
+                    isChoosingConversion = true;
                     grayOut(true);
                     grayPlayedLeaderCard(false,"move");
                     selectedRMLC.clear();
@@ -1498,6 +1630,7 @@ public class GameScreenView extends ViewObservable {
                                 for(Node LC : LeaderCardsPlayed.getChildren()){
                                     LC.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                                 }
+                                isChoosingConversion = false;
                                 grayPlayedLeaderCard(true,"");
                                 grayOut(false);
                                 grayOutActionDone();
