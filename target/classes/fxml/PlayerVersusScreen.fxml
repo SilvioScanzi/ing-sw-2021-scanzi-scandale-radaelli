@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.screenView.PlayerVersusScreenView">
+   <children>
+      <ImageView fitHeight="900.0" fitWidth="1600.0">
+         <image>
+            <Image url="@../images/Parchment.jpg" />
+         </image>
+      </ImageView>
+      <ImageView fitHeight="302.0" fitWidth="652.0" layoutX="474.0" layoutY="34.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../images/Title.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="PL3" fitHeight="479.0" fitWidth="364.0" layoutX="819.0" layoutY="425.0" preserveRatio="true">
+         <image>
+            <Image url="@../images/Leonardo.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="PL4" fitHeight="470.0" fitWidth="375.0" layoutX="1253.0" layoutY="448.0" preserveRatio="true">
+         <image>
+            <Image url="@../images/Michelangelo.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="PL1" fitHeight="452.0" fitWidth="375.0" layoutX="-29.0" layoutY="457.0" preserveRatio="true">
+         <image>
+            <Image url="@../images/Raphael.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="PL2" fitHeight="444.0" fitWidth="344.0" layoutX="375.0" layoutY="464.0" preserveRatio="true">
+         <image>
+            <Image url="@../images/Donatello.png" />
+         </image>
+      </ImageView>
+      <Text fx:id="P1" layoutX="14.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="336.0" />
+      <Text fx:id="P2" layoutX="375.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="343.56564331054676" />
+      <Text fx:id="P3" layoutX="829.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="343.56564331054676" />
+      <Text fx:id="P4" layoutX="1228.0" layoutY="413.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="player" textAlignment="CENTER" wrappingWidth="343.56564331054676" />
+   </children>
+</AnchorPane>
