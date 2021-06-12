@@ -75,13 +75,10 @@ public class GUI extends Application implements View{
             primaryStage.show();
             primaryStage.setResizable(false);
 
-            currentScene.widthProperty().addListener((obs, oldVal, newVal) -> {
-                scale(1600,900);
-            });
+            currentScene.widthProperty().addListener((obs, oldVal, newVal) -> scale(1600,900));
 
-            currentScene.heightProperty().addListener((obs, oldVal, newVal) -> {
-                scale(1600,900);
-            });
+            currentScene.heightProperty().addListener((obs, oldVal, newVal) -> scale(1600,900));
+
             currentScene.setOnKeyReleased(e -> {if(e.getCode().equals(KeyCode.F) && primaryStage.isResizable()) primaryStage.setFullScreen(true);});
         }catch(IOException e){e.printStackTrace();}
     }
@@ -210,9 +207,12 @@ public class GUI extends Application implements View{
 
                     currentScene.setRoot(gameScreen);
                     gameScreenView.grayOut(true);
+
+
                     if(state.equals(ViewState.myTurn)) {
                         gameScreenView.grayOut(false);
                         gameScreenView.setActionDone(false);
+                        gameScreenView.addMessage("È il tuo turno!",false);
                     }
                     else if(NH.getClientModel().getPlayerNumber() > 1){
                         gameScreenView.grayBoards(false);
@@ -242,6 +242,10 @@ public class GUI extends Application implements View{
                     primaryStage.setResizable(false);
                 }catch(IOException e){e.printStackTrace();}
             });
+        }
+        //TODO: Disconnected message (da fare nel caso in cui la partita venga demolita a causa di qualcuno che è disconnesso prima dell'inizio)
+        else if(state.equals(ViewState.disconnected)){
+
         }
         this.state = state;
     }
@@ -306,7 +310,10 @@ public class GUI extends Application implements View{
 
     @Override
     public void printDisconnected(String name) {
-
+        Platform.runLater(() -> {
+            currentScene.setRoot(gameScreen);
+            gameScreenView.addMessage("Il giocatore " + name + " si è disconnesso", false);
+        });
     }
 
     @Override
@@ -340,7 +347,7 @@ public class GUI extends Application implements View{
             case unavailableConnection -> Platform.runLater(() -> connectionScreenView.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
             case actionDone -> Platform.runLater(() -> gameScreenView.setActionDone(true));
             case moveActionWrong, buyDevelopmentWrong, activateProductionWrong -> Platform.runLater(() -> {
-                gameScreenView.addErrorMessage(message.toString());
+                gameScreenView.addMessage(message.toString(),true);
                 gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                 gameScreenView.grayOut(false);
                 if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();
@@ -413,6 +420,12 @@ public class GUI extends Application implements View{
             Platform.runLater(() -> {
                 if ((NH.getClientModel().getMyNickname().equals(nickname)))
                     gameScreenView.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                else {
+                    gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+                    if (currentScene.getRoot().getId()!=null && currentScene.getRoot().getId().equals("opponentboard") && opponentBoardScreenView.getNick().equals(nickname)) {
+                        opponentBoardScreenView.addLeaderCards(LC,NH.getClientModel().getBoard(nickname).getLeaderCardsHand());
+                    }
+                }
             });
         }
     }
@@ -447,8 +460,12 @@ public class GUI extends Application implements View{
             Platform.runLater(() -> {
                 if ((NH.getClientModel().getMyNickname().equals(nickname)))
                     Platform.runLater(() -> gameScreenView.addFaithTrack(FM, PF,false));
-                else
+                else {
                     gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+                    if (currentScene.getRoot().getId()!=null && currentScene.getRoot().getId().equals("opponentboard") && opponentBoardScreenView.getNick().equals(nickname)) {
+                        opponentBoardScreenView.addFaithTrack(FM,PF);
+                    }
+                }
             });
         }
     }
@@ -459,8 +476,12 @@ public class GUI extends Application implements View{
             Platform.runLater(() -> {
                 if ((NH.getClientModel().getMyNickname().equals(nickname)))
                     gameScreenView.addSlots(slots.get(0),slots.get(1),slots.get(2));
-                else
+                else {
                     gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+                    if (currentScene.getRoot().getId()!=null && currentScene.getRoot().getId().equals("opponentboard") && opponentBoardScreenView.getNick().equals(nickname)) {
+                        opponentBoardScreenView.addSlots(slots.get(0),slots.get(1),slots.get(2));
+                    }
+                }
             });
         }
     }
@@ -471,8 +492,12 @@ public class GUI extends Application implements View{
             Platform.runLater(() -> {
                 if ((NH.getClientModel().getMyNickname().equals(nickname)))
                     gameScreenView.addStrongBox(SB);
-                else
+                else {
                     gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+                    if (currentScene.getRoot().getId()!=null && currentScene.getRoot().getId().equals("opponentboard") && opponentBoardScreenView.getNick().equals(nickname)) {
+                        opponentBoardScreenView.addStrongBox(SB);
+                    }
+                }
             });
         }
     }
@@ -486,8 +511,12 @@ public class GUI extends Application implements View{
                     gameScreenView.grayOut(false);
                     if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();
                 }
-                else
+                else {
                     gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
+                    if (currentScene.getRoot().getId()!=null && currentScene.getRoot().getId().equals("opponentboard") && opponentBoardScreenView.getNick().equals(nickname)) {
+                        opponentBoardScreenView.addWarehouse(WH);
+                    }
+                }
             });
         }
     }

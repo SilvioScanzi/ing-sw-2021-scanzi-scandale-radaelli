@@ -779,10 +779,8 @@ public class GameScreenView extends ViewObservable {
         grayHand(false);
     }
 
-    public void addErrorMessage(String message){
+    public void addMessage(String message, boolean error){
         String path ="/images/Hanging Sign.png";
-
-        grayOut(true);
 
         AnchorPane anchorPane = (AnchorPane) LeaderCardsPlayed.getParent();
         StackPane errorPane = new StackPane();
@@ -800,7 +798,8 @@ public class GameScreenView extends ViewObservable {
         t.setWrappingWidth(300);
         t.setLayoutX(sign.getFitWidth()/2);
         t.setTranslateY(70);
-        t.getStyleClass().add("textError");
+        if(error) t.getStyleClass().add("textError");
+        else t.getStyleClass().add("textbody");
         t.setTextAlignment(TextAlignment.CENTER);
         errorPane.getChildren().add(t);
 
@@ -1874,7 +1873,7 @@ public class GameScreenView extends ViewObservable {
                 ((Text) resource.getChildren().get(1)).setText("" + (Integer.parseInt(((Text) resource.getChildren().get(1)).getText()) - 1));
             }
             else if(Hand.getChildren().size() >= 10){
-                addErrorMessage("Le carte sviluppo non costano più di 7 risorse, sei già oltre il limite!");
+                addMessage("Le carte sviluppo non costano più di 7 risorse, sei già oltre il limite!",true);
             }
         }
         if(buyDevelopmentAction.size()>0 && confirmAction.isDisabled()){

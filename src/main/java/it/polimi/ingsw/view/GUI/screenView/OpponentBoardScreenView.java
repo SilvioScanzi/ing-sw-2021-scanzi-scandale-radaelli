@@ -74,6 +74,11 @@ public class OpponentBoardScreenView extends ViewObservable{
     private Scene scene;
     private GameScreenView screenView;
     private ViewState state;
+    private String nick;
+
+    public String getNick() {
+        return nick;
+    }
 
     public void addScreen(Pane gameScreen, Scene currentScene, GameScreenView gameScreenView, ViewState state){
         pane = gameScreen;
@@ -98,6 +103,7 @@ public class OpponentBoardScreenView extends ViewObservable{
         addLeaderCards(board.getLeaderCardsPlayed(),board.getLeaderCardsHand());
         addSlots(board.getSlot_1(),board.getSlot_2(),board.getSlot_3());
         nickname.setText(board.getNickname());
+        nick = board.getNickname();
     }
 
     public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1, ArrayList<Pair<Colours,Integer>> Slot_2, ArrayList<Pair<Colours,Integer>> Slot_3){
