@@ -9,14 +9,12 @@ it\polimi\ingsw\model\ProductionPowerAbility.class
 it\polimi\ingsw\network\messages\FaithTrackMessage.class
 it\polimi\ingsw\network\client\NetworkHandler$1.class
 it\polimi\ingsw\network\server\ClientHandler$1.class
-it\polimi\ingsw\ClientApp.class
 it\polimi\ingsw\view\GUI\screenView\GameScreenView$1.class
 it\polimi\ingsw\network\messages\WarehouseMessage.class
 it\polimi\ingsw\view\GUI\screenView\PlayerNumberScreenView.class
 it\polimi\ingsw\view\GUI\GUI.class
 it\polimi\ingsw\commons\Colours.class
 it\polimi\ingsw\view\GUI\screenView\ReconnectScreenView.class
-it\polimi\ingsw\ServerApp.class
 it\polimi\ingsw\view\GUI\GUI$1.class
 it\polimi\ingsw\observers\GameHandlerObservable.class
 it\polimi\ingsw\view\GUI\screenView\SetupScreenView.class
@@ -37,10 +35,12 @@ it\polimi\ingsw\controller\Game.class
 it\polimi\ingsw\view\View.class
 it\polimi\ingsw\network\messages\ProductionMessage.class
 it\polimi\ingsw\model\LeaderCardDeck.class
+it\polimi\ingsw\App.class
 it\polimi\ingsw\commons\ActionToken$1.class
 it\polimi\ingsw\network\server\ClientHandler$ClientHandlerState.class
 it\polimi\ingsw\network\server\Server.class
 it\polimi\ingsw\commons\LeaderCardParser.class
+it\polimi\ingsw\network\messages\MarketHandMessage.class
 it\polimi\ingsw\network\messages\StrongboxMessage.class
 it\polimi\ingsw\network\messages\LeaderCardHandMessage.class
 it\polimi\ingsw\view\clientModel\ClientModel$1.class
@@ -54,6 +54,7 @@ it\polimi\ingsw\commons\DevelopmentCardParser$1.class
 it\polimi\ingsw\model\FaithTrack.class
 it\polimi\ingsw\observers\CHObserver.class
 it\polimi\ingsw\network\messages\StandardMessages.class
+it\polimi\ingsw\view\GUI\screenView\LeaderBoardScreenView.class
 it\polimi\ingsw\network\messages\ActionTokenMessage.class
 it\polimi\ingsw\model\LorenzoTrack.class
 it\polimi\ingsw\commons\Triplet.class

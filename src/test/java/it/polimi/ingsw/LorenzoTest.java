@@ -4,6 +4,8 @@ import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.commons.Colours;
 import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
+
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class LorenzoTest {
@@ -13,6 +15,10 @@ public class LorenzoTest {
     @BeforeEach
     void setup(){
         game = new Game(0);
+        String s = "player";
+        ArrayList<String> st = new ArrayList<>();
+        st.add(s);
+        game.setup(st);
     }
 
     @Test
