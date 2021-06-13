@@ -418,8 +418,13 @@ public class GUI extends Application implements View{
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
         if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
             Platform.runLater(() -> {
-                if ((NH.getClientModel().getMyNickname().equals(nickname)))
+                if ((NH.getClientModel().getMyNickname().equals(nickname))) {
                     gameScreenView.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+                    if(state.equals(ViewState.myTurn)){
+                        if(!NH.getClientModel().getBoard(nickname).getActionDone()) gameScreenView.grayPlayedLeaderCard(false,"default");
+                        else gameScreenView.grayPlayedLeaderCard(false,"move");
+                    }
+                }
                 else {
                     gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
                     if (currentScene.getRoot().getId()!=null && currentScene.getRoot().getId().equals("opponentboard") && opponentBoardScreenView.getNick().equals(nickname)) {

@@ -696,10 +696,13 @@ public class GameScreenView extends ViewObservable {
                 if(LCMap.containsKey(i) && LCMap.get(i).get_1().equals(T.get_1()) && LCMap.get(i).get_2().equals(T.get_2())) {
                     LCMap.get(i).set_3(true);
                     LCView.setId("F_L_" + (i));
-                    LeaderCardsPlayed.add(LCView, i - 1, 0);
                     AnchorPane AP = new AnchorPane();
                     AP.setId("AP_"+i);
                     LeaderCardsPlayed.add(AP, i - 1, 0);
+                    LeaderCardsPlayed.add(LCView, i - 1, 0);
+                    if(LCMap.get(i).get_2()==4){
+                        LCView.setId("P_L_"+(i+3));
+                    }
                     if (T.get_2() == 3) {
                         int j;
                         for (j = 0; j < T.get_3(); j++) {
@@ -879,7 +882,7 @@ public class GameScreenView extends ViewObservable {
                 grayBoards(false);
             }
             grayResourceMarket(false);
-            grayPlayedLeaderCard(false,"move");
+            grayPlayedLeaderCard(false,"default");
             for(int i = 1; i<=2;i++){
                 ImageView IM = null;
                 for(Node n : LeaderCardsPlayed.getChildren()){
@@ -1237,6 +1240,10 @@ public class GameScreenView extends ViewObservable {
                                 }
                             }
                         }
+                        else{
+                            m.getStyleClass().remove("selectable");
+                            m.setOnMouseClicked(null);
+                        }
                     }
                 }
             }
@@ -1285,6 +1292,40 @@ public class GameScreenView extends ViewObservable {
                                     n.setOnMouseClicked(e -> handleProductionSelect((Pane) n.getParent()));
                                 }
                             }
+                        }
+                        else if(LCMap.get(i).get_2() == 5){
+                            if(!m.getStyleClass().contains("selectable")) m.getStyleClass().add("selectable");
+                            m.setOnMouseClicked(e ->{
+                                if(!isProductionAction) handleSelect((ImageView) m);
+                                else handleProduction((ImageView) m);
+                            });
+                        }
+                    }
+                }
+            }
+        }
+        else if(type.equals("default")){
+            for (Integer i : LCMap.keySet()) {
+                if (LCMap.get(i).get_3()) {
+                    for (Node m : LeaderCardsPlayed.getChildren()) {
+                        if (m.getId().startsWith("AP") && GridPane.getColumnIndex(m) == (i - 1)) {
+                            for (Node h : ((AnchorPane) m).getChildren()) {
+                                for(Node n : ((Pane) h).getChildren()){
+                                    if (!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
+                                    n.setOnMouseClicked(e -> {
+                                        if (selected != null && selected.getId().split("_")[1].startsWith("W") && !selected.equals(n))
+                                            handleMoveAction((ImageView) n);
+                                        else handleSelect((ImageView) n);
+                                    });
+                                }
+                            }
+                        }
+                        else if(LCMap.get(i).get_2() == 4 && GridPane.getColumnIndex(m) == (i - 1)){
+                            if(!m.getStyleClass().contains("selectable")) m.getStyleClass().add("selectable");
+                            m.setOnMouseClicked(e ->{
+                                if(!isProductionAction) handleSelect((ImageView) m);
+                                else handleProduction((ImageView) m);
+                            });
                         }
                     }
                 }
@@ -1998,7 +2039,7 @@ public class GameScreenView extends ViewObservable {
                 R.getStyleClass().add("selectable");
                 R.setOnMouseClicked(e -> handleBuyDeselect(resource, R));
                 R.setFitWidth(43.0);
-                R.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, character, 2.0, 5.0, 0, 0));
+                R.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, character, 5.0, 5.0, 0, 0));
                 R.setPreserveRatio(true);
                 R.setId("SB_" + IV.getId().split("_")[1] + "_HAND");
                 if (HS < 5) Hand.add(R, 0, HS);
