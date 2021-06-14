@@ -3,7 +3,7 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.commons.Resources;
 
 public class WhiteMarbleAbility extends Ability{
-    private Resources resType;
+    private final Resources resType;
 
     public WhiteMarbleAbility(Resources resType){
         this.resType = resType;

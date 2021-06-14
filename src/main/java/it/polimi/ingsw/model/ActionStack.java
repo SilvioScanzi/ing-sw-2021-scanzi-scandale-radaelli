@@ -5,7 +5,7 @@ import it.polimi.ingsw.commons.ActionToken;
 import java.util.*;
 
 public class ActionStack {
-    private Stack<ActionToken> stack;
+    private final Stack<ActionToken> stack;
 
     public ActionStack(){
         ArrayList<ActionToken> tmp = new ArrayList<>();
@@ -25,7 +25,10 @@ public class ActionStack {
         }
     }
 
-    //Only used for testing
+    /**
+     * method used for testing, it initialize an Action stack with a standard configuration
+     * @param Arandom is just used to overload the method
+     */
     public ActionStack(int Arandom){
         ArrayList<ActionToken> tmp = new ArrayList<>();
 

@@ -25,20 +25,22 @@ public class DevelopmentCardMarket {
         }
 
         DevelopmentCardParser DCP = new DevelopmentCardParser();
-        try {
-            ArrayList<DevelopmentCard> tmp = DCP.parseFromXML();
-            //Getting the 48 cards from the arrayList tmp, inserting them into the cardMarket in a random order for every stack
-            for (int i = 0; i < 48; i++) {
-                int index;
-                index = (int) (Math.random() * (48 - i));
-                cardMarket.get(new Pair<>(tmp.get(index).getColour(), tmp.get(index).getLevel())).push(tmp.remove(index));
-            }
+
+        ArrayList<DevelopmentCard> tmp = DCP.parseFromXML();
+        //Getting the 48 cards from the arrayList tmp, inserting them into the cardMarket in a random order for every stack
+        for (int i = 0; i < 48; i++) {
+            int index;
+            index = (int) (Math.random() * (48 - i));
+            cardMarket.get(new Pair<>(tmp.get(index).getColour(), tmp.get(index).getLevel())).push(tmp.remove(index));
         }
-        catch(IOException | SAXException e){e.printStackTrace();}
+
     }
 
-    //Only used for testing
-    public DevelopmentCardMarket(int Arandom){
+    /**
+     * Method used for testing, it initialize a card market with a standard configuration
+     * @param Arandom is just used to overload the method
+     */
+    public DevelopmentCardMarket(int Arandom) {
         //Instantiating one stack for every card deck (One for every combination of Color-Level)
         cardMarket = new HashMap<>();
         for (Colours c : Colours.values()) {
@@ -48,29 +50,40 @@ public class DevelopmentCardMarket {
         }
 
         DevelopmentCardParser DCP = new DevelopmentCardParser();
-        try {
-            ArrayList<DevelopmentCard> tmp = DCP.parseFromXML();
-            //Getting the 48 cards from the arrayList tmp, inserting them into the cardMarket in a random order for every stack
-            for (int i = 0; i < 48; i++) {
-                cardMarket.get(new Pair<>(tmp.get(0).getColour(), tmp.get(0).getLevel())).push(tmp.remove(0));
-            }
+
+        ArrayList<DevelopmentCard> tmp = DCP.parseFromXML();
+        //Getting the 48 cards from the arrayList tmp, inserting them into the cardMarket in a random order for every stack
+        for (int i = 0; i < 48; i++) {
+            cardMarket.get(new Pair<>(tmp.get(0).getColour(), tmp.get(0).getLevel())).push(tmp.remove(0));
         }
-        catch(IOException | SAXException e){e.printStackTrace();}
+
     }
 
     public int cardsInStack(Colours colour, int level){
         return cardMarket.get(new Pair<>(colour,level)).size();
     }
 
-    //Peek doesn't remove the card from the relative deck, it's used to check the cost of the card
+    /**
+     * Method used to check the cost of the requested card without removing it from the stack
+     * @param colour colour of the card to check
+     * @param level level of the card to check
+     * @return DevelopmentCard with that colour and level
+     * @throws EmptyException if the stack of cards identified with colour and level requested is empty
+     * @throws IndexOutOfBoundsException if the level chosen isn't between 1 and 3
+     */
     public DevelopmentCard peekFirstCard(Colours colour, int level) throws EmptyException, IndexOutOfBoundsException {
         if(level<1 || level>3) throw new IndexOutOfBoundsException();
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
-        if(cardMarket.get(tmp1).empty()) throw new EmptyException("Non ci sono più carte in questa pila");
+        if(cardMarket.get(tmp1).empty()) throw new EmptyException("There aren't any cards in this stack");
         return cardMarket.get(tmp1).peek();
     }
 
-    //Get used when it's sure that the player can buy the card and thus remove it from the market
+    /**
+     * Method used to remove the card from the requested stack. Used only when it is certain that a player can buy that card
+     * @param colour colour of the card to requested
+     * @param level level of the card to requested
+     * @return DevelopmentCard with that colour and level
+     */
     public DevelopmentCard getFirstCard(Colours colour, int level){
         Pair<Colours,Integer> tmp1 = new Pair<>(colour,level);
         DevelopmentCard DC = cardMarket.get(tmp1).pop();
@@ -78,6 +91,12 @@ public class DevelopmentCardMarket {
     }
 
     //Only used in single player
+
+    /**
+     * Method used in single player, when an action token is drawn. Deletes the cards of the given colour,
+     * going from the lowest level to the highest in order
+     * @param colour colour of the cards to remove
+     */
     public void deleteCards(Colours colour){
         int count = 2;  //cards to be deleted
         boolean Empty;
@@ -92,6 +111,10 @@ public class DevelopmentCardMarket {
         }
     }
 
+    /**
+     * Method used to check if lorenzo has won by removing all the cards of one colour
+     * @return true if he wins, false otherwise
+     */
     public boolean lorenzoWin(){
         for(Colours c : Colours.values()){
             if(cardMarket.get(new Pair<>(c,3)).size()==0) return true;

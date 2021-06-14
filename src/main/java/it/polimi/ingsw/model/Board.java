@@ -91,6 +91,10 @@ public class Board{
         return victoryPoints;
     }
 
+    /**
+     * Method used to count every resource on the board, including warehouse, strongbox and leader cards
+     * @return Hashmap with Resources and relative quantities in the board
+     */
     public HashMap<Resources,Integer> getAllResources(){
         HashMap<Resources,Integer> tmp = new HashMap<>();
 
@@ -158,6 +162,12 @@ public class Board{
         leaderCardsHand.remove(i-1);
     }
 
+    /**
+     * Method used to play a leader card
+     * @param i index of the leader card to play
+     * @throws RequirementsNotMetException if the player doesn't meet all the criteria to play that card
+     * @throws IndexOutOfBoundsException if the index given doesn't match a valid index on the board
+     */
     public void playLeaderCard(int i) throws RequirementsNotMetException,IndexOutOfBoundsException {
         LeaderCard LC = leaderCardsHand.get(i-1);
         Map<Colours,Pair<Integer,Integer>> requiredColours = new HashMap<>(LC.getRequiredColours());

@@ -504,6 +504,7 @@ public class Game extends ModelObservable {
 
         //Actually modifying the model (no errors)
         if(tmpHand.size()>0) {
+            playerBoard.setStrongbox(sb);
             playerBoard.getHand().addAll(tmpHand);
             playerBoard.dumpHandIntoStrongbox();
             notifySB(playerBoard.getStrongbox(), playerBoard.getNickname());
@@ -517,7 +518,6 @@ public class Game extends ModelObservable {
             }
             notifyFT(players.get(player).getFaithTrack(),players.get(player).getNickname());
         }
-
 
         if(!wr.equals(playerBoard.getWarehouse())) {
             playerBoard.setWarehouse(wr);
@@ -535,7 +535,6 @@ public class Game extends ModelObservable {
         if(updated) {
             notifyLCPlayed(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname());
         }
-
         playerBoard.setActionDone(true);
         notifyActionDone(playerBoard.getNickname());
     }

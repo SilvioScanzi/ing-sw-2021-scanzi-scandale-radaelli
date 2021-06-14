@@ -53,6 +53,16 @@ public class Warehouse implements Cloneable {
             throw new IllegalArgumentException("Invalid depot number");
     }
 
+    /**
+     * Method used to put resources into a depot
+     * @param depotNumber index of the depot to put the resources into (must be between 1 and 3)
+     * @param resource type of the resource to put into the depot
+     * @param quantity quantity of the resource to put into the depot
+     * @throws IndexOutOfBoundsException if the depotNumber is not between 1 and 3
+     * @throws ResourceErrorException if the quantity exceeds the capacity of the depot
+     * @throws IncompatibleResourceException if in the depot there are already some resources of another type
+     * @throws InvalidPlacementException if another depot already contains the same type of resources
+     */
     public void addDepot(int depotNumber, Resources resource, int quantity) throws IndexOutOfBoundsException,ResourceErrorException,IncompatibleResourceException,InvalidPlacementException{
         if(depotNumber==1){
             if(quantity != 1) throw new ResourceErrorException("Depot 1 can't contain these resources");
@@ -91,6 +101,13 @@ public class Warehouse implements Cloneable {
             throw new IndexOutOfBoundsException("Invalid depot number");
     }
 
+    /**
+     * Method used to retrieve resources from a depot
+     * @param depotNumber index of the depot to put the resources into (must be between 1 and 3)
+     * @param quantity quantity of the resource to retrieve from the depot
+     * @throws IndexOutOfBoundsException if the index isn't between 1 and 3
+     * @throws ResourceErrorException if the amount required exceeds the actual amount of resources in the depot
+     */
     public void subDepot(int depotNumber, int quantity) throws IndexOutOfBoundsException, ResourceErrorException {
         if(depotNumber==1){
             if(quantity>1 || quantity<0) throw new ResourceErrorException("Depot 1 doesn't have this many resources");

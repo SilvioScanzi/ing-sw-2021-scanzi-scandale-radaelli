@@ -37,18 +37,10 @@ public class ResourceMarket {
         remainingMarble = tmp.remove(0);
     }
 
-    public String toString(){
-        String s = "";
-        for(int i=0;i<3;i++){
-            for(int j=0;j<4;j++){
-                s = s + grid[i][j].abbreviation();
-            }
-            s = s+"\n";
-        }
-        return s;
-    }
-
-    //Only used for testing
+    /**
+     * Method used for testing, it initialize a resource market with a standard configuration
+     * @param Arandom is just used to overload the method
+     */
     public ResourceMarket(int Arandom){
         ArrayList<Marbles> tmp = new ArrayList<>();
         tmp.add(Marbles.Red);
@@ -85,6 +77,12 @@ public class ResourceMarket {
         return remainingMarble;
     }
 
+    /**
+     * Method used to count the number of white marbles in the chosen row or column
+     * @param row boolean which tells if the player chose a row (true) or a column (false)
+     * @param i index of the row or column selected
+     * @return number of white marbles in the chosen row or column
+     */
     public int getWhiteMarbles(boolean row, int i){
         int n=0;
         if(row){
@@ -96,6 +94,12 @@ public class ResourceMarket {
         return n;
     }
 
+    /**
+     * Method used to update the market after a player buys the resources from a chosen row or column
+     * @param row boolean which tells if the player chose a row (true) or a column (false)
+     * @param i index of the row or column selected
+     * @return the marbles contained in the row or column chosen by the player
+     */
     public ArrayList<Marbles> updateMarket(boolean row, int i){
         ArrayList<Marbles> tmp = new ArrayList<>();
         i = i-1;

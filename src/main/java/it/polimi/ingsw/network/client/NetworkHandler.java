@@ -40,7 +40,6 @@ public class NetworkHandler implements Runnable, ViewObserver {
             e.printStackTrace();
         }
 
-        view.print("[NETWORK] Sei stato disconnesso dal gioco");
         view.setState(ViewState.disconnected);
     }
 

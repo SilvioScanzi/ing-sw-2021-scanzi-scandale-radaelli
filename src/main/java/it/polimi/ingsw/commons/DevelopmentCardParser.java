@@ -32,7 +32,12 @@ public class DevelopmentCardParser {
         }
     }
 
-    public ArrayList<DevelopmentCard> parseFromXML() throws IOException, SAXException {
+    /**
+     * Method used to parse development cards from the relative xml file. To do this, it is used
+     * a document to extract the information from.
+     * @return ArrayList of development cards from the xml file
+     */
+    public ArrayList<DevelopmentCard> parseFromXML(){
         ArrayList<DevelopmentCard> tmp = new ArrayList<>();
 
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
@@ -84,6 +89,13 @@ public class DevelopmentCardParser {
         return tmp;
     }
 
+    /**
+     * Method used for the CLI to print the current development card market. If the player is currently
+     * using the colored version of the cli, color codes are also added.
+     * @param CM current Market represented by a HashMap of Colour-Level, Victory points and number of cards in the stack
+     * @param color boolean that indicates if the player is using the colored version of cli
+     * @return a String which represent the current state of the market
+     */
     public String findMarketByID(HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> CM, boolean color){
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
         //Iterating on the nodelist previously got, single node for every DCCard
@@ -265,7 +277,14 @@ public class DevelopmentCardParser {
         return tmp;
     }
 
-
+    /**
+     * Method used for the CLI to print a single development card. If the player is currently
+     * using the colored version of the cli, color codes are also added.
+     * @param c colour of the card to print
+     * @param vp victory points of the card to print
+     * @param color boolean that indicates if the player is using the colored version of cli
+     * @return a String which represent the card requested
+     */
     public String findCardByID(Colours c, int vp, boolean color){
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
         //Iterating on the nodelist previously got, single node for every DCCard
@@ -373,6 +392,12 @@ public class DevelopmentCardParser {
         return "";
     }
 
+    /**
+     * Method used to check which resources are needed to activate production of a card
+     * @param c colour of the card
+     * @param vp victory points of the card
+     * @return a HashMap which represent the Resources and their respective amount to activate the production
+     */
     public HashMap<Resources, Integer> findRequiredResourcesByID(Colours c, int vp) {
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
         //Iterating on the nodelist previously got, single node for every DCCard
@@ -401,6 +426,12 @@ public class DevelopmentCardParser {
         return null;
     }
 
+    /**
+     * Method used to check which resources are needed to buy a development card
+     * @param c colour of the card
+     * @param vp victory points of the card
+     * @return a HashMap which represent the Resources and their respective amount to buy the card
+     */
     public HashMap<Resources, Integer> findCostByID(Colours c, int vp){
         NodeList developmentcards = document.getElementsByTagName("developmentcard");
         //Iterating on the nodelist previously got, single node for every DCCard

@@ -51,6 +51,11 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         return state;
     }
 
+    /**
+     * Method used to set the current state of the client Handler. If the state is one in which a message
+     * is expected, a timer is launched. If it expires, the player is considered disconnected
+     * @param state new state in which the handler will go into
+     */
     public synchronized void setState(ClientHandlerState state) {
         int delay;
         if (state.equals(ClientHandlerState.discardLeaderCard) || state.equals(ClientHandlerState.finishingSetup)) {
@@ -156,6 +161,12 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         }
     }
 
+    /**
+     * Method used to process messages received from the client. Depending on the current state, the message
+     * is processed in a different way, based on the different kind of actions expected in each phase of the
+     * game.
+     * @param message message to be processed
+     */
     public synchronized void processMessage(Message message) {
         switch (state) {
             case nickname -> {
@@ -260,7 +271,6 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         sendObject(new StrongboxMessage(sb,s));
     }
 
-    //if you are playing, the cards are showed to you, otherwise it's just to show something to other players
     @Override
     public void updateLCHand(HashMap<Integer,LeaderCard> LCHand, String s){
         if(nickname.equals(s)) sendObject(new LeaderCardHandMessage(LCHand));

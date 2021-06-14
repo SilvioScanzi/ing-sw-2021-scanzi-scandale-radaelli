@@ -32,6 +32,11 @@ public class LeaderCardParser {
         }
     }
 
+    /**
+     * Method used to parse leader cards from the relative xml file. To do this, it is used
+     * a document to extract the information from.
+     * @return ArrayList of leader cards from the xml file
+     */
     public ArrayList<LeaderCard> parseFromXML() throws IOException, SAXException {
         ArrayList<LeaderCard> tmp = new ArrayList<>();
 
@@ -84,6 +89,14 @@ public class LeaderCardParser {
         return tmp;
     }
 
+    /**
+     * Method used for the CLI to print a leader card. If the player is currently
+     * using the colored version of the cli, color codes are also added.
+     * @param r resource which is part of the leader card ability, used to identify it
+     * @param vp victory points given by the card, used to identify it
+     * @param sr current resources on the card (if any are present)
+     * @return a String which represent the leader card
+     */
     public String findCardByID(Resources r, int vp, int sr){
         NodeList leadercards = document.getElementsByTagName("leadercard");
         //Iterating on the nodelist previously got, single node for every LCCard
@@ -170,6 +183,12 @@ public class LeaderCardParser {
         return "";
     }
 
+    /**
+     * Method used to check which ability type a leader card has.
+     * @param r resource which is part of the leader card ability, used to identify it
+     * @param vp victory points given by the card, used to identify it
+     * @return a String which represent the ability type of the leader card
+     */
     public String findTypeByID(Resources r, int vp){
         NodeList leadercards = document.getElementsByTagName("leadercard");
         //Iterating on the nodelist previously got, single node for every LCCard

@@ -21,7 +21,10 @@ public class LeaderCardDeck {
         catch(IOException | SAXException e){e.printStackTrace();}
     }
 
-    //Only used for testing
+    /**
+     * Method used for testing, it initialize a leader card deck with a standard configuration
+     * @param Arandom is just used to overload the method
+     */
     public LeaderCardDeck(int Arandom){
         deck = new Stack<>();
         LeaderCardParser LCP = new LeaderCardParser();
@@ -38,6 +41,10 @@ public class LeaderCardDeck {
         return deck.pop();
     }
 
+    /**
+     * Method used in the setup phase to give 4 leader cards to each player
+     * @return an Hashmap with 4 leader card and the relative index
+     */
     public HashMap<Integer,LeaderCard> getLeaderCards(){
         HashMap<Integer,LeaderCard> tmp = new HashMap<>();
         for(int i=0;i<4;i++){

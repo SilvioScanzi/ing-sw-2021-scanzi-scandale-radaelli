@@ -14,7 +14,7 @@ public class ClientModel {
     private final int playerNumber;
     private HashMap<Integer,Pair<Resources,Integer>> LCMap = new HashMap<>();
     private boolean lorenzo = false;
-    private HashMap<String,Integer> leaderBoard;
+    private HashMap<String,Integer> leaderBoard = null;
 
     public ClientModel(HashMap<String,Integer> playerMap, String myNickname, int inkwell){
         this.myNickname = myNickname;

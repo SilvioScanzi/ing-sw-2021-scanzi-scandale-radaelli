@@ -22,6 +22,7 @@ import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 public class GUI extends Application implements View{
@@ -74,6 +75,8 @@ public class GUI extends Application implements View{
             primaryStage.setScene(currentScene);
             primaryStage.show();
             primaryStage.setResizable(false);
+            primaryStage.setMaximized(false);
+            primaryStage.setFullScreen(false);
 
             currentScene.widthProperty().addListener((obs, oldVal, newVal) -> scale(1600,900));
 
@@ -94,6 +97,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     nicknameScreenView = fxmlLoader.getController();
                     nicknameScreenView.addObserver(NH);
+                    primaryStage.setFullScreen(false);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -107,6 +111,7 @@ public class GUI extends Application implements View{
                     playerNumberScreenView = fxmlLoader.getController();
                     playerNumberScreenView.addObserver(NH);
                     primaryStage.setResizable(false);
+                    primaryStage.setFullScreen(false);
                     if(currentScene.getWidth()!=700.0 || currentScene.getHeight()!=700.0) {
                         primaryStage.setMaximized(false);
                         scale(700.0,700.0);
@@ -123,6 +128,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(root);
                     reconnectScreenView = fxmlLoader.getController();
                     reconnectScreenView.addObserver(NH);
+                    primaryStage.setFullScreen(false);
                 }catch(IOException e){e.printStackTrace();}
             });
         }
@@ -226,26 +232,88 @@ public class GUI extends Application implements View{
         }
         else if(state.equals(ViewState.endGame)){
             Platform.runLater(() -> {
-                try {
-                    fxmlLoader = new FXMLLoader();
-                    fxmlLoader.setLocation(getClass().getResource("/fxml/LeaderBoardScreen.fxml"));
-                    primaryStage.setTitle("Maestri del rinascimento - Fine partita");
+                gameScreenView.grayOut(true);
+                PauseTransition PT = new PauseTransition();
+                PT.setDuration(Duration.seconds(10));
+                if(NH.getClientModel().getPlayerNumber()==1){
+                    if(NH.getClientModel().getLorenzo()) {
+                        gameScreenView.addMessage("Lorenzo il magnifico ha vinto!",true);
+                    }
+                    else{
+                        gameScreenView.addMessage("Hai battuto Lorenzo il magnifico!",true);
+                    }
+                }
+                else{
+                    String player = "";
+                    int max = 0;
+                    for(String s : NH.getClientModel().getLeaderBoard().keySet()){
+                        if(NH.getClientModel().getLeaderBoard().get(s)>max) {
+                            max = NH.getClientModel().getLeaderBoard().get(s);
+                            player = s;
+                        }
+                    }
+                    if(player.equals(NH.getClientModel().getMyNickname())) gameScreenView.addMessage("Hai vinto la partita!",true);
+                    else gameScreenView.addMessage(player+" ha vinto la partita!",true);
+                }
+                PT.setOnFinished(e -> {
+                    Platform.runLater(() -> {
+                        try {
+                            fxmlLoader = new FXMLLoader();
+                            fxmlLoader.setLocation(getClass().getResource("/fxml/LeaderBoardScreen.fxml"));
+                            primaryStage.setTitle("Maestri del rinascimento - Fine partita");
 
-                    Pane root = fxmlLoader.load();
-                    currentScene.setRoot(root);
-                    currentScene.setOnKeyPressed(null);
-                    leaderBoardScreenView = fxmlLoader.getController();
-                    leaderBoardScreenView.addObserver(NH);
-                    leaderBoardScreenView.setLeaderBoard(NH.getClientModel().getLeaderBoard(), NH.getClientModel().getLorenzo());
-                    primaryStage.setMaximized(false);
-                    scale(700.0,700.0);
-                    primaryStage.setResizable(false);
-                }catch(IOException e){e.printStackTrace();}
+                            Pane root = fxmlLoader.load();
+                            currentScene.setRoot(root);
+                            currentScene.setOnKeyPressed(null);
+                            leaderBoardScreenView = fxmlLoader.getController();
+                            leaderBoardScreenView.addObserver(NH);
+                            leaderBoardScreenView.setLeaderBoard(NH.getClientModel().getLeaderBoard(), NH.getClientModel().getLorenzo());
+                            primaryStage.setMaximized(false);
+                            primaryStage.setFullScreen(false);
+                            scale(700.0,700.0);
+                            primaryStage.setResizable(false);
+                        }catch(IOException x){x.printStackTrace();}
+                    });
+                });
+
+                PT.play();
             });
         }
-        //TODO: Disconnected message (da fare nel caso in cui la partita venga demolita a causa di qualcuno che è disconnesso prima dell'inizio)
         else if(state.equals(ViewState.disconnected)){
+            if(NH.getClientModel().getLeaderBoard() == null) {
+                NH = new NetworkHandler(this);
 
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/ConnectionScreen.fxml"));
+
+                try {
+                    Pane root = fxmlLoader.load();
+                    Platform.runLater(() -> {
+                        currentScene = new Scene(root);
+                        primaryStage.setTitle("Maestri del rinascimento - Launcher");
+                        connectionScreenView = fxmlLoader.getController();
+                        connectionScreenView.addObserver(NH);
+                        primaryStage.setScene(currentScene);
+                        primaryStage.show();
+                        primaryStage.setResizable(false);
+                        primaryStage.setMaximized(false);
+                        primaryStage.setFullScreen(false);
+
+                        connectionScreenView.setErrormsg("Un giocatore si è disconnesso prima dell'inizio della partita");
+
+                        currentScene.widthProperty().addListener((obs, oldVal, newVal) -> scale(1600, 900));
+
+                        currentScene.heightProperty().addListener((obs, oldVal, newVal) -> scale(1600, 900));
+
+                        currentScene.setOnKeyReleased(x -> {
+                            if (x.getCode().equals(KeyCode.F) && primaryStage.isResizable())
+                                primaryStage.setFullScreen(true);
+                        });
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         this.state = state;
     }
@@ -286,6 +354,7 @@ public class GUI extends Application implements View{
     }
 
     private void goToSetup(){
+        if(state.equals(ViewState.discardLeaderCard))
         Platform.runLater(() -> {
             primaryStage.setTitle("Maestri del rinascimento - Setup");
             fxmlLoader = new FXMLLoader();

@@ -3,8 +3,8 @@ package it.polimi.ingsw.model;
 import it.polimi.ingsw.commons.Resources;
 
 public class ExtraSlotAbility extends Ability{
-    private Resources resType;
-    private int capacity;
+    private final Resources resType;
+    private final int capacity;
     private int stashedResources;
 
     public ExtraSlotAbility(Resources resType, int capacity){
@@ -26,6 +26,12 @@ public class ExtraSlotAbility extends Ability{
     @Override
     public int getCapacity(){ return capacity; }
 
+    /**
+     * Method used to store or retrieve resources from the leader card
+     * @param resource type of resource to store or retrieve
+     * @param amount amount of resources to store or retrieve
+     * @return true if the update was done, false otherwise
+     */
     @Override
     public boolean doUpdateSlot(Resources resource, int amount){
         if(!resType.equals(resource)) return false;

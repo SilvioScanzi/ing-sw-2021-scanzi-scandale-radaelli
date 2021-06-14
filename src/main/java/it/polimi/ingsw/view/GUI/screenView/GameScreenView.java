@@ -696,14 +696,14 @@ public class GameScreenView extends ViewObservable {
                 if(LCMap.containsKey(i) && LCMap.get(i).get_1().equals(T.get_1()) && LCMap.get(i).get_2().equals(T.get_2())) {
                     LCMap.get(i).set_3(true);
                     LCView.setId("F_L_" + (i));
-                    AnchorPane AP = new AnchorPane();
-                    AP.setId("AP_"+i);
-                    LeaderCardsPlayed.add(AP, i - 1, 0);
                     LeaderCardsPlayed.add(LCView, i - 1, 0);
                     if(LCMap.get(i).get_2()==4){
                         LCView.setId("P_L_"+(i+3));
                     }
                     if (T.get_2() == 3) {
+                        AnchorPane AP = new AnchorPane();
+                        AP.setId("AP_"+i);
+                        LeaderCardsPlayed.add(AP, i - 1, 0);
                         int j;
                         for (j = 0; j < T.get_3(); j++) {
                             Pane P = new Pane();
@@ -1911,11 +1911,13 @@ public class GameScreenView extends ViewObservable {
         String path ="/images/Hanging Sign.png";
 
         for(Node node : LeaderCardsPlayed.getChildren()){
-            ImageView n = (ImageView) node;
-            n.getStyleClass().remove("selectable");
-            n.setOnMouseClicked(null);
-            n.setOnMouseEntered(null);
-            n.setOnMouseExited(null);
+            if(!node.getId().startsWith("AP")) {
+                ImageView n = (ImageView) node;
+                n.getStyleClass().remove("selectable");
+                n.setOnMouseClicked(null);
+                n.setOnMouseEntered(null);
+                n.setOnMouseExited(null);
+            }
         }
 
         grayOut(true);
@@ -2561,19 +2563,25 @@ public class GameScreenView extends ViewObservable {
         confirmPane.getChildren().add(sign);
         String s="";
         int i = a.remove(0);
+        Text t = new Text();
+        t.getStyleClass().add("textbody");
+        t.setTextAlignment(TextAlignment.CENTER);
+
         if(i==6){
             s = "di base";
+            t.setLayoutX(95);
         }
         else if(i==5){
             s = "della carta leader 2";
+            t.setLayoutX(60);
         }
         else if(i==4){
             s = "della carta leader 1";
+            t.setLayoutX(60);
         }
-        Text t = new Text("Quale risorsa vuoi ottenere\ndalla produzione "+s+ "?");
-        t.getStyleClass().add("textbody");
-        t.setTextAlignment(TextAlignment.CENTER);
-        t.setLayoutX(95);
+
+        t.setText("Quale risorsa vuoi ottenere\ndalla produzione "+s+ "?");
+
         t.setLayoutY(220);
         confirmPane.getChildren().add(t);
 
@@ -2662,8 +2670,8 @@ public class GameScreenView extends ViewObservable {
         Hand.getChildren().clear();
         int i = 0,j = 0;
         for(int size=0;size<tmp.size();size++){
-            i = size%5;
-            if(size>5) {
+            i = size % 5;
+            if(size > 4) {
                 j = 1;
             }
             Hand.add(tmp.get(size),j,i);
@@ -2739,7 +2747,7 @@ public class GameScreenView extends ViewObservable {
 
     private void unselect() {
         String[] split = selected.getId().split("_");
-        if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3") || selected.getId().startsWith("P_S")){
+        if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3") || selected.getId().startsWith("P_S") || selected.getId().startsWith("P_L")){
             selected.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
         }
         else selected.setEffect(null);

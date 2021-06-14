@@ -45,10 +45,10 @@
             <Image url="@../images/Rank4.png" />
          </image>
       </ImageView>
-      <Text styleClass="textbody" fx:id="P1" layoutX="257.0" layoutY="222.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <Text styleClass="textbody" fx:id="P2" layoutX="257.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <Text styleClass="textbody" fx:id="P3" layoutX="257.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <Text styleClass="textbody" fx:id="P4" layoutX="257.0" layoutY="379.0" strokeType="OUTSIDE" strokeWidth="0.0" />
-      <Text styleClass="textbody" layoutX="276.0" layoutY="522.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Vuoi fare un'altra partita?" textAlignment="CENTER" />
+      <Text fx:id="P1" layoutX="257.0" layoutY="222.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" />
+      <Text fx:id="P2" layoutX="257.0" layoutY="274.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" />
+      <Text fx:id="P3" layoutX="257.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" />
+      <Text fx:id="P4" layoutX="257.0" layoutY="379.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" />
+      <Text layoutX="0.0" layoutY="520.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" text="Vuoi fare un'altra partita?" textAlignment="CENTER" wrappingWidth="700" />
    </children>
 </AnchorPane>
