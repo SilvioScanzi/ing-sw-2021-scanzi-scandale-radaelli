@@ -768,8 +768,8 @@ public class Game extends ModelObservable {
         if(!players.get(player).getLeaderCardsHand().containsKey(leaderCardIndex-1)) throw new IndexOutOfBoundsException("Leader card does not exist");
         players.get(player).playLeaderCard(leaderCardIndex);
 
-        notifyLCPlayed(players.get(player).getLeaderCardsPlayed(),players.get(player).getNickname());
         notifyLCHand(players.get(player).getLeaderCardsHand(),players.get(player).getNickname());
+        notifyLCPlayed(players.get(player).getLeaderCardsPlayed(),players.get(player).getNickname());
     }
 
     /**

@@ -108,12 +108,17 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             CH.sendObject(new ResourceMarketMessage(game.getMarket().getGrid(),game.getMarket().getRemainingMarble()));
             CH.sendObject(new DCMarketMessage(game.getDevelopmentCardMarket()));
             CH.sendObject(new LeaderCardHandMessage(game.getBoard(CH.getNickname()).getLeaderCardsHand()));
-            for(int i=0; i<playerNumber; i++){
+            for(int i=0; i<playerNumber; i++) {
                 Board playerBoard = game.getBoard(i);
-                CH.sendObject(new FaithTrackMessage(playerBoard.getFaithTrack(),playerBoard.getNickname()));
-                CH.sendObject(new WarehouseMessage(playerBoard.getWarehouse(),playerBoard.getNickname()));
-                CH.sendObject(new StrongboxMessage(playerBoard.getStrongbox(),playerBoard.getNickname()));
+                CH.sendObject(new FaithTrackMessage(playerBoard.getFaithTrack(), playerBoard.getNickname()));
+                CH.sendObject(new WarehouseMessage(playerBoard.getWarehouse(), playerBoard.getNickname()));
+                CH.sendObject(new StrongboxMessage(playerBoard.getStrongbox(), playerBoard.getNickname()));
                 CH.sendObject(new SlotMessage(playerBoard.getSlots(), playerBoard.getNickname()));
+                if(!playerBoard.equals(game.getBoard(CH.getNickname()))) {
+                    for (int j = playerBoard.getLeaderCardsHand().size(); j < 4; j++) {
+                        CH.sendObject(new LeaderCardHandUpdateMessage(playerBoard.getNickname()));
+                    }
+                }
                 CH.sendObject(new LeaderCardPlayedMessage(playerBoard.getLeaderCardsPlayed(), playerBoard.getNickname()));
             }
         }
@@ -467,6 +472,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                     demolished = true;
                     gameHandlerNotify();
                     client.closeConnection();
+                    return;
                 }
                 synchronized (client) {
                     client.setState(ClientHandler.ClientHandlerState.myTurn);

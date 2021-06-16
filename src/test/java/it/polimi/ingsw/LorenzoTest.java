@@ -1,5 +1,6 @@
 package it.polimi.ingsw;
 
+import it.polimi.ingsw.commons.Triplet;
 import it.polimi.ingsw.controller.Game;
 import it.polimi.ingsw.commons.Colours;
 import org.junit.jupiter.api.*;
@@ -81,4 +82,16 @@ public class LorenzoTest {
         assert(game.checkLorenzoWin());
     }
 
+    @Test
+    @DisplayName("Ensure Lorenzo advances when discarding resources")
+    void testLorenzoAdvance(){
+        try {
+            game.BuyMarketResourcesAction(0, true, 1, new ArrayList<>());
+        }catch(Exception e){e.printStackTrace();}
+        System.out.println(game.getBoard(0).getHand());
+        try {
+            game.moveResources(0, new ArrayList<>());
+        }catch(Exception e){e.printStackTrace();}
+        assert(game.getLorenzo().getBlackCross()==3);
+    }
 }

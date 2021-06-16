@@ -32,8 +32,6 @@ public class ClientBoard {
         strongBox.put(Resources.Shields,0);
         strongBox.put(Resources.Servants,0);
         strongBox.put(Resources.Stones,0);
-        leaderCardsHand = new ArrayList<>();
-        leaderCardsPlayed = new ArrayList<>();
         warehouse = new HashMap<>();
         leaderCardsHand = new ArrayList<>();
         leaderCardsPlayed = new ArrayList<>();
@@ -44,7 +42,6 @@ public class ClientBoard {
         FaithMarker = 0;
         popeFavor = new boolean[3];
     }
-
 
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;

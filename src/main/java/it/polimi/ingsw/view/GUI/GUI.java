@@ -232,6 +232,7 @@ public class GUI extends Application implements View{
         }
         else if(state.equals(ViewState.endGame)){
             Platform.runLater(() -> {
+                primaryStage.setFullScreen(false);
                 gameScreenView.grayOut(true);
                 PauseTransition PT = new PauseTransition();
                 PT.setDuration(Duration.seconds(10));
@@ -258,6 +259,9 @@ public class GUI extends Application implements View{
                 PT.setOnFinished(e -> {
                     Platform.runLater(() -> {
                         try {
+                            primaryStage.setMaximized(false);
+                            primaryStage.setFullScreen(false);
+
                             fxmlLoader = new FXMLLoader();
                             fxmlLoader.setLocation(getClass().getResource("/fxml/LeaderBoardScreen.fxml"));
                             primaryStage.setTitle("Maestri del rinascimento - Fine partita");
@@ -268,8 +272,7 @@ public class GUI extends Application implements View{
                             leaderBoardScreenView = fxmlLoader.getController();
                             leaderBoardScreenView.addObserver(NH);
                             leaderBoardScreenView.setLeaderBoard(NH.getClientModel().getLeaderBoard(), NH.getClientModel().getLorenzo());
-                            primaryStage.setMaximized(false);
-                            primaryStage.setFullScreen(false);
+
                             scale(700.0,700.0);
                             primaryStage.setResizable(false);
                         }catch(IOException x){x.printStackTrace();}
@@ -441,6 +444,10 @@ public class GUI extends Application implements View{
                 gameScreenView.setPrevResBuyAction();
                 gameScreenView.setActionDone(true);
             });
+            case requirementsNotMet -> Platform.runLater(() ->{
+                gameScreenView.addMessage("Non possiedi i requisiti per giocare questa carta leader",true);
+                gameScreenView.addLeaderCards(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsPlayed(),NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
+            });
         }
     }
 
@@ -477,11 +484,7 @@ public class GUI extends Application implements View{
     }
 
     @Override
-    public void printLeaderCardHand(ArrayList<Triplet<Resources, Integer, Integer>> LC) {
-        if(gameScreenView !=null && !state.equals(ViewState.reconnecting)) {
-            Platform.runLater(() -> gameScreenView.addLeaderCards(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsPlayed(), LC));
-        }
-    }
+    public void printLeaderCardHand(ArrayList<Triplet<Resources, Integer, Integer>> LC) {}
 
     @Override
     public void printLeaderCardPlayed(ArrayList<Triplet<Resources, Integer, Integer>> LC, String nickname) {
@@ -490,7 +493,9 @@ public class GUI extends Application implements View{
                 if ((NH.getClientModel().getMyNickname().equals(nickname))) {
                     gameScreenView.addLeaderCards(LC, NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getLeaderCardsHand());
                     if(state.equals(ViewState.myTurn)){
-                        if(!NH.getClientModel().getBoard(nickname).getActionDone()) gameScreenView.grayPlayedLeaderCard(false,"default");
+                        if(!NH.getClientModel().getBoard(nickname).getActionDone()){
+                            gameScreenView.grayPlayedLeaderCard(false,"default");
+                        }
                         else gameScreenView.grayPlayedLeaderCard(false,"move");
                     }
                 }

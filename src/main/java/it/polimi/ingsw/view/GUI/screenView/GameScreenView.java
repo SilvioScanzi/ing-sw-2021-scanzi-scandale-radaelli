@@ -345,42 +345,10 @@ public class GameScreenView extends ViewObservable {
         p.getChildren().add(FTpane);
         FTpane.setLayoutX(108);
         FTpane.setLayoutY(100);
+        grayBoards(false);
     }
 
     public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1,ArrayList<Pair<Colours,Integer>> Slot_2,ArrayList<Pair<Colours,Integer>> Slot_3){
-        /*String path1 = "/images/developmentCards/B1.png";
-        String path2 = "/images/developmentCards/G2.png";
-        ImageView DCView = new ImageView(new Image(GUI.class.getResource(path1).toString()));
-        DCView.setFitWidth(109.0);
-        DCView.setPreserveRatio(true);
-        DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-        DCView.setTranslateY(15 -(25.0)*0);
-        DCView.setTranslateX(-5);
-        DCView.setId("P_S_1");
-        StackPane SP = null;
-        for (Node n : Slots.getChildren()) {
-            if (GridPane.getColumnIndex(n) == 0) {
-                SP = (StackPane) n;
-            }
-        }
-        SP.getChildren().add(DCView);
-
-
-        ImageView DCView1 = new ImageView(new Image(GUI.class.getResource(path2).toString()));
-        DCView1.setFitWidth(109.0);
-        DCView1.setPreserveRatio(true);
-        DCView1.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
-        DCView1.setTranslateY(15 -(25.0)*0);
-        DCView1.setTranslateX(-5);
-        DCView1.setId("P_S_2");
-        StackPane SP1 = null;
-        for (Node n : Slots.getChildren()) {
-            if (GridPane.getColumnIndex(n) == 1) {
-                SP1 = (StackPane) n;
-            }
-        }
-        SP1.getChildren().add(DCView1);*/
-
         for(Node n : Slots.getChildren()){
             ((StackPane)n).getChildren().clear();
         }
@@ -746,7 +714,6 @@ public class GameScreenView extends ViewObservable {
                 if(LCMap.containsKey(i) && LCMap.get(i).get_1().equals(T.get_1()) && LCMap.get(i).get_2().equals(T.get_2())){
                     backLCView.setId("B_L_"+(i));
                     int finalI = i;
-                    //LeaderCardsPlayed.getChildren().removeIf(n -> GridPane.getColumnIndex(n) == (finalI -1));
                     LeaderCardsPlayed.add(backLCView,i-1,0);
                     LCMap.get(i).set_3(false);
                     backLCView.setOnMouseEntered(e -> {
@@ -863,7 +830,7 @@ public class GameScreenView extends ViewObservable {
                 for(Node n : LeaderCardsPlayed.getChildren()){
                     if(GridPane.getColumnIndex(n) == i - 1 && !n.getId().startsWith("AP")) IM = (ImageView) n;
                 }
-                if(LCMap.containsKey(i) && !LCMap.get(i).get_3()) grayNotPlayedLeaderCard(false,IM);
+                if(LCMap.containsKey(i) && !LCMap.get(i).get_3()) grayNotPlayedLeaderCard(true,IM);
             }
             if(!lorenzo) {
                 grayBoards(true);
@@ -1127,56 +1094,44 @@ public class GameScreenView extends ViewObservable {
 
     public void grayEmptyWarehouse(boolean gray) {
         if (gray) {
-            //W1_1.setId(null);
             W1_1.setOnMouseClicked(null);
 
-            //W2_1.setId(null);
             W2_1.setOnMouseClicked(null);
 
-            //W2_2.setId(null);
             W2_2.setOnMouseClicked(null);
 
-            //W3_1.setId(null);
             W3_1.setOnMouseClicked(null);
 
-            //W3_2.setId(null);
             W3_2.setOnMouseClicked(null);
 
-            //W3_3.setId(null);
             W3_3.setOnMouseClicked(null);
         } else {
             if (W1_1.getChildren().size() == 0) {
-                //W1_1.setId("W1_1Empty");
                 W1_1.setOnMouseClicked(e -> {
                     handleMoveAction(W1_1);
                 });
             }
             if (W2_1.getChildren().size() == 0) {
-                //W2_1.setId("W2_1Empty");
                 W2_1.setOnMouseClicked(e -> {
                     handleMoveAction(W2_1);
                 });
             }
             if (W2_2.getChildren().size() == 0) {
-                //W2_2.setId("W2_2Empty");
                 W2_2.setOnMouseClicked(e -> {
                     handleMoveAction(W2_2);
                 });
             }
             if (W3_1.getChildren().size() == 0) {
-                //W3_1.setId("W3_1Empty");
                 W3_1.setOnMouseClicked(e -> {
                     handleMoveAction(W3_1);
                 });
             }
             if (W3_2.getChildren().size() == 0) {
-                //W3_2.setId("W3_2Empty");
                 W3_2.setOnMouseClicked(e -> {
                     handleMoveAction(W3_2);
                 });
             }
             if (W3_3.getChildren().size() == 0) {
-                //W3_3.setId("W3_3Empty");
                 W3_3.setOnMouseClicked(e -> {
                     handleMoveAction(W3_3);
                 });
@@ -1226,6 +1181,7 @@ public class GameScreenView extends ViewObservable {
             }
         }
     }
+
 
     public void grayPlayedLeaderCard(boolean gray,String type) {
         if (gray) {
@@ -1655,6 +1611,9 @@ public class GameScreenView extends ViewObservable {
                     unselect();
                     selected = null;
                     notifyBuyResources(split[0].equals("R"),Integer.parseInt(split[1]),new ArrayList<>());
+                    grayOut(true);
+                    grayHand(false);
+                    grayWarehouse(false,"move");
                 }
                 else if(getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))>0){
                     isChoosingConversion = true;
@@ -1672,8 +1631,9 @@ public class GameScreenView extends ViewObservable {
                                     LC.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                                 }
                                 isChoosingConversion = false;
-                                grayPlayedLeaderCard(true,"");
-                                grayOut(false);
+                                grayOut(true);
+                                grayHand(false);
+                                grayWarehouse(false,"move");
                                 grayOutActionDone();
                                 unselect();
                                 selected = null;
@@ -2548,6 +2508,31 @@ public class GameScreenView extends ViewObservable {
             RES_P6.getChildren().clear();
             unselect();
             return;
+        }
+        grayOut(true);
+        for(Node n : RES_P1.getChildren()){
+            n.setOnMouseClicked(null);
+            n.getStyleClass().remove("selectable");
+        }
+        for(Node n : RES_P2.getChildren()){
+            n.setOnMouseClicked(null);
+            n.getStyleClass().remove("selectable");
+        }
+        for(Node n : RES_P3.getChildren()){
+            n.setOnMouseClicked(null);
+            n.getStyleClass().remove("selectable");
+        }
+        for(Node n : RES_P4.getChildren()){
+            n.setOnMouseClicked(null);
+            n.getStyleClass().remove("selectable");
+        }
+        for(Node n : RES_P5.getChildren()){
+            n.setOnMouseClicked(null);
+            n.getStyleClass().remove("selectable");
+        }
+        for(Node n : RES_P6.getChildren()){
+            n.setOnMouseClicked(null);
+            n.getStyleClass().remove("selectable");
         }
         String path ="/images/Hanging Sign.png";
         AnchorPane anchorPane = (AnchorPane) LeaderCardsPlayed.getParent();

@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="opponentboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.screenView.OpponentBoardScreenView">
+<AnchorPane fx:id="opponentboard" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1600.0" stylesheets="@../CSS/style.css" xmlns="http://javafx.com/javafx/11.0.2" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polimi.ingsw.view.GUI.screenView.OpponentBoardScreenView">
    <children>
       <ImageView fitHeight="900.0" fitWidth="1600.0">
          <image>
@@ -120,7 +120,7 @@
             </GridPane>
          </children>
       </Pane>
-      <Text fx:id="nickname" layoutX="718.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="nickname" textAlignment="CENTER" wrappingWidth="162.13673400878906" />
+      <Text fx:id="nickname" layoutX="718.0" layoutY="75.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="textbody" textAlignment="CENTER" wrappingWidth="162.13673400878906" />
       <ImageView fitHeight="54.0" fitWidth="142.0" layoutX="868.0" layoutY="43.0">
          <image>
             <Image url="@../images/LittleDecoration.png" />
