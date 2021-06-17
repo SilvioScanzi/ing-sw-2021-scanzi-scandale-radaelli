@@ -320,7 +320,9 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
     }
 
     @Override
-    public void updateResourceBuyDone(){
-        sendStandardMessage(StandardMessages.resourceBuyDone);
+    public void updateResourceBuyDone(String nickname){
+        if(nickname.equals(this.nickname)) {
+            sendStandardMessage(StandardMessages.resourceBuyDone);
+        }
     }
 }

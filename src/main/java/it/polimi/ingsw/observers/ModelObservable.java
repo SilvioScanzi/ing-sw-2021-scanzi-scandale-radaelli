@@ -101,9 +101,9 @@ public class ModelObservable {
         }
     }
 
-    public void notifyResourceBuyDone(){
+    public void notifyResourceBuyDone(String nickname){
         for(ModelObserver obs : observers){
-            obs.updateResourceBuyDone();
+            obs.updateResourceBuyDone(nickname);
         }
     }
 }

@@ -134,7 +134,14 @@ public class CLI extends ViewObservable implements View {
             } else if (state.equals(ViewState.disconnected)) {
                 System.out.println("Sei disconnesso dal server, riavvia l'applicazione per ritornare a giocare");
                 return;
-            } else {
+            } else if(state.equals(ViewState.reconnecting)){
+                if(!message.equals("S") && !message.equals("N")){
+                    System.out.println("Scrivi S o N per riconnetterti o meno");
+                }else{
+                    notifyReconnection(message.equals("S"));
+                }
+            }
+            else {
                 System.out.println("Non puoi inviare dati in questo momento");
             }
         }
@@ -433,9 +440,7 @@ public class CLI extends ViewObservable implements View {
     public void printBoard(ClientBoard board) {
         String nickname = board.getNickname();
         printLeaderCardPlayed(board.getLeaderCardsPlayed(),nickname);
-        for(int i=1;i<=3;i++){
-            printSlot(board.getSlots(),nickname);
-        }
+        printSlot(board.getSlots(),nickname);
         printFaithTrack(board.getFaithMarker(), board.getPopeFavor(), nickname);
         printStrongBox(board.getStrongBox(),nickname);
         printWarehouse(board.getWarehouse(),nickname);
@@ -455,6 +460,11 @@ public class CLI extends ViewObservable implements View {
             System.out.println(message);
             System.out.println("Rilancia l'applicazione per provare a connetterti");
             System.exit(0);
+        }
+
+        if(message.equals(StandardMessages.reconnection)){
+            System.out.println(message.toString().substring(2) + " [S/N]");
+            return;
         }
 
         String msg = message.toString();

@@ -345,10 +345,8 @@ public class Game extends ModelObservable {
         notifyHand(new ArrayList<>(), playerBoard.getNickname());
         playerBoard.setMoveNeeded(false);
         playerBoard.setLastActionMarket(false);
-        notifyResourceBuyDone();
+        notifyResourceBuyDone(playerBoard.getNickname());
     }
-
-    //Player selects colour and level; method checks for costs and adds to the board the development card
 
     /**
      * Method used for buying a development card from the market. User specifies which card via various parameters and
@@ -731,7 +729,7 @@ public class Game extends ModelObservable {
             playerBoard.setMoveNeeded(false);
             if(playerBoard.getLastActionMarket()){
                 playerBoard.setLastActionMarket(false);
-                notifyResourceBuyDone();
+                notifyResourceBuyDone(playerBoard.getNickname());
             }
         }
         else if(playerBoard.getLastActionMarket()) {
