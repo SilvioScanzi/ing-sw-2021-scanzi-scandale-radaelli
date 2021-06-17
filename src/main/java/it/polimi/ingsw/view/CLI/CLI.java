@@ -11,7 +11,6 @@ import it.polimi.ingsw.view.clientModel.ClientBoard;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class CLI extends ViewObservable implements View {
     private ViewState state = ViewState.start;
@@ -457,7 +456,7 @@ public class CLI extends ViewObservable implements View {
     @Override
     public void printStandardMessage(StandardMessages message){
         if(message.equals(StandardMessages.unavailableConnection)){
-            System.out.println(message);
+            System.out.println(message.toString().substring(2));
             System.out.println("Rilancia l'applicazione per provare a connetterti");
             System.exit(0);
         }
@@ -619,7 +618,7 @@ public class CLI extends ViewObservable implements View {
             System.out.println("MANO DELLE RISORSE DI " + nickname);
             HashMap<Resources, Integer> hand = new HashMap<>();
             for (Resources r : Resources.values()) {
-                hand.put(r, H.stream().filter(x -> x.equals(r)).collect(Collectors.toList()).size());
+                hand.put(r, (int) H.stream().filter(x -> x.equals(r)).count());
                 if (hand.get(r) <= 0) hand.remove(r);
             }
             for (Resources r : hand.keySet()) {
