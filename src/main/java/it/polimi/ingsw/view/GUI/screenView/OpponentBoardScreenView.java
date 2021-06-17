@@ -72,27 +72,20 @@ public class OpponentBoardScreenView extends ViewObservable{
 
     private Pane pane;
     private Scene scene;
-    private GameScreenView screenView;
-    private ViewState state;
     private String nick;
 
     public String getNick() {
         return nick;
     }
 
-    public void addScreen(Pane gameScreen, Scene currentScene, GameScreenView gameScreenView, ViewState state){
+    public void addScreen(Pane gameScreen, Scene currentScene){
         pane = gameScreen;
         scene = currentScene;
-        screenView = gameScreenView;
-        this.state = state;
     }
 
     public void handleGoBack(){
         Platform.runLater(() -> {
                 scene.setRoot(pane);
-                if(state.equals(ViewState.myTurn)) screenView.setActionDone(false);
-                screenView.grayOut(state.equals(ViewState.notMyTurn));
-                screenView.grayBoards(false);
         });
     }
 

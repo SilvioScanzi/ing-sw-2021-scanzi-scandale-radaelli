@@ -5,27 +5,24 @@ import java.io.Serializable;
 public enum StandardMessages implements Serializable {
 
     //Communication messages
-    reconnection("Vuoi riconnetterti alla partita in corso?"),
-    connectionEstablished("Connessione effettuata al server del gioco"),
-    waitForReconnection("Resta in attesa che gli altri giocatori si riconnettano"),
-    gameNotCreated("Resta in attesa che venga creata una partita"),
-    gameIsStarting("Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!"),
-    choosePlayerNumber("Scegli il numero dei giocatori"),
-    chooseNickName("Scegli il nickname che utilizzerai nel gioco"),
-    chooseOneResource("Scegli una risorsa extra da ottenere"),
-    chooseTwoResource("Scegli due risorse extra da ottenere"),
-    chooseDiscardedLC("Scegli le Leader Card da scartare"),
+    reconnection("@ Vuoi riconnetterti alla partita in corso?"),
+    connectionEstablished("@ Connessione effettuata al server del gioco"),
+    waitForReconnection("@ Resta in attesa che gli altri giocatori si riconnettano"),
+    gameNotCreated("@ Resta in attesa che venga creata una partita"),
+    gameIsStarting("@ Sei stato inserito in una partita, resta in attesa che si colleghino abbastanza giocatori!"),
+    choosePlayerNumber("@ Scegli il numero dei giocatori"),
+    chooseNickName("@ Scegli il nickname che utilizzerai nel gioco"),
+    chooseOneResource("@ Scegli una risorsa extra da ottenere"),
+    chooseTwoResource("@ Scegli due risorse extra da ottenere"),
+    chooseDiscardedLC("@ Scegli le Leader Card da scartare"),
     yourTurn("É il tuo turno"),
     actionDone("Hai eseguito l'azione per il turno"),
-    lorenzoWin("Lorenzo ha vinto!"),
-    endGame("La partita è conclusa"),
-    fatalError("Un giocatore si è disconnesso prima dell'inizio della partita, la partita è terminata"),
-    unavailableConnection("La connessione al server indicato non è disponibile"),
+    unavailableConnection("@ La connessione al server indicato non è disponibile"),
     resourceBuyDone("Hai completato l'azione di acquisto risorse"),
+    lorenzoWin("@ Lorenzo ha vinto!"),
+    endGame("@ La partita è conclusa"),
 
     //Error messages
-    wait("Gli altri giocatori stanno compiendo delle scelte"),
-    notYourTurn("Non è ancora il tuo turno"),
     actionAlreadyDone("Hai eseguito l'azione per il turno, non puoi eseguirne un'altra!"),
     leaderCardWrongFormat("Non hai selezionato il giusto numero di carte leader da scartare"),
     leaderCardOutOfBounds("La carta leader selezionata non esiste"),
@@ -35,14 +32,9 @@ public enum StandardMessages implements Serializable {
     productionError("La produzione non è andata a buon fine"),
     wrongObject("Hai inviato dei dati non validi"),
     developmentCardMarketEmpty("Non ci sono development card in questa pila"),
-    nicknameAlreadyInUse("Il nickname scelto è già in uso"),
-    lobbyNotReady("Aspetta che inizi il gioco"),
-
     moveActionWrong("Hai sbagliato a spostare le risorse"),
-
     buyDevelopmentWrong("C'è stato un errore nel comprare una carta sviluppo"),
     activateProductionWrong("C'è stato un errore nell'attivare una produzione"),
-
     invalidSlot("Lo slot scelto non può accogliere questa carta"),
     invalidChoice("La scelta effettuata non è valida"),
     baseProductionError("La scelta della produzione di base non è valida"),
@@ -54,8 +46,14 @@ public enum StandardMessages implements Serializable {
     leaderCardWrongAbility("La carta leader scelta non ha un'abilità compatibile con l'azione svolta"),
     requirementsNotMet("Non possiedi i requisiti necessari per compiere questa azione"),
     notEnoughResources("Non possiedi abbastanza risorse per compiere questa azione"),
-    disconnectedMessage("Il giocatore si è disconnesso"),
-    actionNeeded("Non hai ancora svolto l'azione per il turno");
+    actionNeeded("Non hai ancora svolto l'azione per il turno"),
+
+    fatalError("@ Un giocatore si è disconnesso prima dell'inizio della partita, la partita è terminata"),
+    lobbyNotReady("@ Aspetta che inizi il gioco"),
+    nicknameAlreadyInUse("@ Il nickname scelto è già in uso"),
+    notYourTurn("@ Non è il tuo turno"),
+    wait("@ Gli altri giocatori stanno compiendo delle scelte"),
+    disconnectedMessage("@ Il giocatore si è disconnesso");
 
 
     private final String message;

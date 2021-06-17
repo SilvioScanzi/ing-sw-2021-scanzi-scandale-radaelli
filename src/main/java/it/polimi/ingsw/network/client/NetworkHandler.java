@@ -86,6 +86,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     view.setState(ViewState.reconnecting);
                 }
                 case lorenzoWin -> clientModel.setLorenzo(true);
+                case moveActionNeeded -> {
+                    view.printResourceHand(clientModel.getBoard(clientModel.getMyNickname()).getHand(),clientModel.getMyNickname());
+                    view.printWarehouse(clientModel.getBoard(clientModel.getMyNickname()).getWarehouse(),clientModel.getMyNickname());
+                }
             }
 
             view.printStandardMessage((StandardMessages) message);
@@ -308,12 +312,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 }
             }
             else{
-                view.print("La conversione avverrà in automatico");
                 requestedWMConversion = new ArrayList<>();
             }
         }
         else {
-            view.print("La conversione avverrà in automatico");
             requestedWMConversion = new ArrayList<>();
         }
         sendObject(new BuyResourcesMessage(r,n,requestedWMConversion));
@@ -431,7 +433,10 @@ public class NetworkHandler implements Runnable, ViewObserver {
         if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             sendObject(new TurnDoneMessage(true));
         }
-        else view.print("Non hai ancora svolto l'azione per questo turno");
+        else {
+            view.print("Non hai ancora svolto l'azione per questo turno");
+            view.print("@@@");
+        }
     }
 
     @Override
@@ -439,8 +444,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
         if(message.equals("Plancia comune")){
             view.printResourceMarket(clientModel.getResourceMarket(),clientModel.getRemainingMarble());
             view.printCardMarket(clientModel.getCardMarket());
+            view.print("@@@");
         }
-        else {
+        else if(message.startsWith("G")){
             ClientBoard cb = null;
             int pos = Integer.parseInt(message.split(" ")[1]);
             for(String S : clientModel.getBoards().keySet()){
@@ -450,6 +456,9 @@ public class NetworkHandler implements Runnable, ViewObserver {
             }
             if(cb==null) view.print("Il giocatore selezionato non esiste");
             else view.printBoard(cb);
+        }
+        else{
+            view.printLeaderCardHand(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsHand());
         }
     }
 

@@ -274,8 +274,6 @@ public class Game extends ModelObservable {
         playerBoard.getHand().addAll(tmp);
 
         notifyMarketHand(playerBoard.getHand(), playerBoard.getNickname(), resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
-        //notifyHand(playerBoard.getHand(), playerBoard.getNickname());
-        //notifyResourceMarket(resourceMarket.getGrid(),resourceMarket.getRemainingMarble());
         notifyActionDone(playerBoard.getNickname());
 
         playerBoard.setActionDone(true);
@@ -684,7 +682,7 @@ public class Game extends ModelObservable {
                 }
             } else throw new IllegalArgumentException("Invalid position requested");
 
-            //Resources moved to the hand are added now. This makes possible for the user to swap depots (firstly, he decides to move the
+            // Resources moved to the hand are added now. This makes possible for the user to swap depots (firstly, he decides to move the
             // resources from a depot to the hand, those resources are moved, and then he can take the resources from the hand and dump
             // them into another depot)
             if (uc.get_3() == 0) {
@@ -729,7 +727,6 @@ public class Game extends ModelObservable {
 
 
         notifyWR(playerBoard.getWarehouse(), playerBoard.getNickname());
-        notifyHand(playerBoard.getHand(), playerBoard.getNickname());
         if(tmpHand.size() == 0) {
             playerBoard.setMoveNeeded(false);
             if(playerBoard.getLastActionMarket()){
@@ -737,8 +734,12 @@ public class Game extends ModelObservable {
                 notifyResourceBuyDone();
             }
         }
-        else if(playerBoard.getLastActionMarket()) discardRemainingResources(player);
+        else if(playerBoard.getLastActionMarket()) {
+            discardRemainingResources(player);
+            return;
+        }
         else if(tmpHand.size()>0) playerBoard.setMoveNeeded(true);
+        notifyHand(playerBoard.getHand(), playerBoard.getNickname());
     }
 
     /**

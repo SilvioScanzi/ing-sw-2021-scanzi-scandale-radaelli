@@ -389,9 +389,7 @@ public class GUI extends Application implements View{
     }
 
     @Override
-    public void print(String string) {
-        if(!string.equals("La conversione avverrà in automatico")) System.out.println(string);
-    }
+    public void print(String string) {}
 
     @Override
     public void printBoard(ClientBoard board) {
@@ -404,7 +402,7 @@ public class GUI extends Application implements View{
                 opponentBoardScreenView = fxmlLoader.getController();
                 opponentBoardScreenView.addObserver(NH);
                 opponentBoardScreenView.addBoard(board);
-                opponentBoardScreenView.addScreen(gameScreen,currentScene,gameScreenView,state);
+                opponentBoardScreenView.addScreen(gameScreen,currentScene);
                 primaryStage.setResizable(true);
                 primaryStage.setMaximized(true);
                 scale(1600,900);
@@ -414,12 +412,19 @@ public class GUI extends Application implements View{
 
     @Override
     public void printStandardMessage(StandardMessages message) {
+        String msg = message.toString();
+        if(msg.startsWith("@")){
+            msg = msg.substring(2);
+        }
+
+        String finalMsg = msg;
+
         switch(message){
             case nicknameAlreadyInUse -> Platform.runLater(() -> nicknameScreenView.setErrormsg("Il nickname scelto è già in uso"));
             case unavailableConnection -> Platform.runLater(() -> connectionScreenView.setErrormsg("La connessione al server di gioco scelto non è disponibile"));
             case actionDone -> Platform.runLater(() -> gameScreenView.setActionDone(true));
             case moveActionWrong, buyDevelopmentWrong, activateProductionWrong -> Platform.runLater(() -> {
-                gameScreenView.addMessage(message.toString(),true);
+                gameScreenView.addMessage(finalMsg,true);
                 gameScreenView.addBoard(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()));
                 gameScreenView.grayOut(false);
                 if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();

@@ -1955,6 +1955,24 @@ public class GameScreenView extends ViewObservable {
             LeaderCardsPlayed.getChildren().remove(backLCView);
             LCMap.remove(index);
 
+            for(Node node : LeaderCardsPlayed.getChildren()){
+                if(node.getId().startsWith("B")) {
+                    ImageView n = (ImageView) node;
+                    String target = "/images/LeaderCardBack.png";
+                    n.setImage(new Image(GUI.class.getResource(target).toString()));
+                    int finalJ = Integer.parseInt(n.getId().split("_")[2]);
+                    n.setOnMouseEntered(x -> {
+                        String p = "/images/leaderCards/"+LCMap.get(finalJ).get_1().getID()+LCMap.get(finalJ).get_2()+".png";
+                        n.setImage(new Image(GUI.class.getResource(p).toString()));
+                    });
+                    n.setOnMouseExited(x ->{
+                        String p = "/images/LeaderCardBack.png";
+                        n.setImage(new Image(GUI.class.getResource(p).toString()));
+                    });
+                    n.setOnMouseClicked(x -> handleLeaderCardClick(n));
+                }
+            }
+
             grayOut(false);
             if(actionDone) grayOutActionDone();
         });

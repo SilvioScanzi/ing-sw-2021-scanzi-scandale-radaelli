@@ -9,7 +9,7 @@ public enum ActionToken {
     DeletePurple,
     DeleteBlue;
 
-    /*@Override
+    @Override
     public String toString(){
         return switch (this) {
             case Advance2 -> "La croce nera avanza di due spazi";
@@ -19,7 +19,7 @@ public enum ActionToken {
             case DeletePurple -> "Le prime due carte di colore viola vengono eliminate";
             case DeleteYellow -> "Le prime due carte di colore giallo vengono eliminate";
         };
-    }*/
+    }
 
     public String abbreviation(){
         return switch (this) {

@@ -464,6 +464,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 }
             } else if (playerNumber == 1) {
                 game.activatedToken();
+                System.out.println("");
                 if (game.checkLorenzoWin()) {
                     client.sendStandardMessage(StandardMessages.lorenzoWin);
                     HashMap<String,Integer> vp = new HashMap<>();
