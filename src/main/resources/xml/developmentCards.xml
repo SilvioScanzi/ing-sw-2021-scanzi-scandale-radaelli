@@ -87,7 +87,7 @@
         <victorypoints>10</victorypoints>
         <cost>Shields-5-Servants-2</cost>
         <requiredresources>Coins-1-Servants-1</requiredresources>
-        <producedresources>Coins-2-Stones-2</producedresources>
+        <producedresources>Shields-2-Stones-2</producedresources>
         <producedfaith>1</producedfaith>
     </developmentcard>
     <developmentcard>

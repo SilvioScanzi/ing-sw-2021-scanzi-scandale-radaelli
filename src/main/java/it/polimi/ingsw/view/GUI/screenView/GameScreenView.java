@@ -194,6 +194,10 @@ public class GameScreenView extends ViewObservable {
         isMoveAction = true;
     }
 
+    public void setConfirm(){
+        confirmAction.setDisable(false);
+    }
+
     //Add methods
     public void addLCMap(HashMap<Integer, Pair<Resources,Integer>> LC, ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed){
         for(Integer i : LC.keySet()){
@@ -1579,6 +1583,7 @@ public class GameScreenView extends ViewObservable {
         else if(isBuyAction){
             Hand.getChildren().clear();
             isBuyAction = false;
+            grayOut(true);
             grayOut(false);
             notifyBuyDC(buyDevelopmentCard.getKey(),buyDevelopmentCard.getValue(),Integer.parseInt(selected.getId().split("_")[1]),buyDevelopmentAction);
             selectedCard.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));

@@ -430,6 +430,9 @@ public class GUI extends Application implements View{
                 if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getActionDone()) gameScreenView.grayOutActionDone();
                 if(message.equals(StandardMessages.moveActionWrong)){
                     gameScreenView.setIsMoveAction();
+                    if(NH.getClientModel().getBoard(NH.getClientModel().getMyNickname()).getHand().size()>0){
+                        gameScreenView.setConfirm();
+                    }
                 }
             });
             case waitForReconnection -> Platform.runLater(() -> {
