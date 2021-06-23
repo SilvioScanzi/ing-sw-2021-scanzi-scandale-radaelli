@@ -166,7 +166,7 @@ public class CLI extends ViewObservable implements View {
 
     @Override
     public void printDisconnected(String name) {
-        System.out.println("[NETWORK] Il giocatore "+name+" si è disconnesso");
+        System.out.println("Il giocatore "+name+" si è disconnesso");
     }
 
     private void buyResources(){
@@ -701,5 +701,10 @@ public class CLI extends ViewObservable implements View {
             }
         }
         System.out.println("\n");
+    }
+
+    @Override
+    public void printReconnect(String name){
+        System.out.println("Il giocatore "+name+" si è riconnesso");
     }
 }

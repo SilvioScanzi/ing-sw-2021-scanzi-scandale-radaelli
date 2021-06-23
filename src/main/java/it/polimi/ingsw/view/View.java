@@ -30,4 +30,5 @@ public interface View {
     void printWarehouse(HashMap<Integer,Pair<Resources,Integer>> WH, String nickname);
     void print(String string);
     void printBoard(ClientBoard board);
+    void printReconnect(String name);
 }

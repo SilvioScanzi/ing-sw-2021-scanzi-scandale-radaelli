@@ -302,7 +302,7 @@ public class GUI extends Application implements View{
                         primaryStage.setMaximized(false);
                         primaryStage.setFullScreen(false);
 
-                        connectionScreenView.setErrormsg("Un giocatore si è disconnesso prima dell'inizio della partita");
+                        connectionScreenView.setErrormsg("C'è stato un errore lato Server, riconnettiti e ricomincia a giocare");
 
                         currentScene.widthProperty().addListener((obs, oldVal, newVal) -> scale(1600, 900));
 
@@ -385,6 +385,14 @@ public class GUI extends Application implements View{
         Platform.runLater(() -> {
             currentScene.setRoot(gameScreen);
             gameScreenView.addMessage("Il giocatore " + name + " si è disconnesso", false);
+        });
+    }
+
+    @Override
+    public void printReconnect(String name){
+        Platform.runLater(() -> {
+            currentScene.setRoot(gameScreen);
+            gameScreenView.addMessage("Il giocatore " + name + " si è riconnesso", false);
         });
     }
 

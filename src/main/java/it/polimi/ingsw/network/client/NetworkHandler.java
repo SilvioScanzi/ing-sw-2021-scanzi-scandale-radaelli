@@ -188,68 +188,15 @@ public class NetworkHandler implements Runnable, ViewObserver {
                     view.printDisconnected(((DisconnectedMessage) message).getNickname());
                 }
             }
+            else if(message instanceof ReconnectMessage){
+                view.printReconnect(((ReconnectMessage) message).getNickname());
+            }
             else{System.out.println("[NETWORK] Message not recognized (2) " + message);}
         }
     }
 
     public ClientModel getClientModel() {
         return clientModel;
-    }
-
-    private boolean checkGotResources(ArrayList<Pair<String, Integer>> userChoice){
-        HashMap<Integer, Pair<Resources,Integer>> warehouse = new HashMap<>(clientModel.getBoard(clientModel.getMyNickname()).getWarehouse());
-        HashMap<Resources,Integer> strongbox = new HashMap<>(clientModel.getBoard(clientModel.getMyNickname()).getStrongBox());
-        ArrayList<Triplet<Resources,Integer,Integer>> leaderCards = new ArrayList<>(clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed());
-        for(Pair<String,Integer> P : userChoice){
-            Resources R = Resources.getResourceFromAbbr(P.getKey());
-            if(P.getValue()>=1 && P.getValue()<=3) {
-                try {
-                    Pair<Resources, Integer> depot = warehouse.get(P.getValue());
-                    if (depot.getKey().equals(R)) {
-                        if (depot.getValue() > 0) {
-                            depot.setValue(depot.getValue() - 1);
-                        }
-                        else return false;
-                    }
-                    else return false;
-                } catch (NullPointerException e) {
-                    return false;
-                }
-            }
-            else if(P.getValue() == 4 || P.getValue() == 5){
-                Triplet<Resources,Integer,Integer> LC = leaderCards.get(P.getValue()-4);
-                if(R.equals(LC.get_1())){
-                    if(LC.get_3()>0){
-                        LC.set_3(LC.get_3()-1);
-                    }
-                    else return false;
-                }
-                else return false;
-            }
-            else if(P.getValue() == 6){
-                try{
-                    int n = strongbox.get(R);
-                    if(n>0){
-                        strongbox.replace(R, n-1);
-                    }
-                    else return false;
-                }catch (NullPointerException e) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-    private boolean checkRightResources(HashMap<Resources, Integer> cost, ArrayList<Pair<String, Integer>> userChoice){
-        HashMap<Resources,Integer> uc = new HashMap<>();
-        for(Resources R : Resources.values()){
-            uc.put(R,0);
-        }
-        for(Pair<String,Integer> P : userChoice){
-            uc.replace(Resources.getResourceFromAbbr(P.getKey()),uc.get(Resources.getResourceFromAbbr(P.getKey()))+1);
-        }
-        return cost.equals(uc);
     }
 
     public void sendObject(Object o){
@@ -323,93 +270,19 @@ public class NetworkHandler implements Runnable, ViewObserver {
 
     @Override
     public void updateBuyDC(Colours colour, int level, int slot, ArrayList<Pair<String, Integer>> userChoice) {
-        /*if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
+        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
-        if(clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(slot-1) == -1){
-            if(level != 1) {
-                view.print("In questo slot puoi posizionare solo una carta di livello 1");
-                return;
-            }
-        }
-        else if(clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(slot-1) < 5){
-            if(level != 2) {
-                view.print("In questo slot puoi posizionare solo una carta di livello 2");
-                return;
-            }
-        }
-        else if(clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(slot-1) < 9){
-            if(level != 3) {
-                view.print("In questo slot puoi posizionare solo una carta di livello 3");
-                return;
-            }
-        }
-        else {
-            view.print("Non puoi posizionare ulteriori carte in questo slot");
-            return;
-        }
-
-        DevelopmentCardParser DCP = new DevelopmentCardParser();
-        HashMap<Resources, Integer> cost = DCP.findCostByID(colour,level);
-        if(!checkGotResources(userChoice) || !checkRightResources(cost,userChoice)){
-            view.print("La scelta delle risorse non è corretta");
-            return;
-        }*/
         sendObject(new BuyDevelopmentCardMessage(colour,level,slot,userChoice));
     }
 
     @Override
     public void updateActivateProduction(HashMap<Integer, ArrayList<Pair<String, Integer>>> userChoice) {
-        /*if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
+        if(clientModel.getBoard(clientModel.getMyNickname()).getActionDone()){
             view.print("Hai già eseguito un'azione per questo turno");
             return;
         }
-        for(Integer I : userChoice.keySet()){
-            if(I>=1 && I<=3){
-                if (clientModel.getBoard(clientModel.getMyNickname()).getSlotsVP(I) == -1){
-                    view.print("La carta sviluppo scelta non esiste");
-                    return;
-                }
-                Pair<Colours, Integer> P = clientModel.getBoard(clientModel.getMyNickname()).getSlots(I);
-                DevelopmentCardParser DCP = new DevelopmentCardParser();
-                HashMap<Resources, Integer> requiredResources = DCP.findRequiredResourcesByID(P.getKey(),P.getValue());
-                if(!checkGotResources(userChoice.get(I)) || !checkRightResources(requiredResources,userChoice.get(I))){
-                    view.print("La tua scelta delle risorse è errata");
-                    return;
-                }
-            }
-            else if(I==4 || I==5){
-                try{
-                    clientModel.getBoard(clientModel.getMyNickname()).getLeaderCardsPlayed().get(I-4);
-                    if(userChoice.get(I).size() == 2){
-                        ArrayList<Pair<String,Integer>> c = new ArrayList<>(userChoice.get(I));
-                        c.remove(1);
-                        if(!checkGotResources(c)){
-                            view.print("Hai sbagliato a scegliere le risorse");
-                            return;
-                        }
-                    }
-                    else {
-                        view.print("Hai sbagliato a scegliere le risorse");
-                        return;
-                    }
-                }catch(IndexOutOfBoundsException e){
-                    view.print("Non hai questa leader card");
-                    return;
-                }
-            }
-            else{
-                if(userChoice.get(I).size() == 3){
-                    ArrayList<Pair<String,Integer>> c = new ArrayList<>(userChoice.get(I));
-                    c.remove(2);
-                    if(!checkGotResources(c)){
-                        view.print("Hai sbagliato a scegliere le risorse");
-                        return;
-                    }
-                }
-            }
-        }*/
         sendObject(new ProductionMessage(userChoice));
     }
 
