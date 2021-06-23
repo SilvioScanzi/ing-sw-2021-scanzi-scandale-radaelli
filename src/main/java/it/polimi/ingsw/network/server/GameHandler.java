@@ -467,6 +467,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 System.out.println("");
                 if (game.checkLorenzoWin()) {
                     client.sendStandardMessage(StandardMessages.lorenzoWin);
+                    game.countVictoryPoints();
                     HashMap<String,Integer> vp = new HashMap<>();
                     vp.put(game.getBoard(0).getNickname(),game.getBoard(0).getVictoryPoints());
                     client.sendObject(new VictoryPointsMessage(vp));
