@@ -108,13 +108,7 @@ public class OpponentBoardScreenView extends ViewObservable{
         for (Pair<Colours, Integer> P : Slot_1) {
             String path = "/images/developmentCards/" + P.getKey().ColourToString() + P.getValue() + ".png";
             StackPane SP = null;
-            for(Node n : Slots.getChildren()){
-                System.out.println(n);
-                System.out.println(n.getParent());
-                System.out.println(GridPane.getColumnIndex(n));
-            }
             for (Node n : Slots.getChildren()) {
-                System.out.println(n);
                 if (GridPane.getColumnIndex(n) == 0) {
                     SP = (StackPane) n;
                 }
@@ -142,7 +136,7 @@ public class OpponentBoardScreenView extends ViewObservable{
                 }
             }
             ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-            DCView.setFitWidth(109.0);
+            DCView.setFitWidth(80.0);
             DCView.setPreserveRatio(true);
             DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             DCView.setTranslateY(b -(25.0)*j);
@@ -164,7 +158,7 @@ public class OpponentBoardScreenView extends ViewObservable{
                 }
             }
             ImageView DCView = new ImageView(new Image(GUI.class.getResource(path).toString()));
-            DCView.setFitWidth(109.0);
+            DCView.setFitWidth(80.0);
             DCView.setPreserveRatio(true);
             DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             DCView.setTranslateY(b -(25.0)*j);

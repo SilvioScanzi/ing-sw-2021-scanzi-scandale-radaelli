@@ -88,7 +88,6 @@ public class LorenzoTest {
         try {
             game.BuyMarketResourcesAction(0, true, 1, new ArrayList<>());
         }catch(Exception e){e.printStackTrace();}
-        System.out.println(game.getBoard(0).getHand());
         try {
             game.moveResources(0, new ArrayList<>());
         }catch(Exception e){e.printStackTrace();}

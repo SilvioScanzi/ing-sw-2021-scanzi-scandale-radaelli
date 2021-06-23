@@ -143,6 +143,7 @@ public class GameScreenView extends ViewObservable {
     private boolean actionDone = false;
     private boolean prevResBuyAction = false;
     private boolean isChoosingConversion = false;
+    private boolean myTurn = false;
     private Color character;
     private boolean lorenzo = false;
 
@@ -150,6 +151,10 @@ public class GameScreenView extends ViewObservable {
     public void initialize(){
         endTurn.setDisable(true);
         confirmAction.setDisable(true);
+    }
+
+    public void setMyTurn(boolean myTurn) {
+        this.myTurn = myTurn;
     }
 
     public void setLorenzoTrue(){
@@ -752,6 +757,14 @@ public class GameScreenView extends ViewObservable {
             Hand.add(IV,j,i);
         }
         grayHand(false);
+
+        if(prevResBuyAction && hand.size()==0){
+            confirmAction.setDisable(true);
+            prevResBuyAction = false;
+            notifyMoveResources(moveAction);
+            moveAction.clear();
+            selected = null;
+        }
     }
 
     public void addMessage(String message, boolean error){
@@ -1447,7 +1460,15 @@ public class GameScreenView extends ViewObservable {
         Text t = new Text();
         t.setWrappingWidth(300);
         boolean flag = false;
-        if(isChoosingConversion){
+
+        if(!myTurn){
+            if(!lorenzo) {
+                message = "Non è ancora il tuo turno. Mentre aspetti, puoi vedere le plance degli altri giocatori cliccando sulla pergamena relativa.";                    ;
+            }else{
+                message = "lOrENzOtHEMaGNiFiCEnt WAS HERE";
+            }
+        }
+        else if(isChoosingConversion){
             message = "Hai appena comprato delle risorse dal mercato, devi scegliere con quali carte leader convertire ogni biglia bianca.\n" +
                     "Per ogni biglia bianca evidenziata, clicca sulla carta leader che vuoi utilizzare per la conversione.";
         }

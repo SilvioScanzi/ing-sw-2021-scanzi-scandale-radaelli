@@ -214,6 +214,7 @@ public class GUI extends Application implements View{
                     currentScene.setRoot(gameScreen);
                     gameScreenView.grayOut(true);
 
+                    gameScreenView.setMyTurn(state.equals(ViewState.myTurn));
 
                     if(state.equals(ViewState.myTurn)) {
                         gameScreenView.grayOut(false);

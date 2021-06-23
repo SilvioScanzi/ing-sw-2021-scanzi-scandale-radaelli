@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.WarehouseTest" time="0.022" tests="32" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="it.polimi.ingsw.WarehouseTest" time="0.023" tests="32" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="15"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="IT"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk-15.0.2\bin"/>
-    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire13955129689983629314\surefirebooter13555186907211051047.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire13955129689983629314 2021-06-17T11-28-04_491-jvmRun1 surefire186322774475384000tmp surefire_015224123976241403904tmp"/>
+    <property name="sun.java.command" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire10559601495379301097\surefirebooter15738213066468595098.jar C:\Users\Ajeje Brazorf\AppData\Local\Temp\surefire10559601495379301097 2021-06-23T16-00-11_987-jvmRun1 surefire4478348161348670363tmp surefire_08340171906910147098tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\test-classes;C:\Users\Ajeje Brazorf\IdeaProjects\ing-sw-2021-scanzi-scandale-radaelli\target\classes;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter\5.7.0\junit-jupiter-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.7.0\junit-jupiter-api-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\opentest4j\opentest4j\1.2.0\opentest4j-1.2.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-commons\1.7.0\junit-platform-commons-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.7.0\junit-jupiter-engine-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\platform\junit-platform-engine\1.7.0\junit-platform-engine-1.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.7.0\junit-jupiter-params-5.7.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\apiguardian\apiguardian-api\1.1.0\apiguardian-api-1.1.0.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\11.0.2\javafx-controls-11.0.2.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-controls\11.0.2\javafx-controls-11.0.2-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\11.0.2\javafx-graphics-11.0.2.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-graphics\11.0.2\javafx-graphics-11.0.2-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\11.0.2\javafx-base-11.0.2.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-base\11.0.2\javafx-base-11.0.2-win.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\11.0.2\javafx-fxml-11.0.2.jar;C:\Users\Ajeje Brazorf\.m2\repository\org\openjfx\javafx-fxml\11.0.2\javafx-fxml-11.0.2-win.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire13955129689983629314\surefirebooter13555186907211051047.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\AJEJEB~1\AppData\Local\Temp\surefire10559601495379301097\surefirebooter15738213066468595098.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="15.0.2+7-27"/>
@@ -62,11 +62,11 @@
   <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[4]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[5]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[6]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[7]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
+  <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[7]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
   <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[8]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[9]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
+  <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[9]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
   <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[10]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[11]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
+  <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[11]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
   <testcase name="CannotSubForDifferentReasons{ArrayList, Pair}[12]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="testIncorrectGet" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
   <testcase name="testCheckResources" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
@@ -74,18 +74,18 @@
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[1]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[2]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[3]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[4]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[5]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
+  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[4]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
+  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[5]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[6]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[7]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
+  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[7]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[8]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[9]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
+  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[9]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[10]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[11]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
+  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[11]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[12]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[13]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[14]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
   <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[15]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
-  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[16]" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
-  <testcase name="testCanWithdraw" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
+  <testcase name="CannotAddForDifferentReasons{ArrayList, Triplet}[16]" classname="it.polimi.ingsw.WarehouseTest" time="0"/>
+  <testcase name="testCanWithdraw" classname="it.polimi.ingsw.WarehouseTest" time="0.001"/>
 </testsuite>
