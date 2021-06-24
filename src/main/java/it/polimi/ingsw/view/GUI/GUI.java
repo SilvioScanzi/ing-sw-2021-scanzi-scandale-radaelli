@@ -555,7 +555,7 @@ public class GUI extends Application implements View{
         if (gameScreenView != null && !state.equals(ViewState.reconnecting)) {
             Platform.runLater(() -> {
                 if ((NH.getClientModel().getMyNickname().equals(nickname)))
-                    Platform.runLater(() -> gameScreenView.addFaithTrack(FM, PF,false));
+                    gameScreenView.addFaithTrack(FM, PF,false);
                 else {
                     gameScreenView.addPlayerBoard(NH.getClientModel().getBoard(nickname));
                     if (currentScene.getRoot().getId()!=null && currentScene.getRoot().getId().equals("opponentboard") && opponentBoardScreenView.getNick().equals(nickname)) {

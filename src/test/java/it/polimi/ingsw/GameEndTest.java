@@ -45,7 +45,7 @@ public class GameEndTest {
                 playerBoard.getSlot(3).addCard(DCP2);
                 playerBoard.getSlot(3).addCard(DCP3);
             }catch(Exception e) {e.printStackTrace();}
-            assert(game.checkEndGame(0));
+            assert(game.checkEndGame());
         }
 
     @Test
@@ -55,7 +55,7 @@ public class GameEndTest {
             game.getBoard(1).getHand().add(Resources.Stones);
         }
         game.discardRemainingResources(1);
-        assert(game.checkEndGame(0));
+        assert(game.checkEndGame());
         assert(playerBoard.getFaithTrack().getPopeFavor()[0]);
         assert(playerBoard.getFaithTrack().getPopeFavor()[1]);
         assert(playerBoard.getFaithTrack().getPopeFavor()[2]);
@@ -64,6 +64,6 @@ public class GameEndTest {
     @Test
     @DisplayName("Ensure correct behaviour of game")
     void testNotEnd(){
-            assert(!game.checkEndGame(0));
+            assert(!game.checkEndGame());
     }
 }

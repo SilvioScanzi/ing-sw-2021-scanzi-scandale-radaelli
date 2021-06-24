@@ -220,6 +220,9 @@ public class Game extends ModelObservable {
         if(!(vaticanReport[index-1])) {
             for(int i = 0; i< playerNumber; i++){
                 players.get(i).getFaithTrack().setPopeFavor(index);
+                if(players.get(i).getFaithTrack().getPopeFavor()[index-1]){
+                    notifyFT(players.get(i).getFaithTrack(),players.get(i).getNickname());
+                }
             }
             vaticanReport[index-1] = true;
         }
@@ -773,23 +776,23 @@ public class Game extends ModelObservable {
 
     /**
      * Method used to check if at least one end game condition is met for a player
-     * @param player position of the player who's getting checked
      * @return true if the condition is met, otherwise false
      */
-    public boolean checkEndGame(int player){
-        if(vaticanReport[2]) return true;
-        else{
-            Board playerBoard = players.get(player);
-            int count = 0;
-            for(int i=0;i<3;i++){
-                count += playerBoard.getSlot(i+1).getDevelopmentCards().size();
+    public boolean checkEndGame() {
+        if (vaticanReport[2]) return true;
+        else {
+            for (Board b : players) {
+                int count = 0;
+                for (int i = 0; i < 3; i++) {
+                    count += b.getSlot(i + 1).getDevelopmentCards().size();
+                }
+                if (count == 7) {
+                    countVictoryPoints();
+                    return true;
+                }
             }
-            if(count == 7) {
-                countVictoryPoints();
-                return true;
-            }
+            return false;
         }
-        return false;
     }
 
     public void countVictoryPoints(){

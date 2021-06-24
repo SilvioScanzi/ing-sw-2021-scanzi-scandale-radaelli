@@ -1,5 +1,7 @@
 package it.polimi.ingsw.model;
 
+import java.util.Arrays;
+
 public class FaithTrack{
     private int FaithMarker;
     private final boolean[] PopeFavor;

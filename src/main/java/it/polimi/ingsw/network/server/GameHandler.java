@@ -69,7 +69,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 }
                 reconnect = false;
             }
-            getNextActivePlayer();
+            getNextActivePlayer(false);
         } else if (reconnect) {
             synchronized (clients) {
                 int n = disconnectedPlayers.get(CH.getNickname());
@@ -133,7 +133,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
     }
 
     public void start(){
-        game.setInkwell((int)(Math.random() * playerNumber));
+        game.setInkwell((int)(Math.random() * (playerNumber)));
         System.out.println("[SERVER] A game containing "+playerNumber+" players is starting");
 
         for (ClientHandler CH : clients) {
@@ -198,7 +198,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                     disconnectedPlayers.put(client.getNickname(), clientMap.get(client).getValue());
                     if(turn == clientMap.get(client).getValue() && disconnectedPlayers.size() != playerNumber){
                         turn = (turn + 1)%playerNumber;
-                        getNextActivePlayer();
+                        getNextActivePlayer(false);
                     }
                     clientMap.remove(client);
                 }
@@ -431,7 +431,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
             }
 
             if (!endGame) {
-                endGame = game.checkEndGame(clientMap.get(client).getValue());
+                endGame = game.checkEndGame();
             }
 
             if (endGame && playerNumber == 1) {
@@ -460,7 +460,22 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                         demolished = true;
                     }
                 } else {
-                    getNextActivePlayer();
+                    getNextActivePlayer(true);
+                    if (turn == game.getInkwell()) {
+                        game.countVictoryPoints();
+                        synchronized (clients) {
+                            gameHandlerNotify();
+                            for (ClientHandler CH : clients) {
+                                HashMap<String, Integer> vp = new HashMap<>();
+                                for (int i = 0; i < playerNumber; i++) {
+                                    vp.put(game.getBoard(i).getNickname(), game.getBoard(i).getVictoryPoints());
+                                }
+                                CH.sendObject(new VictoryPointsMessage(vp));
+                                CH.closeConnection();
+                            }
+                            demolished = true;
+                        }
+                    }
                 }
             } else if (playerNumber == 1) {
                 game.activatedToken();
@@ -482,7 +497,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
 
             } else {
                 turn = (turn + 1) % playerNumber;
-                getNextActivePlayer();
+                getNextActivePlayer(false);
             }
         }
         else if(game.getBoard(client.getNickname()).getMoveNeeded()){
@@ -493,7 +508,7 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
-    private void getNextActivePlayer() {
+    private void getNextActivePlayer(boolean endGame) {
         int i = turn - 1;
         if(i<0){i = playerNumber-1;}
         boolean found = false;
@@ -503,9 +518,11 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
                 else{ turn = (turn + 1) % playerNumber; }
             } while (turn != i && !found);
         }
-        synchronized(clients.get(turn)){
-            clients.get(turn).setState(ClientHandler.ClientHandlerState.myTurn);
-            clients.get(turn).sendStandardMessage(StandardMessages.yourTurn);
+        if(!endGame || turn != game.getInkwell()) {
+            synchronized (clients.get(turn)) {
+                clients.get(turn).setState(ClientHandler.ClientHandlerState.myTurn);
+                clients.get(turn).sendStandardMessage(StandardMessages.yourTurn);
+            }
         }
     }
 

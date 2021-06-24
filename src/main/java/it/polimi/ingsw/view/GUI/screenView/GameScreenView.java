@@ -591,20 +591,6 @@ public class GameScreenView extends ViewObservable {
                 FaithTrack.add(FMImage, 12, 18 - marker);
             else if (marker < 25)
                 FaithTrack.add(FMImage, marker - 6, 0);
-
-
-            /*path = "/images/faithTrack/1";
-            if (popeFavor[0]) path = path + "_F.png";
-            else path = path + "_B.png";
-            PF1.setImage(new Image(GUI.class.getResource(path).toString()));
-            path = "/images/faithTrack/2";
-            if (popeFavor[1]) path = path + "_F.png";
-            else path = path + "_B.png";
-            PF2.setImage(new Image(GUI.class.getResource(path).toString()));
-            path = "/images/faithTrack/3";
-            if (popeFavor[2]) path = path + "_F.png";
-            else path = path + "_B.png";
-            PF3.setImage(new Image(GUI.class.getResource(path).toString()));*/
         }
         else {
             FaithTrack.getChildren().removeIf(n -> n.getId().equals("BlackCross"));

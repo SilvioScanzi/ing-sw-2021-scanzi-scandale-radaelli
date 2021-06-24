@@ -118,7 +118,6 @@ public class OpponentBoardScreenView extends ViewObservable{
             DCView.setPreserveRatio(true);
             DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             DCView.setTranslateY(b -(25.0)*j);
-            DCView.setTranslateX(-5);
             if(j == Slot_1.size()-1){
                 DCView.setId("P_S_1");
             }
@@ -140,7 +139,6 @@ public class OpponentBoardScreenView extends ViewObservable{
             DCView.setPreserveRatio(true);
             DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             DCView.setTranslateY(b -(25.0)*j);
-            DCView.setTranslateX(-2);
             SP.getChildren().add(DCView);
             if(j == Slot_2.size()-1){
                 DCView.setId("P_S_2");
@@ -162,7 +160,6 @@ public class OpponentBoardScreenView extends ViewObservable{
             DCView.setPreserveRatio(true);
             DCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             DCView.setTranslateY(b -(25.0)*j);
-            DCView.setTranslateX(5);
             SP.getChildren().add(DCView);
             if(j == Slot_3.size()-1){
                 DCView.setId("P_S_3");

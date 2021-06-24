@@ -8,6 +8,7 @@ import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class LeaderBoardScreenView extends ViewObservable {
@@ -29,19 +30,21 @@ public class LeaderBoardScreenView extends ViewObservable {
     private ImageView P4_I;
 
     public void setLeaderBoard(HashMap<String,Integer> vp, Boolean lorenzo) {
+        System.out.println(vp.toString());
         Pane p = (Pane) P1.getParent();
         int n = vp.size();
-        ArrayList<Integer> players = new ArrayList<>();
-        for (String s : vp.keySet()) {
-            players.add(vp.get(s));
-        }
-        Collections.sort(players);
+
         for (int i = 0; i < n; i++) {
             String nickname = "";
-            for (String s : vp.keySet()) {
-                if (vp.get(s).equals(players.get(i)))
+
+            int max = -1;
+            for(String s : vp.keySet()){
+                if(vp.get(s)>max){
                     nickname = s;
+                    max = vp.get(s);
+                }
             }
+
             switch (i) {
                 case 0 -> {
                     P1.setText(nickname + " - Punti vittoria: " + vp.get(nickname));
@@ -56,6 +59,7 @@ public class LeaderBoardScreenView extends ViewObservable {
                     P4.setText(nickname + " - Punti vittoria: " + vp.get(nickname));
                 }
             }
+            vp.remove(nickname);
         }
 
         if(n==1){
