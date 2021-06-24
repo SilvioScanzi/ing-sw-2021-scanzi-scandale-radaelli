@@ -147,6 +147,9 @@ public class GameScreenView extends ViewObservable {
     private Color character;
     private boolean lorenzo = false;
 
+    /**
+     * Method used to initialize a new turn. The endTurn and confirm buttons are set as not clickable
+     */
     @FXML
     public void initialize(){
         endTurn.setDisable(true);
@@ -165,6 +168,10 @@ public class GameScreenView extends ViewObservable {
         prevResBuyAction = false;
     }
 
+    /**
+     * Method used to make the end turn button clickable if the player made one of the main actions
+     * @param actionDone is true if the action was taken
+     */
     public void setActionDone(boolean actionDone) {
         this.actionDone = actionDone;
         if(!actionDone){
@@ -186,6 +193,10 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to change the selection shadow color according to the player's position
+     * @param position is the number corresponding to position of the player in the game
+     */
     public void setCharacter(int position) {
         switch (position) {
             case 1 -> character = Color.rgb(212, 28, 36);
@@ -204,6 +215,12 @@ public class GameScreenView extends ViewObservable {
     }
 
     //Add methods
+
+    /**
+     *
+     * @param LC
+     * @param leaderCardsPlayed
+     */
     public void addLCMap(HashMap<Integer, Pair<Resources,Integer>> LC, ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed){
         for(Integer i : LC.keySet()){
             boolean played = false;
@@ -216,6 +233,10 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to generate the players board at the beginning of the game
+     * @param board contains all the elements to create the board
+     */
     public void addBoard(ClientBoard board){
         addStrongBox(board.getStrongBox());
         addWarehouse(board.getWarehouse());
@@ -228,6 +249,11 @@ public class GameScreenView extends ViewObservable {
         addSlots(board.getSlot_1(),board.getSlot_2(),board.getSlot_3());
     }
 
+    /**
+     * Method used in multiplayer games to add a new player only if the nickname doesn't already exist
+     * @param pl is the hashmap with all the nicknames already in use
+     * @param nickname is the nickname the player wants to use
+     */
     public void addPlayers(HashMap<String,ClientBoard> pl, String nickname){
         for(String S : pl.keySet()){
             if(!S.equals(nickname)){
@@ -236,6 +262,10 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used in multiplayer games to generate a small scroll with essential information about the opponents games
+     * @param board contains the information of the opponents board
+     */
     public void addPlayerBoard(ClientBoard board) {
         boolean flag = false;
         Node b = null;
@@ -357,6 +387,12 @@ public class GameScreenView extends ViewObservable {
         grayBoards(false);
     }
 
+    /**
+     * Method used to add a development card to the wanted slot after a buy action
+     * @param Slot_1 first slot from the left
+     * @param Slot_2 second slot
+     * @param Slot_3 third slot
+     */
     public void addSlots(ArrayList<Pair<Colours,Integer>> Slot_1,ArrayList<Pair<Colours,Integer>> Slot_2,ArrayList<Pair<Colours,Integer>> Slot_3){
         for(Node n : Slots.getChildren()){
             ((StackPane)n).getChildren().clear();
@@ -429,6 +465,11 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to generate the resources market and update it after a buy resource action
+     * @param market is the resource market
+     * @param remainingMarble is the marble outside of the grid
+     */
     public void addMarbles(Marbles[][] market, Marbles remainingMarble){
         ResourceMarket.getChildren().clear();
 
@@ -448,6 +489,11 @@ public class GameScreenView extends ViewObservable {
         rm.setImage(new Image(GUI.class.getResource(path).toString()));
     }
 
+    /**
+     * Method used to generate the development card market, add the stacks of cards and update the visible card after a
+     * buy development card action
+     * @param DCM contains all the information of the remaining cards
+     */
     public void addDevelopment(HashMap<Pair<Colours, Integer>, Pair<Integer,Integer>> DCM){
         for(Node n : CardMarket.getChildren()){
             ((StackPane) n).getChildren().clear();
@@ -485,6 +531,10 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to generate the strongbox and update the number of resources it contains
+     * @param strongBox contains all the information of the strongbox
+     */
     public void addStrongBox(HashMap<Resources, Integer> strongBox) {
         for (Resources R : Resources.values()) {
             int n = 0;
@@ -500,6 +550,10 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to add the player's resources to the warehouse
+     * @param warehouse contains all the information of warehouse
+     */
     public void addWarehouse(HashMap<Integer, Pair<Resources, Integer>> warehouse){
         W1_1.getChildren().clear();
         W2_1.getChildren().clear();
@@ -567,6 +621,13 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to generate the faith track and, if playing solo, the black cross. It's also responsible for updating
+     * the position of the two markers
+     * @param marker is the players faith marker
+     * @param popeFavor indicates which pope favors where activatedor not
+     * @param lorenzoTrack indicates whether the game is solo or not
+     */
     public void addFaithTrack(int marker, boolean[] popeFavor, boolean lorenzoTrack){
         if(!lorenzoTrack) {
             FaithTrack.getChildren().removeIf(n -> n.getId().equals("FaithMarker"));
@@ -645,6 +706,11 @@ public class GameScreenView extends ViewObservable {
         PF3.setImage(new Image(GUI.class.getResource(path).toString()));
     }
 
+    /**
+     * The method adds the leader cards kept to the game screen, turns them if played and deletes them if discarded
+     * @param LCPlayed
+     * @param LCHand
+     */
     public void addLeaderCards(ArrayList<Triplet<Resources,Integer,Integer>> LCPlayed, ArrayList<Triplet<Resources,Integer,Integer>> LCHand){
         LeaderCardsPlayed.getChildren().clear();
 
@@ -725,6 +791,10 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to add the bought resources to the hand
+     * @param hand contains all the resources to add
+     */
     public void addHand(ArrayList<Resources> hand){
         Hand.getChildren().clear();
         int i = 0,j = 0;
@@ -753,6 +823,11 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to show a message to the player using an animated hanging sign
+     * @param message is the message to show
+     * @param error is true if the message to show is an error message
+     */
     public void addMessage(String message, boolean error){
         String path ="/images/Hanging Sign.png";
 
@@ -798,6 +873,10 @@ public class GameScreenView extends ViewObservable {
         TTOut.setOnFinished(x -> anchorPane.getChildren().remove(errorPane));
     }
 
+    /**
+     * Method used only in solo games to view the Lorenzo action tokens and a small label with the token description
+     * @param abbreviation is the token description
+     */
     public void addActionToken(String abbreviation){
         players.getChildren().clear();
         String path = "/images/actionToken/" + abbreviation + ".png";
@@ -823,6 +902,11 @@ public class GameScreenView extends ViewObservable {
     }
 
     //Gray out methods
+
+    /**
+     * Method used to make certain areas of the board clickable or not according to the action of the player
+     * @param gray is true when we want to disable an area
+     */
     public void grayOut(boolean gray){
         if(gray){
             grayOutActionDone();

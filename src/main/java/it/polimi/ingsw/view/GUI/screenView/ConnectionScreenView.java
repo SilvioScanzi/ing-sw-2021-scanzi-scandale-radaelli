@@ -23,6 +23,9 @@ public class ConnectionScreenView extends ViewObservable{
     @FXML
     private Text errormsg;
 
+    /**
+     * Method used to disable the confirm button in the initial screen if both the port number and IP are not given
+     */
     @FXML
     public void initialize() {
         button.setDisable(true);
@@ -34,6 +37,9 @@ public class ConnectionScreenView extends ViewObservable{
         });
     }
 
+    /**
+     *Method used to notify IP and port number when the users clicks the confirm button
+     */
     @FXML
     public void submitOnClickHandler() {
         String ipAddress = IP.getText();
@@ -45,6 +51,10 @@ public class ConnectionScreenView extends ViewObservable{
         notifyAddress(ipAddress, portNumber);
     }
 
+    /**
+     * method used to notify IP and port number when the users clicks enter on the keyboard
+     * @param keyEvent contains what key was pressed on the keyboard
+     */
     public void handleKeyPressed(KeyEvent keyEvent) {
         if(keyEvent.getCode().equals(KeyCode.ENTER)) submitOnClickHandler();
     }
