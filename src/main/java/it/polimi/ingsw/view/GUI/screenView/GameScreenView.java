@@ -1336,7 +1336,7 @@ public class GameScreenView extends ViewObservable {
                                 }
                             }
                         }
-                        else if(LCMap.get(i).get_2() == 5){
+                        else if(LCMap.get(i).get_2() == 4 &&  GridPane.getColumnIndex(m) == (i - 1)){
                             if(!m.getStyleClass().contains("selectable")) m.getStyleClass().add("selectable");
                             m.setOnMouseClicked(e ->{
                                 if(!isProductionAction) handleSelect((ImageView) m);
@@ -1439,17 +1439,6 @@ public class GameScreenView extends ViewObservable {
             S_3_ARROW.setOnMouseClicked(null);
             S_3_ARROW.setEffect(null);
 
-            //grayOut of leader cards with production action
-            for(Integer I : LCMap.keySet()){
-                if(LCMap.get(I).get_3() && LCMap.get(I).get_2()==4){
-                    for(Node n : LeaderCardsPlayed.getChildren()){
-                        if(GridPane.getColumnIndex(n) == I-1 && !n.getId().startsWith("AP")){
-                            n.getStyleClass().remove("selectable");
-                            n.setOnMouseClicked(null);
-                        }
-                    }
-                }
-            }
         }else if(type.equals("production")){
             //grayIn of the slots
             for(Node n : Slots.getChildren()) {
@@ -1460,21 +1449,6 @@ public class GameScreenView extends ViewObservable {
                             if(!isProductionAction) handleSelect((ImageView) d);
                             else handleProduction((ImageView) d);
                         });
-                    }
-                }
-            }
-
-            //grayIn of the leader cards with production action
-            for(Integer I : LCMap.keySet()){
-                if(LCMap.get(I).get_3() && LCMap.get(I).get_2()==4){
-                    for(Node n : LeaderCardsPlayed.getChildren()){
-                        if(GridPane.getColumnIndex(n) == I-1 && !n.getId().startsWith("AP")){
-                            if(!n.getStyleClass().contains("selectable")) n.getStyleClass().add("selectable");
-                            n.setOnMouseClicked(e -> {
-                                if(!isProductionAction) handleSelect((ImageView) n);
-                                else handleProduction((ImageView) n);
-                            });
-                        }
                     }
                 }
             }
@@ -1758,10 +1732,7 @@ public class GameScreenView extends ViewObservable {
             //Activate production
             else if(split[0].equals("P")){
                 confirmAction.setDisable(true);
-                grayOut(true);
                 isProductionAction = true;
-                graySlots(false,"production");
-                grayProduction(false);
                 ImageView iv = selected;
                 selected = null;
                 handleProduction(iv);

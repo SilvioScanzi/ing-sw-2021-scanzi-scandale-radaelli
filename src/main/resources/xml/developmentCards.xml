@@ -77,7 +77,7 @@
         <colour>Green</colour>
         <victorypoints>9</victorypoints>
         <cost>Shields-6</cost>
-        <requiredresources>Servants-2</requiredresources>
+        <requiredresources>Coins-2</requiredresources>
         <producedresources>Stones-3</producedresources>
         <producedfaith>2</producedfaith>
     </developmentcard>
