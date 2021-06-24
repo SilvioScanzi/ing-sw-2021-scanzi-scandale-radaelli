@@ -34,6 +34,10 @@ public class CLI extends ViewObservable implements View {
         scanner = new Scanner(System.in);
     }
 
+    /**
+     * Method used to receive user input and handle it based on the state of the game.
+     * Notifies the NetworkHandler when data is ready to be sent to the server
+     */
     public void start(){
         System.out.println("Inserisci Indirizzo IP e Porta del server a cui vuoi connetterti");
         while(!state.equals(ViewState.disconnected)) {
@@ -169,6 +173,11 @@ public class CLI extends ViewObservable implements View {
         System.out.println("Il giocatore "+name+" si è disconnesso");
     }
 
+    /**
+     * Method used to guide the user through buying resources from the market.
+     * Checks are made so that definitely wrong input isn't sent to the server.
+     * Based on the input, the NetworkHandler is notified.
+     */
     private void buyResources(){
         System.out.println("Hai scelto di comprare le risorse dal mercato.");
         System.out.println("Se vuoi annullare tutta l'azione digita -1");
@@ -239,6 +248,11 @@ public class CLI extends ViewObservable implements View {
         notifyBuyResources(r,n,requestedWMConversion);
     }
 
+    /**
+     * Method used to guide the user through buying a development card.
+     * Checks are made so that definitely wrong input isn't sent to the server.
+     * Based on the input, the NetworkHandler is notified.
+     */
     private void buyDevelopmentCard() {
         System.out.println("Hai deciso di comprare una carta sviluppo.");
         Colours colour = null;
@@ -285,6 +299,11 @@ public class CLI extends ViewObservable implements View {
         notifyBuyDC(colour,level,slot,userChoice);
     }
 
+    /**
+     * Method used to guide the user through activating the production.
+     * Checks are made so that definitely wrong input isn't sent to the server.
+     * Based on the input, the NetworkHandler is notified.
+     */
     private void activateProduction() {
         System.out.println("Hai deciso di attivare la produzione. ");
         int index;
@@ -358,6 +377,12 @@ public class CLI extends ViewObservable implements View {
         }while(n != 7);
     }
 
+    /**
+     * Method used to guide the user through moving resources in the warehouse.
+     * Also used when it is needed to move resources from the hand (i.e. after buying from the resource market)
+     * Checks are made so that definitely wrong input isn't sent to the server.
+     * Based on the input, the NetworkHandler is notified.
+     */
     private void moveResources(){
         System.out.println("Hai deciso di spostare le risorse. ");
         System.out.println("La mano serve solo a fare scambi, quindi non lasciarci risorse!");
@@ -399,6 +424,12 @@ public class CLI extends ViewObservable implements View {
         notifyMoveResources(userChoice);
     }
 
+    /**
+     * Method used to guide the user through activating or discarding a leader card.
+     * Checks made to prevent sending to the server certainly wrong data.
+     * NetworkHandler is notified at the end to send the choice to the server.
+     * @param n is used to establish which action is chosen.
+     */
     private void LeaderCardAction(int n){
         if (n==5){System.out.println("Hai deciso di attivare una carta leader.");}
         else if (n==6){System.out.println("Hai deciso di scartare una carta leader.");}
@@ -419,6 +450,12 @@ public class CLI extends ViewObservable implements View {
         else if (n==6){notifyDiscardLC(userChoice);}
     }
 
+    /**
+     * Method used to print general messages, usually to communicate with the user.
+     * "@@@" as a parameter in the first if is used to establish if it is needed to print
+     *      the menu choice so that the user can choose an action (or if it isn't his turn)
+     * @param string is the message to print
+     */
     @Override
     public void print(String string){
         if(string.equals("@@@")){
@@ -435,6 +472,11 @@ public class CLI extends ViewObservable implements View {
         }
     }
 
+    /**
+     * This method is called when changes have been made and a new board has to be shown.
+     * Calls helper methods to print single items.
+     * @param board has all the data needed to show the game status to the user
+     */
     @Override
     public void printBoard(ClientBoard board) {
         String nickname = board.getNickname();
@@ -453,6 +495,10 @@ public class CLI extends ViewObservable implements View {
         }
     }
 
+    /**
+     * Method used to print StandardMessages, while setting some parameters that could be useful
+     * @param message is the string that needs to be shown
+     */
     @Override
     public void printStandardMessage(StandardMessages message){
         if(message.equals(StandardMessages.unavailableConnection)){
@@ -491,6 +537,9 @@ public class CLI extends ViewObservable implements View {
         }
     }
 
+    /**
+     * Prints the choice menu for the user to decide what action he wants to do
+     */
     public void printYourTurn(){
         if(!actionDone) {
             System.out.println("Scegli l'azione che vuoi compiere: ");
