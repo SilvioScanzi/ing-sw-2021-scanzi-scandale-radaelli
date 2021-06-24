@@ -1498,6 +1498,9 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to show the help button and select the right text to display, based on the state of the game.
+     */
     @FXML
     public void help(){
         String message = "";
@@ -1631,6 +1634,11 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used as a Listener when the Confirm Button is pressed. Based on the state of the game and on the action
+     * in progress it decides what are the next possible actions and what can't be done (due to the game rules).
+     * Also, notifies the NetworkHandler that an action has been completed.
+     */
     //Handle Methods
     public void handleConfirmClick(){
         if(isBuyAction && (selected.getId().split("_")[0].equals("0") || selected.getId().split("_")[0].equals("1") || selected.getId().split("_")[0].equals("2") || selected.getId().split("_")[0].equals("3"))){
@@ -1776,12 +1784,22 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used as a Listener when the End Turn Button is pressed.
+     * Disables the buttons and notifies the Network Handler.
+     */
     public void handleEndTurnClick(){
         confirmAction.setDisable(true);
         endTurn.setDisable(true);
         notifyEndTurn();
     }
 
+    /**
+     * Method used as a Listener to select and deselect something that has been pressed.
+     * Based on the state of the game it may just select/deselect an object or it may also gray out some objects
+     * that can't be clicked while the first is selected.
+     * @param n is the ImageView that has been pressed by the user in the View.
+     */
     private void handleSelect(ImageView n){
         if(selected!=null && prevResBuyAction && selected.equals(n)){
             unselect();
@@ -1825,6 +1843,13 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used as a Listener when a moveAction is in progress. If a resource object is selected and a Pane with a
+     * resource-holding possibility is pressed, this method changes the position of the resource.
+     * When doing this method, a moveAction starts and the player is allowed to move the resources around.
+     * Also, grays out all other possible actions since a moveAction is in progress.
+     * @param pane is the second resource selected (the first one is saved in the attribute "selected")
+     */
     private void handleMoveAction(Pane pane){
         isMoveAction = true;
 
@@ -1870,6 +1895,10 @@ public class GameScreenView extends ViewObservable {
         selected = null;
     }
 
+    /**
+     * As handleMoveAction(Pane pane), but switching positions between two resources.
+     * @param IV is the second selected resource that has to be moved in the first's place.
+     */
     private void handleMoveAction(ImageView IV){
         isMoveAction = true;
 
@@ -1933,6 +1962,12 @@ public class GameScreenView extends ViewObservable {
         selected = null;
     }
 
+    /**
+     * Method used as a Listener when a not played Leader Card is selected: it shows the possible actions and
+     * establishes what to do once the choice is made (notify the NetworkHandler if it is played or discarded
+     * for example), removing and placing back the necessary Listeners.
+     * @param backLCView is the Leader Card that has been selected
+     */
     private void handleLeaderCardClick(ImageView backLCView){
         String path ="/images/Hanging Sign.png";
 
