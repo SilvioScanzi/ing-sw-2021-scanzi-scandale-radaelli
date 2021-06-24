@@ -217,9 +217,9 @@ public class GameScreenView extends ViewObservable {
     //Add methods
 
     /**
-     *
-     * @param LC
-     * @param leaderCardsPlayed
+     * Methods that create a hash map of the leader cards
+     * @param LC hashmap with the leader cards available
+     * @param leaderCardsPlayed array list with the leader cards played
      */
     public void addLCMap(HashMap<Integer, Pair<Resources,Integer>> LC, ArrayList<Triplet<Resources,Integer,Integer>> leaderCardsPlayed){
         for(Integer i : LC.keySet()){
@@ -2646,6 +2646,11 @@ public class GameScreenView extends ViewObservable {
         });
     }
 
+    /**
+     * Method that asks the player which resource he wants after a base or leader production action using a hanging sign
+     * animation
+     * @param a contains the index of the used productions that require a resource choice
+     */
     private void handleChooseResources(ArrayList<Integer> a){
         if(a.size()==0){
             isProductionAction = false;
@@ -2802,10 +2807,13 @@ public class GameScreenView extends ViewObservable {
     }
 
     //Utils
+    /**
+     * Method used to delete and re-add all the resources to avoid duplicates
+     */
     private void refreshHand(){
         ArrayList<Node> tmp = new ArrayList<>(Hand.getChildren());
         Hand.getChildren().clear();
-        int i = 0,j = 0;
+        int i = 0 ,j = 0;
         for(int size=0;size<tmp.size();size++){
             i = size % 5;
             if(size > 4) {
@@ -2815,6 +2823,12 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method that find all the white marbles bought by a players that has an activated leader card with the white marble power
+     * @param row is true when the player selected a row of the market
+     * @param i is the index of the row/column chosen
+     * @return the number of white marbles bought
+     */
     private int getWhiteMarbles(boolean row, int i){
         int n=0;
         if(row){
@@ -2826,6 +2840,12 @@ public class GameScreenView extends ViewObservable {
         return n;
     }
 
+    /**
+     * Method that adds a glow effect to every white marbles, one at a time, the player has to convert to a resource
+     * @param row is true when the player selected a row of the market
+     * @param i is the index of the row/column chosen
+     * @param currentWM keeps tracks of the white marble that is being processed
+     */
     private void glowNextWhiteMarble(boolean row, int i, int currentWM){
         int count = 0;
         int lastWhite = 0;
@@ -2882,6 +2902,9 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Methods that adds or removes a drop shadow effect to the board elements
+     */
     private void unselect() {
         String[] split = selected.getId().split("_");
         if(split[0].equals("0") || split[0].equals("1") || split[0].equals("2") || split[0].equals("3") || selected.getId().startsWith("P_S") || selected.getId().startsWith("P_L")){
