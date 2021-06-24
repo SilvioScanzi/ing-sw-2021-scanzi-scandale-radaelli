@@ -29,7 +29,10 @@ public class PlayerVersusScreenView {
     @FXML
     private ImageView PL4;
 
-
+    /**
+     * Method used to generate an animation in the screen.
+     * @param players Hashmap with players and their respective position
+     */
     public void setScreen(HashMap<String,Integer> players){
         AnchorPane AP = (AnchorPane) P1.getParent();
         HashMap<Integer,String> tmp = new HashMap<>();

@@ -24,7 +24,10 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
     private boolean gameHandlerRequired = true;
     private final Object Lock = new Object();
 
-
+    /**
+     * Method used to run the server.
+     * @param port is the port number on which to open the connections.
+     */
     public void startServer(int port) {
         ServerSocket serverSocket;
         try {
@@ -49,6 +52,15 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         }
     }
 
+
+    /**
+     * Method used to update the state of clients in the server. When a client disconnects from the server,
+     * it is checked if that client was currently in a game. If so, the data structure of the clients is updated.
+     * Otherwise, it is checked if the client was currently choosing player number for a new game and, if so, the
+     * next active client is notified. If none of these conditions are met, the client is just removed from the current
+     * game or from the lobby.
+     * @param obs is the client who has disconnected
+     */
     @Override
     public void updateServerDisconnection(CHObservable obs){
         ClientHandler CH = (ClientHandler) obs;
@@ -82,6 +94,12 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         System.out.println("[SERVER] Client " + CH.getNickname() + " has disconnected from the game");
     }
 
+    /**
+     * Method used to notify the server that a new game has to be built with a specified number of players.
+     * After building it, it is checked if there are connected players who can be inserted in the game.
+     * @param obs is the client who has chosen the player number
+     * @param message contains the number of players chosen
+     */
     @Override
     public void updateServerPlayerNumber(CHObservable obs,ChoosePlayerNumberMessage message) {
         ClientHandler CH = (ClientHandler) obs;
@@ -124,6 +142,13 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         }
     }
 
+    /**
+     * Method used to notify the server that a new client is ready to play, with a specified nickname.
+     * If there is already a game to be launched, the client is inserted, otherwise the server
+     * sends a message to the client and waits for the client to choose the number of players for a new game.
+     * @param obs is the new client
+     * @param message contains the nickname of the client
+     */
     @Override
     public void updateServerNickname(CHObservable obs,NicknameMessage message){
         ClientHandler CH = (ClientHandler) obs;
@@ -177,6 +202,10 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         }
     }
 
+    /**
+     * Method used to notify the server that a game is done and has to be demolished.
+     * @param obs is the finished game
+     */
     @Override
     public void gameHandlerUpdate(GameHandlerObservable obs) {
         synchronized (clientHandlers){
@@ -192,6 +221,10 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         System.out.println("[SERVER] A game containing "+((GameHandler)obs).getPlayerNumber()+" players has been demolished");
     }
 
+    /**
+     * Method used to start a new game
+     * @param CH is the client that has to choose the player number for that game
+     */
     private void startNewGameHandler(ClientHandler CH) {
         synchronized (CH) {
             CH.setState(ClientHandler.ClientHandlerState.playerNumber);
@@ -202,6 +235,10 @@ public class Server implements CH_ServerObserver, GameHandlerObserver {
         }
     }
 
+    /**
+     * Method used for the reconnection of a client. The data structure of the clients is updated.
+     * @param obs is the client who is reconnecting
+     */
     @Override
     public void updateServerReconnection(CHObservable obs) {
         ClientHandler CH = (ClientHandler) obs;

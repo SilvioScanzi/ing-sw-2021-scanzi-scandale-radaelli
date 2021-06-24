@@ -1657,7 +1657,6 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
-
     //Handle Methods
     public void handleConfirmClick(){
         if(isBuyAction && (selected.getId().split("_")[0].equals("0") || selected.getId().split("_")[0].equals("1") || selected.getId().split("_")[0].equals("2") || selected.getId().split("_")[0].equals("3"))){
@@ -2099,6 +2098,13 @@ public class GameScreenView extends ViewObservable {
         });
     }
 
+    /**
+     * Method used to handle clicks on resources selected for a development buy action.
+     * The resources are highlighted and added to a structure that keeps memory of the selection.
+     * The pane is then updated, adding a listener on the clicks to then deselect them.
+     * @param resource is the pane associated to the resource selected in a depot,
+     *                 in a leader card or in the strongbox.
+     */
     private void handleBuySelect(Pane resource){
         ImageView IV = (ImageView) resource.getChildren().get(0);
         if(IV.getId().split("_")[1].startsWith("W")) {
@@ -2131,6 +2137,14 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to handle clicks on resources previously selected for a development buy action.
+     * The resources are deselected and removed from the structure.
+     * @param resource is the pane associated to the resource selected in a depot,
+     *                 in a leader card or in the strongbox.
+     * @param HandRes is the ImageView associated to a resource in the hand. It is present if the
+     *                previously selected resource was from the strongbox.
+     */
     private void handleBuyDeselect(Pane resource,ImageView HandRes){
         ImageView IV = (ImageView) resource.getChildren().get(0);
         if(IV.getId().split("_")[1].startsWith("W")) {
@@ -2150,6 +2164,9 @@ public class GameScreenView extends ViewObservable {
         }
     }
 
+    /**
+     * Method used to cancel a buy action. The GUI is restored to the previous state
+     */
     private void handleBuyCancel() {
         grayOut(true);
         if(selectedCard!=null){
@@ -2265,6 +2282,10 @@ public class GameScreenView extends ViewObservable {
         });
     }
 
+    /**
+     * Method used to select cards (or base production) for the production action.
+     * @param IV is the ImageView associated with the selected card
+     */
     private void handleProduction(ImageView IV){
         isMoveAction = false;
         isBuyAction = false;
@@ -2283,6 +2304,13 @@ public class GameScreenView extends ViewObservable {
         grayPlayedLeaderCard(false,"production");
     }
 
+    /**
+     * Method used to select resources to put in the production.
+     * The resources are highlighted and moved to the respective cards,
+     * and added to a structure that keeps memory of the selection.
+     * The pane is then updated, adding a listener on the clicks to then deselect them.
+     * @param pane is the pane associated with the resource selected for the action
+     */
     private void handleProductionSelect(Pane pane){
         ImageView IV = (ImageView) pane.getChildren().get(0);
         ImageView R;
@@ -2388,6 +2416,13 @@ public class GameScreenView extends ViewObservable {
             if(confirmAction.isDisabled()) confirmAction.setDisable(false);
     }
 
+    /**
+     * Method used to deselect resources from a production.
+     * The resources are deselected and removed from the structure.
+     * @param IV is the imageView associated to the resource to deselect
+     * @param oldParent is the old parent of the imageview (where it came from) which is
+     *                  either a depot, the strongbox or a leader card
+     */
     private void handleProductionDeselect(ImageView IV,Node oldParent) {
         GridPane newParent = (GridPane) IV.getParent();
         newParent.getChildren().remove(IV);
@@ -2474,6 +2509,9 @@ public class GameScreenView extends ViewObservable {
             if(!confirmAction.isDisabled()) confirmAction.setDisable(true);
     }
 
+    /**
+     * Method used to cancel a production action. The GUI is restored to the previous state
+     */
     private void handleProductionCancel(ImageView IV){
         unselect();
         selected = null;

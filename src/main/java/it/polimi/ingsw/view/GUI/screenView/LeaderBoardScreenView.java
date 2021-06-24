@@ -21,14 +21,15 @@ public class LeaderBoardScreenView extends ViewObservable {
     @FXML
     private Text P4;
     @FXML
-    private ImageView P1_I;
-    @FXML
-    private ImageView P2_I;
-    @FXML
     private ImageView P3_I;
     @FXML
     private ImageView P4_I;
 
+    /**
+     * Method used to generate and show the leader board at the end of the game.
+     * @param vp Hashmap with nickname and relative victory points
+     * @param lorenzo true if it was a solo game, false otherwise
+     */
     public void setLeaderBoard(HashMap<String,Integer> vp, Boolean lorenzo) {
         System.out.println(vp.toString());
         Pane p = (Pane) P1.getParent();

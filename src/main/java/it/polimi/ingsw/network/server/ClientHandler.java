@@ -86,6 +86,9 @@ public class ClientHandler extends CHObservable implements Runnable, ModelObserv
         return nickname;
     }
 
+    /**
+     * Method used to receive messages from the network. Also sets timeouts for inactivity.
+     */
     @Override
     public void run() {
         Object message;

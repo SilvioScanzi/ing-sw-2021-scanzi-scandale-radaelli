@@ -8,9 +8,6 @@ public class WaitScreenView {
     @FXML
     private Text message;
 
-    @FXML
-    public void initialize() {}
-
     public void changeMessage(String S){
         message.setText(S);
     }

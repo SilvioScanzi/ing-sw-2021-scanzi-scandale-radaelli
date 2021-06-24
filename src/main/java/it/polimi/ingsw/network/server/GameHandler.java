@@ -51,6 +51,15 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to add clients to the current game. If the game hasn't started yet, the clients are simply
+     * put in the game. Otherwise, if the game is started, the player who's being added is a player
+     * who has previously disconnected. All the major data structures of the game are sent to the player
+     * who then can restart playing. If the game is started, but the game was paused due to the disconnection
+     * of all players, the game cannot begin unless all players reconnect. In this case, the players are just notified
+     * to wait until all other players are reconnected and, when that happens, the game is resumed.
+     * @param CH is the client to be added in the game
+     */
     public void addPlayer(ClientHandler CH) {
         if (!started) {
             //no need for synchronization because this first add is only done in one thread (lobbyManager)
@@ -94,6 +103,10 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to reconnect clients, sending all the structures necessary for the client to resume playing.
+     * @param CH is the client to be reconnected
+     */
     public void reconnectCH(ClientHandler CH){
         CH.setState(ClientHandler.ClientHandlerState.notMyTurn);
 
@@ -126,12 +139,21 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         CH.sendStandardMessage(StandardMessages.notYourTurn);
     }
 
+    /**
+     * Method used to remove players from the game
+     * @param CH is the client to be removed
+     */
     public void removePlayer(ClientHandler CH){
         synchronized (clients) {
             clients.remove(CH);
         }
     }
 
+    /**
+     * Method used to start the current game. There's a setup phase where the game is initialized, and then
+     * every client is notified that the game is starting. Every client recieves the structures necessary to
+     * begin playing.
+     */
     public void start(){
         game.setInkwell((int)(Math.random() * (playerNumber)));
         System.out.println("[SERVER] A game containing "+playerNumber+" players is starting");
@@ -172,6 +194,13 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to disconnect clients from the current game.
+     * If the client was in turn, the next active player is chosen to be in turn.
+     * If there aren't any active clients, a timer is launched. At the end of the timer, the game is demolished.
+     * The timer is canceled if all the players reconnect to the game.
+     * @param obs client who is disconnecting
+     */
     @Override
     public void updateDisconnected(CHObservable obs){
         ClientHandler client = (ClientHandler) obs;
@@ -227,6 +256,13 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to discard the leader cards in the setup phase of the game. If all the players
+     * have chosen their cards, the game is moved to the next stage (choosing resources for the player 2,3,4).
+     * If anything goes wrong during the discard, the client is notified and asked to repeat the action.
+     * @param obs is the client who has discarded the cards
+     * @param message contains the indexes of the cards to be discarded
+     */
     @Override
     public void updateLCDiscard(CHObservable obs, DiscardLeaderCardSetupMessage message) {
         ClientHandler client = (ClientHandler) obs;
@@ -280,6 +316,13 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to gain the extra resources or the players 2, 3 and 4. If every player has chosen the resources,
+     * the game is started.
+     * If anything goes wrong during the action, the client is notified and asked to repeat the action.
+     * @param obs is the client who has chosen the extra resources
+     * @param message contains the extra resources
+     */
     @Override
     public void updateFinishSetup(CHObservable obs, FinishSetupMessage message){
         ClientHandler client = (ClientHandler) obs;
@@ -323,6 +366,12 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to buy resources from the market.
+     * If anything goes wrong during the buy, the client is notified and asked to repeat the action.
+     * @param obs is the client who has chosen to buy the resources
+     * @param message contains the information necessary to perform the action
+     */
     @Override
     public void updateBuyResources(CHObservable obs, BuyResourcesMessage message) {
         ClientHandler client = (ClientHandler) obs;
@@ -342,6 +391,12 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to buy a development card from the market.
+     * If anything goes wrong during the buy, the client is notified and asked to repeat the action.
+     * @param obs is the client who has chosen to buy the card
+     * @param message contains the information necessary to perform the action
+     */
     @Override
     public void updateBuyDC(CHObservable obs, BuyDevelopmentCardMessage message) {
         ClientHandler client = (ClientHandler) obs;
@@ -357,6 +412,12 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to activate some productions.
+     * If anything goes wrong during the production, the client is notified and asked to repeat the action.
+     * @param obs is the client who has chosen to activate the productions.
+     * @param message contains the information necessary to perform the action
+     */
     @Override
     public void updateProduction(CHObservable obs, ProductionMessage message) {
         ClientHandler client = (ClientHandler) obs;
@@ -377,6 +438,12 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to move the resources between depots.
+     * If anything goes wrong during the move, the client is notified and asked to repeat the action.
+     * @param obs is the client who has chosen to move the resources
+     * @param message contains the information necessary to perform the action
+     */
     @Override
     public void updateMoveResources(CHObservable obs, MoveResourcesMessage message) {
         ClientHandler client = (ClientHandler) obs;
@@ -392,6 +459,12 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to play a leader card.
+     * If anything goes wrong during the play, the client is notified and asked to repeat the action.
+     * @param obs is the client who has chosen to play the leader card
+     * @param message contains the information necessary to perform the action
+     */
     @Override
     public void updatePlayLeaderCard(CHObservable obs, PlayLeaderCardMessage message){
         ClientHandler client = (ClientHandler) obs;
@@ -407,6 +480,12 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to discard leader card during the game.
+     * If anything goes wrong during the discard, the client is notified and asked to repeat the action.
+     * @param obs is the client who has chosen to discard the leader card
+     * @param message contains the information necessary to perform the action
+     */
     @Override
     public void updateDiscardLeaderCard(CHObservable obs, DiscardLeaderCardMessage message) {
         ClientHandler client = (ClientHandler) obs;
@@ -420,6 +499,15 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to end the turn of the current player. If the player hasn't already done an action,
+     * the turn is not ended. Otherwise, multiple checks are made to verify if any player has won. If so, the last
+     * round is performed and then the leaderboard is sent.
+     * If no player won, the next active player gets to do his turn.
+     * If the player is playing solo, at the end of his turn an action token is activated and
+     * it is checked if lorenzo won the game. If not, the solo player gets a new turn.
+     * @param obs is the client who has chosen to end his turn
+     */
     @Override
     public void updateTurnDone(CHObservable obs){
         ClientHandler client = (ClientHandler) obs;
@@ -508,6 +596,11 @@ public class GameHandler extends GameHandlerObservable implements CHObserver {
         }
     }
 
+    /**
+     * Method used to get the next active player (not disconnected) and, if the game is not ended,
+     * a message is sent to the next player.
+     * @param endGame is true if the game is ending (and there's no need to send the player a message)
+     */
     private void getNextActivePlayer(boolean endGame) {
         int i = turn - 1;
         if(i<0){i = playerNumber-1;}
