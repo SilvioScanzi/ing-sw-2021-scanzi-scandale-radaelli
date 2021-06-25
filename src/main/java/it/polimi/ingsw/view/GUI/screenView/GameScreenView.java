@@ -1863,7 +1863,6 @@ public class GameScreenView extends ViewObservable {
         String id = selected.getId().split("_")[0] + "_" + pane.getId().split("_")[0] + pane.getId().split("_")[1].charAt(0);
 
         if((selected.getParent().getId() == null) || !selected.getParent().getId().equals(Hand.getId())) {
-            //(selected.getParent()).setId("W" + selected.getId().split("_")[1].charAt(1) + "_" + selected.getId().split("_")[1].charAt(2) + "Empty");
             (selected.getParent()).setOnMouseClicked(e -> {
                 handleMoveAction((Pane) selected.getParent());
             });

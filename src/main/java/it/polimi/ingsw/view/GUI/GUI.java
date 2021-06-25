@@ -98,9 +98,9 @@ public class GUI extends Application implements View{
     @Override
     public void setState(ViewState state) {
         if(state.equals(ViewState.chooseNickName)){
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/NicknameScreen.fxml"));
             Platform.runLater(() -> {
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/NicknameScreen.fxml"));
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
@@ -111,9 +111,9 @@ public class GUI extends Application implements View{
             });
         }
         else if(state.equals(ViewState.choosePlayerNumber)){
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerNumberScreen.fxml"));
             Platform.runLater(() -> {
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/PlayerNumberScreen.fxml"));
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
@@ -129,9 +129,9 @@ public class GUI extends Application implements View{
             });
         }
         else if(state.equals(ViewState.reconnecting)){
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/ReconnectScreen.fxml"));
             Platform.runLater(() -> {
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/ReconnectScreen.fxml"));
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
@@ -142,9 +142,9 @@ public class GUI extends Application implements View{
             });
         }
         else if(state.equals(ViewState.gameNotCreated)){
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
             Platform.runLater(() -> {
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
@@ -157,9 +157,9 @@ public class GUI extends Application implements View{
             });
         }
         else if(state.equals(ViewState.lobbyNotReady)){
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
             Platform.runLater(() -> {
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
@@ -172,9 +172,9 @@ public class GUI extends Application implements View{
             });
         }
         else if(state.equals(ViewState.wait)){
+            fxmlLoader = new FXMLLoader();
+            fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
             Platform.runLater(() -> {
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/WaitScreen.fxml"));
                 try {
                     Pane root = fxmlLoader.load();
                     currentScene.setRoot(root);
@@ -199,11 +199,13 @@ public class GUI extends Application implements View{
             });
         }
         else if(state.equals(ViewState.myTurn) || state.equals(ViewState.notMyTurn)){
+            if(gameScreenView == null) {
+                fxmlLoader = new FXMLLoader();
+                fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
+            }
             Platform.runLater(() -> {
                 try {
                     if(gameScreenView == null) {
-                        fxmlLoader = new FXMLLoader();
-                        fxmlLoader.setLocation(getClass().getResource("/fxml/GameScreen.fxml"));
                         primaryStage.setTitle("Maestri del rinascimento - In gioco");
                         gameScreen = fxmlLoader.load();
                         currentScene.setOnKeyPressed(null);
@@ -267,13 +269,13 @@ public class GUI extends Application implements View{
                     else gameScreenView.addMessage(player+" ha vinto la partita!",true);
                 }
                 PT.setOnFinished(e -> {
+                    fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(getClass().getResource("/fxml/LeaderBoardScreen.fxml"));
                     Platform.runLater(() -> {
                         try {
                             primaryStage.setMaximized(false);
                             primaryStage.setFullScreen(false);
 
-                            fxmlLoader = new FXMLLoader();
-                            fxmlLoader.setLocation(getClass().getResource("/fxml/LeaderBoardScreen.fxml"));
                             primaryStage.setTitle("Maestri del rinascimento - Fine partita");
 
                             Pane root = fxmlLoader.load();
@@ -293,26 +295,25 @@ public class GUI extends Application implements View{
             });
         }
         else if(state.equals(ViewState.disconnected)){
-            if(NH.getClientModel().getLeaderBoard() == null) {
+            if(NH.getClientModel() == null || NH.getClientModel().getLeaderBoard() == null) {
                 NH = new NetworkHandler(this);
 
-                fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("/fxml/ConnectionScreen.fxml"));
-
                 try {
-                    Pane root = fxmlLoader.load();
+                    FXMLLoader loader = new FXMLLoader();
+                    loader.setLocation(getClass().getResource("/fxml/ConnectionScreen.fxml"));
+                    Pane root = loader.load();
                     Platform.runLater(() -> {
                         currentScene = new Scene(root);
                         primaryStage.setTitle("Maestri del rinascimento - Launcher");
-                        connectionScreenView = fxmlLoader.getController();
-                        connectionScreenView.addObserver(NH);
                         primaryStage.setScene(currentScene);
                         primaryStage.show();
                         primaryStage.setResizable(false);
                         primaryStage.setMaximized(false);
                         primaryStage.setFullScreen(false);
 
-                        connectionScreenView.setErrormsg("C'è stato un errore lato Server, riconnettiti e ricomincia a giocare");
+                        connectionScreenView = loader.getController();
+                        connectionScreenView.addObserver(NH);
+                        connectionScreenView.setErrormsg("C'è stato un errore lato Server, riconnettiti per ricominciare a giocare");
 
                         currentScene.widthProperty().addListener((obs, oldVal, newVal) -> scale(1600, 900));
 
