@@ -31,7 +31,6 @@ public class LeaderBoardScreenView extends ViewObservable {
      * @param lorenzo true if it was a solo game, false otherwise
      */
     public void setLeaderBoard(HashMap<String,Integer> vp, Boolean lorenzo) {
-        System.out.println(vp.toString());
         Pane p = (Pane) P1.getParent();
         int n = vp.size();
 

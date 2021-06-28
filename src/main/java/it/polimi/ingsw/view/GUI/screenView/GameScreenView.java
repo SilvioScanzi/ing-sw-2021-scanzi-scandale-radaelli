@@ -1683,7 +1683,7 @@ public class GameScreenView extends ViewObservable {
                 for(Triplet<Resources,Integer,Boolean> T : LCMap.values()){
                     if(T.get_3() && T.get_2()==5) i++;
                 }
-                if(i<2){
+                if(i<2 || getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1])) == 0){
                     confirmAction.setDisable(false);
                     unselect();
                     selected = null;
@@ -1692,7 +1692,8 @@ public class GameScreenView extends ViewObservable {
                     grayHand(false);
                     grayWarehouse(false,"move");
                 }
-                else if(getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))>0){
+                else{
+                    confirmAction.setDisable(true);
                     isChoosingConversion = true;
                     grayOut(true);
                     grayPlayedLeaderCard(false,"move");
@@ -1702,7 +1703,7 @@ public class GameScreenView extends ViewObservable {
                         n.setEffect(new Glow());
                         n.setOnMouseClicked(e ->{
                             String[] S = n.getId().split("_");
-                            selectedRMLC.add(Integer.parseInt(S[1]));
+                            selectedRMLC.add(Integer.parseInt(S[2]));
                             if(selectedRMLC.size() == getWhiteMarbles(split[0].equals("R"),Integer.parseInt(split[1]))){
                                 for(Node LC : LeaderCardsPlayed.getChildren()){
                                     LC.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
@@ -1722,7 +1723,6 @@ public class GameScreenView extends ViewObservable {
                         });
                     }
                 }
-
             }
 
             //Development buy action

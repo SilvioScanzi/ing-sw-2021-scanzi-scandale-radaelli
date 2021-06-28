@@ -179,6 +179,23 @@ public class NetworkHandler implements Runnable, ViewObserver {
                 clientModel.setLeaderBoard(((VictoryPointsMessage) message).getVp());
                 view.setState(ViewState.endGame);
                 view.print("La partita è finita");
+                int n = clientModel.getPlayerNumber();
+                HashMap <String,Integer> vp = clientModel.getLeaderBoard();
+
+                for (int i = 0; i < n; i++) {
+                    String nickname = "";
+
+                    int max = -1;
+                    for(String s : vp.keySet()){
+                        if(vp.get(s)>max){
+                            nickname = s;
+                            max = vp.get(s);
+                        }
+                    }
+
+                    view.print(i + ") " + nickname+" - Punti vittoria: "+vp.get(nickname));
+                    vp.remove(nickname);
+                }
             }
 
             //Not Model Related Messages

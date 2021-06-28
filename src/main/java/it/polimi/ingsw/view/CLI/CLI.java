@@ -156,6 +156,7 @@ public class CLI extends ViewObservable implements View {
             System.out.println("Sei stato disconnesso dalla partita");
             System.exit(0);
         }
+        else if(state.equals(ViewState.endGame))
         this.state = state;
     }
 
@@ -436,7 +437,7 @@ public class CLI extends ViewObservable implements View {
         System.out.println("Se vuoi annullare tutta l'azione digita -1");
         boolean ok = false;
         int userChoice = 0;
-        System.out.println("Seleziona la carta leader che vuoi scartare");
+        System.out.println("Seleziona la carta leader");
         do {
             int c = Integer.parseInt(scanner.nextLine());
             if(c==-1) return;
@@ -522,6 +523,7 @@ public class CLI extends ViewObservable implements View {
                     System.out.println("Mentre aspetti il turno degli altri, puoi comunque vedere le loro plance!");
                     System.out.println("Plancia comune - Mostra la plancia della partita");
                     System.out.println("G n - Mostra la plancia del giocatore n");
+                    System.out.println("Carte leader - Mostra la tua mano di carte leader");
                 }
             }
         }
@@ -651,7 +653,7 @@ public class CLI extends ViewObservable implements View {
         System.out.println("CARTE LEADER DI "+nickname+" IN GIOCO");
         int i = 1;
         for(Triplet<Resources,Integer,Integer> t : LC){
-            System.out.println(i + ") " + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
+            System.out.println(i + ")\n" + LCP.findCardByID(t.get_1(),t.get_2(),t.get_3()));
             i++;
         }
 
@@ -706,7 +708,8 @@ public class CLI extends ViewObservable implements View {
         System.out.println("Posizione dell'indicatore fede: " + FM);
         System.out.print("Tessere di favore papale attivate: ");
         for(int i = 0; i<PF.length; i++){
-            if(PF[i]) System.out.println((i+1) + ", ");
+            if(PF[i]) System.out.print((i+1));
+            if(i<2 && PF[i+1]) System.out.print(", ");
         }
 
         System.out.println("\n");

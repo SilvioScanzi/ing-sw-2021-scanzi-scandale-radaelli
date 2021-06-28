@@ -17,6 +17,7 @@ import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -296,6 +297,27 @@ public class OpponentBoardScreenView extends ViewObservable{
             LCView.setPreserveRatio(true);
             LCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             LC.add(LCView,0,i);
+
+            if (T.get_2() == 3) {
+                AnchorPane AP = new AnchorPane();
+                LC.add(AP, 0, i);
+                int j;
+                for (j = 0; j < T.get_3(); j++) {
+                    Pane P = new Pane();
+                    P.setPrefHeight(34);
+                    P.setPrefWidth(34);
+                    AP.getChildren().add(P);
+                    if (j == 0) P.setLayoutX(33);
+                    else P.setLayoutX(112);
+                    P.setLayoutY(265);
+                    path = "/images/resources/" + T.get_1().getID() + ".png";
+                    ImageView R = new ImageView(new Image(GUI.class.getResource(path).toString()));
+                    R.setFitWidth(74);
+                    R.setPreserveRatio(true);
+                    P.getChildren().add(R);
+                }
+            }
+
             i++;
         }
         for(Triplet<Resources,Integer,Integer> T : LCHand){
