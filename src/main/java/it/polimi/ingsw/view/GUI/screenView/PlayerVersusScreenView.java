@@ -49,7 +49,7 @@ public class PlayerVersusScreenView {
                 AP.getChildren().remove(PL2);
                 AP.getChildren().remove(P3);
                 AP.getChildren().remove(PL3);
-                String target = "/images/lorenzo.png";
+                String target = "/images/Lorenzo.png";
                 PL4.setImage(new Image(GUI.class.getResource(target).toString()));
                 PL4.setPreserveRatio(true);
                 PL4.setFitWidth(500);
