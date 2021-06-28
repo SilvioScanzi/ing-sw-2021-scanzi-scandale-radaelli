@@ -35,7 +35,7 @@ public class App {
                     else cli = new CLI(false);
                     cli.start();
                 }
-                else if(!args[2].equals("-gui")){
+                else if(!args[1].equals("-gui")){
                     System.out.println("Devi scrivere -cli se vuoi utilizzare un'interfaccia a linea di comando");
                     System.out.println("Devi scrivere -gui se vuoi utilizzare un'interfaccia grafica");
                     System.out.println("Altrimenti, se non scrivi nulla, di default viene utilizzata una GUI");
