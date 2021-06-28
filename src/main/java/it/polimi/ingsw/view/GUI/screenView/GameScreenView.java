@@ -2278,11 +2278,12 @@ public class GameScreenView extends ViewObservable {
                 selected.setOnMouseClicked(x -> handleBuyCancel());
             }
             else{
+                confirmAction.setDisable(true);
+                selected = null;
                 grayOut(true);
                 graySlots(false,"buy");
                 selectedCard.getStyleClass().add("selectable");
                 selectedCard.setOnMouseClicked(x -> handleBuyCancel());
-                confirmAction.setDisable(selected == null);
             }
         });
     }

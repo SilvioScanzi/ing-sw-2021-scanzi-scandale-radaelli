@@ -113,7 +113,7 @@ public class SetupScreenView extends ViewObservable {
             LCView.setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
             LCView.setFitWidth(175.0);
             LCView.setPreserveRatio(true);
-            LCView.setId(""+(i+1));
+            LCView.setId(""+(i));
             EventHandler<MouseEvent> eventHandler = e -> {
                 eventHandle(LCView);
             };
@@ -152,7 +152,11 @@ public class SetupScreenView extends ViewObservable {
      */
     public void selectCards(){
         if(state){
+            indexes[0] = indexes[0] + 1;
+            indexes[1] = indexes[1] + 1;
             notifySetupDiscardLC(indexes);
+            indexes[0] = -1;
+            indexes[1] = -1;
         }
         else{
             if(one_twoResourceSetup == chosenResources.size()){
@@ -233,9 +237,9 @@ public class SetupScreenView extends ViewObservable {
                     img.setEffect(colorAdjust);
                     button.setDisable(false);
                 } else {
-                    leader.get(indexes[0] - 1).setEffect(null);
-                    leader.get(indexes[0] - 1).getStyleClass().add("selectable");
-                    leader.get(indexes[0] - 1).setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
+                    leader.get(indexes[0]).setEffect(null);
+                    leader.get(indexes[0]).getStyleClass().add("selectable");
+                    leader.get(indexes[0]).setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     int tmp;
                     tmp = indexes[1];
                     indexes[1] = Integer.parseInt(img.getId());
@@ -249,7 +253,7 @@ public class SetupScreenView extends ViewObservable {
             if(choiceNumber == 1) {
                 if (indexes[0] != -1) {
                     resources.get(indexes[0]).setEffect(null);
-                    resources.get(indexes[0]).getStyleClass().add("selectable");
+                    if(!resources.get(indexes[0]).getStyleClass().contains("selectable")) resources.get(indexes[0]).getStyleClass().add("selectable");
                     resources.get(indexes[0]).setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     chosenResources.clear();
                 }
@@ -258,7 +262,7 @@ public class SetupScreenView extends ViewObservable {
             else{
                 if (indexes[1] != -1) {
                     resources.get(indexes[1]).setEffect(null);
-                    resources.get(indexes[1]).getStyleClass().add("selectable");
+                    if(!resources.get(indexes[1]).getStyleClass().contains("selectable")) resources.get(indexes[1]).getStyleClass().add("selectable");
                     resources.get(indexes[1]).setEffect(new DropShadow(BlurType.THREE_PASS_BOX, Color.rgb(0,0,0,0.8), 5, 0, -5, 5));
                     chosenResources.remove(1);
                 }
